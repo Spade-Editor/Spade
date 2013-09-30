@@ -5,5 +5,11 @@
 *.war
 *.ear
 
+# Eclipse #
+.classpath
+.project
+.settings/*
+
 # Other #
 *.sh
+*.directory

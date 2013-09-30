@@ -1,0 +1,5 @@
+#!/bin/bash
+#
+
+cd "/home/jeremy/Programming/HeroesGrave/dev/Paint.JAVA/build/"
+exec java -jar Paint.JAVA.jar
