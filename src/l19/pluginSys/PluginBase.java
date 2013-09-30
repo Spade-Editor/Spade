@@ -1,5 +1,7 @@
 package l19.pluginSys;
 
+import javax.swing.JMenu;
+
 import heroesgrave.paint.main.Paint;
 
 public class PluginBase {
@@ -19,5 +21,17 @@ public class PluginBase {
 		
 		
 	}
-	
+
+	public void imageopRegistration(JMenu menu) {
+		
+	}
+
+	public void toolRegistration(JMenu menu) {
+		
+	}
+
+	public void filemenuRegistration(JMenu menu) {
+		
+	}
+
 }

@@ -15,6 +15,9 @@ import java.util.TreeMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+
 import l19.util.WorkingDirectory;
 
 import heroesgrave.paint.main.Paint;
@@ -190,5 +193,37 @@ public class PluginManager {
 		
 		return instance;
 	}
-	
+
+	public void toolRegistrationEvent(JMenu menu) {
+		System.out.println("[Event] Tool-Menu creation.");
+		
+		for(PluginBase plugin : loadedPlugins){
+			plugin.toolRegistration(menu);
+		}
+	}
+
+	public void imageopRegistrationEvent(JMenu menu) {
+		System.out.println("[Event] ImageOP-Menu creation.");
+		
+		for(PluginBase plugin : loadedPlugins){
+			plugin.imageopRegistration(menu);
+		}
+	}
+
+	public void filemenuRegistrationEvent(JMenu menu) {
+		System.out.println("[Event] File-Menu creation.");
+		
+		for(PluginBase plugin : loadedPlugins){
+			plugin.filemenuRegistration(menu);
+		}
+		
+		
+		
+	}
+
+	public void frameCreationEvent(JFrame frame) {
+		System.out.println("[Event] Frame creation.");
+		
+	}
+
 }
