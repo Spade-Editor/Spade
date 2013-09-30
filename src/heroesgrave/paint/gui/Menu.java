@@ -151,20 +151,24 @@ public class Menu
 				String name = f.getAbsolutePath();
 				if(name.endsWith(".png"))
 					return true;
+				if(name.endsWith(".jpg"))
+					return true;
+				if(name.endsWith(".bmp"))
+					return true;
 				return false;
 			}
 
 			public String getDescription()
 			{
-				return "Supported image files (.png)";
+				return "Supported image files";
 			}
 		});
 		int returned = chooser.showOpenDialog(new CentredJDialog());
 		
 		if(returned == JFileChooser.APPROVE_OPTION)
 		{
-			Paint.main.openDir = Paint.main.openFile.getParentFile();
 			Paint.main.openFile = chooser.getSelectedFile();
+			Paint.main.openDir = Paint.main.openFile.getParentFile();
 			Paint.main.gui.canvas.setImage(ImageLoader.loadImage(chooser.getSelectedFile().getAbsolutePath()));
 		}
 	}
