@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -79,6 +80,46 @@ public class PluginManager {
 			// Open JAR
 			JarFile jarFile = new JarFile(possiblePluginRoot);
 			
+			// Get name of Jar without the ".jar"
+			String jarName = possiblePluginRoot.getName().substring(0, possiblePluginRoot.getName().length()-4);
+			
+			// (Make the name uppercase if it isn't already)
+			if(Character.isLowerCase(jarName.charAt(0))){
+				jarName = Character.toUpperCase(jarName.charAt(0)) + jarName.substring(1);
+			}
+			
+			// Try to get the plugin-info file from the Jar-File! If not possible, stop here.
+			JarEntry pluginInfoEntry = jarFile.getJarEntry("plugin.info");
+			
+			if(pluginInfoEntry == null){
+				System.out.println("[PluginManager] Jar-File is not a Plugin! Cannot FIND 'plugin.info' file!");
+				jarFile.close();
+				return;
+			}
+			
+			Properties props = new Properties();
+			
+			// Load the plugin information file! If not possible, stop here.
+			try {
+				props.load(jarFile.getInputStream(pluginInfoEntry));
+			} catch(Exception e3){
+				e3.printStackTrace();
+				System.out.println("[PluginManager] Jar-File is not a Plugin! Cannot READ 'plugin.info' file!");
+				jarFile.close();
+				return;
+			}
+			
+			// Check if the plugin-info contains the main-class key! If not, stop here.
+			if(!props.containsKey("main")){
+				System.out.println("[PluginManager] 'plugin.info'-file is invalid! Key 'main' (Plugin Main Class Name) is missing!");
+				jarFile.close();
+				return;
+			}
+			
+			// Get Main-Class name!
+			String mainClassName = props.getProperty("main");
+			
+			
 			// List Entries
 			Enumeration<JarEntry> e = jarFile.entries();
 			
@@ -101,7 +142,14 @@ public class PluginManager {
                 String className = je.getName().substring(0,je.getName().length()-6);
                 className = className.replace('/', '.');
                 
-                // Try to load the class !
+                // If this is not the main-class, skip it! This speeds up the time it takes to load the plugin,
+                // since we don't load all classes at once, but rather by just loading the main-class and then
+                // letting the JVM-SystemClassLoader do its work. (Its faster this way!)
+                if(!className.equals(mainClassName)){
+                	continue;
+                }
+                
+                // Try to load the class!
                 try {
                 	//Load
 					Class<?> c = cl.loadClass(className);
