@@ -2,10 +2,16 @@ package l19.pluginSys;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -22,7 +28,7 @@ public class PluginManager {
 	public PluginManager(Paint paint){
 		appInstance = paint;
 		
-		// Make sure the plugin fodler exists and is accessible!
+		// Make sure the plugin folder exists and is accessible!
 		pluginRootDirectory = new File(WorkingDirectory.getWorkingDirectoryFor("Paint.JAVA"),"plugins");
 		
 		if(!pluginRootDirectory.exists())
@@ -47,6 +53,8 @@ public class PluginManager {
 				System.out.println("[PluginManager] The file '"+possiblePluginRoot.getAbsolutePath()+"' is in the plugin folder, but it is not a plugin!");
 			
 		}
+		
+		handlePossibleDirectoryBasedPlugin(new File("C:\\Develope\\workspace_java\\Paint.JAVA.TestPlugin\\bin"));
 		
 		
 		System.out.println("[PluginManager] Done scanning for plugins!");
@@ -98,7 +106,7 @@ public class PluginManager {
 					// Check if the class is assignable from PluginBase (Is it a plugin?)
 					if(PluginBase.class.isAssignableFrom(c)){
 						
-						// The class is a plugin main-class!
+						// The class is a Plugin main-class!
 						// Cast it into the right type now...
 						Class<? extends PluginBase> pluginClass = c.asSubclass(PluginBase.class);
 						
@@ -126,6 +134,38 @@ public class PluginManager {
 	}
 	
 	private void handlePossibleDirectoryBasedPlugin(File possiblePluginRoot) {
+		
+		File[] possibleClassFiles = possiblePluginRoot.listFiles();
+		
+		// Load JAR?
+        URL[] urls = new URL[0];
+		try {
+			urls = new URL[] { possiblePluginRoot.toURI().toURL() };
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+        
+		
+		
+        // This should not be closed (or should it?)
+        @SuppressWarnings("resource")
+		URLClassLoader cl = new URLClassLoader(urls);
+        
+		for(File possibleClassFile : possibleClassFiles){
+			if(possibleClassFile.isFile() && possibleClassFile.getName().endsWith(".class")){
+				System.out.println("[PluginManager] Found possible Plugin-class to check: " + possibleClassFile.getAbsolutePath());
+				
+                String className = possibleClassFile.getName().substring(0,possibleClassFile.getName().length()-6);
+                className = className.replace('/', '.');
+                
+				try {
+					cl.loadClass(className);
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}
 		
 	}
 	
