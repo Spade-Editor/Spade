@@ -25,7 +25,6 @@ import heroesgrave.utils.math.MathUtils;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.image.BufferedImage;
 
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
@@ -84,7 +83,7 @@ public class InfoMenu
 	{
 		private static final long serialVersionUID = 7541204326016173356L;
 
-		private BufferedImage image;
+		private Color colour;
 
 		public ColourPanel()
 		{
@@ -93,20 +92,15 @@ public class InfoMenu
 
 		public void setColour(int colour)
 		{
-			if(image == null)
-			{
-				image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			}
-			Graphics g = image.getGraphics();
-			g.setColor(new Color(colour));
-			g.fillRect(0, 0, this.getWidth(), this.getHeight());
+			this.colour = new Color(colour);
 			this.repaint();
 		}
 
 		public void paint(Graphics g)
 		{
 			super.paint(g);
-			g.drawImage(image, 0, 0, null);
+			g.setColor(colour);
+			g.fillRect(0, 0, this.getWidth(), this.getHeight());
 		}
 	}
 }

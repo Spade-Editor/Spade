@@ -45,13 +45,15 @@ import javax.swing.WindowConstants;
 public class GUIManager
 {
 	public JFrame frame;
-	private JPanel panel;
+	private JPanel panel, menus;
 	private JMenuBar menuBar;
 	private JScrollPane canvasZone;
 
 	public CanvasManager canvas;
 	public ColourChooser chooser;
 	public InfoMenu info;
+	
+	private JMenuBar toolOptions;
 
 	private Input input = new Input();
 
@@ -81,6 +83,14 @@ public class GUIManager
 
 		chooser = new ColourChooser();
 	}
+	
+	public void setToolOption(JMenuBar options)
+	{
+		menus.remove(toolOptions);
+		toolOptions = options;
+		menus.add(toolOptions);
+		toolOptions.revalidate();
+	}
 
 	public void setTitle(String title)
 	{
@@ -105,8 +115,8 @@ public class GUIManager
 	{
 		info = new InfoMenu();
 
-		JPanel menus = new JPanel();
-		menus.setLayout(new GridLayout(2, 1));
+		menus = new JPanel();
+		menus.setLayout(new GridLayout(0, 1));
 
 		menuBar = Menu.createMenuBar();
 		JMenuBar infoBar = info.createInfoMenuBar();

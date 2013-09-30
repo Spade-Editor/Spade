@@ -139,7 +139,7 @@ public class Menu
 
 	public static void showOpenMenu()
 	{
-		JFileChooser chooser = new JFileChooser();
+		JFileChooser chooser = new JFileChooser(Paint.main.openDir);
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setFileFilter(new FileFilter()
@@ -160,9 +160,10 @@ public class Menu
 			}
 		});
 		int returned = chooser.showOpenDialog(new CentredJDialog());
-
+		
 		if(returned == JFileChooser.APPROVE_OPTION)
 		{
+			Paint.main.openDir = Paint.main.openFile.getParentFile();
 			Paint.main.openFile = chooser.getSelectedFile();
 			Paint.main.gui.canvas.setImage(ImageLoader.loadImage(chooser.getSelectedFile().getAbsolutePath()));
 		}

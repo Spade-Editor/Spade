@@ -48,6 +48,7 @@ public class Paint extends Application
 	public GUIManager gui;
 
 	public File openFile;
+	public File openDir;
 
 	public Tool currentTool;
 
@@ -207,7 +208,7 @@ public class Paint extends Application
 
 	public static void saveAs()
 	{
-		JFileChooser chooser = new JFileChooser();
+		JFileChooser chooser = new JFileChooser(Paint.main.openDir);
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setFileFilter(new FileFilter()
@@ -233,6 +234,7 @@ public class Paint extends Application
 		if(returned == JFileChooser.APPROVE_OPTION)
 		{
 			Paint.main.openFile = chooser.getSelectedFile();
+			Paint.main.openDir = Paint.main.openFile.getParentFile();
 			String fileName = Paint.main.openFile.getAbsolutePath();
 			if(fileName.endsWith(".png"))
 			{
