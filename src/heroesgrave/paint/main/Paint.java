@@ -46,6 +46,7 @@ public class Paint extends Application
 	public static Paint main = new Paint();
 
 	public GUIManager gui;
+	public l19.pluginSys.PluginManager pluginManager;
 
 	public File openFile;
 	public File openDir;
@@ -61,6 +62,7 @@ public class Paint extends Application
 
 	public void init()
 	{
+		pluginManager = l19.pluginSys.PluginManager.instance(this);
 		gui = new GUIManager();
 		setColour(0xFF000000);
 		setTool(currentTool);
