@@ -70,7 +70,7 @@ public class ToolMenu
 		return menu;
 	}
 
-	private static class ToolMenuItem extends JMenuItem
+	public static class ToolMenuItem extends JMenuItem
 	{
 		private static final long serialVersionUID = 5766656521451633454L;
 
@@ -91,7 +91,7 @@ public class ToolMenu
 		}
 	}
 
-	private static class ImageMenuItem extends JMenuItem
+	public static class ImageMenuItem extends JMenuItem
 	{
 		private static final long serialVersionUID = 7018700148731008154L;
 
