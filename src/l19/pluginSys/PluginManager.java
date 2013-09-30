@@ -135,6 +135,21 @@ public class PluginManager {
 	
 	private void handlePossibleDirectoryBasedPlugin(File possiblePluginRoot) {
 		
+		// This does NOT work like this.
+		// Try this again later with a fresh mind on this.
+		
+		
+		// Let it stop here please using some simple code.
+		if(Boolean.parseBoolean("true"))
+			return;
+		
+		
+		
+		
+		
+		
+		
+		
 		File[] possibleClassFiles = possiblePluginRoot.listFiles();
 		
 		// Load JAR?
