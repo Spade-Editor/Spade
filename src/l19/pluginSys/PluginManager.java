@@ -253,8 +253,11 @@ public class PluginManager {
 	public void imageopRegistrationEvent(JMenu menu) {
 		System.out.println("[Event] ImageOP-Menu creation.");
 		
+		JMenu effects = new JMenu("Effects");
+		menu.add(effects);
+		
 		for(PluginBase plugin : loadedPlugins){
-			plugin.imageopRegistration(menu);
+			plugin.imageopRegistration(menu, effects);
 		}
 	}
 

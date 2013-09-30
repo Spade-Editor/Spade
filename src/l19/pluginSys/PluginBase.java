@@ -22,7 +22,7 @@ public class PluginBase {
 		
 	}
 
-	public void imageopRegistration(JMenu menu) {
+	public void imageopRegistration(JMenu menu, JMenu effects) {
 		
 	}
 
