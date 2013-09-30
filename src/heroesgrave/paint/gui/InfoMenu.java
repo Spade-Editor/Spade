@@ -1,3 +1,22 @@
+/*
+ *	Copyright 2013 HeroesGrave
+ *
+ *	This file is part of Paint.JAVA
+ *
+ *	Paint.JAVA is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>
+*/
+
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.tools.Tool;
@@ -30,7 +49,7 @@ public class InfoMenu
 		scale.setHorizontalAlignment(SwingConstants.CENTER);
 		saved.setHorizontalAlignment(SwingConstants.CENTER);
 		tool.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		this.colour = new ColourPanel();
 
 		menuBar.add(tool);
@@ -55,7 +74,7 @@ public class InfoMenu
 	{
 		this.tool.setText("Tool: " + tool.name);
 	}
-	
+
 	public void setColour(int colour)
 	{
 		this.colour.setColour(colour);
@@ -69,13 +88,15 @@ public class InfoMenu
 
 		public ColourPanel()
 		{
-			
+
 		}
 
 		public void setColour(int colour)
 		{
 			if(image == null)
+			{
 				image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			}
 			Graphics g = image.getGraphics();
 			g.setColor(new Color(colour));
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());

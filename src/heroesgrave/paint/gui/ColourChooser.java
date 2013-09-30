@@ -1,3 +1,22 @@
+/*
+ *	Copyright 2013 HeroesGrave
+ *
+ *	This file is part of Paint.JAVA
+ *
+ *	Paint.JAVA is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>
+*/
+
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.gui.InfoMenu.ColourPanel;
@@ -18,6 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.AbstractDocument;
@@ -32,11 +52,11 @@ public class ColourChooser
 	public ColourChooser()
 	{
 		dialog = new CentredJDialog();
-		dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+		dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
 		JPanel panel = (JPanel) dialog.getContentPane();
 		panel.setLayout(new BorderLayout());
-		
+
 		JPanel top = new JPanel();
 		JPanel bottom = new JPanel();
 		JPanel left = new JPanel();
@@ -55,7 +75,7 @@ public class ColourChooser
 		tg = new JTextField("0");
 		tb = new JTextField("0");
 		ta = new JTextField("255");
-		
+
 		r.addChangeListener(new ChangeListener()
 		{
 			public void stateChanged(ChangeEvent e)
@@ -88,7 +108,7 @@ public class ColourChooser
 				Paint.main.setColour(getColour());
 			}
 		});
-		
+
 		tr.addFocusListener(new FocusListener()
 		{
 			public void focusLost(FocusEvent e)
@@ -100,7 +120,7 @@ public class ColourChooser
 
 			public void focusGained(FocusEvent e)
 			{
-				
+
 			}
 		});
 		tg.addFocusListener(new FocusListener()
@@ -114,7 +134,7 @@ public class ColourChooser
 
 			public void focusGained(FocusEvent e)
 			{
-				
+
 			}
 		});
 		tb.addFocusListener(new FocusListener()
@@ -128,7 +148,7 @@ public class ColourChooser
 
 			public void focusGained(FocusEvent e)
 			{
-				
+
 			}
 		});
 		ta.addFocusListener(new FocusListener()
@@ -142,10 +162,10 @@ public class ColourChooser
 
 			public void focusGained(FocusEvent e)
 			{
-				
+
 			}
 		});
-		
+
 		tr.setColumns(3);
 		tg.setColumns(3);
 		tb.setColumns(3);
@@ -169,7 +189,7 @@ public class ColourChooser
 		bottom.add(g);
 		bottom.add(b);
 		bottom.add(a);
-		
+
 		colour = new ColourPanel();
 		colour.setPreferredSize(new Dimension(100, 100));
 		left.add(colour);

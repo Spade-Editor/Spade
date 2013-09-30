@@ -1,3 +1,22 @@
+/*
+ *	Copyright 2013 HeroesGrave
+ *
+ *	This file is part of Paint.JAVA
+ *
+ *	Paint.JAVA is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>
+*/
+
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.main.Change;
@@ -139,9 +158,13 @@ public class CanvasManager
 	public void incZoom()
 	{
 		if(zoom < 1)
+		{
 			zoom = zoom + 1 / 10f;
+		}
 		else if(zoom < 32)
+		{
 			zoom = (int) zoom + 1;
+		}
 
 		canvas.setScale(zoom);
 		canvas.repaint();
@@ -151,9 +174,13 @@ public class CanvasManager
 	public void decZoom()
 	{
 		if(zoom > 1)
+		{
 			zoom = (int) zoom - 1;
+		}
 		else if(zoom > 1 / 10f)
+		{
 			zoom = zoom - 1 / 10f;
+		}
 
 		canvas.setScale(zoom);
 		canvas.repaint();
@@ -271,11 +298,11 @@ public class CanvasManager
 				g2d.setColor(Color.gray);
 				for(int i = 0; i < image.getWidth(); i++)
 				{
-					g2d.drawLine(MathUtils.floor(i*scale), 0, MathUtils.floor(i*scale), MathUtils.floor(image.getHeight() * scale));
+					g2d.drawLine(MathUtils.floor(i * scale), 0, MathUtils.floor(i * scale), MathUtils.floor(image.getHeight() * scale));
 				}
 				for(int j = 0; j < image.getHeight(); j++)
 				{
-					g2d.drawLine(0, MathUtils.floor(j*scale), MathUtils.floor(image.getWidth() * scale), MathUtils.floor(j*scale));
+					g2d.drawLine(0, MathUtils.floor(j * scale), MathUtils.floor(image.getWidth() * scale), MathUtils.floor(j * scale));
 				}
 			}
 		}

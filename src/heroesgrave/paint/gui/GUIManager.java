@@ -1,3 +1,22 @@
+/*
+ *	Copyright 2013 HeroesGrave
+ *
+ *	This file is part of Paint.JAVA
+ *
+ *	Paint.JAVA is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>
+*/
+
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
@@ -21,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.WindowConstants;
 
 public class GUIManager
 {
@@ -28,13 +48,13 @@ public class GUIManager
 	private JPanel panel;
 	private JMenuBar menuBar;
 	private JScrollPane canvasZone;
-	
+
 	public CanvasManager canvas;
 	public ColourChooser chooser;
 	public InfoMenu info;
-	
+
 	private Input input = new Input();
-	
+
 	public GUIManager()
 	{
 		try
@@ -52,51 +72,51 @@ public class GUIManager
 		{
 			e.printStackTrace();
 		}
-		
+
 		initFrame();
 		initMenu();
 		initInputs();
 		createCanvas();
 		finish();
-		
+
 		chooser = new ColourChooser();
 	}
-	
+
 	public void setTitle(String title)
 	{
 		frame.setTitle(title);
 	}
-	
+
 	public void createCanvas()
 	{
 		canvas = new CanvasManager();
-		
+
 		JPanel panel = new JPanel();
 		panel.add(canvas.getCanvas());
-		
+
 		canvasZone = new JScrollPane(panel);
 		canvasZone.addMouseWheelListener(input);
 		canvasZone.getVerticalScrollBar().setUnitIncrement(16);
 		canvasZone.getHorizontalScrollBar().setUnitIncrement(16);
 		this.panel.add(canvasZone, BorderLayout.CENTER);
 	}
-	
+
 	public void initMenu()
 	{
 		info = new InfoMenu();
-		
+
 		JPanel menus = new JPanel();
 		menus.setLayout(new GridLayout(2, 1));
-		
+
 		menuBar = Menu.createMenuBar();
 		JMenuBar infoBar = info.createInfoMenuBar();
-		
+
 		menus.add(menuBar);
 		menus.add(infoBar);
-		
+
 		panel.add(menus, BorderLayout.NORTH);
 	}
-	
+
 	public void setFile(File file)
 	{
 		frame.setTitle((file == null ? "Untitled" : file.getAbsolutePath()) + " - Paint.JAVA");
@@ -114,7 +134,7 @@ public class GUIManager
 					Paint.main.terminate = true;
 					return;
 				}
-				
+
 				final JDialog close = new CentredJDialog();
 				close.setTitle("Save before you quit?");
 				close.setAlwaysOnTop(true);
@@ -124,15 +144,15 @@ public class GUIManager
 				JButton save = new JButton("Save & Quit");
 				JButton dispose = new JButton("Quit without saving");
 				JButton cancel = new JButton("Don't Quit");
-				
+
 				close.add(save, BorderLayout.NORTH);
 				close.add(dispose, BorderLayout.CENTER);
 				close.add(cancel, BorderLayout.SOUTH);
-				
+
 				close.pack();
 				close.setResizable(false);
 				close.setVisible(true);
-				
+
 				save.addActionListener(new ActionListener()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -159,14 +179,14 @@ public class GUIManager
 				});
 			}
 		});
-		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		
+		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+
 		panel = (JPanel) frame.getContentPane();
-		
+
 		panel.setPreferredSize(new Dimension(800, 600));
 		panel.setLayout(new BorderLayout());
 	}
-	
+
 	public void finish()
 	{
 		frame.pack();
@@ -174,11 +194,11 @@ public class GUIManager
 		frame.setResizable(true);
 		frame.setLocationRelativeTo(null);
 	}
-	
+
 	public void initInputs()
 	{
 		Input in = new Input();
-		
+
 		frame.addKeyListener(in);
 		frame.addMouseWheelListener(in);
 	}

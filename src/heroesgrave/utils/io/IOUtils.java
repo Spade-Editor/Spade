@@ -1,3 +1,22 @@
+/*
+ *	Copyright 2013 HeroesGrave
+ *
+ *	This file is part of Paint.JAVA
+ *
+ *	Paint.JAVA is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>
+*/
+
 package heroesgrave.utils.io;
 
 import java.io.BufferedReader;
@@ -10,17 +29,17 @@ import java.net.URISyntaxException;
 public class IOUtils
 {
 	private static Class<?> MAIN_CLASS;
-	
+
 	private IOUtils()
 	{
-		
+
 	}
-	
+
 	public static void setMainClass(Class<?> c)
 	{
 		MAIN_CLASS = c;
 	}
-	
+
 	public static String jarDir()
 	{
 		try
@@ -33,7 +52,7 @@ public class IOUtils
 			return null;
 		}
 	}
-	
+
 	public static String assemblePath(String... path)
 	{
 		String fullPath = "";
@@ -54,13 +73,13 @@ public class IOUtils
 
 			int c;
 
-			while ((c = reader.read(buffer, 0, buffer.length)) != -1)
+			while((c = reader.read(buffer, 0, buffer.length)) != -1)
 			{
 				sBuffer.append(buffer, 0, c);
 			}
 			reader.close();
 		}
-		catch (IOException e)
+		catch(IOException e)
 		{
 			e.printStackTrace();
 		}
@@ -74,7 +93,7 @@ public class IOUtils
 		try
 		{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
-			
+
 			String line;
 			while((line = reader.readLine()) != null)
 			{
@@ -86,7 +105,7 @@ public class IOUtils
 		{
 			e.printStackTrace();
 		}
-		
+
 		return string;
 	}
 }

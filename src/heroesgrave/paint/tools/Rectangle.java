@@ -1,3 +1,22 @@
+/*
+ *	Copyright 2013 HeroesGrave
+ *
+ *	This file is part of Paint.JAVA
+ *
+ *	Paint.JAVA is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>
+*/
+
 package heroesgrave.paint.tools;
 
 import heroesgrave.paint.main.Input;
@@ -34,7 +53,7 @@ public class Rectangle extends Tool
 	{
 
 	}
-	
+
 	private int sign(int i)
 	{
 		if(i < 0)
@@ -47,25 +66,25 @@ public class Rectangle extends Tool
 	public void rectangle(int x1, int y1, int x2, int y2)
 	{
 		Paint.main.gui.canvas.clearPreview();
-		
+
 		if(Input.CTRL)
 		{
-			int w = x2-x1;
-			int h = y2-y1;
+			int w = x2 - x1;
+			int h = y2 - y1;
 			if(Math.abs(w) > Math.abs(h))
 			{
 				int r = Math.abs(w);
-				h = sign(h)*r;
+				h = sign(h) * r;
 			}
 			else
 			{
 				int r = Math.abs(h);
-				w = sign(w)*r;
+				w = sign(w) * r;
 			}
 			x2 = x1 + w;
 			y2 = y1 + h;
 		}
-		
+
 		int temp;
 		if(x2 < x1)
 		{
@@ -79,13 +98,13 @@ public class Rectangle extends Tool
 			y2 = y1;
 			y1 = temp;
 		}
-		
+
 		for(int i = x1; i <= x2; i++)
 		{
 			brush(i, y1);
 			brush(i, y2);
 		}
-		
+
 		for(int j = y1; j <= y2; j++)
 		{
 			brush(x1, j);
