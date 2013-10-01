@@ -4,9 +4,11 @@ import javax.swing.JMenu;
 
 import heroesgrave.paint.main.Paint;
 
-public class PluginBase {
+public class PluginBase
+{
 	
-	public PluginBase(){
+	public PluginBase()
+	{
 		
 	}
 	
@@ -16,22 +18,24 @@ public class PluginBase {
 	 * 
 	 * @param paint The Paint.JAVA application class instance.
 	 **/
-	public void init(Paint paint){
-		
-		
-		
-	}
-
-	public void imageopRegistration(JMenu menu) {
+	public void init(Paint paint)
+	{
 		
 	}
-
-	public void toolRegistration(JMenu menu) {
+	
+	public void imageopRegistration(JMenu menu)
+	{
 		
 	}
-
-	public void filemenuRegistration(JMenu menu) {
+	
+	public void toolRegistration(JMenu menu)
+	{
 		
 	}
-
+	
+	public void filemenuRegistration(JMenu menu)
+	{
+		
+	}
+	
 }
