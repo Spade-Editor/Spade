@@ -182,11 +182,7 @@ public class PluginManager
 						// Then try to instantiate it...
 						try
 						{
-<<<<<<< HEAD
-							Plugin newPluginInstance = pluginClass.newInstance();
-=======
 							Plugin newPluginInstance = pluginClass.getConstructor(String.class).newInstance(jarName);
->>>>>>> origin/add_effects_and_more
 							this.loadedPlugins.add(newPluginInstance);
 							System.out.println("[PluginManager] Plugin " + newPluginInstance.name + " loaded.");
 						}
