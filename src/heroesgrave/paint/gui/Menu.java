@@ -136,7 +136,7 @@ public class Menu
 			}
 		});
 		
-		JMenuItem pluginManager = new JMenuItem("?Plugin Manager?");
+		JMenuItem pluginManager = new JMenuItem("Plugin Manager");
 		file.add(pluginManager);
 		pluginManager.addActionListener(new ActionListener()
 		{
