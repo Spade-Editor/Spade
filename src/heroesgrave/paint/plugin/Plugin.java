@@ -19,6 +19,8 @@
 
 package heroesgrave.paint.plugin;
 
+import java.util.Properties;
+
 import heroesgrave.paint.main.Paint;
 
 /**
@@ -29,6 +31,7 @@ import heroesgrave.paint.main.Paint;
 public abstract class Plugin
 {
 	public final String name;
+	public Properties info;
 	
 	public Plugin(String name)
 	{
