@@ -87,7 +87,6 @@ public class PluginManager
 		}
 		
 		System.out.println("[PluginManager] All plugins loaded, ready for work!");
-		
 	}
 	
 	private void handlePossibleJarBasedPlugin(File possiblePluginRoot)
@@ -221,7 +220,6 @@ public class PluginManager
 	
 	private void handlePossibleDirectoryBasedPlugin(File possiblePluginRoot)
 	{
-		
 		// This does NOT work like this.
 		// Try this again later with a fresh mind on this.
 		
@@ -265,7 +263,6 @@ public class PluginManager
 				
 			}
 		}
-		
 	}
 	
 	public static PluginManager instance(Paint paint)

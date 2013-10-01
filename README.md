@@ -8,4 +8,10 @@ So, I am making a cross-platform Paint.NET clone.
 
 Since I'm programming in Java, it's only right that it would be called Paint.JAVA
 
-I'll put up a changelog here at some point, but for now I'm still setting up the repository.
+I'll put up a changelog here at some point.
+
+Useful Links
+============
+
+[Latest Download](https://github.com/HeroesGrave/Paint.JAVA/blob/master/build/Paint.JAVA.jar)
+[Wiki](https://github.com/HeroesGrave/Paint.JAVA/wiki)
