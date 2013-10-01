@@ -35,11 +35,18 @@ public abstract class Plugin
 		this.name = name;
 	}
 	
+	/**
+	 * Called when all plugins are loaded, before the window is created.
+	 * 
+	 * @param paint
+	 */
 	public abstract void init(Paint paint);
 	
+	/**
+	 * Called after the window is created
+	 */
 	public abstract void onLaunch();
 	
 	public abstract void registerImageOps(RegisterImageOps register);
-	
 	public abstract void registerTools(RegisterTools register);
 }

@@ -35,7 +35,6 @@ public class Popup
 		JDialog dialog = new CentredJDialog();
 
 		dialog.setAutoRequestFocus(true);
-		dialog.setAlwaysOnTop(true);
 
 		JTextArea text = new JTextArea();
 		text.setEditable(false);
@@ -46,6 +45,7 @@ public class Popup
 
 		JPanel panel = (JPanel) dialog.getContentPane();
 		panel.setLayout(new BorderLayout());
+		panel.setOpaque(false);
 
 		panel.setPreferredSize(new Dimension(400, 200));
 
