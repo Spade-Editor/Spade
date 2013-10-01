@@ -59,6 +59,7 @@ public class GUIManager
 
 	public GUIManager()
 	{
+		/* Remove/Add Slash at the end of this line to switch between Nimbus L&F and the Default */
 		try
 		{
 			for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
@@ -74,6 +75,7 @@ public class GUIManager
 		{
 			e.printStackTrace();
 		}
+		/**/
 
 		initFrame();
 		initMenu();
@@ -86,7 +88,10 @@ public class GUIManager
 	
 	public void setToolOption(JMenuBar options)
 	{
-		menus.remove(toolOptions);
+		if(toolOptions != null)
+		{
+			menus.remove(toolOptions);
+		}
 		toolOptions = options;
 		menus.add(toolOptions);
 		toolOptions.revalidate();

@@ -19,20 +19,50 @@
 
 package heroesgrave.paint.tools;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JSlider;
+
+import heroesgrave.paint.gui.ColourChooser.CentredLabel;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.PixelChange;
 
-public class Pixel extends Brush
+public class PaintBrush extends Brush
 {
-	public Pixel(String name)
+	private JSlider slider;
+	
+	public PaintBrush(String name)
 	{
 		super(name);
+		slider = new JSlider(1, 8, 1);
+		
+		menu.setLayout(new GridLayout(1, 8));
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.setOpaque(false);
+		
+		panel.add(new CentredLabel("Size: "), BorderLayout.WEST);
+		panel.add(slider, BorderLayout.CENTER);
+		
+		menu.add(panel);
+		menu.add(new JSeparator(JSeparator.VERTICAL));
+		menu.add(new JSeparator(JSeparator.VERTICAL));
+		menu.add(new JSeparator(JSeparator.VERTICAL));
 	}
 
 	public void brush(int x, int y)
 	{
 		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
 			return;
+		if(slider.getValue() == 1)
 			buffer(new PixelChange(x, y, Paint.main.getColour()));
+		else
+		{
+			
+		}
 	}
 }

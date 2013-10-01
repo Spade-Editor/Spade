@@ -78,7 +78,7 @@ public class CanvasManager
 			canvas.setImage(preview);
 			canvas.repaint();
 		}
-
+		
 		previewing.add(change);
 		change.apply(preview);
 		canvas.repaint();

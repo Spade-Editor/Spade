@@ -63,6 +63,7 @@ public class Paint extends Application
 	{
 		gui = new GUIManager();
 		setColour(0xFF000000);
+		setTool(currentTool);
 	}
 
 	public void update()
@@ -182,6 +183,7 @@ public class Paint extends Application
 	{
 		main.currentTool = tool;
 		main.gui.info.setTool(tool);
+		main.gui.setToolOption(tool.getOptions());
 	}
 
 	public static void save()
@@ -225,7 +227,7 @@ public class Paint extends Application
 
 			public String getDescription()
 			{
-				return "Supported image files (.png)";
+				return "Supported export image formats (.png)";
 			}
 		});
 

@@ -160,7 +160,7 @@ public class Menu
 
 			public String getDescription()
 			{
-				return "Supported image files";
+				return "Supported import image formats (.png, .jpg, .bmp)";
 			}
 		});
 		int returned = chooser.showOpenDialog(new CentredJDialog());

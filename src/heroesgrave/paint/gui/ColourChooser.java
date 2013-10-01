@@ -247,7 +247,7 @@ public class ColourChooser
 		return dialog.isVisible();
 	}
 
-	private static class CentredLabel extends JLabel
+	public static class CentredLabel extends JLabel
 	{
 		private static final long serialVersionUID = -6858861607042506044L;
 
