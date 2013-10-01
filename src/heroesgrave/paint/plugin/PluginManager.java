@@ -251,4 +251,13 @@ public class PluginManager
 			plugin.onLaunch();
 		}
 	}
+	
+	public void showPluginManager() {
+		new PluginManagerViewer().show(this);
+	}
+
+	public ArrayList<Plugin> getPluginList() {
+		return this.loadedPlugins;
+	}
+	
 }

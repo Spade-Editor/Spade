@@ -21,6 +21,7 @@ package heroesgrave.paint.gui;
 
 import heroesgrave.paint.main.Popup;
 import heroesgrave.paint.main.Paint;
+import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.utils.io.ImageLoader;
 import heroesgrave.utils.misc.NumberDocumentFilter;
 
@@ -134,7 +135,17 @@ public class Menu
 				Paint.saveAs();
 			}
 		});
-
+		
+		JMenuItem pluginManager = new JMenuItem("?Plugin Manager?");
+		file.add(pluginManager);
+		pluginManager.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				PluginManager.instance.showPluginManager();
+			}
+		});
+		
 		return file;
 	}
 
