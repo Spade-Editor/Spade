@@ -14,4 +14,5 @@ Useful Links
 ============
 
 [Latest Download](https://github.com/HeroesGrave/Paint.JAVA/blob/master/build/Paint.JAVA.jar)
+
 [Wiki](https://github.com/HeroesGrave/Paint.JAVA/wiki)
