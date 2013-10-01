@@ -27,7 +27,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.jar.JarEntry;
@@ -184,7 +187,25 @@ public class PluginManager
 						{
 							Plugin newPluginInstance = pluginClass.getConstructor(String.class).newInstance(jarName);
 							this.loadedPlugins.add(newPluginInstance);
+							
 							System.out.println("[PluginManager] Plugin " + newPluginInstance.name + " loaded.");
+							
+							// Create info object.
+							newPluginInstance.info = new Properties();
+							
+							// Format 'Size'
+							newPluginInstance.info.put("size", humanReadableByteCount(possiblePluginRoot.length(), true));
+							
+							// Format 'Modified/LastUpdated' Date
+							{
+								Date date = new Date(possiblePluginRoot.lastModified());
+								DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
+								String dateFormatted = formatter.format(date);
+								newPluginInstance.info.put("last-updated", dateFormatted);
+							}
+							
+							
+							
 						}
 						catch(ReflectiveOperationException e1)
 						{
@@ -207,6 +228,14 @@ public class PluginManager
 			e.printStackTrace();
 			return;
 		}
+	}
+	
+	private static String humanReadableByteCount(long bytes, boolean si) {
+	    int unit = si ? 1000 : 1024;
+	    if (bytes < unit) return bytes + " B";
+	    int exp = (int) (Math.log(bytes) / Math.log(unit));
+	    String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
+	    return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
 	
 	public static PluginManager instance(Paint paint)

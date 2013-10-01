@@ -59,6 +59,8 @@ public class PluginManagerViewer {
 
 		public void constructText(JTextArea pluginInfoArea) {
 			pluginInfoArea.append("Plugin Name: " + plugin.name + "\n");
+			pluginInfoArea.append("Plugin File-Size: " + plugin.info.getProperty("size") + "\n");
+			
 			
 			
 		}
