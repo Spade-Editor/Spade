@@ -22,6 +22,7 @@ package heroesgrave.paint.main;
 import heroesgrave.paint.gui.GUIManager;
 import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.imageops.ImageOp;
+import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.paint.tools.Tool;
 import heroesgrave.utils.app.Application;
 import heroesgrave.utils.io.IOUtils;
@@ -62,10 +63,11 @@ public class Paint extends Application
 
 	public void init()
 	{
-		pluginManager = heroesgrave.paint.plugin.PluginManager.instance(this);
+		pluginManager = PluginManager.instance(this);
 		gui = new GUIManager();
 		setColour(0xFF000000);
 		setTool(currentTool);
+		pluginManager.onLaunch();
 	}
 
 	public void update()

@@ -224,7 +224,7 @@ public class PluginManager
 		
 		for(Plugin plugin : loadedPlugins)
 		{
-			plugin.toolRegistration(register);
+			plugin.registerTools(register);
 		}
 	}
 	
@@ -242,5 +242,13 @@ public class PluginManager
 	public void frameCreationEvent(JFrame frame)
 	{
 		//System.out.println("[Event] Frame creation.");
+	}
+
+	public void onLaunch()
+	{
+		for(Plugin plugin : loadedPlugins)
+		{
+			plugin.onLaunch();
+		}
 	}
 }
