@@ -19,6 +19,8 @@
 
 package heroesgrave.paint.main;
 
+import heroesgrave.paint.gui.Menu.CentredJDialog;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
@@ -26,14 +28,13 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-public class Error
+public class Popup
 {
 	public static void show(String title, String msg)
 	{
-		JDialog dialog = new JDialog();
+		JDialog dialog = new CentredJDialog();
 
 		dialog.setAutoRequestFocus(true);
-		dialog.setAlwaysOnTop(true);
 
 		JTextArea text = new JTextArea();
 		text.setEditable(false);
@@ -44,6 +45,7 @@ public class Error
 
 		JPanel panel = (JPanel) dialog.getContentPane();
 		panel.setLayout(new BorderLayout());
+		panel.setOpaque(false);
 
 		panel.setPreferredSize(new Dimension(400, 200));
 

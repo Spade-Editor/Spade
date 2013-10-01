@@ -33,6 +33,6 @@ public class Pixel extends Brush
 	{
 		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
 			return;
-		buffer(new PixelChange(x, y, Paint.main.getColour()));
+			buffer(new PixelChange(x, y, Paint.main.getColour()));
 	}
 }

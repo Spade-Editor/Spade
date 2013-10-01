@@ -23,12 +23,13 @@ import java.awt.image.BufferedImage;
 
 public class PixelChange implements Change
 {
-	public int x, y, o, n;
+	public short x, y;
+	public int o, n;
 
 	public PixelChange(int x, int y, int n)
 	{
-		this.x = x;
-		this.y = y;
+		this.x = (short) x;
+		this.y = (short) y;
 		this.n = n;
 	}
 

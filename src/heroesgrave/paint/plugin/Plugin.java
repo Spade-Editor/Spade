@@ -1,5 +1,5 @@
 /*
- *	Copyright 2013 HeroesGrave
+ *	Copyright 2013 Longor1996 & HeroesGrave
  *
  *	This file is part of Paint.JAVA
  *
@@ -17,32 +17,36 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.tools;
+package heroesgrave.paint.plugin;
 
-import javax.swing.JMenuBar;
+import heroesgrave.paint.main.Paint;
 
-public abstract class Tool
+/**
+ * 
+ * @author Longor1996 & HeroesGrave
+ *
+ */
+public abstract class Plugin
 {
 	public final String name;
 	
-	protected final JMenuBar menu;
-
-	public Tool(String name)
+	public Plugin(String name)
 	{
 		this.name = name;
-		menu = new JMenuBar();
 	}
 	
-	public final JMenuBar getOptions()
-	{
-		return menu;
-	}
-
-	public abstract void onPressed(int x, int y);
-
-	public abstract void onReleased(int x, int y);
-
-	public abstract void whilePressed(int x, int y);
-
-	public abstract void whileReleased(int x, int y);
+	/**
+	 * Called when all plugins are loaded, before the window is created.
+	 * 
+	 * @param paint
+	 */
+	public abstract void init(Paint paint);
+	
+	/**
+	 * Called after the window is created
+	 */
+	public abstract void onLaunch();
+	
+	public abstract void registerImageOps(RegisterImageOps register);
+	public abstract void registerTools(RegisterTools register);
 }

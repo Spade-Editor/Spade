@@ -22,6 +22,7 @@ package heroesgrave.paint.main;
 import heroesgrave.paint.gui.GUIManager;
 import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.imageops.ImageOp;
+import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.paint.tools.Tool;
 import heroesgrave.utils.app.Application;
 import heroesgrave.utils.io.IOUtils;
@@ -46,7 +47,7 @@ public class Paint extends Application
 	public static Paint main = new Paint();
 
 	public GUIManager gui;
-	public l19.pluginSys.PluginManager pluginManager;
+	public heroesgrave.paint.plugin.PluginManager pluginManager;
 
 	public File openFile;
 	public File openDir;
@@ -62,9 +63,11 @@ public class Paint extends Application
 
 	public void init()
 	{
-		pluginManager = l19.pluginSys.PluginManager.instance(this);
+		pluginManager = PluginManager.instance(this);
 		gui = new GUIManager();
 		setColour(0xFF000000);
+		setTool(currentTool);
+		pluginManager.onLaunch();
 	}
 
 	public void update()
@@ -184,6 +187,7 @@ public class Paint extends Application
 	{
 		main.currentTool = tool;
 		main.gui.info.setTool(tool);
+		main.gui.setToolOption(tool.getOptions());
 	}
 
 	public static void save()
@@ -227,7 +231,7 @@ public class Paint extends Application
 
 			public String getDescription()
 			{
-				return "Supported image files (.png)";
+				return "Supported export image formats (.png)";
 			}
 		});
 

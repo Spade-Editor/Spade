@@ -19,6 +19,7 @@
 
 package heroesgrave.paint.gui;
 
+import heroesgrave.paint.main.Popup;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.io.ImageLoader;
 import heroesgrave.utils.misc.NumberDocumentFilter;
@@ -134,8 +135,6 @@ public class Menu
 			}
 		});
 
-		l19.pluginSys.PluginManager.instance.filemenuRegistrationEvent(file);
-
 		return file;
 	}
 
@@ -162,7 +161,7 @@ public class Menu
 
 			public String getDescription()
 			{
-				return "Supported image files";
+				return "Supported import image formats (.png, .jpg, .bmp)";
 			}
 		});
 		int returned = chooser.showOpenDialog(new CentredJDialog());
@@ -210,7 +209,12 @@ public class Menu
 			public void actionPerformed(ActionEvent e)
 			{
 				dialog.dispose();
-				Paint.main.newImage(Integer.parseInt(width.getText()), Integer.parseInt(height.getText()));
+				int w = Integer.parseInt(width.getText());
+				int h = Integer.parseInt(height.getText());
+				if(w > 8192 || h > 8192 || w == 0 || h == 0)
+					Popup.show("Invalid Image Size", "The image dimensions must be more than 0 and less than 8192");
+				else
+					Paint.main.newImage(w, h);
 			}
 		});
 

@@ -17,32 +17,24 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.tools;
+package heroesgrave.paint.plugin;
 
-import javax.swing.JMenuBar;
+import heroesgrave.paint.gui.ToolMenu.ToolMenuItem;
+import heroesgrave.paint.tools.Tool;
 
-public abstract class Tool
+import javax.swing.JMenu;
+
+public class RegisterTools
 {
-	public final String name;
+	private JMenu menu;
 	
-	protected final JMenuBar menu;
-
-	public Tool(String name)
+	public RegisterTools(JMenu menu)
 	{
-		this.name = name;
-		menu = new JMenuBar();
+		this.menu = menu;
 	}
 	
-	public final JMenuBar getOptions()
+	public void register(String name, Tool tool, String key)
 	{
-		return menu;
+		menu.add(new ToolMenuItem(name, tool, key));
 	}
-
-	public abstract void onPressed(int x, int y);
-
-	public abstract void onReleased(int x, int y);
-
-	public abstract void whilePressed(int x, int y);
-
-	public abstract void whileReleased(int x, int y);
 }
