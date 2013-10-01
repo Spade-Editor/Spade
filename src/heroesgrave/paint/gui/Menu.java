@@ -134,6 +134,8 @@ public class Menu
 			}
 		});
 
+		l19.pluginSys.PluginManager.instance.filemenuRegistrationEvent(file);
+
 		return file;
 	}
 
