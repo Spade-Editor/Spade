@@ -196,7 +196,7 @@ public class GUIManager
 		});
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		
-		l19.pluginSys.PluginManager.instance.frameCreationEvent(frame);
+		heroesgrave.paint.plugin.PluginManager.instance.frameCreationEvent(frame);
 		
 		panel = (JPanel) frame.getContentPane();
 

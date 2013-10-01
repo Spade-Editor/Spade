@@ -55,7 +55,7 @@ public class ToolMenu
 		menu.add(new ToolMenuItem("Rectangle", new Rectangle("Rectangle"), "R"));
 		menu.add(new ToolMenuItem("Ellipse", new Ellipse("Ellipse"), "E"));
 		
-		l19.pluginSys.PluginManager.instance.toolRegistrationEvent(menu);
+		heroesgrave.paint.plugin.PluginManager.instance.toolRegistrationEvent(menu);
 		
 		return menu;
 	}
@@ -67,7 +67,7 @@ public class ToolMenu
 		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
 		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
 		
-		l19.pluginSys.PluginManager.instance.imageopRegistrationEvent(menu);
+		heroesgrave.paint.plugin.PluginManager.instance.imageopRegistrationEvent(menu);
 		
 		return menu;
 	}
