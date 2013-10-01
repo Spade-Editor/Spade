@@ -26,7 +26,6 @@ import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Ellipse;
 import heroesgrave.paint.tools.Fill;
 import heroesgrave.paint.tools.Line;
-import heroesgrave.paint.tools.PaintBrush;
 import heroesgrave.paint.tools.Picker;
 import heroesgrave.paint.tools.Pixel;
 import heroesgrave.paint.tools.Rectangle;
@@ -48,14 +47,13 @@ public class ToolMenu
 		Paint.main.currentTool = def;
 
 		menu.add(new ToolMenuItem("Pencil", def, "P"));
-		menu.add(new ToolMenuItem("Brush", new PaintBrush("Brush"), "B"));
 		menu.add(new ToolMenuItem("Line", new Line("Straight Line"), "L"));
 		menu.add(new ToolMenuItem("Colour Picker", new Picker("Colour Picker"), "K"));
 		menu.add(new ToolMenuItem("Paint Bucket", new Fill("Paint Bucket"), "F"));
 		menu.add(new ToolMenuItem("Rectangle", new Rectangle("Rectangle"), "R"));
 		menu.add(new ToolMenuItem("Ellipse", new Ellipse("Ellipse"), "E"));
 		
-		heroesgrave.paint.plugin.PluginManager.instance.toolRegistrationEvent(menu);
+		heroesgrave.paint.plugin.PluginManager.instance.registerTools(menu);
 		
 		return menu;
 	}
@@ -67,7 +65,7 @@ public class ToolMenu
 		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
 		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
 		
-		heroesgrave.paint.plugin.PluginManager.instance.imageopRegistrationEvent(menu);
+		heroesgrave.paint.plugin.PluginManager.instance.registerImageOps(menu);
 		
 		return menu;
 	}

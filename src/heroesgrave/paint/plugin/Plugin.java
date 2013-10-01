@@ -19,47 +19,25 @@
 
 package heroesgrave.paint.plugin;
 
-import javax.swing.JMenu;
-
 import heroesgrave.paint.main.Paint;
 
 /**
  * 
- * @author Longor1996
+ * @author Longor1996 & HeroesGrave
  *
  */
-public class PluginBase
+public abstract class Plugin
 {
+	public final String name;
 	
-	public PluginBase()
+	public Plugin(String name)
 	{
-		
+		this.name = name;
 	}
 	
-	/**
-	 * Init method.
-	 * This method is called on application startup by the plugin-loader.
-	 * 
-	 * @param paint The Paint.JAVA application class instance.
-	 **/
-	public void init(Paint paint)
-	{
-		
-	}
+	public abstract void init(Paint paint);
 	
-	public void imageopRegistration(JMenu menu)
-	{
-		
-	}
+	public abstract void registerImageOps(RegisterImageOps register);
 	
-	public void toolRegistration(JMenu menu)
-	{
-		
-	}
-	
-	public void filemenuRegistration(JMenu menu)
-	{
-		
-	}
-	
+	public abstract void toolRegistration(RegisterTools register);
 }

@@ -20,11 +20,11 @@
 package heroesgrave.paint.plugin;
 
 import heroesgrave.paint.main.Paint;
+import heroesgrave.paint.main.Popup;
 import heroesgrave.utils.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -38,14 +38,14 @@ import javax.swing.JMenu;
 
 /**
  * 
- * @author Longor1996
+ * @author Longor1996 & HeroesGrave
  *
  */
 public class PluginManager
 {
 	public static PluginManager instance = null;
 	private File pluginRootDirectory;
-	private ArrayList<PluginBase> loadedPlugins;
+	private ArrayList<Plugin> loadedPlugins;
 	
 	public PluginManager(Paint paint)
 	{
@@ -55,43 +55,34 @@ public class PluginManager
 		if(!pluginRootDirectory.exists())
 			pluginRootDirectory.mkdirs();
 		
-		System.out.println("[PluginManager] PluginManager initialized. Plugin-Folder is:" + pluginRootDirectory.getAbsolutePath());
-		
 		// 
-		loadedPlugins = new ArrayList<PluginBase>();
+		loadedPlugins = new ArrayList<Plugin>();
 		
 		File[] possiblePluginRoots = pluginRootDirectory.listFiles();
 		
-		System.out.println("[PluginManager] Scanning Plugin directory for plugins...");
+		System.out.println("[PluginManager] Searching for Plugins...");
 		
 		for(File possiblePluginRoot : possiblePluginRoots)
 		{
-			if(possiblePluginRoot.isDirectory())
-				handlePossibleDirectoryBasedPlugin(possiblePluginRoot);
-			else if(possiblePluginRoot.isFile() && possiblePluginRoot.getName().endsWith(".jar"))
+			if(possiblePluginRoot.isFile() && possiblePluginRoot.getName().endsWith(".jar"))
 				handlePossibleJarBasedPlugin(possiblePluginRoot);
-			else
-				System.out
-						.println("[PluginManager] The file '" + possiblePluginRoot.getAbsolutePath() + "' is in the plugin folder, but it is not a plugin!");
 		}
 		
-		handlePossibleDirectoryBasedPlugin(new File("C:\\Develope\\workspace_java\\Paint.JAVA.TestPlugin\\bin"));
+		System.out.println("[PluginManager] Done searching. Found " + loadedPlugins.size() + " plugins.");
+
+		System.out.println("[PluginManager] Loading Plugins...");
 		
-		System.out.println("[PluginManager] Done scanning for plugins!");
-		
-		System.out.println("[PluginManager] Invoking all plugins now using '" + paint + "'...");
-		
-		for(PluginBase plugin : this.loadedPlugins)
+		for(Plugin plugin : this.loadedPlugins)
 		{
 			plugin.init(paint);
 		}
 		
-		System.out.println("[PluginManager] All plugins loaded, ready for work!");
+		System.out.println("[PluginManager] All plugins loaded.");
 	}
 	
 	private void handlePossibleJarBasedPlugin(File possiblePluginRoot)
 	{
-		System.out.println("[PluginManager] Found possible Jar-plugin! Checking now... @" + possiblePluginRoot.getAbsolutePath());
+		//System.out.println("[PluginManager] Found possible Jar-plugin! Checking now... @" + possiblePluginRoot.getAbsolutePath());
 		
 		try
 		{
@@ -99,7 +90,7 @@ public class PluginManager
 			JarFile jarFile = new JarFile(possiblePluginRoot);
 			
 			// Get name of Jar without the ".jar"
-			String jarName = possiblePluginRoot.getName().substring(0, possiblePluginRoot.getName().length() - 4);
+			String jarName = possiblePluginRoot.getName().replace(".jar", "");
 			
 			// (Make the name uppercase if it isn't already)
 			if(Character.isLowerCase(jarName.charAt(0)))
@@ -112,7 +103,7 @@ public class PluginManager
 			
 			if(pluginInfoEntry == null)
 			{
-				System.out.println("[PluginManager] Jar-File is not a Plugin! Cannot FIND 'plugin.info' file!");
+				//System.out.println("[PluginManager] " + possiblePluginRoot.getName() + " is not a Plugin! Cannot FIND 'plugin.info' file!");
 				jarFile.close();
 				return;
 			}
@@ -127,7 +118,7 @@ public class PluginManager
 			catch(Exception e3)
 			{
 				e3.printStackTrace();
-				System.out.println("[PluginManager] Jar-File is not a Plugin! Cannot READ 'plugin.info' file!");
+				Popup.show("Plugin Load Error", "[PluginManager] Cannot READ 'plugin.info' file!\nThe Plugin may be corrupt, or is not a plugin at all");
 				jarFile.close();
 				return;
 			}
@@ -135,7 +126,8 @@ public class PluginManager
 			// Check if the plugin-info contains the main-class key! If not, stop here.
 			if(!props.containsKey("main"))
 			{
-				System.out.println("[PluginManager] 'plugin.info'-file is invalid! Key 'main' (Plugin Main Class Name) is missing!");
+				Popup.show("Plugin Load Error", "[PluginManager] 'plugin.info'-file is invalid!\n"
+						+ "Key 'main' (Plugin Main Class Name) is missing!\nThe Plugin may be corrupt");
 				jarFile.close();
 				return;
 			}
@@ -163,7 +155,7 @@ public class PluginManager
 				
 				// Get the actual class-name!
 				// -6 because of .class
-				String className = je.getName().substring(0, je.getName().length() - 6);
+				String className = je.getName().replace(".class", "");
 				className = className.replace('/', '.');
 				
 				// If this is not the main-class, skip it! This speeds up the time it takes to load the plugin,
@@ -181,19 +173,18 @@ public class PluginManager
 					Class<?> c = cl.loadClass(className);
 					
 					// Check if the class is assignable from PluginBase (Is it a plugin?)
-					if(PluginBase.class.isAssignableFrom(c))
+					if(Plugin.class.isAssignableFrom(c))
 					{
-						
 						// The class is a Plugin main-class!
 						// Cast it into the right type now...
-						Class<? extends PluginBase> pluginClass = c.asSubclass(PluginBase.class);
+						Class<? extends Plugin> pluginClass = c.asSubclass(Plugin.class);
 						
 						// Then try to instantiate it...
 						try
 						{
-							PluginBase newPluginInstance = pluginClass.newInstance();
+							Plugin newPluginInstance = pluginClass.newInstance();
 							this.loadedPlugins.add(newPluginInstance);
-							System.out.println("[PluginManager] Found Plugin-class '" + c.getName() + "'! Instanced and added to plugin-list.");
+							System.out.println("[PluginManager] Plugin " + newPluginInstance.name + " loaded.");
 						}
 						catch(ReflectiveOperationException e1)
 						{
@@ -212,56 +203,9 @@ public class PluginManager
 		}
 		catch(IOException e)
 		{
-			System.out.println("[PluginManager] The file '" + possiblePluginRoot.getAbsolutePath() + "' looks like a Jar-based plugin, but it is not one!");
+			//System.out.println("[PluginManager] The file '" + possiblePluginRoot.getAbsolutePath() + "' looks like a Jar-based plugin, but it is not one!");
 			e.printStackTrace();
 			return;
-		}
-	}
-	
-	private void handlePossibleDirectoryBasedPlugin(File possiblePluginRoot)
-	{
-		// This does NOT work like this.
-		// Try this again later with a fresh mind on this.
-		
-		// Let it stop here please using some simple code.
-		if(Boolean.parseBoolean("true"))
-			return;
-		
-		File[] possibleClassFiles = possiblePluginRoot.listFiles();
-		
-		// Load JAR?
-		URL[] urls = new URL[0];
-		try
-		{
-			urls = new URL[]{possiblePluginRoot.toURI().toURL()};
-		}
-		catch(MalformedURLException e)
-		{
-			e.printStackTrace();
-		}
-		
-		// This should not be closed (or should it?)
-		URLClassLoader cl = new URLClassLoader(urls);
-		
-		for(File possibleClassFile : possibleClassFiles)
-		{
-			if(possibleClassFile.isFile() && possibleClassFile.getName().endsWith(".class"))
-			{
-				System.out.println("[PluginManager] Found possible Plugin-class to check: " + possibleClassFile.getAbsolutePath());
-				
-				String className = possibleClassFile.getName().substring(0, possibleClassFile.getName().length() - 6);
-				className = className.replace('/', '.');
-				
-				try
-				{
-					cl.loadClass(className);
-				}
-				catch(ClassNotFoundException e)
-				{
-					e.printStackTrace();
-				}
-				
-			}
 		}
 	}
 	
@@ -273,41 +217,30 @@ public class PluginManager
 		return instance;
 	}
 	
-	public void toolRegistrationEvent(JMenu menu)
+	public void registerTools(JMenu menu)
 	{
-		System.out.println("[Event] Tool-Menu creation.");
+		//System.out.println("[Event] Tool-Menu creation.");
+		RegisterTools register = new RegisterTools(menu);
 		
-		for(PluginBase plugin : loadedPlugins)
+		for(Plugin plugin : loadedPlugins)
 		{
-			plugin.toolRegistration(menu);
+			plugin.toolRegistration(register);
 		}
 	}
 	
-	public void imageopRegistrationEvent(JMenu menu)
+	public void registerImageOps(JMenu menu)
 	{
-		System.out.println("[Event] ImageOP-Menu creation.");
+		//System.out.println("[Event] ImageOP-Menu creation.");
+		RegisterImageOps register = new RegisterImageOps(menu);
 		
-		for(PluginBase plugin : loadedPlugins)
+		for(Plugin plugin : loadedPlugins)
 		{
-			plugin.imageopRegistration(menu);
+			plugin.registerImageOps(register);
 		}
-	}
-	
-	public void filemenuRegistrationEvent(JMenu menu)
-	{
-		System.out.println("[Event] File-Menu creation.");
-		
-		for(PluginBase plugin : loadedPlugins)
-		{
-			plugin.filemenuRegistration(menu);
-		}
-		
 	}
 	
 	public void frameCreationEvent(JFrame frame)
 	{
-		System.out.println("[Event] Frame creation.");
-		
+		//System.out.println("[Event] Frame creation.");
 	}
-	
 }

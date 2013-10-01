@@ -17,42 +17,24 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.main;
+package heroesgrave.paint.plugin;
 
-import java.awt.image.BufferedImage;
+import heroesgrave.paint.gui.ToolMenu.ToolMenuItem;
+import heroesgrave.paint.tools.Tool;
 
-public class PixelChange implements Change
+import javax.swing.JMenu;
+
+public class RegisterTools
 {
-	public short x, y;
-	public int o, n;
-
-	public PixelChange(int x, int y, int n)
+	private JMenu menu;
+	
+	public RegisterTools(JMenu menu)
 	{
-		this.x = (short) x;
-		this.y = (short) y;
-		this.n = n;
+		this.menu = menu;
 	}
-
-	public BufferedImage apply(BufferedImage image)
+	
+	public void register(String name, Tool tool, String key)
 	{
-		o = image.getRGB(x, y);
-		image.setRGB(x, y, n);
-		return image;
-	}
-
-	public BufferedImage revert(BufferedImage image)
-	{
-		image.setRGB(x, y, o);
-		return image;
-	}
-
-	public int getSize()
-	{
-		return 4;
-	}
-
-	public boolean samePos(int x, int y)
-	{
-		return (this.x == x && this.y == y);
+		menu.add(new ToolMenuItem(name, tool, key));
 	}
 }
