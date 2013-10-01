@@ -204,7 +204,8 @@ public class PluginManager
 								newPluginInstance.info.put("last-updated", dateFormatted);
 							}
 							
-							
+							// Format 'Description'
+							newPluginInstance.info.put("description", ((String)props.get("description")).replace("\\n", "\n"));
 							
 						}
 						catch(ReflectiveOperationException e1)
