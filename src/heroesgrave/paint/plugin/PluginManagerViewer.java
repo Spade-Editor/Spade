@@ -16,57 +16,73 @@ import javax.swing.ListModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListDataListener;
 
-public class PluginManagerViewer {
-
-	public class PluginListModel implements ListModel<PluginListItem> {
+public class PluginManagerViewer
+{
+	public class PluginListModel implements ListModel<PluginListItem>
+	{
 		ArrayList<PluginListItem> items;
-
-		public PluginListModel(){
+		
+		public PluginListModel()
+		{
 			items = new ArrayList<PluginListItem>();
 		}
-
+		
 		@Override
-		public int getSize() {
+		public int getSize()
+		{
 			return items.size();
 		}
-
+		
 		@Override
-		public PluginListItem getElementAt(int index) {
+		public PluginListItem getElementAt(int index)
+		{
 			return items.get(index);
 		}
-
+		
 		// We will ignore these for now!
-		@Override public void addListDataListener(ListDataListener l) {}
-		@Override public void removeListDataListener(ListDataListener l) {}
-
-		public void addAll(ArrayList<Plugin> pluginList) {
-			for(Plugin plugin : pluginList){
+		@Override
+		public void addListDataListener(ListDataListener l)
+		{
+		}
+		
+		@Override
+		public void removeListDataListener(ListDataListener l)
+		{
+		}
+		
+		public void addAll(ArrayList<Plugin> pluginList)
+		{
+			for(Plugin plugin : pluginList)
+			{
 				items.add(new PluginListItem(plugin));
 			}
 		}
 	}
-
-	public class PluginListItem {
+	
+	public class PluginListItem
+	{
 		private Plugin plugin;
 		
-		public PluginListItem(Plugin plugin) {
+		public PluginListItem(Plugin plugin)
+		{
 			this.plugin = plugin;
 		}
 		
-		public String toString(){
+		public String toString()
+		{
 			return plugin.name;
 		}
-
-		public void constructText(JTextArea pluginInfoArea) {
-			pluginInfoArea.append("Plugin Name: " + plugin.name + "\n");
-			pluginInfoArea.append("Plugin File-Size: " + plugin.info.getProperty("size") + "\n");
-			pluginInfoArea.append("Plugin Last-Updated: " + plugin.info.getProperty("last-updated") + "\n");
-			pluginInfoArea.append("Plugin Description: (as provided by the author)\n" + plugin.info.getProperty("description"));
-			
-		}
 		
+		public void constructText(JTextArea pluginInfoArea)
+		{
+			pluginInfoArea.append("Plugin Name: " + plugin.name + "\n");
+			pluginInfoArea.append("Author: " + plugin.info.getProperty("author") + "\n");
+			pluginInfoArea.append("Current Version: " + plugin.info.getProperty("version") + "\n");
+			pluginInfoArea.append("File Size: " + plugin.info.getProperty("size") + "\n");
+			pluginInfoArea.append("Last updated: " + plugin.info.getProperty("updated") + "\n");
+			pluginInfoArea.append("\nDescription:\n" + plugin.info.getProperty("description") + "\n");
+		}
 	}
-	
 	
 	JDialog dialog = null;
 	JScrollPane listScrollPane = null;
@@ -74,12 +90,13 @@ public class PluginManagerViewer {
 	PluginListModel model = null;
 	JTextArea pluginInfoArea = null;
 	
-	public void show(PluginManager pluginManager) {
+	public void show(final PluginManager pluginManager)
+	{
 		dialog = new CentredJDialog();
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		dialog.setTitle("Plugin Manager");
 		dialog.setSize(640, 480);
-		dialog.setPreferredSize(new Dimension(640, 480));
+		dialog.setPreferredSize(new Dimension(400, 300));
 		dialog.setLayout(new BorderLayout());
 		
 		list = new JList<PluginListItem>();
@@ -87,28 +104,31 @@ public class PluginManagerViewer {
 		list.setModel(model);
 		model.addAll(pluginManager.getPluginList());
 		list.revalidate();
-		list.addMouseListener(new MouseAdapter() {
-		    @SuppressWarnings("unchecked")
-			public void mouseClicked(MouseEvent evt) {
-		    	// We absolutely know that the source is our plugin-list, so we can safely cast.
-		        JList<PluginListItem> list = (JList<PluginListItem>)evt.getSource();
-		        
-		        //if (evt.getClickCount() == 2)
-		        {
-		            int index = list.locationToIndex(evt.getPoint());
-		            PluginListModel dlm = (PluginListModel) list.getModel();
-		            PluginListItem item = dlm.getElementAt(index);;
-		            list.ensureIndexIsVisible(index);
-		            
-		            // Clear the TextArea so the plugin-info-element can write the info...
-		            pluginInfoArea.setText("");
-		            item.constructText(pluginInfoArea);
-		            
-		            // Set the info visible
-		    		pluginInfoArea.setVisible(true);
-		            
-		        }
-		    }
+		list.addMouseListener(new MouseAdapter()
+		{
+			@SuppressWarnings("unchecked")
+			public void mouseClicked(MouseEvent evt)
+			{
+				// We absolutely know that the source is our plugin-list, so we can safely cast.
+				JList<PluginListItem> list = (JList<PluginListItem>) evt.getSource();
+				
+				//if (evt.getClickCount() == 2)
+				if(pluginManager.getPluginList().size() > 0)
+				{
+					int index = list.locationToIndex(evt.getPoint());
+					PluginListModel dlm = (PluginListModel) list.getModel();
+					PluginListItem item = dlm.getElementAt(index);
+					;
+					list.ensureIndexIsVisible(index);
+					
+					// Clear the TextArea so the plugin-info-element can write the info...
+					pluginInfoArea.setText("");
+					item.constructText(pluginInfoArea);
+					
+					// Set the info visible
+					pluginInfoArea.setVisible(true);
+				}
+			}
 		});
 		
 		listScrollPane = new JScrollPane();
@@ -118,6 +138,8 @@ public class PluginManagerViewer {
 		dialog.add(listScrollPane, BorderLayout.CENTER);
 		
 		pluginInfoArea = new JTextArea();
+		pluginInfoArea.setLineWrap(true);
+		pluginInfoArea.setWrapStyleWord(true);
 		pluginInfoArea.setText("Nothing in here...");
 		pluginInfoArea.setEditable(false);
 		pluginInfoArea.setVisible(false);
@@ -127,7 +149,5 @@ public class PluginManagerViewer {
 		dialog.setResizable(true);
 		dialog.setVisible(true);
 	}
-	
-	
 	
 }

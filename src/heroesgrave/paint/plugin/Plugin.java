@@ -33,6 +33,11 @@ public abstract class Plugin
 	public final String name;
 	public Properties info;
 	
+	public Plugin()
+	{
+		this("A Plugin");
+	}
+	
 	public Plugin(String name)
 	{
 		this.name = name;
