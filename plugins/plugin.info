@@ -1,6 +1,0 @@
- 
-main : heroesgrave.myfirstplugin.MyFirstPlugin
-author : HeroesGrave
-description : Creates a popup displaying 'Hello World' on startup.
-version : 1.0
-updated : 02/10/2013
