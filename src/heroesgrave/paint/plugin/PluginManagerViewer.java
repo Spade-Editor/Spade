@@ -1,3 +1,22 @@
+/*
+ *	Copyright 2013 Logor1996 & HeroesGrave
+ *
+ *	This file is part of Paint.JAVA
+ *
+ *	Paint.JAVA is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>
+*/
+
 package heroesgrave.paint.plugin;
 
 import java.awt.BorderLayout;
@@ -16,8 +35,79 @@ import javax.swing.ListModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListDataListener;
 
+/**
+ * 
+ * @author Longor1996
+ *
+ */
 public class PluginManagerViewer
 {
+	private JDialog dialog = null;
+	private JScrollPane listScrollPane = null;
+	private JList<PluginListItem> list = null;
+	private PluginListModel model = null;
+	private JTextArea pluginInfoArea = null;
+	
+	public PluginManagerViewer(final PluginManager pluginManager)
+	{
+		dialog = new CentredJDialog();
+		dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+		dialog.setTitle("Plugin Manager");
+		dialog.setSize(640, 480);
+		dialog.setPreferredSize(new Dimension(400, 300));
+		dialog.setLayout(new BorderLayout());
+		
+		list = new JList<PluginListItem>();
+		model = new PluginListModel();
+		list.setModel(model);
+		model.addAll(pluginManager.getPluginList());
+		list.revalidate();
+		list.addMouseListener(new MouseAdapter()
+		{
+			@SuppressWarnings("unchecked")
+			public void mouseClicked(MouseEvent evt)
+			{
+				// We absolutely know that the source is our plugin-list, so we can safely cast.
+				JList<PluginListItem> list = (JList<PluginListItem>) evt.getSource();
+				
+				//if (evt.getClickCount() == 2)
+				if(pluginManager.getPluginList().size() > 0)
+				{
+					int index = list.locationToIndex(evt.getPoint());
+					PluginListModel dlm = (PluginListModel) list.getModel();
+					PluginListItem item = dlm.getElementAt(index);
+					;
+					list.ensureIndexIsVisible(index);
+					
+					// Clear the TextArea so the plugin-info-element can write the info...
+					pluginInfoArea.setText("");
+					item.constructText(pluginInfoArea);
+					
+					// Set the info visible
+					pluginInfoArea.setVisible(true);
+				}
+			}
+		});
+		
+		listScrollPane = new JScrollPane();
+		listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		listScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		listScrollPane.setViewportView(list);
+		dialog.add(listScrollPane, BorderLayout.CENTER);
+		
+		pluginInfoArea = new JTextArea();
+		pluginInfoArea.setLineWrap(true);
+		pluginInfoArea.setWrapStyleWord(true);
+		pluginInfoArea.setText("Nothing in here...");
+		pluginInfoArea.setEditable(false);
+		pluginInfoArea.setVisible(false);
+		dialog.add(pluginInfoArea, BorderLayout.PAGE_END);
+		
+		dialog.pack();
+		dialog.setResizable(true);
+		dialog.setVisible(false);
+	}
+	
 	public class PluginListModel implements ListModel<PluginListItem>
 	{
 		ArrayList<PluginListItem> items;
@@ -84,70 +174,8 @@ public class PluginManagerViewer
 		}
 	}
 	
-	JDialog dialog = null;
-	JScrollPane listScrollPane = null;
-	JList<PluginListItem> list = null;
-	PluginListModel model = null;
-	JTextArea pluginInfoArea = null;
-	
-	public void show(final PluginManager pluginManager)
+	public void show()
 	{
-		dialog = new CentredJDialog();
-		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		dialog.setTitle("Plugin Manager");
-		dialog.setSize(640, 480);
-		dialog.setPreferredSize(new Dimension(400, 300));
-		dialog.setLayout(new BorderLayout());
-		
-		list = new JList<PluginListItem>();
-		model = new PluginListModel();
-		list.setModel(model);
-		model.addAll(pluginManager.getPluginList());
-		list.revalidate();
-		list.addMouseListener(new MouseAdapter()
-		{
-			@SuppressWarnings("unchecked")
-			public void mouseClicked(MouseEvent evt)
-			{
-				// We absolutely know that the source is our plugin-list, so we can safely cast.
-				JList<PluginListItem> list = (JList<PluginListItem>) evt.getSource();
-				
-				//if (evt.getClickCount() == 2)
-				if(pluginManager.getPluginList().size() > 0)
-				{
-					int index = list.locationToIndex(evt.getPoint());
-					PluginListModel dlm = (PluginListModel) list.getModel();
-					PluginListItem item = dlm.getElementAt(index);
-					;
-					list.ensureIndexIsVisible(index);
-					
-					// Clear the TextArea so the plugin-info-element can write the info...
-					pluginInfoArea.setText("");
-					item.constructText(pluginInfoArea);
-					
-					// Set the info visible
-					pluginInfoArea.setVisible(true);
-				}
-			}
-		});
-		
-		listScrollPane = new JScrollPane();
-		listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		listScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		listScrollPane.setViewportView(list);
-		dialog.add(listScrollPane, BorderLayout.CENTER);
-		
-		pluginInfoArea = new JTextArea();
-		pluginInfoArea.setLineWrap(true);
-		pluginInfoArea.setWrapStyleWord(true);
-		pluginInfoArea.setText("Nothing in here...");
-		pluginInfoArea.setEditable(false);
-		pluginInfoArea.setVisible(false);
-		dialog.add(pluginInfoArea, BorderLayout.PAGE_END);
-		
-		dialog.pack();
-		dialog.setResizable(true);
 		dialog.setVisible(true);
 	}
-	
 }

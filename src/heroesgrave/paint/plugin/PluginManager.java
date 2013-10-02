@@ -27,10 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.jar.JarEntry;
@@ -49,6 +46,7 @@ public class PluginManager
 	public static PluginManager instance = null;
 	private File pluginRootDirectory;
 	private ArrayList<Plugin> loadedPlugins;
+	private PluginManagerViewer pluginViewer;
 	
 	public PluginManager(Paint paint)
 	{
@@ -272,6 +270,8 @@ public class PluginManager
 	public void frameCreationEvent(JFrame frame)
 	{
 		//System.out.println("[Event] Frame creation.");
+		
+		pluginViewer = new PluginManagerViewer(this);
 	}
 	
 	public void onLaunch()
@@ -284,7 +284,7 @@ public class PluginManager
 	
 	public void showPluginManager()
 	{
-		new PluginManagerViewer().show(this);
+		pluginViewer.show();
 	}
 	
 	public ArrayList<Plugin> getPluginList()
