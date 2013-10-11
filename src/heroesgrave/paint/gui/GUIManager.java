@@ -22,9 +22,9 @@ package heroesgrave.paint.gui;
 import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
+import heroesgrave.paint.main.UserPreferences;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -146,6 +146,7 @@ public class GUIManager
 			{
 				if(Paint.main.saved)
 				{
+                    UserPreferences.savePrefs(frame);
 					Paint.main.terminate = true;
 					return;
 				}
@@ -173,6 +174,7 @@ public class GUIManager
 					public void actionPerformed(ActionEvent e)
 					{
 						Paint.save();
+                        UserPreferences.savePrefs(frame);
 						Paint.main.terminate = true;
 						close.dispose();
 					}
@@ -181,6 +183,7 @@ public class GUIManager
 				{
 					public void actionPerformed(ActionEvent e)
 					{
+                        UserPreferences.savePrefs(frame);
 						Paint.main.terminate = true;
 						close.dispose();
 					}
@@ -200,16 +203,14 @@ public class GUIManager
 		
 		panel = (JPanel) frame.getContentPane();
 
-		panel.setPreferredSize(new Dimension(800, 600));
 		panel.setLayout(new BorderLayout());
 	}
 
 	public void finish()
 	{
-		frame.pack();
+	    UserPreferences.loadPrefs(frame);
 		frame.setVisible(true);
 		frame.setResizable(true);
-		frame.setLocationRelativeTo(null);
 	}
 
 	public void initInputs()
