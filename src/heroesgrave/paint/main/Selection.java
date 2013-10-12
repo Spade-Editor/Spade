@@ -17,22 +17,12 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.tools;
+package heroesgrave.paint.main;
 
-import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.main.PixelChange;
+import java.awt.image.BufferedImage;
 
-public class Pixel extends Brush
+public class Selection
 {
-	public Pixel(String name)
-	{
-		super(name);
-	}
-	
-	public void brush(int x, int y)
-	{
-		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
-			return;
-		buffer(new PixelChange(x, y, Paint.main.getColour()));
-	}
+	private BufferedImage image;
+	private int x, y;
 }

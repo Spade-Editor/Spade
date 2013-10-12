@@ -9,9 +9,12 @@
 .classpath
 .project
 .settings/*
+/bin
 
 # Other #
 *.sh
 *.directory
 license.txt
-/bin
+build/Paint
+build/plugins/*
+plugins/*
