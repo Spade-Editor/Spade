@@ -19,13 +19,13 @@
 
 package heroesgrave.paint.plugin;
 
+import heroesgrave.paint.gui.Menu.CentredJDialog;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-
-import heroesgrave.paint.gui.Menu.CentredJDialog;
 
 import javax.swing.JDialog;
 import javax.swing.JList;
@@ -76,14 +76,13 @@ public class PluginManagerViewer
 					int index = list.locationToIndex(evt.getPoint());
 					PluginListModel dlm = (PluginListModel) list.getModel();
 					PluginListItem item = dlm.getElementAt(index);
-					;
 					list.ensureIndexIsVisible(index);
 					
 					// Clear the TextArea so the plugin-info-element can write the info...
 					pluginInfoArea.setText("");
 					item.constructText(pluginInfoArea);
 					
-					// Set the info visible
+					// Set the info area to visible.
 					pluginInfoArea.setVisible(true);
 				}
 			}

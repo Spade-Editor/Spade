@@ -53,6 +53,8 @@ public class Paint extends Application
 	public File openDir;
 
 	public Tool currentTool;
+	
+	public Selection selection;
 
 	private int colour = 0x00000000;
 
@@ -64,6 +66,7 @@ public class Paint extends Application
 	public void init()
 	{
 		pluginManager = PluginManager.instance(this);
+		selection = new Selection();
 		gui = new GUIManager();
 		setColour(0xFF000000);
 		setTool(currentTool);

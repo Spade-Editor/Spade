@@ -17,42 +17,41 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.main;
+package heroesgrave.paint.tools;
 
-import java.awt.image.BufferedImage;
+import heroesgrave.paint.main.Paint;
 
-public class PixelChange implements Change
+public class MoveSelection extends Tool
 {
-	public short x, y;
-	public int o, n;
-
-	public PixelChange(int x, int y, int n)
+	private int lx, ly;
+	
+	public MoveSelection(String name)
 	{
-		this.x = (short) x;
-		this.y = (short) y;
-		this.n = n;
+		super(name);
 	}
 
-	public BufferedImage apply(BufferedImage image)
+	public void onPressed(int x, int y)
 	{
-		o = image.getRGB(x, y);
-		image.setRGB(x, y, n);
-		return image;
+		lx = x;
+		ly = y;
+		Paint.main.selection.startFloating();
 	}
 
-	public BufferedImage revert(BufferedImage image)
+	public void onReleased(int x, int y)
 	{
-		image.setRGB(x, y, o);
-		return image;
+		lx = x;
+		ly = y;
 	}
 
-	public int getSize()
+	public void whilePressed(int x, int y)
 	{
-		return 3;
+		Paint.main.selection.translate(x-lx, y-ly);
+		lx = x;
+		ly = y;
 	}
 
-	public boolean samePos(int x, int y)
+	@Override
+	public void whileReleased(int x, int y)
 	{
-		return (this.x == x && this.y == y);
 	}
 }

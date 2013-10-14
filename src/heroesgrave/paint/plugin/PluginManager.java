@@ -155,7 +155,6 @@ public class PluginManager
 				}
 				
 				// Get the actual class-name!
-				// -6 because of .class
 				String className = je.getName().replace(".class", "");
 				className = className.replace('/', '.');
 				

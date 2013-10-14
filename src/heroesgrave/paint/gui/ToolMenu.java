@@ -26,9 +26,12 @@ import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Ellipse;
 import heroesgrave.paint.tools.Fill;
 import heroesgrave.paint.tools.Line;
+import heroesgrave.paint.tools.MoveSelection;
+import heroesgrave.paint.tools.PaintBrush;
 import heroesgrave.paint.tools.Picker;
 import heroesgrave.paint.tools.Pixel;
 import heroesgrave.paint.tools.Rectangle;
+import heroesgrave.paint.tools.Select;
 import heroesgrave.paint.tools.Tool;
 
 import java.awt.event.ActionEvent;
@@ -47,11 +50,14 @@ public class ToolMenu
 		Paint.main.currentTool = def;
 
 		menu.add(new ToolMenuItem("Pencil", def, "P"));
+		menu.add(new ToolMenuItem("Paint Brush", new PaintBrush("Paint Brush"), "B"));
 		menu.add(new ToolMenuItem("Line", new Line("Straight Line"), "L"));
 		menu.add(new ToolMenuItem("Colour Picker", new Picker("Colour Picker"), "K"));
 		menu.add(new ToolMenuItem("Paint Bucket", new Fill("Paint Bucket"), "F"));
 		menu.add(new ToolMenuItem("Rectangle", new Rectangle("Rectangle"), "R"));
 		menu.add(new ToolMenuItem("Ellipse", new Ellipse("Ellipse"), "E"));
+		menu.add(new ToolMenuItem("Select", new Select("Select"), "S"));
+		menu.add(new ToolMenuItem("Move Selection", new MoveSelection("Move Selection"), "M"));
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerTools(menu);
 		
