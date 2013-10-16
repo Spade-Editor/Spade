@@ -54,7 +54,8 @@ public class Paint extends Application
 
 	public Tool currentTool;
 
-	private int colour = 0x00000000;
+    public static int leftColour = 0xff000000;
+    public static int rightColour = 0xff000000;
 
 	public boolean saved = true;
 
@@ -65,7 +66,8 @@ public class Paint extends Application
 	{
 		pluginManager = PluginManager.instance(this);
 		gui = new GUIManager();
-		setColour(0xFF000000);
+        setLeftColour(0xffffffff);
+        setRightColour(0xff000000);
 		setTool(currentTool);
 		pluginManager.onLaunch();
 	}
@@ -255,15 +257,27 @@ public class Paint extends Application
 		}
 	}
 
-	public void setColour(int c)
-	{
-		gui.chooser.setColour(c);
-		gui.info.setColour(c);
-		this.colour = c;
-	}
+    public void setLeftColour(int c)
+    {
+        gui.chooser.setLeftColour(c);
+        gui.info.setLeftColour(c);
+        this.leftColour = c;
+    }
 
-	public int getColour()
-	{
-		return this.colour;
-	}
+    public int getLeftColour()
+    {
+        return this.leftColour;
+    }
+    
+    public void setRightColour(int c)
+    {
+        gui.chooser.setRightColour(c);
+        gui.info.setRightColour(c);
+        this.rightColour = c;
+    }
+
+    public int getRightColour()
+    {
+        return this.rightColour;
+    }
 }

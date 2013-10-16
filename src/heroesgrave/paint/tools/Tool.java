@@ -38,11 +38,11 @@ public abstract class Tool
 		return menu;
 	}
 
-	public abstract void onPressed(int x, int y);
+	public abstract void onPressed(int x, int y, int button);
 
-	public abstract void onReleased(int x, int y);
+	public abstract void onReleased(int x, int y, int button);
 
-	public abstract void whilePressed(int x, int y);
+	public abstract void whilePressed(int x, int y, int button);
 
-	public abstract void whileReleased(int x, int y);
+	public abstract void whileReleased(int x, int y, int button);
 }

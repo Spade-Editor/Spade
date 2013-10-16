@@ -70,31 +70,31 @@ public abstract class Brush extends Tool
 		Paint.main.gui.canvas.flushChanges();
 	}
 
-	public void onPressed(int x, int y)
+	public void onPressed(int x, int y, int button)
 	{
 		lastX = x;
 		lastY = y;
-		brush(x, y);
+		brush(x, y, button);
 	}
 
-	public void onReleased(int x, int y)
+	public void onReleased(int x, int y, int button)
 	{
 		lastX = x;
 		lastY = y;
 		flush();
 	}
 
-	public void whilePressed(int x, int y)
+	public void whilePressed(int x, int y, int button)
 	{
 		if(x != lastX || y != lastY)
 		{
-			stroke(lastX, lastY, x, y);
+			stroke(lastX, lastY, x, y, button);
 			lastX = x;
 			lastY = y;
 		}
 	}
 
-	private void stroke(int x1, int y1, int x2, int y2)
+	private void stroke(int x1, int y1, int x2, int y2, int button)
 	{
 		float dx = x2 - x1;
 		float dy = y2 - y1;
@@ -108,14 +108,14 @@ public abstract class Brush extends Tool
 			{
 				for(int x = x1; x <= x2; x++)
 				{
-					brush(x, MathUtils.floor((grad * (x - x1)) + y1));
+					brush(x, MathUtils.floor((grad * (x - x1)) + y1), button);
 				}
 			}
 			else
 			{
 				for(int x = x1; x >= x2; x--)
 				{
-					brush(x, MathUtils.floor((grad * (x - x1)) + y1));
+					brush(x, MathUtils.floor((grad * (x - x1)) + y1), button);
 				}
 			}
 		}
@@ -126,24 +126,24 @@ public abstract class Brush extends Tool
 			{
 				for(int y = y1; y <= y2; y++)
 				{
-					brush(MathUtils.floor((grad * (y - y1)) + x1), y);
+					brush(MathUtils.floor((grad * (y - y1)) + x1), y, button);
 				}
 			}
 			else
 			{
 				for(int y = y1; y >= y2; y--)
 				{
-					brush(MathUtils.floor((grad * (y - y1)) + x1), y);
+					brush(MathUtils.floor((grad * (y - y1)) + x1), y, button);
 				}
 			}
 		}
 	}
 
-	public void whileReleased(int x, int y)
+	public void whileReleased(int x, int y, int button)
 	{
 		lastX = x;
 		lastY = y;
 	}
 
-	public abstract void brush(int x, int y);
+	public abstract void brush(int x, int y, int button);
 }
