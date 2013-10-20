@@ -19,6 +19,8 @@
 
 package heroesgrave.paint.tools;
 
+import java.awt.event.MouseEvent;
+
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.PixelChange;
@@ -33,29 +35,29 @@ public class Ellipse extends Tool
 		super(name);
 	}
 
-	public void onPressed(int x, int y)
+	public void onPressed(int x, int y, int button)
 	{
 		sx = x;
 		sy = y;
 	}
 
-	public void onReleased(int x, int y)
+	public void onReleased(int x, int y, int button)
 	{
-		circle(sx, sy, Math.abs(x - sx), Math.abs(y - sy));
+		circle(sx, sy, Math.abs(x - sx), Math.abs(y - sy), button);
 		Paint.main.gui.canvas.applyPreview();
 	}
 
-	public void whilePressed(int x, int y)
+	public void whilePressed(int x, int y, int button)
 	{
-		circle(sx, sy, Math.abs(x - sx), Math.abs(y - sy));
+		circle(sx, sy, Math.abs(x - sx), Math.abs(y - sy), button);
 	}
 
-	public void whileReleased(int x, int y)
+	public void whileReleased(int x, int y, int button)
 	{
 
 	}
 
-	public void circle(int cx, int cy, float rx, float ry)
+	public void circle(int cx, int cy, float rx, float ry, int button)
 	{
 		Paint.main.gui.canvas.clearPreview();
 
@@ -72,8 +74,8 @@ public class Ellipse extends Tool
 			j = j * ry * ry;
 			j = (float) Math.sqrt(j);
 
-			brush(i, MathUtils.floor(cy + j));
-			brush(i, MathUtils.ceil(cy - j));
+			brush(i, MathUtils.floor(cy + j), button);
+			brush(i, MathUtils.ceil(cy - j), button);
 		}
 
 		for(int j = (int) (cy - ry); j <= cy + ry; j++)
@@ -84,15 +86,21 @@ public class Ellipse extends Tool
 			i = i * rx * rx;
 			i = (float) Math.sqrt(i);
 
-			brush(MathUtils.floor(cx + i), j);
-			brush(MathUtils.ceil(cx - i), j);
+			brush(MathUtils.floor(cx + i), j, button);
+			brush(MathUtils.ceil(cx - i), j, button);
 		}
 	}
 
-	public void brush(int x, int y)
+	public void brush(int x, int y, int button)
 	{
 		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
 			return;
-		Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getColour()));
+		Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
+        if(button == MouseEvent.BUTTON1) {
+            Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
+        }
+        else if(button == MouseEvent.BUTTON3) {
+            Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getRightColour()));
+        }
 	}
 }

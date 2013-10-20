@@ -19,6 +19,8 @@
 
 package heroesgrave.paint.tools;
 
+import java.awt.event.MouseEvent;
+
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.PixelChange;
 
@@ -28,11 +30,16 @@ public class Pixel extends Brush
 	{
 		super(name);
 	}
-	
-	public void brush(int x, int y)
+
+	public void brush(int x, int y, int button)
 	{
 		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
 			return;
-		buffer(new PixelChange(x, y, Paint.main.getColour()));
+		if(button == MouseEvent.BUTTON1) {
+			buffer(new PixelChange(x, y, Paint.main.getLeftColour()));
+		}
+		else if(button == MouseEvent.BUTTON3) {
+            buffer(new PixelChange(x, y, Paint.main.getRightColour()));
+        }
 	}
 }
