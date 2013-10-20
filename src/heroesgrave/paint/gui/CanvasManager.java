@@ -246,6 +246,7 @@ public class CanvasManager
 
 		private BufferedImage image;
 		private float scale = 1;
+		private int lastButton = 0;
 
 		public Canvas(BufferedImage i)
 		{
@@ -254,24 +255,26 @@ public class CanvasManager
 			{
 				public void mousePressed(MouseEvent e)
 				{
-					Paint.main.currentTool.onPressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale));
+                    lastButton = e.getButton();
+					Paint.main.currentTool.onPressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), e.getButton());
 				}
 
 				public void mouseReleased(MouseEvent e)
 				{
-					Paint.main.currentTool.onReleased(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale));
+                    lastButton = e.getButton();
+					Paint.main.currentTool.onReleased(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), e.getButton());
 				}
 			});
 			this.addMouseMotionListener(new MouseMotionListener()
 			{
 				public void mouseDragged(MouseEvent e)
 				{
-					Paint.main.currentTool.whilePressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale));
+					Paint.main.currentTool.whilePressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), lastButton);
 				}
 
 				public void mouseMoved(MouseEvent e)
 				{
-					Paint.main.currentTool.whileReleased(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale));
+					Paint.main.currentTool.whileReleased(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), lastButton);
 				}
 			});
 		}

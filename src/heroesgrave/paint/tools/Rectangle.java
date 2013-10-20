@@ -19,6 +19,8 @@
 
 package heroesgrave.paint.tools;
 
+import java.awt.event.MouseEvent;
+
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.PixelChange;
@@ -32,24 +34,24 @@ public class Rectangle extends Tool
 		super(name);
 	}
 
-	public void onPressed(int x, int y)
+	public void onPressed(int x, int y, int button)
 	{
 		sx = x;
 		sy = y;
 	}
 
-	public void onReleased(int x, int y)
+	public void onReleased(int x, int y, int button)
 	{
-		rectangle(sx, sy, x, y);
+		rectangle(sx, sy, x, y, button);
 		Paint.main.gui.canvas.applyPreview();
 	}
 
-	public void whilePressed(int x, int y)
+	public void whilePressed(int x, int y, int button)
 	{
-		rectangle(sx, sy, x, y);
+		rectangle(sx, sy, x, y, button);
 	}
 
-	public void whileReleased(int x, int y)
+	public void whileReleased(int x, int y, int button)
 	{
 
 	}
@@ -63,7 +65,7 @@ public class Rectangle extends Tool
 		return 0;
 	}
 
-	public void rectangle(int x1, int y1, int x2, int y2)
+	public void rectangle(int x1, int y1, int x2, int y2, int button)
 	{
 		Paint.main.gui.canvas.clearPreview();
 
@@ -101,21 +103,26 @@ public class Rectangle extends Tool
 
 		for(int i = x1; i <= x2; i++)
 		{
-			brush(i, y1);
-			brush(i, y2);
+			brush(i, y1, button);
+			brush(i, y2, button);
 		}
 
 		for(int j = y1; j <= y2; j++)
 		{
-			brush(x1, j);
-			brush(x2, j);
+			brush(x1, j, button);
+			brush(x2, j, button);
 		}
 	}
 
-	public void brush(int x, int y)
+	public void brush(int x, int y, int button)
 	{
 		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
 			return;
-		Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getColour()));
+        if(button == MouseEvent.BUTTON1) {
+            Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
+        }
+        else if(button == MouseEvent.BUTTON3) {
+            Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getRightColour()));
+        }
 	}
 }

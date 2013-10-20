@@ -24,6 +24,7 @@ import heroesgrave.paint.main.PixelChange;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.Stack;
 
@@ -34,7 +35,7 @@ public class Fill extends Tool
 		super(name);
 	}
 
-	public void onPressed(int x, int y)
+	public void onPressed(int x, int y, int button)
 	{
 		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
 			return;
@@ -44,7 +45,7 @@ public class Fill extends Tool
 
 		stack.push(new Point(x, y));
 		final int c = getColour(x, y);
-		if(c == Paint.main.getColour())
+		if((c == Paint.main.getLeftColour() && button == MouseEvent.BUTTON1) || (c == Paint.main.getRightColour() && button == MouseEvent.BUTTON3))
 			return;
 
 		Rectangle imageRect = new Rectangle(0, 0, Paint.main.gui.canvas.getImage().getWidth(), Paint.main.gui.canvas.getImage().getHeight());
@@ -59,7 +60,12 @@ public class Fill extends Tool
 			}
 			else
 			{
-				Paint.main.gui.canvas.bufferChange(new PixelChange(p.x, p.y, Paint.main.getColour()));
+			    if(button == MouseEvent.BUTTON1) {
+			        Paint.main.gui.canvas.bufferChange(new PixelChange(p.x, p.y, Paint.main.getLeftColour()));
+			    }
+			    else if(button == MouseEvent.BUTTON3) {
+                    Paint.main.gui.canvas.bufferChange(new PixelChange(p.x, p.y, Paint.main.getRightColour()));
+                } 
 			}
 
 			Point neighbour = new Point(p.x + 1, p.y);
@@ -92,17 +98,17 @@ public class Fill extends Tool
 		return Paint.main.gui.canvas.getImage().getRGB(x, y);
 	}
 
-	public void onReleased(int x, int y)
+	public void onReleased(int x, int y, int button)
 	{
 
 	}
 
-	public void whilePressed(int x, int y)
+	public void whilePressed(int x, int y, int button)
 	{
 
 	}
 
-	public void whileReleased(int x, int y)
+	public void whileReleased(int x, int y, int button)
 	{
 
 	}

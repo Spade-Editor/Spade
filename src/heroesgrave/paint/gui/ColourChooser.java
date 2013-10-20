@@ -28,12 +28,16 @@ import heroesgrave.utils.misc.ColourNumberFilter;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -47,7 +51,11 @@ public class ColourChooser
 	private JDialog dialog;
 	private JSlider r, g, b, a;
 	private JTextField tr, tg, tb, ta;
+    private JRadioButton leftRadio;
+    private JRadioButton rightRadio;
 	private ColourPanel colour;
+	private int leftColour;
+	private int rightColour;
 
 	public ColourChooser()
 	{
@@ -81,7 +89,14 @@ public class ColourChooser
 			public void stateChanged(ChangeEvent e)
 			{
 				tr.setText("" + r.getValue());
-				Paint.main.setColour(getColour());
+                if(leftRadio.isSelected()) {
+                    leftColour = ((leftColour & 0xff00ffff) | ((r.getValue() & 0xff) << 16));
+                    Paint.main.setLeftColour(leftColour);
+                }
+                else if(rightRadio.isSelected()) {
+                    rightColour = ((rightColour & 0xff00ffff) | ((r.getValue() & 0xff) << 16));
+                    Paint.main.setRightColour(rightColour);
+                }
 			}
 		});
 		g.addChangeListener(new ChangeListener()
@@ -89,7 +104,14 @@ public class ColourChooser
 			public void stateChanged(ChangeEvent e)
 			{
 				tg.setText("" + g.getValue());
-				Paint.main.setColour(getColour());
+                if(leftRadio.isSelected()) {
+                    leftColour = ((leftColour & 0xffff00ff) | ((g.getValue() & 0xff) << 8));
+                    Paint.main.setLeftColour(leftColour);
+                }
+                else if(rightRadio.isSelected()) {
+                    rightColour = ((rightColour & 0xffff00ff) | ((g.getValue() & 0xff) << 8));
+                    Paint.main.setRightColour(rightColour);
+                }
 			}
 		});
 		b.addChangeListener(new ChangeListener()
@@ -97,7 +119,14 @@ public class ColourChooser
 			public void stateChanged(ChangeEvent e)
 			{
 				tb.setText("" + b.getValue());
-				Paint.main.setColour(getColour());
+                if(leftRadio.isSelected()) {
+                    leftColour = ((leftColour & 0xffffff00) | (b.getValue() & 0xff));
+                    Paint.main.setLeftColour(leftColour);
+                }
+                else if(rightRadio.isSelected()) {
+                    rightColour = ((rightColour & 0xffffff00) | (b.getValue() & 0xff));
+                    Paint.main.setRightColour(rightColour);
+                }
 			}
 		});
 		a.addChangeListener(new ChangeListener()
@@ -105,7 +134,14 @@ public class ColourChooser
 			public void stateChanged(ChangeEvent e)
 			{
 				ta.setText("" + a.getValue());
-				Paint.main.setColour(getColour());
+                if(leftRadio.isSelected()) {
+                    leftColour = ((leftColour & 0x00ffffff) | ((a.getValue() & 0xff) << 24));
+                    Paint.main.setLeftColour(leftColour);
+                }
+                else if(rightRadio.isSelected()) {
+                    rightColour = ((rightColour & 0x00ffffff) | ((a.getValue() & 0xff) << 24));
+                    Paint.main.setRightColour(rightColour);
+                }
 			}
 		});
 
@@ -115,7 +151,14 @@ public class ColourChooser
 			{
 				r.setValue(MathUtils.clamp(Integer.parseInt(tr.getText()), 255, 0));
 				tr.setText("" + MathUtils.clamp(Integer.parseInt(tr.getText()), 255, 0));
-				Paint.main.setColour(getColour());
+                if(leftRadio.isSelected()) {
+                    leftColour = ((leftColour & 0xff00ffff) | ((r.getValue() & 0xff) << 16));
+                    Paint.main.setLeftColour(leftColour);
+                }
+                else if(rightRadio.isSelected()) {
+                    rightColour = ((rightColour & 0xff00ffff) | ((r.getValue() & 0xff) << 16));
+                    Paint.main.setRightColour(rightColour);
+                }
 			}
 
 			public void focusGained(FocusEvent e)
@@ -129,7 +172,14 @@ public class ColourChooser
 			{
 				g.setValue(MathUtils.clamp(Integer.parseInt(tg.getText()), 255, 0));
 				tg.setText("" + MathUtils.clamp(Integer.parseInt(tg.getText()), 255, 0));
-				Paint.main.setColour(getColour());
+                if(leftRadio.isSelected()) {
+                    leftColour = ((leftColour & 0xffff00ff) | ((g.getValue() & 0xff) << 8));
+                    Paint.main.setLeftColour(leftColour);
+                }
+                else if(rightRadio.isSelected()) {
+                    rightColour = ((rightColour & 0xffff00ff) | ((g.getValue() & 0xff) << 8));
+                    Paint.main.setRightColour(rightColour);
+                }
 			}
 
 			public void focusGained(FocusEvent e)
@@ -143,7 +193,14 @@ public class ColourChooser
 			{
 				b.setValue(MathUtils.clamp(Integer.parseInt(tb.getText()), 255, 0));
 				tb.setText("" + MathUtils.clamp(Integer.parseInt(tb.getText()), 255, 0));
-				Paint.main.setColour(getColour());
+                if(leftRadio.isSelected()) {
+                    leftColour = ((leftColour & 0xffffff00) | (b.getValue() & 0xff));
+                    Paint.main.setLeftColour(leftColour);
+                }
+                else if(rightRadio.isSelected()) {
+                    rightColour = ((rightColour & 0xffffff00) | (b.getValue() & 0xff));
+                    Paint.main.setRightColour(rightColour);
+                }
 			}
 
 			public void focusGained(FocusEvent e)
@@ -157,7 +214,14 @@ public class ColourChooser
 			{
 				a.setValue(MathUtils.clamp(Integer.parseInt(ta.getText()), 255, 0));
 				ta.setText("" + MathUtils.clamp(Integer.parseInt(ta.getText()), 255, 0));
-				Paint.main.setColour(getColour());
+                if(leftRadio.isSelected()) {
+                    leftColour = ((leftColour & 0x00ffffff) | ((a.getValue() & 0xff) << 24));
+                    Paint.main.setLeftColour(leftColour);
+                }
+                else if(rightRadio.isSelected()) {
+                    rightColour = ((rightColour & 0x00ffffff) | ((a.getValue() & 0xff) << 24));
+                    Paint.main.setRightColour(rightColour);
+                }
 			}
 
 			public void focusGained(FocusEvent e)
@@ -185,6 +249,16 @@ public class ColourChooser
 		right.add(new CentredLabel("Alpha: "));
 		right.add(ta);
 
+		JPanel radioButtonPanel = new JPanel();
+		ButtonGroup group = new ButtonGroup();
+		leftRadio = new JRadioButton("left");
+		group.add(leftRadio);
+		leftRadio.setSelected(true);
+        radioButtonPanel.add(leftRadio);
+        rightRadio = new JRadioButton("right");
+        group.add(rightRadio);
+        radioButtonPanel.add(rightRadio);
+		bottom.add(radioButtonPanel);
 		bottom.add(r);
 		bottom.add(g);
 		bottom.add(b);
@@ -202,25 +276,74 @@ public class ColourChooser
 		dialog.pack();
 		dialog.setResizable(false);
 		dialog.setAlwaysOnTop(true);
+		
+        leftRadio.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int leftColour = colour.getLeftColour();
+                a.setValue((leftColour >> 24) & 0xFF);
+                r.setValue((leftColour >> 16) & 0xFF);
+                g.setValue((leftColour >> 8) & 0xFF);
+                b.setValue(leftColour & 0xFF);
+                ta.setText("" + ((leftColour >> 24) & 0xFF));
+                tr.setText("" + ((leftColour >> 16) & 0xFF));
+                tg.setText("" + ((leftColour >> 8) & 0xFF));
+                tb.setText("" + (leftColour & 0xFF));
+            }
+        });
+        rightRadio.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int rightColour = colour.getRightColour();
+                a.setValue((rightColour >> 24) & 0xFF);
+                r.setValue((rightColour >> 16) & 0xFF);
+                g.setValue((rightColour >> 8) & 0xFF);
+                b.setValue(rightColour & 0xFF);
+                ta.setText("" + ((rightColour >> 24) & 0xFF));
+                tr.setText("" + ((rightColour >> 16) & 0xFF));
+                tg.setText("" + ((rightColour >> 8) & 0xFF));
+                tb.setText("" + (rightColour & 0xFF));
+            }
+        });
 	}
 
-	public int getColour()
-	{
-		return (a.getValue() << 24) + (r.getValue() << 16) + (g.getValue() << 8) + b.getValue();
+	public int getLeftColour() {
+		return leftColour;
+	}
+	
+	public int getRightColour() {
+	    return rightColour;
 	}
 
-	public void setColour(int colour)
-	{
-		a.setValue((colour >> 24) & 0xFF);
-		r.setValue((colour >> 16) & 0xFF);
-		g.setValue((colour >> 8) & 0xFF);
-		b.setValue(colour & 0xFF);
-		ta.setText("" + ((colour >> 24) & 0xFF));
-		tr.setText("" + ((colour >> 16) & 0xFF));
-		tg.setText("" + ((colour >> 8) & 0xFF));
-		tb.setText("" + (colour & 0xFF));
-		this.colour.setColour(colour);
-	}
+    public void setLeftColour(int colour)
+    {
+        a.setValue((colour >> 24) & 0xFF);
+        r.setValue((colour >> 16) & 0xFF);
+        g.setValue((colour >> 8) & 0xFF);
+        b.setValue(colour & 0xFF);
+        ta.setText("" + ((colour >> 24) & 0xFF));
+        tr.setText("" + ((colour >> 16) & 0xFF));
+        tg.setText("" + ((colour >> 8) & 0xFF));
+        tb.setText("" + (colour & 0xFF));
+        leftColour = colour;
+        this.colour.setLeftColour(colour);
+    }
+
+    public void setRightColour(int colour)
+    {
+        a.setValue((colour >> 24) & 0xFF);
+        r.setValue((colour >> 16) & 0xFF);
+        g.setValue((colour >> 8) & 0xFF);
+        b.setValue(colour & 0xFF);
+        ta.setText("" + ((colour >> 24) & 0xFF));
+        tr.setText("" + ((colour >> 16) & 0xFF));
+        tg.setText("" + ((colour >> 8) & 0xFF));
+        tb.setText("" + (colour & 0xFF));
+        rightColour = colour;
+        this.colour.setRightColour(colour);
+    }
 
 	public void sync()
 	{

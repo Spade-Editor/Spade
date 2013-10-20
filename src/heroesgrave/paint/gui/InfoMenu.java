@@ -74,33 +74,61 @@ public class InfoMenu
 		this.tool.setText("Tool: " + tool.name);
 	}
 	
-	public void setColour(int colour)
-	{
-		this.colour.setColour(colour);
-	}
-	
+    public void setLeftColour(int colour)
+    {
+        this.colour.setLeftColour(colour);
+    }
+    
+    public void setRightColour(int colour)
+    {
+        this.colour.setRightColour(colour);
+    }
+    
 	public static class ColourPanel extends JPanel
 	{
 		private static final long serialVersionUID = 7541204326016173356L;
 		
-		private Color colour;
+		private Color leftColour;
+		private Color rightColour;
 		
 		public ColourPanel()
 		{
-			
+		    
 		}
 		
-		public void setColour(int colour)
-		{
-			this.colour = new Color(colour);
-			this.repaint();
-		}
-		
+        public void setLeftColour(int colour)
+        {
+            this.leftColour = new Color(colour);
+            this.repaint();
+        }
+        
+        public void setRightColour(int colour)
+        {
+            this.rightColour = new Color(colour);
+            this.repaint();
+        }
+        
+        public int getLeftColour() {
+            return ( ((leftColour.getAlpha() & 0xff) << 24) | 
+                    ((leftColour.getRed() & 0xff) << 16) | 
+                    ((leftColour.getGreen() & 0xff) << 8) | 
+                    (leftColour.getBlue() & 0xff) );
+        }
+        
+        public int getRightColour() {
+            return ( ((rightColour.getAlpha() & 0xff) << 24) | 
+                    ((rightColour.getRed() & 0xff) << 16) | 
+                    ((rightColour.getGreen() & 0xff) << 8) | 
+                    (rightColour.getBlue() & 0xff) );
+        }
+        
 		public void paint(Graphics g)
 		{
 			super.paint(g);
-			g.setColor(colour);
-			g.fillRect(0, 0, this.getWidth(), this.getHeight());
+            g.setColor(leftColour);
+            g.fillRect(0, 0, this.getWidth() / 2, this.getHeight());
+            g.setColor(rightColour);
+            g.fillRect(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
 		}
 	}
 }

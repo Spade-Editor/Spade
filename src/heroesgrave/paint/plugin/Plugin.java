@@ -19,8 +19,6 @@
 
 package heroesgrave.paint.plugin;
 
-import java.util.Properties;
-
 import heroesgrave.paint.main.Paint;
 
 /**
@@ -31,30 +29,17 @@ import heroesgrave.paint.main.Paint;
 public abstract class Plugin
 {
 	public final String name;
-	public Properties info;
-	
-	public Plugin()
-	{
-		this("A Plugin");
-	}
 	
 	public Plugin(String name)
 	{
 		this.name = name;
 	}
 	
-	/**
-	 * Called when all plugins are loaded, before the window is created.
-	 * 
-	 * @param paint
-	 */
 	public abstract void init(Paint paint);
 	
-	/**
-	 * Called after the window is created
-	 */
 	public abstract void onLaunch();
 	
 	public abstract void registerImageOps(RegisterImageOps register);
+	
 	public abstract void registerTools(RegisterTools register);
 }

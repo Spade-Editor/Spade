@@ -25,11 +25,6 @@ public class RandomUtils
 {
 	private static final Random r = new Random();
 
-	public static int rInt()
-	{
-		return r.nextInt();
-	}
-
 	public static int rInt(int max)
 	{
 		return rInt(r, max);

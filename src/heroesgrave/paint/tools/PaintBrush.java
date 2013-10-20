@@ -41,6 +41,7 @@ package heroesgrave.paint.tools;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -75,15 +76,17 @@ public class PaintBrush extends Brush
 		menu.add(new JSeparator(JSeparator.VERTICAL));
 	}
 
-	public void brush(int x, int y)
+	public void brush(int x, int y, int button)
 	{
 		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
 			return;
-		if(slider.getValue() == 1)
-			buffer(new PixelChange(x, y, Paint.main.getColour()));
-		else
-		{
-			
+		if(slider.getValue() == 1) {
+		    if(button == MouseEvent.BUTTON1) {
+		        buffer(new PixelChange(x, y, Paint.main.getLeftColour()));
+		    }
+		    else if(button == MouseEvent.BUTTON3) {
+                buffer(new PixelChange(x, y, Paint.main.getRightColour()));
+            }
 		}
 	}
 }

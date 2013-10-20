@@ -19,6 +19,8 @@
 
 package heroesgrave.paint.tools;
 
+import java.awt.event.MouseEvent;
+
 import heroesgrave.paint.main.Paint;
 
 public class Picker extends Tool
@@ -28,24 +30,30 @@ public class Picker extends Tool
 		super(name);
 	}
 
-	public void onPressed(int x, int y)
+	public void onPressed(int x, int y, int button)
 	{
 
 	}
 
-	public void onReleased(int x, int y)
+	public void onReleased(int x, int y, int button)
 	{
 		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
 			return;
-		Paint.main.setColour(Paint.main.gui.canvas.getImage().getRGB(x, y));
+		
+        if(button == MouseEvent.BUTTON1) {
+            Paint.main.setLeftColour(Paint.main.gui.canvas.getImage().getRGB(x, y));
+        }
+        else if(button == MouseEvent.BUTTON3) {
+            Paint.main.setRightColour(Paint.main.gui.canvas.getImage().getRGB(x, y));
+        }
 	}
 
-	public void whilePressed(int x, int y)
+	public void whilePressed(int x, int y, int button)
 	{
 
 	}
 
-	public void whileReleased(int x, int y)
+	public void whileReleased(int x, int y, int button)
 	{
 
 	}
