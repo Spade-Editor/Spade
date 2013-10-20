@@ -53,6 +53,8 @@ public class Paint extends Application
 	public File openDir;
 
 	public Tool currentTool;
+	
+	public Selection selection;
 
     public static int leftColour = 0xff000000;
     public static int rightColour = 0xff000000;
@@ -65,6 +67,7 @@ public class Paint extends Application
 	public void init()
 	{
 		pluginManager = PluginManager.instance(this);
+		selection = new Selection();
 		gui = new GUIManager();
         setLeftColour(0xffffffff);
         setRightColour(0xff000000);

@@ -17,42 +17,57 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.main;
+package heroesgrave.paint.tools;
 
-import java.awt.image.BufferedImage;
+import heroesgrave.paint.main.Paint;
 
-public class PixelChange implements Change
+public class Select extends Tool
 {
-	public short x, y;
-	public int o, n;
-
-	public PixelChange(int x, int y, int n)
+	private int sx, sy;
+	
+	public Select(String name)
 	{
-		this.x = (short) x;
-		this.y = (short) y;
-		this.n = n;
+		super(name);
 	}
 
-	public BufferedImage apply(BufferedImage image)
+	public void onPressed(int x, int y)
 	{
-		o = image.getRGB(x, y);
-		image.setRGB(x, y, n);
-		return image;
+		sx = x;
+		sy = y;
 	}
 
-	public BufferedImage revert(BufferedImage image)
+	public void onReleased(int x, int y)
 	{
-		image.setRGB(x, y, o);
-		return image;
+		select(sx, sy, x, y);
+		sx = x;
+		sy = y;
+	}
+	
+	private void select(int x1, int y1, int x2, int y2)
+	{
+		int temp;
+		if(x2 < x1)
+		{
+			temp = x2;
+			x2 = x1;
+			x1 = temp;
+		}
+		if(y2 < y1)
+		{
+			temp = y2;
+			y2 = y1;
+			y1 = temp;
+		}
+		Paint.main.selection.select(Paint.main.gui.canvas.getImage(), x1, y1, x2-x1, y2-y1);
 	}
 
-	public int getSize()
+	public void whilePressed(int x, int y)
 	{
-		return 3;
+		
 	}
 
-	public boolean samePos(int x, int y)
+	public void whileReleased(int x, int y)
 	{
-		return (this.x == x && this.y == y);
+		
 	}
 }

@@ -21,38 +21,38 @@ package heroesgrave.paint.main;
 
 import java.awt.image.BufferedImage;
 
-public class PixelChange implements Change
+public class PartialImageChange implements Change
 {
-	public short x, y;
-	public int o, n;
-
-	public PixelChange(int x, int y, int n)
+	private short x, y;
+	private BufferedImage oldPart, newPart;
+	
+	public PartialImageChange(int x, int y, BufferedImage change)
 	{
 		this.x = (short) x;
 		this.y = (short) y;
-		this.n = n;
+		this.newPart = change;
 	}
 
 	public BufferedImage apply(BufferedImage image)
 	{
-		o = image.getRGB(x, y);
-		image.setRGB(x, y, n);
+		oldPart = image.getSubimage(x, y, newPart.getWidth(), newPart.getHeight());
+		image.getGraphics().drawImage(newPart, x, y, null);
 		return image;
 	}
-
+	
 	public BufferedImage revert(BufferedImage image)
 	{
-		image.setRGB(x, y, o);
+		image.getGraphics().drawImage(oldPart, x, y, null);
 		return image;
 	}
-
+	
 	public int getSize()
 	{
-		return 3;
+		return 1 + (oldPart.getWidth()*oldPart.getHeight());
 	}
-
+	
 	public boolean samePos(int x, int y)
 	{
-		return (this.x == x && this.y == y);
+		return false;
 	}
 }

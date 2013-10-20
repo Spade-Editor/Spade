@@ -46,6 +46,7 @@ public class PluginManager
 	public static PluginManager instance = null;
 	private File pluginRootDirectory;
 	private ArrayList<Plugin> loadedPlugins;
+	private PluginManagerViewer pluginViewer;
 	
 	public PluginManager(Paint paint)
 	{
@@ -69,7 +70,7 @@ public class PluginManager
 		}
 		
 		System.out.println("[PluginManager] Done searching. Found " + loadedPlugins.size() + " plugins.");
-
+		
 		System.out.println("[PluginManager] Loading Plugins...");
 		
 		for(Plugin plugin : this.loadedPlugins)
@@ -154,7 +155,6 @@ public class PluginManager
 				}
 				
 				// Get the actual class-name!
-				// -6 because of .class
 				String className = je.getName().replace(".class", "");
 				className = className.replace('/', '.');
 				
@@ -184,7 +184,24 @@ public class PluginManager
 						{
 							Plugin newPluginInstance = pluginClass.newInstance();
 							this.loadedPlugins.add(newPluginInstance);
+							
 							System.out.println("[PluginManager] Plugin " + newPluginInstance.name + " loaded.");
+							
+							// Create info object.
+							newPluginInstance.info = new Properties();
+							
+							// Format 'Size'
+							newPluginInstance.info.put("size", humanReadableByteCount(possiblePluginRoot.length(), true));
+							
+							// Format 'Description'
+							newPluginInstance.info.put("description", ((String) props.get("description")).replace("\\n", "\n"));
+							
+							// Author
+							newPluginInstance.info.put("author", ((String) props.get("author")));
+							// Version (defined by author)
+							newPluginInstance.info.put("version", ((String) props.get("version")));
+							// Date updated (defined by author)
+							newPluginInstance.info.put("updated", ((String) props.get("updated")));
 						}
 						catch(ReflectiveOperationException e1)
 						{
@@ -207,6 +224,16 @@ public class PluginManager
 			e.printStackTrace();
 			return;
 		}
+	}
+	
+	private static String humanReadableByteCount(long bytes, boolean si)
+	{
+		int unit = si ? 1000 : 1024;
+		if(bytes < unit)
+			return bytes + " B";
+		int exp = (int) (Math.log(bytes) / Math.log(unit));
+		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
 	
 	public static PluginManager instance(Paint paint)
@@ -242,8 +269,10 @@ public class PluginManager
 	public void frameCreationEvent(JFrame frame)
 	{
 		//System.out.println("[Event] Frame creation.");
+		
+		pluginViewer = new PluginManagerViewer(this);
 	}
-
+	
 	public void onLaunch()
 	{
 		for(Plugin plugin : loadedPlugins)
@@ -251,4 +280,15 @@ public class PluginManager
 			plugin.onLaunch();
 		}
 	}
+	
+	public void showPluginManager()
+	{
+		pluginViewer.show();
+	}
+	
+	public ArrayList<Plugin> getPluginList()
+	{
+		return this.loadedPlugins;
+	}
+	
 }
