@@ -30,13 +30,13 @@ public class Select extends Tool
 		super(name);
 	}
 
-	public void onPressed(int x, int y)
+	public void onPressed(int x, int y, int button)
 	{
 		sx = x;
 		sy = y;
 	}
 
-	public void onReleased(int x, int y)
+	public void onReleased(int x, int y, int button)
 	{
 		select(sx, sy, x, y);
 		sx = x;
@@ -61,12 +61,12 @@ public class Select extends Tool
 		Paint.main.selection.select(Paint.main.gui.canvas.getImage(), x1, y1, x2-x1, y2-y1);
 	}
 
-	public void whilePressed(int x, int y)
+	public void whilePressed(int x, int y, int button)
 	{
 		
 	}
 
-	public void whileReleased(int x, int y)
+	public void whileReleased(int x, int y, int button)
 	{
 		
 	}

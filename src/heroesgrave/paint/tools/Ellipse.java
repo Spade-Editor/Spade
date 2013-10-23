@@ -20,15 +20,16 @@
 package heroesgrave.paint.tools;
 
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 
-import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.main.PixelChange;
-import heroesgrave.utils.math.MathUtils;
+import heroesgrave.paint.main.ShapeChange;
 
 public class Ellipse extends Tool
 {
-	private int sx, sy;
+    int sx, sy;
+	private Ellipse2D.Float ellipse;
+	private ShapeChange shapeChange;
 
 	public Ellipse(String name)
 	{
@@ -37,19 +38,30 @@ public class Ellipse extends Tool
 
 	public void onPressed(int x, int y, int button)
 	{
-		sx = x;
-		sy = y;
+	    sx = x;
+	    sy = y;
+	    ellipse = new Ellipse2D.Float(x, y, 1, 1);
+        if(button == MouseEvent.BUTTON1) {
+            shapeChange = new ShapeChange(ellipse, Paint.main.getLeftColour());
+        }
+        else if(button == MouseEvent.BUTTON3) {
+            shapeChange = new ShapeChange(ellipse, Paint.main.getRightColour());
+        }
+        Paint.main.gui.canvas.preview(shapeChange);
 	}
 
 	public void onReleased(int x, int y, int button)
 	{
-		circle(sx, sy, Math.abs(x - sx), Math.abs(y - sy), button);
-		Paint.main.gui.canvas.applyPreview();
+        adjustEllipse(x, y);
+
+        Paint.main.gui.canvas.applyPreview();
 	}
 
 	public void whilePressed(int x, int y, int button)
 	{
-		circle(sx, sy, Math.abs(x - sx), Math.abs(y - sy), button);
+	    adjustEllipse(x, y);
+        
+        Paint.main.gui.canvas.preview(shapeChange);
 	}
 
 	public void whileReleased(int x, int y, int button)
@@ -57,50 +69,20 @@ public class Ellipse extends Tool
 
 	}
 
-	public void circle(int cx, int cy, float rx, float ry, int button)
-	{
-		Paint.main.gui.canvas.clearPreview();
-
-		if(Input.CTRL)
-		{
-			rx = ry = Math.max(rx, ry);
-		}
-
-		for(int i = (int) (cx - rx); i <= cx + rx; i++)
-		{
-			float ex = (float) i - cx;
-
-			float j = 1f - ((ex * ex) / (rx * rx));
-			j = j * ry * ry;
-			j = (float) Math.sqrt(j);
-
-			brush(i, MathUtils.floor(cy + j), button);
-			brush(i, MathUtils.ceil(cy - j), button);
-		}
-
-		for(int j = (int) (cy - ry); j <= cy + ry; j++)
-		{
-			float ey = (float) j - cy;
-
-			float i = 1f - ((ey * ey) / (ry * ry));
-			i = i * rx * rx;
-			i = (float) Math.sqrt(i);
-
-			brush(MathUtils.floor(cx + i), j, button);
-			brush(MathUtils.ceil(cx - i), j, button);
-		}
-	}
-
-	public void brush(int x, int y, int button)
-	{
-		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
-			return;
-		Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
-        if(button == MouseEvent.BUTTON1) {
-            Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
+	private void adjustEllipse(int x, int y) {
+        ellipse.width = Math.abs(x - sx);
+        ellipse.height = Math.abs(y - sy);
+        if(x < sx) {
+            ellipse.x = x;
         }
-        else if(button == MouseEvent.BUTTON3) {
-            Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getRightColour()));
+        else {
+            ellipse.x = sx;
+        }
+        if(y < sy) {
+            ellipse.y = y;
+        }
+        else {
+            ellipse.y = sy;
         }
 	}
 }

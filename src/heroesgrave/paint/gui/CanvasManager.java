@@ -31,6 +31,8 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
@@ -52,15 +54,18 @@ public class CanvasManager
 
 	public CanvasManager()
 	{
-		image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D) image.getGraphics();
-		g.setBackground(Color.WHITE);
-		g.clearRect(0, 0, 800, 600);
-		g.dispose();
-
+	    initImage();
+	    
 		canvas = new Canvas(image);
 	}
 
+	private void initImage() {
+        image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = (Graphics2D) image.getGraphics();
+        g.setBackground(Color.WHITE);
+        g.clearRect(0, 0, 800, 600);
+        g.dispose();
+	}
 	public void clearPreview()
 	{
 		previewing.clear();
@@ -71,15 +76,17 @@ public class CanvasManager
 
 	public void preview(Change change)
 	{
-		if(preview == null)
-		{
+//		if(preview == null)
+//		{
 			preview = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			preview.getGraphics().drawImage(image, 0, 0, null);
 			canvas.setImage(preview);
 			canvas.repaint();
-		}
+//		}
 		
-		previewing.add(change);
+		if(!previewing.contains(change)) {
+		    previewing.add(change);
+		}
 		change.apply(preview);
 		canvas.repaint();
 	}
@@ -101,8 +108,10 @@ public class CanvasManager
 			setImage(nimage);
 		}
 
-		changes.add(change);
-		size += change.getSize();
+		if(!changes.contains(change)) {
+    		changes.add(change);
+    		size += change.getSize();
+		}
 		canvas.repaint();
 
 		if(!reverted.isEmpty())
@@ -124,7 +133,9 @@ public class CanvasManager
 	public void bufferChange(Change change)
 	{
 		change.apply(image);
-		buffering.add(change);
+		if(!buffering.contains(change)) {
+		    buffering.add(change);
+		}
 		canvas.repaint();
 	}
 
@@ -192,14 +203,14 @@ public class CanvasManager
 		if(changes.isEmpty())
 			return;
 		Change change = changes.removeLast();
+        reverted.add(change);
 
-		BufferedImage nimage = change.revert(image);
-		if(nimage != image)
-		{
-			setImage(nimage);
+		initImage();
+		
+		for(Change c:changes) {
+		    c.apply(image);
 		}
-
-		reverted.add(change);
+		setImage(image);
 		canvas.repaint();
 		Paint.main.saved = false;
 	}
@@ -227,7 +238,6 @@ public class CanvasManager
 		canvas.setImage(this.image);
 		canvas.repaint();
 		canvas.revalidate();
-		changes.clear();
 	}
 
 	public JPanel getCanvas()
