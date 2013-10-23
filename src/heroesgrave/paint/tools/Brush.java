@@ -38,16 +38,22 @@ public abstract class Brush extends Tool
 		super(name);
 	}
 
-	public void buffer(PixelChange c)
-	{
-		for(Change ch : buffer)
-		{
-			if(ch.samePos(c.x, c.y))
-				return;
-		}
-		buffer.add(c);
-		Paint.main.gui.canvas.bufferChange(c);
-	}
+    public void buffer(Change c)
+    {
+        buffer.add(c);
+        Paint.main.gui.canvas.bufferChange(c);
+    }
+
+    public void buffer(PixelChange c)
+    {
+        for(Change ch : buffer)
+        {
+            if(ch.samePos(c.x, c.y))
+                return;
+        }
+        buffer.add(c);
+        Paint.main.gui.canvas.bufferChange(c);
+    }
 
 	public void buffer(MultiChange c)
 	{

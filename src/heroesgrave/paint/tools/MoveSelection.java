@@ -30,20 +30,20 @@ public class MoveSelection extends Tool
 		super(name);
 	}
 
-	public void onPressed(int x, int y)
+	public void onPressed(int x, int y, int button)
 	{
 		lx = x;
 		ly = y;
 		Paint.main.selection.startFloating();
 	}
 
-	public void onReleased(int x, int y)
+	public void onReleased(int x, int y, int button)
 	{
 		lx = x;
 		ly = y;
 	}
 
-	public void whilePressed(int x, int y)
+	public void whilePressed(int x, int y, int button)
 	{
 		Paint.main.selection.translate(x-lx, y-ly);
 		lx = x;
@@ -51,7 +51,7 @@ public class MoveSelection extends Tool
 	}
 
 	@Override
-	public void whileReleased(int x, int y)
+	public void whileReleased(int x, int y, int button)
 	{
 	}
 }

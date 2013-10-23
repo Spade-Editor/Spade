@@ -39,9 +39,11 @@ package heroesgrave.paint.tools;
 
 
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
+import java.awt.geom.GeneralPath;
 
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -49,17 +51,19 @@ import javax.swing.JSlider;
 
 import heroesgrave.paint.gui.ColourChooser.CentredLabel;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.main.PixelChange;
-import heroesgrave.paint.tools.Brush;
+import heroesgrave.paint.main.ShapeChange;
 
-public class PaintBrush extends Brush
+public class PaintBrush extends Tool
 {
 	private JSlider slider;
+    private GeneralPath pixels;
+    private ShapeChange shapeChange;
 	
 	public PaintBrush(String name)
 	{
 		super(name);
 		slider = new JSlider(1, 8, 1);
+		slider.setFocusable(false);
 		
 		menu.setLayout(new GridLayout(1, 8));
 		
@@ -76,17 +80,38 @@ public class PaintBrush extends Brush
 		menu.add(new JSeparator(JSeparator.VERTICAL));
 	}
 
-	public void brush(int x, int y, int button)
-	{
-		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
-			return;
-		if(slider.getValue() == 1) {
-		    if(button == MouseEvent.BUTTON1) {
-		        buffer(new PixelChange(x, y, Paint.main.getLeftColour()));
-		    }
-		    else if(button == MouseEvent.BUTTON3) {
-                buffer(new PixelChange(x, y, Paint.main.getRightColour()));
-            }
-		}
-	}
+    @Override
+    public void onPressed(int x, int y, int button) {
+        pixels = new GeneralPath();
+        pixels.moveTo(x, y);
+        if(button == MouseEvent.BUTTON1) {
+            shapeChange = new ShapeChange(pixels, Paint.main.getLeftColour(), new BasicStroke(slider.getValue(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        }
+        else if(button == MouseEvent.BUTTON3) {
+            shapeChange = new ShapeChange(pixels, Paint.main.getRightColour(), new BasicStroke(slider.getValue(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        }
+        Paint.main.gui.canvas.preview(shapeChange);
+    }
+
+    @Override
+    public void onReleased(int x, int y, int button) {
+        if(pixels != null) {
+            pixels.lineTo(x, y);
+            Paint.main.gui.canvas.applyPreview();
+        }
+        pixels = null;
+        shapeChange = null;
+    }
+
+    @Override
+    public void whilePressed(int x, int y, int button) {
+        if(pixels != null) {
+            pixels.lineTo(x, y);
+            Paint.main.gui.canvas.preview(shapeChange);
+        }
+    }
+
+    @Override
+    public void whileReleased(int x, int y, int button) {
+    }
 }
