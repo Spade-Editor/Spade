@@ -24,12 +24,12 @@ import java.awt.image.BufferedImage;
 public class MultiChange implements Change
 {
 	public Change[] changes;
-
+	
 	public MultiChange(Change... c)
 	{
 		this.changes = c;
 	}
-
+	
 	public BufferedImage apply(BufferedImage image)
 	{
 		for(int i = 0; i < changes.length; i++)
@@ -38,7 +38,7 @@ public class MultiChange implements Change
 		}
 		return image;
 	}
-
+	
 	public BufferedImage revert(BufferedImage image)
 	{
 		for(int i = changes.length - 1; i >= 0; i--)
@@ -47,7 +47,7 @@ public class MultiChange implements Change
 		}
 		return image;
 	}
-
+	
 	public int getSize()
 	{
 		int size = 0;
@@ -57,7 +57,7 @@ public class MultiChange implements Change
 		}
 		return size;
 	}
-
+	
 	public boolean samePos(int x, int y)
 	{
 		for(Change c : changes)

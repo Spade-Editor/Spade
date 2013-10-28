@@ -45,53 +45,53 @@ import javax.swing.filechooser.FileFilter;
 public class Paint extends Application
 {
 	public static Paint main = new Paint();
-
+	
 	public GUIManager gui;
 	public heroesgrave.paint.plugin.PluginManager pluginManager;
-
+	
 	public File openFile;
 	public File openDir;
-
+	
 	public Tool currentTool;
 	
 	public Selection selection;
-
-    public static int leftColour = 0xff000000;
-    public static int rightColour = 0xff000000;
-
+	
+	public static int leftColour = 0xff000000;
+	public static int rightColour = 0xffffffff;
+	
 	public boolean saved = true;
-
+	
 	private static HashMap<String, Tool> tools = new HashMap<String, Tool>();
 	private static HashMap<String, ImageOp> imageOps = new HashMap<String, ImageOp>();
-
+	
 	public void init()
 	{
 		pluginManager = PluginManager.instance(this);
 		selection = new Selection();
 		gui = new GUIManager();
-        setLeftColour(0xffffffff);
-        setRightColour(0xff000000);
+		setRightColour(0xffffffff);
+		setLeftColour(0xff000000);
 		setTool(currentTool);
 		pluginManager.onLaunch();
 	}
-
+	
 	public void update()
 	{
 		gui.info.setSaved(saved);
 		gui.info.setScale(gui.canvas.getScale());
 		gui.setFile(openFile);
 	}
-
+	
 	public void render()
 	{
-
+		
 	}
-
+	
 	public void dispose()
 	{
-
+		
 	}
-
+	
 	public void newImage(final int width, final int height)
 	{
 		if(!saved)
@@ -101,20 +101,20 @@ public class Paint extends Application
 			newImage.setAlwaysOnTop(true);
 			newImage.setAutoRequestFocus(true);
 			newImage.setLayout(new BorderLayout());
-
+			
 			JButton save = new JButton("Save & Create New Image");
 			JButton dispose = new JButton("Create new image without saving");
 			JButton cancel = new JButton("Don't create new image");
-
+			
 			newImage.add(save, BorderLayout.NORTH);
 			newImage.add(dispose, BorderLayout.CENTER);
 			newImage.add(cancel, BorderLayout.SOUTH);
-
+			
 			newImage.pack();
 			newImage.setResizable(false);
 			newImage.setVisible(true);
 			newImage.setLocationRelativeTo(null);
-
+			
 			save.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
@@ -145,7 +145,7 @@ public class Paint extends Application
 			createImage(width, height);
 		}
 	}
-
+	
 	private void createImage(int width, int height)
 	{
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -156,45 +156,45 @@ public class Paint extends Application
 		gui.canvas.setImage(image);
 		this.openFile = null;
 	}
-
+	
 	public static void addTool(String key, Tool tool)
 	{
 		tools.put(key.toLowerCase(), tool);
 	}
-
+	
 	public static void addImageOp(String key, ImageOp op)
 	{
 		imageOps.put(key.toLowerCase(), op);
 	}
-
+	
 	public static Tool getTool(String key)
 	{
 		return tools.get(key.toLowerCase());
 	}
-
+	
 	public static ImageOp getImageOp(String key)
 	{
 		return imageOps.get(key.toLowerCase());
 	}
-
+	
 	public static void main(String[] args)
 	{
 		IOUtils.setMainClass(Paint.class);
 		Application.launch(main);
 	}
-
+	
 	public static void addChange(Change change)
 	{
 		main.gui.canvas.addChange(change);
 	}
-
+	
 	public static void setTool(Tool tool)
 	{
 		main.currentTool = tool;
 		main.gui.info.setTool(tool);
 		main.gui.setToolOption(tool.getOptions());
 	}
-
+	
 	public static void save()
 	{
 		if(Paint.main.openFile != null)
@@ -216,7 +216,7 @@ public class Paint extends Application
 			saveAs();
 		}
 	}
-
+	
 	public static void saveAs()
 	{
 		JFileChooser chooser = new JFileChooser(Paint.main.openDir);
@@ -233,15 +233,15 @@ public class Paint extends Application
 					return true;
 				return false;
 			}
-
+			
 			public String getDescription()
 			{
 				return "Supported export image formats (.png)";
 			}
 		});
-
+		
 		int returned = chooser.showSaveDialog(new CentredJDialog());
-
+		
 		if(returned == JFileChooser.APPROVE_OPTION)
 		{
 			Paint.main.openFile = chooser.getSelectedFile();
@@ -259,28 +259,28 @@ public class Paint extends Application
 			main.saved = true;
 		}
 	}
-
-    public void setLeftColour(int c)
-    {
-        gui.chooser.setLeftColour(c);
-        gui.info.setLeftColour(c);
-        this.leftColour = c;
-    }
-
-    public int getLeftColour()
-    {
-        return this.leftColour;
-    }
-    
-    public void setRightColour(int c)
-    {
-        gui.chooser.setRightColour(c);
-        gui.info.setRightColour(c);
-        this.rightColour = c;
-    }
-
-    public int getRightColour()
-    {
-        return this.rightColour;
-    }
+	
+	public void setLeftColour(int c)
+	{
+		gui.chooser.setLeftColour(c);
+		gui.info.setLeftColour(c);
+		Paint.leftColour = c;
+	}
+	
+	public int getLeftColour()
+	{
+		return Paint.leftColour;
+	}
+	
+	public void setRightColour(int c)
+	{
+		gui.chooser.setRightColour(c);
+		gui.info.setRightColour(c);
+		Paint.rightColour = c;
+	}
+	
+	public int getRightColour()
+	{
+		return Paint.rightColour;
+	}
 }

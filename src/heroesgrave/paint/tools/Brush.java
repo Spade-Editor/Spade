@@ -30,14 +30,14 @@ import java.util.ArrayList;
 public abstract class Brush extends Tool
 {
 	private int lastX, lastY;
-
+	
 	private ArrayList<Change> buffer = new ArrayList<Change>();
-
+	
 	public Brush(String name)
 	{
 		super(name);
 	}
-
+	
 	public void buffer(PixelChange c)
 	{
 		for(Change ch : buffer)
@@ -48,7 +48,7 @@ public abstract class Brush extends Tool
 		buffer.add(c);
 		Paint.main.gui.canvas.bufferChange(c);
 	}
-
+	
 	public void buffer(MultiChange c)
 	{
 		for(Change change : c.changes)
@@ -63,27 +63,27 @@ public abstract class Brush extends Tool
 			}
 		}
 	}
-
+	
 	public void flush()
 	{
 		buffer.clear();
 		Paint.main.gui.canvas.flushChanges();
 	}
-
+	
 	public void onPressed(int x, int y, int button)
 	{
 		lastX = x;
 		lastY = y;
 		brush(x, y, button);
 	}
-
+	
 	public void onReleased(int x, int y, int button)
 	{
 		lastX = x;
 		lastY = y;
 		flush();
 	}
-
+	
 	public void whilePressed(int x, int y, int button)
 	{
 		if(x != lastX || y != lastY)
@@ -93,14 +93,14 @@ public abstract class Brush extends Tool
 			lastY = y;
 		}
 	}
-
+	
 	private void stroke(int x1, int y1, int x2, int y2, int button)
 	{
 		float dx = x2 - x1;
 		float dy = y2 - y1;
-
+		
 		float grad;
-
+		
 		if(Math.abs(dx) > Math.abs(dy))
 		{
 			grad = dy / dx;
@@ -138,12 +138,12 @@ public abstract class Brush extends Tool
 			}
 		}
 	}
-
+	
 	public void whileReleased(int x, int y, int button)
 	{
 		lastX = x;
 		lastY = y;
 	}
-
+	
 	public abstract void brush(int x, int y, int button);
 }

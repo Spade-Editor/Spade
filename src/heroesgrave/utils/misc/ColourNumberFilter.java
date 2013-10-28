@@ -33,7 +33,7 @@ public class ColourNumberFilter extends DocumentFilter
 		v = MathUtils.clamp(v, 255, 0);
 		fb.insertString(off, "" + v, att);
 	}
-
+	
 	public void replace(FilterBypass fb, int off, int len, String str, AttributeSet att) throws BadLocationException
 	{
 		int v = Integer.parseInt(str.replaceAll("\\D++", ""));

@@ -48,15 +48,15 @@ public class GUIManager
 	private JPanel panel, menus;
 	private JMenuBar menuBar;
 	private JScrollPane canvasZone;
-
+	
 	public CanvasManager canvas;
 	public ColourChooser chooser;
 	public InfoMenu info;
 	
 	private JMenuBar toolOptions;
-
+	
 	private Input input = new Input();
-
+	
 	public GUIManager()
 	{
 		/* Remove/Add Slash at the end of this line to switch between Nimbus L&F and the Default */
@@ -76,13 +76,13 @@ public class GUIManager
 			e.printStackTrace();
 		}
 		/**/
-
+		
 		initFrame();
 		initMenu();
 		initInputs();
 		createCanvas();
 		finish();
-
+		
 		chooser = new ColourChooser();
 	}
 	
@@ -96,47 +96,47 @@ public class GUIManager
 		menus.add(toolOptions);
 		toolOptions.revalidate();
 	}
-
+	
 	public void setTitle(String title)
 	{
 		frame.setTitle(title);
 	}
-
+	
 	public void createCanvas()
 	{
 		canvas = new CanvasManager();
-
+		
 		JPanel panel = new JPanel();
 		panel.add(canvas.getCanvas());
-
+		
 		canvasZone = new JScrollPane(panel);
 		canvasZone.addMouseWheelListener(input);
 		canvasZone.getVerticalScrollBar().setUnitIncrement(16);
 		canvasZone.getHorizontalScrollBar().setUnitIncrement(16);
 		this.panel.add(canvasZone, BorderLayout.CENTER);
 	}
-
+	
 	public void initMenu()
 	{
 		info = new InfoMenu();
-
+		
 		menus = new JPanel();
 		menus.setLayout(new GridLayout(0, 1));
-
+		
 		menuBar = Menu.createMenuBar();
 		JMenuBar infoBar = info.createInfoMenuBar();
-
+		
 		menus.add(menuBar);
 		menus.add(infoBar);
-
+		
 		panel.add(menus, BorderLayout.NORTH);
 	}
-
+	
 	public void setFile(File file)
 	{
 		frame.setTitle((file == null ? "Untitled" : file.getAbsolutePath()) + " - Paint.JAVA");
 	}
-
+	
 	public void initFrame()
 	{
 		frame = new JFrame("Untitled - Paint.JAVA");
@@ -146,35 +146,35 @@ public class GUIManager
 			{
 				if(Paint.main.saved)
 				{
-                    UserPreferences.savePrefs(frame);
+					UserPreferences.savePrefs(frame);
 					Paint.main.terminate = true;
 					return;
 				}
-
+				
 				final JDialog close = new CentredJDialog();
 				close.setTitle("Save before you quit?");
 				close.setAlwaysOnTop(true);
 				close.setAutoRequestFocus(true);
 				close.setLayout(new BorderLayout());
-
+				
 				JButton save = new JButton("Save & Quit");
 				JButton dispose = new JButton("Quit without saving");
 				JButton cancel = new JButton("Don't Quit");
-
+				
 				close.add(save, BorderLayout.NORTH);
 				close.add(dispose, BorderLayout.CENTER);
 				close.add(cancel, BorderLayout.SOUTH);
-
+				
 				close.pack();
 				close.setResizable(false);
 				close.setVisible(true);
-
+				
 				save.addActionListener(new ActionListener()
 				{
 					public void actionPerformed(ActionEvent e)
 					{
 						Paint.save();
-                        UserPreferences.savePrefs(frame);
+						UserPreferences.savePrefs(frame);
 						Paint.main.terminate = true;
 						close.dispose();
 					}
@@ -183,7 +183,7 @@ public class GUIManager
 				{
 					public void actionPerformed(ActionEvent e)
 					{
-                        UserPreferences.savePrefs(frame);
+						UserPreferences.savePrefs(frame);
 						Paint.main.terminate = true;
 						close.dispose();
 					}
@@ -202,21 +202,21 @@ public class GUIManager
 		heroesgrave.paint.plugin.PluginManager.instance.frameCreationEvent(frame);
 		
 		panel = (JPanel) frame.getContentPane();
-
+		
 		panel.setLayout(new BorderLayout());
 	}
-
+	
 	public void finish()
 	{
-	    UserPreferences.loadPrefs(frame);
+		UserPreferences.loadPrefs(frame);
 		frame.setVisible(true);
 		frame.setResizable(true);
 	}
-
+	
 	public void initInputs()
 	{
 		Input in = new Input();
-
+		
 		frame.addKeyListener(in);
 		frame.addMouseWheelListener(in);
 	}

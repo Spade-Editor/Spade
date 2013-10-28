@@ -29,17 +29,17 @@ import java.net.URISyntaxException;
 public class IOUtils
 {
 	private static Class<?> MAIN_CLASS;
-
+	
 	private IOUtils()
 	{
-
+		
 	}
-
+	
 	public static void setMainClass(Class<?> c)
 	{
 		MAIN_CLASS = c;
 	}
-
+	
 	public static String jarDir()
 	{
 		try
@@ -52,7 +52,7 @@ public class IOUtils
 			return null;
 		}
 	}
-
+	
 	public static String assemblePath(String... path)
 	{
 		String fullPath = "";
@@ -62,7 +62,7 @@ public class IOUtils
 		}
 		return fullPath;
 	}
-
+	
 	public static String fileToString(String path)
 	{
 		StringBuffer sBuffer = new StringBuffer();
@@ -70,9 +70,9 @@ public class IOUtils
 		{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
 			char[] buffer = new char[1024];
-
+			
 			int c;
-
+			
 			while((c = reader.read(buffer, 0, buffer.length)) != -1)
 			{
 				sBuffer.append(buffer, 0, c);
@@ -83,17 +83,17 @@ public class IOUtils
 		{
 			e.printStackTrace();
 		}
-
+		
 		return sBuffer.toString();
 	}
-
+	
 	public static String fileToStringOneLine(String path)
 	{
 		String string = new String();
 		try
 		{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
-
+			
 			String line;
 			while((line = reader.readLine()) != null)
 			{
@@ -105,7 +105,7 @@ public class IOUtils
 		{
 			e.printStackTrace();
 		}
-
+		
 		return string;
 	}
 }

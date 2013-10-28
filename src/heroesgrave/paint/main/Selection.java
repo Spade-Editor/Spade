@@ -37,23 +37,6 @@ public class Selection
 		this.y = y;
 		System.out.println("Selected");
 	}
-
-	public void drop()
-	{
-		Paint.addChange(new PartialImageChange(x, y, image));
-		this.image = null;
-	}
-	
-	public void startFloating()
-	{
-		floating = true;
-	}
-	
-	public void stopFloating()
-	{
-		floating = false;
-		Paint.addChange(new PartialImageChange(x, y, image));
-	}
 	
 	public boolean isEmpty()
 	{

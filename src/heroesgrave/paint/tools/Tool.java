@@ -26,7 +26,7 @@ public abstract class Tool
 	public final String name;
 	
 	protected final JMenuBar menu;
-
+	
 	public Tool(String name)
 	{
 		this.name = name;
@@ -37,12 +37,12 @@ public abstract class Tool
 	{
 		return menu;
 	}
-
+	
 	public abstract void onPressed(int x, int y, int button);
-
+	
 	public abstract void onReleased(int x, int y, int button);
-
+	
 	public abstract void whilePressed(int x, int y, int button);
-
+	
 	public abstract void whileReleased(int x, int y, int button);
 }

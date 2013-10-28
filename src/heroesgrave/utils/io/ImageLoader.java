@@ -29,13 +29,13 @@ public class ImageLoader
 {
 	private ImageLoader()
 	{
-
+		
 	}
-
+	
 	public static BufferedImage loadImage(String path)
 	{
 		File file = new File(path);
-
+		
 		if(file.exists())
 		{
 			try
@@ -49,14 +49,14 @@ public class ImageLoader
 		}
 		else
 			throw new RuntimeException("The resource \"" + path + "\" was missing!");
-
+		
 		return null;
 	}
-
+	
 	public static void writeImage(BufferedImage image, String format, String path)
 	{
 		File file = new File(path);
-
+		
 		try
 		{
 			if(!file.exists())

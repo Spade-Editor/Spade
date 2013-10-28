@@ -25,22 +25,22 @@ public class MathUtils
 	private static final double FLOOR = INT + 0.0000;
 	private static final double CEIL = INT + 0.9999;
 	private static final double ROUND = INT + 0.5000;
-
+	
 	public static final int floor(double d)
 	{
 		return (int) (d + FLOOR) - INT;
 	}
-
+	
 	public static final int ceil(double d)
 	{
 		return (int) (d + CEIL) - INT;
 	}
-
+	
 	public static final int round(double d)
 	{
 		return (int) (d + ROUND) - INT;
 	}
-
+	
 	public static final int roundToPowerOf(int i, int powerOf)
 	{
 		int j = 0;
@@ -52,7 +52,7 @@ public class MathUtils
 				return k;
 		}
 	}
-
+	
 	public static final int pow(int i, int pow)
 	{
 		if(pow == 0 || i == 0)
@@ -74,7 +74,7 @@ public class MathUtils
 		}
 		return r;
 	}
-
+	
 	public static final double clamp(double d, double max, double min)
 	{
 		if(d >= max)
@@ -83,7 +83,7 @@ public class MathUtils
 			return min;
 		return d;
 	}
-
+	
 	public static final int clamp(int i, int max, int min)
 	{
 		if(i >= max)
@@ -92,7 +92,7 @@ public class MathUtils
 			return min;
 		return i;
 	}
-
+	
 	public static final double round(double d, int dp)
 	{
 		double mult = Math.pow(10, dp);
@@ -100,17 +100,17 @@ public class MathUtils
 		int i = MathUtils.round(d);
 		return i / mult;
 	}
-
+	
 	public static final int divideAndFloor(double a, double b)
 	{
 		return floor(a / b);
 	}
-
+	
 	public static float interp(float x, float y)
 	{
 		return (x - y) / 2F + y;
 	}
-
+	
 	public static float difference(float x, float y)
 	{
 		return Math.abs(x - y);

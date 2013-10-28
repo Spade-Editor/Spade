@@ -39,7 +39,7 @@ public class Invert extends ImageOp
 				newImage.setRGB(i, j, (c | a));
 			}
 		}
-
+		
 		Paint.addChange(new ImageChange(newImage));
 	}
 }

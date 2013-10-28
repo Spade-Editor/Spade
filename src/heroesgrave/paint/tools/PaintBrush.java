@@ -18,6 +18,7 @@
 */
 
 package heroesgrave.paint.tools;
+
 /*
  *	Copyright 2013 HeroesGrave
  *
@@ -36,8 +37,6 @@ package heroesgrave.paint.tools;
  *	You should have received a copy of the GNU General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
-
-
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -75,18 +74,21 @@ public class PaintBrush extends Brush
 		menu.add(new JSeparator(JSeparator.VERTICAL));
 		menu.add(new JSeparator(JSeparator.VERTICAL));
 	}
-
+	
 	public void brush(int x, int y, int button)
 	{
 		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
 			return;
-		if(slider.getValue() == 1) {
-		    if(button == MouseEvent.BUTTON1) {
-		        buffer(new PixelChange(x, y, Paint.main.getLeftColour()));
-		    }
-		    else if(button == MouseEvent.BUTTON3) {
-                buffer(new PixelChange(x, y, Paint.main.getRightColour()));
-            }
+		if(slider.getValue() == 1)
+		{
+			if(button == MouseEvent.BUTTON1)
+			{
+				buffer(new PixelChange(x, y, Paint.main.getLeftColour()));
+			}
+			else if(button == MouseEvent.BUTTON3)
+			{
+				buffer(new PixelChange(x, y, Paint.main.getRightColour()));
+			}
 		}
 	}
 }

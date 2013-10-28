@@ -28,33 +28,33 @@ import heroesgrave.utils.math.MathUtils;
 public class Line extends Tool
 {
 	private int startX, startY;
-
+	
 	public Line(String name)
 	{
 		super(name);
 	}
-
+	
 	public void onPressed(int x, int y, int button)
 	{
 		startX = x;
 		startY = y;
 	}
-
+	
 	public void onReleased(int x, int y, int button)
 	{
 		stroke(startX, startY, x, y, button);
 		Paint.main.gui.canvas.applyPreview();
 	}
-
+	
 	private void stroke(int x1, int y1, int x2, int y2, int button)
 	{
 		Paint.main.gui.canvas.clearPreview();
-
+		
 		float dx = x2 - x1;
 		float dy = y2 - y1;
-
+		
 		float grad;
-
+		
 		if(Math.abs(dx) > Math.abs(dy))
 		{
 			grad = dy / dx;
@@ -92,26 +92,28 @@ public class Line extends Tool
 			}
 		}
 	}
-
+	
 	public void brush(int x, int y, int button)
 	{
 		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
 			return;
-        if(button == MouseEvent.BUTTON1) {
-            Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
-        }
-        else if(button == MouseEvent.BUTTON3) {
-            Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getRightColour()));
-        }
+		if(button == MouseEvent.BUTTON1)
+		{
+			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
+		}
+		else if(button == MouseEvent.BUTTON3)
+		{
+			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getRightColour()));
+		}
 	}
-
+	
 	public void whilePressed(int x, int y, int button)
 	{
 		stroke(startX, startY, x, y, button);
 	}
-
+	
 	public void whileReleased(int x, int y, int button)
 	{
-
+		
 	}
 }

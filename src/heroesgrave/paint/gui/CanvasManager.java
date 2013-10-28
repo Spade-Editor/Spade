@@ -45,11 +45,11 @@ public class CanvasManager
 	private LinkedList<Change> buffering = new LinkedList<Change>();
 	private LinkedList<Change> previewing = new LinkedList<Change>();
 	private int size;
-
+	
 	private static final int MAX_SIZE = 2 << 21;
-
+	
 	private float zoom = 1;
-
+	
 	public CanvasManager()
 	{
 		image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
@@ -57,10 +57,10 @@ public class CanvasManager
 		g.setBackground(Color.WHITE);
 		g.clearRect(0, 0, 800, 600);
 		g.dispose();
-
+		
 		canvas = new Canvas(image);
 	}
-
+	
 	public void clearPreview()
 	{
 		previewing.clear();
@@ -68,7 +68,7 @@ public class CanvasManager
 		canvas.repaint();
 		preview = null;
 	}
-
+	
 	public void preview(Change change)
 	{
 		if(preview == null)
@@ -83,16 +83,16 @@ public class CanvasManager
 		change.apply(preview);
 		canvas.repaint();
 	}
-
+	
 	public void applyPreview()
 	{
 		Change[] c = new Change[previewing.size()];
 		previewing.toArray(c);
-
+		
 		addChange(new MultiChange(c));
 		clearPreview();
 	}
-
+	
 	public void addChange(Change change)
 	{
 		BufferedImage nimage = change.apply(image);
@@ -100,11 +100,11 @@ public class CanvasManager
 		{
 			setImage(nimage);
 		}
-
+		
 		changes.add(change);
 		size += change.getSize();
 		canvas.repaint();
-
+		
 		if(!reverted.isEmpty())
 		{
 			for(Change c : reverted)
@@ -113,32 +113,32 @@ public class CanvasManager
 			}
 			reverted.clear();
 		}
-
+		
 		while(size > MAX_SIZE)
 		{
 			size -= changes.removeFirst().getSize();
 		}
 		Paint.main.saved = false;
 	}
-
+	
 	public void bufferChange(Change change)
 	{
 		change.apply(image);
 		buffering.add(change);
 		canvas.repaint();
 	}
-
+	
 	public void flushChanges()
 	{
 		Change[] c = new Change[buffering.size()];
 		buffering.toArray(c);
-
+		
 		MultiChange bc = new MultiChange(c);
 		changes.add(bc);
 		size += bc.getSize();
-
+		
 		buffering.clear();
-
+		
 		if(!reverted.isEmpty())
 		{
 			for(Change ch : reverted)
@@ -147,14 +147,14 @@ public class CanvasManager
 			}
 			reverted.clear();
 		}
-
+		
 		while(size > MAX_SIZE)
 		{
 			size -= changes.removeFirst().getSize();
 		}
 		Paint.main.saved = false;
 	}
-
+	
 	public void incZoom()
 	{
 		if(zoom < 1)
@@ -165,12 +165,12 @@ public class CanvasManager
 		{
 			zoom = (int) zoom + 1;
 		}
-
+		
 		canvas.setScale(zoom);
 		canvas.repaint();
 		canvas.revalidate();
 	}
-
+	
 	public void decZoom()
 	{
 		if(zoom > 1)
@@ -181,46 +181,46 @@ public class CanvasManager
 		{
 			zoom = zoom - 1 / 10f;
 		}
-
+		
 		canvas.setScale(zoom);
 		canvas.repaint();
 		canvas.revalidate();
 	}
-
+	
 	public void revertChange()
 	{
 		if(changes.isEmpty())
 			return;
 		Change change = changes.removeLast();
-
+		
 		BufferedImage nimage = change.revert(image);
 		if(nimage != image)
 		{
 			setImage(nimage);
 		}
-
+		
 		reverted.add(change);
 		canvas.repaint();
 		Paint.main.saved = false;
 	}
-
+	
 	public void repeatChange()
 	{
 		if(reverted.isEmpty())
 			return;
 		Change change = reverted.removeLast();
-
+		
 		BufferedImage nimage = change.apply(image);
 		if(nimage != image)
 		{
 			setImage(nimage);
 		}
-
+		
 		changes.add(change);
 		canvas.repaint();
 		Paint.main.saved = false;
 	}
-
+	
 	public void setImage(BufferedImage image)
 	{
 		this.image = image;
@@ -229,25 +229,25 @@ public class CanvasManager
 		canvas.revalidate();
 		changes.clear();
 	}
-
+	
 	public JPanel getCanvas()
 	{
 		return canvas;
 	}
-
+	
 	public float getScale()
 	{
 		return zoom;
 	}
-
+	
 	private static class Canvas extends JPanel
 	{
 		private static final long serialVersionUID = 4162295507195065688L;
-
+		
 		private BufferedImage image;
 		private float scale = 1;
 		private int lastButton = 0;
-
+		
 		public Canvas(BufferedImage i)
 		{
 			setImage(i);
@@ -255,13 +255,13 @@ public class CanvasManager
 			{
 				public void mousePressed(MouseEvent e)
 				{
-                    lastButton = e.getButton();
+					lastButton = e.getButton();
 					Paint.main.currentTool.onPressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), e.getButton());
 				}
-
+				
 				public void mouseReleased(MouseEvent e)
 				{
-                    lastButton = e.getButton();
+					lastButton = e.getButton();
 					Paint.main.currentTool.onReleased(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), e.getButton());
 				}
 			});
@@ -271,26 +271,26 @@ public class CanvasManager
 				{
 					Paint.main.currentTool.whilePressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), lastButton);
 				}
-
+				
 				public void mouseMoved(MouseEvent e)
 				{
 					Paint.main.currentTool.whileReleased(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), lastButton);
 				}
 			});
 		}
-
+		
 		public void setScale(float scale)
 		{
 			this.scale = scale;
 			this.setPreferredSize(new Dimension(MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale)));
 		}
-
+		
 		public void setImage(BufferedImage image)
 		{
 			this.image = image;
 			this.setPreferredSize(new Dimension(MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale)));
 		}
-
+		
 		public void paint(Graphics g)
 		{
 			super.paint(g);
@@ -310,7 +310,7 @@ public class CanvasManager
 			}
 		}
 	}
-
+	
 	public BufferedImage getImage()
 	{
 		return image;

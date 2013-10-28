@@ -32,9 +32,9 @@ import java.util.HashMap;
 public class Input implements KeyListener, MouseWheelListener
 {
 	public static boolean CTRL, SHIFT, ALT;
-
+	
 	private static HashMap<Integer, String> keyCodeToChar = new HashMap<Integer, String>();
-
+	
 	public void keyPressed(KeyEvent e)
 	{
 		if(e.getKeyCode() == KeyEvent.VK_CONTROL)
@@ -49,12 +49,12 @@ public class Input implements KeyListener, MouseWheelListener
 		{
 			ALT = true;
 		}
-
+		
 		if(e.getKeyCode() == KeyEvent.VK_F5)
 		{
 			Paint.main.gui.chooser.toggle();
 		}
-
+		
 		if(e.isControlDown())
 		{
 			if(e.isShiftDown())
@@ -114,7 +114,7 @@ public class Input implements KeyListener, MouseWheelListener
 			}
 		}
 	}
-
+	
 	public void keyReleased(KeyEvent e)
 	{
 		if(e.getKeyCode() == KeyEvent.VK_CONTROL)
@@ -130,12 +130,12 @@ public class Input implements KeyListener, MouseWheelListener
 			ALT = false;
 		}
 	}
-
+	
 	public void keyTyped(KeyEvent e)
 	{
-
+		
 	}
-
+	
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
 		if(e.isControlDown())
@@ -150,7 +150,7 @@ public class Input implements KeyListener, MouseWheelListener
 			}
 		}
 	}
-
+	
 	static
 	{
 		keyCodeToChar.put(KeyEvent.VK_A, "A");

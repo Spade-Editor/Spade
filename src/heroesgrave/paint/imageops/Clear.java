@@ -17,41 +17,25 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.tools;
+package heroesgrave.paint.imageops;
 
 import heroesgrave.paint.main.Paint;
 
-public class MoveSelection extends Tool
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+
+public class Clear extends ImageOp
 {
-	private int lx, ly;
-	
-	public MoveSelection(String name)
+	public void operation()
 	{
-		super(name);
-	}
-
-	public void onPressed(int x, int y)
-	{
-		lx = x;
-		ly = y;
-		Paint.main.selection.startFloating();
-	}
-
-	public void onReleased(int x, int y)
-	{
-		lx = x;
-		ly = y;
-	}
-
-	public void whilePressed(int x, int y)
-	{
-		Paint.main.selection.translate(x-lx, y-ly);
-		lx = x;
-		ly = y;
-	}
-
-	@Override
-	public void whileReleased(int x, int y)
-	{
+		BufferedImage old = Paint.main.gui.canvas.getImage();
+		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		
+		Graphics g = newImage.getGraphics();
+		g.setColor(new Color(Paint.main.getRightColour()));
+		g.fillRect(0, 0, newImage.getWidth(), newImage.getHeight());
+		
+		Paint.addChange(new ImageChange(newImage));
 	}
 }

@@ -28,34 +28,34 @@ import heroesgrave.paint.main.PixelChange;
 public class Rectangle extends Tool
 {
 	private int sx, sy;
-
+	
 	public Rectangle(String name)
 	{
 		super(name);
 	}
-
+	
 	public void onPressed(int x, int y, int button)
 	{
 		sx = x;
 		sy = y;
 	}
-
+	
 	public void onReleased(int x, int y, int button)
 	{
 		rectangle(sx, sy, x, y, button);
 		Paint.main.gui.canvas.applyPreview();
 	}
-
+	
 	public void whilePressed(int x, int y, int button)
 	{
 		rectangle(sx, sy, x, y, button);
 	}
-
+	
 	public void whileReleased(int x, int y, int button)
 	{
-
+		
 	}
-
+	
 	private int sign(int i)
 	{
 		if(i < 0)
@@ -64,11 +64,11 @@ public class Rectangle extends Tool
 			return 1;
 		return 0;
 	}
-
+	
 	public void rectangle(int x1, int y1, int x2, int y2, int button)
 	{
 		Paint.main.gui.canvas.clearPreview();
-
+		
 		if(Input.CTRL)
 		{
 			int w = x2 - x1;
@@ -86,7 +86,7 @@ public class Rectangle extends Tool
 			x2 = x1 + w;
 			y2 = y1 + h;
 		}
-
+		
 		int temp;
 		if(x2 < x1)
 		{
@@ -100,29 +100,31 @@ public class Rectangle extends Tool
 			y2 = y1;
 			y1 = temp;
 		}
-
+		
 		for(int i = x1; i <= x2; i++)
 		{
 			brush(i, y1, button);
 			brush(i, y2, button);
 		}
-
+		
 		for(int j = y1; j <= y2; j++)
 		{
 			brush(x1, j, button);
 			brush(x2, j, button);
 		}
 	}
-
+	
 	public void brush(int x, int y, int button)
 	{
 		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
 			return;
-        if(button == MouseEvent.BUTTON1) {
-            Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
-        }
-        else if(button == MouseEvent.BUTTON3) {
-            Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getRightColour()));
-        }
+		if(button == MouseEvent.BUTTON1)
+		{
+			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
+		}
+		else if(button == MouseEvent.BUTTON3)
+		{
+			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getRightColour()));
+		}
 	}
 }

@@ -19,6 +19,7 @@
 
 package heroesgrave.paint.gui;
 
+import heroesgrave.paint.imageops.Clear;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.imageops.Invert;
 import heroesgrave.paint.imageops.Resize;
@@ -43,10 +44,10 @@ public class ToolMenu
 	public static JMenu createToolMenu()
 	{
 		JMenu menu = new JMenu("Tools");
-
+		
 		Tool def = new Pixel("Pencil");
 		Paint.main.currentTool = def;
-
+		
 		menu.add(new ToolMenuItem("Pencil", def, "P"));
 		menu.add(new ToolMenuItem("Paint Brush", new PaintBrush("Paint Brush"), "B"));
 		menu.add(new ToolMenuItem("Line", new Line("Straight Line"), "L"));
@@ -59,25 +60,26 @@ public class ToolMenu
 		
 		return menu;
 	}
-
+	
 	public static JMenu createImageMenu()
 	{
 		JMenu menu = new JMenu("Image");
-
+		
 		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
 		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
+		menu.add(new ImageMenuItem("Clear Image", new Clear(), "C"));
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerImageOps(menu);
 		
 		return menu;
 	}
-
+	
 	public static class ToolMenuItem extends JMenuItem
 	{
 		private static final long serialVersionUID = 5766656521451633454L;
-
+		
 		private Tool tool;
-
+		
 		public ToolMenuItem(String name, Tool t, String key)
 		{
 			super(name + " (" + key + ")");
@@ -92,13 +94,13 @@ public class ToolMenu
 			});
 		}
 	}
-
+	
 	public static class ImageMenuItem extends JMenuItem
 	{
 		private static final long serialVersionUID = 7018700148731008154L;
-
+		
 		private ImageOp op;
-
+		
 		public ImageMenuItem(String name, ImageOp o, String key)
 		{
 			super(name + " (Ctrl+Shift+" + key + ")");
