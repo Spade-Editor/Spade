@@ -69,6 +69,8 @@ public class PaintBrush extends Brush
 		panel.add(new CentredLabel("Size: "), BorderLayout.WEST);
 		panel.add(slider, BorderLayout.CENTER);
 		
+		slider.setFocusable(false);
+		
 		menu.add(panel);
 		menu.add(new JSeparator(JSeparator.VERTICAL));
 		menu.add(new JSeparator(JSeparator.VERTICAL));
