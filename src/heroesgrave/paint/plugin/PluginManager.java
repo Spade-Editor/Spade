@@ -51,7 +51,7 @@ public class PluginManager
 	public PluginManager(Paint paint)
 	{
 		// Make sure the plugin folder exists and is accessible!
-		pluginRootDirectory = new File(IOUtils.assemblePath(IOUtils.jarDir(), "plugins"));
+		pluginRootDirectory = new File(IOUtils.assemblePath(System.getProperty("user.home"), ".paint-java", "plugins"));
 		
 		if(!pluginRootDirectory.exists())
 			pluginRootDirectory.mkdirs();

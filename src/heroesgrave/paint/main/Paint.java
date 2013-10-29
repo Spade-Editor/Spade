@@ -25,7 +25,6 @@ import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.paint.tools.Tool;
 import heroesgrave.utils.app.Application;
-import heroesgrave.utils.io.IOUtils;
 import heroesgrave.utils.io.ImageLoader;
 
 import java.awt.BorderLayout;
@@ -52,6 +51,8 @@ public class Paint extends Application
 	public File openFile;
 	public File openDir;
 	
+	private File toOpen;
+	
 	public Tool currentTool;
 	
 	public Selection selection;
@@ -73,6 +74,13 @@ public class Paint extends Application
 		setLeftColour(0xff000000);
 		setTool(currentTool);
 		pluginManager.onLaunch();
+		
+		if(toOpen != null)
+		{
+			Paint.main.openFile = toOpen;
+			Paint.main.openDir = toOpen.getParentFile();
+			Paint.main.gui.canvas.setImage(ImageLoader.loadImage(toOpen.getAbsolutePath()));
+		}
 	}
 	
 	public void update()
@@ -177,12 +185,6 @@ public class Paint extends Application
 		return imageOps.get(key.toLowerCase());
 	}
 	
-	public static void main(String[] args)
-	{
-		IOUtils.setMainClass(Paint.class);
-		Application.launch(main);
-	}
-	
 	public static void addChange(Change change)
 	{
 		main.gui.canvas.addChange(change);
@@ -282,5 +284,18 @@ public class Paint extends Application
 	public int getRightColour()
 	{
 		return Paint.rightColour;
+	}
+	
+	public static void main(String[] args)
+	{
+		if(args.length == 1)
+		{
+			File f = new File(args[0]);
+			if(f.exists())
+			{
+				main.toOpen = f;
+			}
+		}
+		Application.launch(main);
 	}
 }
