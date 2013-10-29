@@ -215,6 +215,8 @@ public class PluginManager
 				}
 			}
 			
+			cl.close();
+			
 			// Close JAR
 			jarFile.close();
 		}
