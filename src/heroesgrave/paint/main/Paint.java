@@ -290,6 +290,7 @@ public class Paint extends Application
 	{
 		if(args.length == 1)
 		{
+			System.out.println(args[0]);
 			File f = new File(args[0]);
 			if(f.exists())
 			{
