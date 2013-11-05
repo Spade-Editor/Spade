@@ -97,8 +97,6 @@ public class InfoMenu
 			}
 		});
 		
-		
-		
 		menuBar.add(tool);
 		menuBar.add(colourPanel);
 		menuBar.add(scale);

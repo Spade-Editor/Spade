@@ -211,6 +211,7 @@ public class GUIManager
 		UserPreferences.loadPrefs(frame);
 		frame.setVisible(true);
 		frame.setResizable(true);
+		frame.requestFocus();
 	}
 	
 	public void initInputs()
