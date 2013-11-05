@@ -19,7 +19,6 @@
 
 package heroesgrave.paint.gui;
 
-import heroesgrave.paint.gui.InfoMenu.ColourPanel;
 import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
@@ -28,6 +27,7 @@ import heroesgrave.utils.misc.ColourNumberFilter;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -417,6 +417,52 @@ public class ColourChooser
 		{
 			super(text);
 			this.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+	}
+
+	public static class ColourPanel extends JPanel
+	{
+		private static final long serialVersionUID = 7541204326016173356L;
+		
+		private Color leftColour;
+		private Color rightColour;
+		
+		public ColourPanel()
+		{
+			
+		}
+		
+		public void setLeftColour(int colour)
+		{
+			this.leftColour = new Color(colour);
+			this.repaint();
+		}
+		
+		public void setRightColour(int colour)
+		{
+			this.rightColour = new Color(colour);
+			this.repaint();
+		}
+		
+		public int getLeftColour()
+		{
+			return (((leftColour.getAlpha() & 0xff) << 24) | ((leftColour.getRed() & 0xff) << 16) | ((leftColour.getGreen() & 0xff) << 8) | (leftColour
+					.getBlue() & 0xff));
+		}
+		
+		public int getRightColour()
+		{
+			return (((rightColour.getAlpha() & 0xff) << 24) | ((rightColour.getRed() & 0xff) << 16) | ((rightColour.getGreen() & 0xff) << 8) | (rightColour
+					.getBlue() & 0xff));
+		}
+		
+		public void paint(Graphics g)
+		{
+			super.paint(g);
+			g.setColor(leftColour);
+			g.fillRect(0, 0, this.getWidth() / 2, this.getHeight());
+			g.setColor(rightColour);
+			g.fillRect(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
 		}
 	}
 }
