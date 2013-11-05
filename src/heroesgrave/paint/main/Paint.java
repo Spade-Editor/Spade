@@ -221,6 +221,8 @@ public class Paint extends Application
 	
 	public static void saveAs()
 	{
+		String formatToSaveIn = "png";
+		
 		JFileChooser chooser = new JFileChooser(Paint.main.openDir);
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
@@ -249,14 +251,14 @@ public class Paint extends Application
 			Paint.main.openFile = chooser.getSelectedFile();
 			Paint.main.openDir = Paint.main.openFile.getParentFile();
 			String fileName = Paint.main.openFile.getAbsolutePath();
-			if(fileName.endsWith(".png"))
+			if(fileName.endsWith("."+formatToSaveIn))
 			{
-				ImageLoader.writeImage(Paint.main.gui.canvas.getImage(), "PNG", fileName);
+				ImageLoader.writeImage(Paint.main.gui.canvas.getImage(), formatToSaveIn.toUpperCase(), fileName);
 			}
 			else
 			{
-				ImageLoader.writeImage(Paint.main.gui.canvas.getImage(), "PNG", fileName + ".png");
-				Paint.main.openFile = new File(fileName + ".png");
+				ImageLoader.writeImage(Paint.main.gui.canvas.getImage(), formatToSaveIn.toUpperCase(), fileName + "." + formatToSaveIn);
+				Paint.main.openFile = new File(fileName + "." + formatToSaveIn);
 			}
 			main.saved = true;
 		}
