@@ -157,7 +157,7 @@ public abstract class ImageExporter extends FileFilter {
 			
 			@Override
 			public String getFileExtensionDescription() {
-				return "BIN - Binary Image";
+				return "BIN - Raw Binary Image Data Format";
 			}
 		});
 		
