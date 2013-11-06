@@ -29,6 +29,7 @@ import heroesgrave.utils.io.ImageLoader;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -202,15 +203,27 @@ public class Paint extends Application
 		if(Paint.main.openFile != null)
 		{
 			String fileName = Paint.main.openFile.getAbsolutePath();
-			if(fileName.endsWith(".png"))
+			
+			String extension = "";
+			
+			int i = fileName.lastIndexOf('.');
+			
+			if (i > 0) {
+			    extension = fileName.substring(i+1);
+			}
+			
+			ImageExporter exporter = ImageExporter.get(extension);
+			
+			if(fileName.endsWith("."+exporter.getFileExtension()))
 			{
-				ImageLoader.writeImage(Paint.main.gui.canvas.getImage(), "PNG", fileName);
+				exporter.exportImage(Paint.main.gui.canvas.getImage(), new File(fileName));
 			}
 			else
 			{
-				ImageLoader.writeImage(Paint.main.gui.canvas.getImage(), "PNG", fileName + ".png");
+				exporter.exportImage(Paint.main.gui.canvas.getImage(), new File(fileName));
 				Paint.main.openFile = new File(fileName + ".png");
 			}
+			
 			main.saved = true;
 		}
 		else
@@ -221,43 +234,58 @@ public class Paint extends Application
 	
 	public static void saveAs()
 	{
+		
+		/**
+		 * How the new system works:
+		 *
+    JFileChooser fileChooser = new JFileChooser();  
+    
+    // Add ALL the FileFilter's!
+    fileChooser.addChoosableFileFilter(...);  
+    fileChooser.addChoosableFileFilter(...);  
+    fileChooser.addChoosableFileFilter(...);  
+    fileChooser.addChoosableFileFilter(...);  
+    
+    ...  
+    
+    int result = fileChooser.showSaveDialog(parentComponent);  
+    if (result == JFileChooser.APPROVE_OPTION)  
+    {  
+        // the user pressed OK  
+        File file = fileChooser.getSelectedFile();  
+        FileFilter fileFilter = fileChooser.getFileFilter();  
+        
+        ...  
+    }  
+    
+		 * 
+		 **/
+		
 		JFileChooser chooser = new JFileChooser(Paint.main.openDir);
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
-		chooser.setFileFilter(new FileFilter()
-		{
-			public boolean accept(File f)
-			{
-				if(f.isDirectory())
-					return true;
-				String name = f.getAbsolutePath();
-				if(name.endsWith(".png"))
-					return true;
-				return false;
-			}
-			
-			public String getDescription()
-			{
-				return "Supported export image formats (.png)";
-			}
-		});
+		
+		for(ImageExporter exporter : ImageExporter.exporters){
+			chooser.addChoosableFileFilter(exporter);
+		}
 		
 		int returned = chooser.showSaveDialog(new CentredJDialog());
+		ImageExporter formatToSaveIn = (ImageExporter) chooser.getFileFilter();
 		
 		if(returned == JFileChooser.APPROVE_OPTION)
 		{
 			Paint.main.openFile = chooser.getSelectedFile();
+			
+			if(Paint.main.openFile.getAbsolutePath().endsWith("."+formatToSaveIn.getFileExtension())){
+				// Do nothing.
+			}else{
+				// Put the format at the end of the File-Name!
+				Paint.main.openFile = new File(Paint.main.openFile.getAbsolutePath() + "." + formatToSaveIn.getFileExtension());
+			}
+			
 			Paint.main.openDir = Paint.main.openFile.getParentFile();
-			String fileName = Paint.main.openFile.getAbsolutePath();
-			if(fileName.endsWith(".png"))
-			{
-				ImageLoader.writeImage(Paint.main.gui.canvas.getImage(), "PNG", fileName);
-			}
-			else
-			{
-				ImageLoader.writeImage(Paint.main.gui.canvas.getImage(), "PNG", fileName + ".png");
-				Paint.main.openFile = new File(fileName + ".png");
-			}
+			formatToSaveIn.exportImage(Paint.main.gui.canvas.getImage(), Paint.main.openFile);
+			
 			main.saved = true;
 		}
 	}

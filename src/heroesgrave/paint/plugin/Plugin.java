@@ -58,4 +58,6 @@ public abstract class Plugin
 	public abstract void registerImageOps(RegisterImageOps register);
 	
 	public abstract void registerTools(RegisterTools register);
+	
+	public abstract void registerExporters(RegisterExporters register);
 }
