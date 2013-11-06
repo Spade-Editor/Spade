@@ -24,6 +24,7 @@ import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.imageops.Invert;
 import heroesgrave.paint.imageops.Noise;
 import heroesgrave.paint.imageops.Resize;
+import heroesgrave.paint.imageops.SimplexNoiseOp;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Ellipse;
 import heroesgrave.paint.tools.Fill;
@@ -69,7 +70,9 @@ public class ToolMenu
 		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
 		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
 		menu.add(new ImageMenuItem("Clear Image", new Clear(), "C"));
-		menu.add(new ImageMenuItem("White Noise", new Noise(), "N"));
+		menu.add(new ImageMenuItem("White Noise", new Noise(), "WN"));
+		menu.add(new ImageMenuItem("Simplex Noise", new SimplexNoiseOp(), "SN"));
+		// BUGGED -> menu.add(new ImageMenuItem("Perlin Noise", new PerlinNoiseOp(), "PN"));
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerImageOps(menu);
 		
