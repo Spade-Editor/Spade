@@ -58,7 +58,10 @@ public class PaintBrush extends Brush
 	public PaintBrush(String name)
 	{
 		super(name);
-		slider = new JSlider(1, 8, 1);
+		slider = new JSlider(0, 16, 0);
+		slider.setMajorTickSpacing(2);
+		slider.setMinorTickSpacing(1);
+		slider.setPaintTicks(true);
 		
 		menu.setLayout(new GridLayout(1, 8));
 		
@@ -77,20 +80,26 @@ public class PaintBrush extends Brush
 		menu.add(new JSeparator(JSeparator.VERTICAL));
 	}
 	
-	public void brush(int x, int y, int button)
+	public void brush(int centerX, int centerY, int button)
 	{
-		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
+		if(notInBound(centerX,centerY))
 			return;
-		if(slider.getValue() == 1)
-		{
-			if(button == MouseEvent.BUTTON1)
-			{
-				buffer(new PixelChange(x, y, Paint.main.getLeftColour()));
-			}
-			else if(button == MouseEvent.BUTTON3)
-			{
-				buffer(new PixelChange(x, y, Paint.main.getRightColour()));
-			}
-		}
+		
+		// if(slider.getValue() == 1)
+		int size = slider.getValue();
+		int color = -1;
+		
+		if(button == MouseEvent.BUTTON1)
+			color = Paint.main.getLeftColour();
+		if(button == MouseEvent.BUTTON3)
+			color = Paint.main.getRightColour();
+		
+		for(int y = centerY-size; y <= centerY+size; y++)
+			for(int x = centerX-size; x <= centerX+size; x++)
+				buffer(new PixelChange(x, y, color));
+	}
+	
+	public boolean notInBound(int x,int y){
+		return x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight();
 	}
 }
