@@ -160,7 +160,7 @@ public class Menu
 	
 	public static void showOpenMenu()
 	{
-		JFileChooser chooser = new JFileChooser(Paint.main.openDir);
+		final JFileChooser chooser = new JFileChooser(Paint.main.openDir);
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setFileFilter(new FileFilter()
@@ -194,7 +194,14 @@ public class Menu
 		{
 			Paint.main.openFile = chooser.getSelectedFile();
 			Paint.main.openDir = Paint.main.openFile.getParentFile();
-			Paint.main.gui.canvas.setImage(ImageLoader.loadImage(chooser.getSelectedFile().getAbsolutePath()));
+			
+			// If a Image takes too long, the application might crash.
+			// By running the actual loading process in another thread, the AWT-Event Thread can continue working while the image is being loaded.
+			new Thread(new Runnable(){
+				@Override public void run() {
+					Paint.main.gui.canvas.setImage(ImageLoader.loadImage(chooser.getSelectedFile().getAbsolutePath()));
+				}
+			}).start();
 		}
 	}
 	
