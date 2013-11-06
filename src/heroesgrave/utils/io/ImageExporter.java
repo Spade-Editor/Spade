@@ -106,16 +106,17 @@ public abstract class ImageExporter extends FileFilter {
 			}
 		});
 		
-		/**
-		 * BIN Image Exporter.
-		 * 
-		 * Format is as follows:
-		 * signed_int32 width
-		 * signed_int32 height
-		 * INT_RGBA[width*height] imageData
-		 **/
 		exporters.add(new ImageExporter()
 		{
+			/**
+			 * BIN Image Exporter.
+			 * 
+			 * Format is as follows:
+			 * signed_int32 width
+			 * signed_int32 height
+			 * INT_RGBA[width*height] imageData
+			 **/
+			
 			@Override public String getFileExtension() {
 				return "bin";
 			}
