@@ -153,6 +153,12 @@ public abstract class ImageExporter extends FileFilter {
 				// Write image as INT_RGBA
 				output.write(abyte0);
 				
+				// Write End Sequence
+				output.write('E');
+				output.write('O');
+				output.write('I');
+				output.write('D');
+				
 				// Done!
 				output.close();
 			}

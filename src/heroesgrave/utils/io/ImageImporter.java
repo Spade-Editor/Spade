@@ -21,6 +21,7 @@ package heroesgrave.utils.io;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.filechooser.FileFilter;
 
@@ -28,8 +29,9 @@ public abstract class ImageImporter extends FileFilter {
 
 	/**
 	 * Reads an Image.
+	 * @throws IOException 
 	 **/
-	public abstract BufferedImage read(File file);
+	public abstract BufferedImage read(File file) throws IOException;
 
 	public abstract String getFormat();
 
