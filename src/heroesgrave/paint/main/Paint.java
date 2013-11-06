@@ -29,7 +29,6 @@ import heroesgrave.utils.io.ImageLoader;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,7 +39,6 @@ import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
 
 public class Paint extends Application
 {
@@ -208,13 +206,14 @@ public class Paint extends Application
 			
 			int i = fileName.lastIndexOf('.');
 			
-			if (i > 0) {
-			    extension = fileName.substring(i+1);
+			if(i > 0)
+			{
+				extension = fileName.substring(i + 1);
 			}
 			
 			ImageExporter exporter = ImageExporter.get(extension);
 			
-			if(fileName.endsWith("."+exporter.getFileExtension()))
+			if(fileName.endsWith("." + exporter.getFileExtension()))
 			{
 				exporter.exportImage(Paint.main.gui.canvas.getImage(), new File(fileName));
 			}
@@ -238,26 +237,26 @@ public class Paint extends Application
 		/**
 		 * How the new system works:
 		 *
-    JFileChooser fileChooser = new JFileChooser();  
-    
-    // Add ALL the FileFilter's!
-    fileChooser.addChoosableFileFilter(...);  
-    fileChooser.addChoosableFileFilter(...);  
-    fileChooser.addChoosableFileFilter(...);  
-    fileChooser.addChoosableFileFilter(...);  
-    
-    ...  
-    
-    int result = fileChooser.showSaveDialog(parentComponent);  
-    if (result == JFileChooser.APPROVE_OPTION)  
-    {  
-        // the user pressed OK  
-        File file = fileChooser.getSelectedFile();  
-        FileFilter fileFilter = fileChooser.getFileFilter();  
-        
-        ...  
-    }  
-    
+		JFileChooser fileChooser = new JFileChooser();  
+		
+		// Add ALL the FileFilter's!
+		fileChooser.addChoosableFileFilter(...);  
+		fileChooser.addChoosableFileFilter(...);  
+		fileChooser.addChoosableFileFilter(...);  
+		fileChooser.addChoosableFileFilter(...);  
+		
+		...  
+		
+		int result = fileChooser.showSaveDialog(parentComponent);  
+		if (result == JFileChooser.APPROVE_OPTION)  
+		{  
+		// the user pressed OK  
+		File file = fileChooser.getSelectedFile();  
+		FileFilter fileFilter = fileChooser.getFileFilter();  
+		
+		...  
+		}  
+		
 		 * 
 		 **/
 		
@@ -265,7 +264,8 @@ public class Paint extends Application
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
 		
-		for(ImageExporter exporter : ImageExporter.exporters){
+		for(ImageExporter exporter : ImageExporter.exporters)
+		{
 			chooser.addChoosableFileFilter(exporter);
 		}
 		
@@ -276,9 +276,12 @@ public class Paint extends Application
 		{
 			Paint.main.openFile = chooser.getSelectedFile();
 			
-			if(Paint.main.openFile.getAbsolutePath().endsWith("."+formatToSaveIn.getFileExtension())){
+			if(Paint.main.openFile.getAbsolutePath().endsWith("." + formatToSaveIn.getFileExtension()))
+			{
 				// Do nothing.
-			}else{
+			}
+			else
+			{
 				// Put the format at the end of the File-Name!
 				Paint.main.openFile = new File(Paint.main.openFile.getAbsolutePath() + "." + formatToSaveIn.getFileExtension());
 			}
