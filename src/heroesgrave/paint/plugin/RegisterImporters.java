@@ -19,12 +19,13 @@
 
 package heroesgrave.paint.plugin;
 
-import heroesgrave.utils.io.ImageExporter;
+import heroesgrave.utils.io.ImageImporter;
+import heroesgrave.utils.io.ImageLoader;
 
-public class RegisterExporters {
+public class RegisterImporters {
 	
-	public void register(ImageExporter exporter){
-		ImageExporter.add(exporter);
+	public void register(ImageImporter exporter){
+		ImageLoader.add(exporter);
 	}
 	
 }

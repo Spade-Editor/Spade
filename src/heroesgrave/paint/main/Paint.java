@@ -25,6 +25,7 @@ import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.paint.tools.Tool;
 import heroesgrave.utils.app.Application;
+import heroesgrave.utils.io.ImageExporter;
 import heroesgrave.utils.io.ImageLoader;
 
 import java.awt.BorderLayout;
@@ -34,11 +35,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 public class Paint extends Application
 {
@@ -215,12 +218,24 @@ public class Paint extends Application
 			
 			if(fileName.endsWith("." + exporter.getFileExtension()))
 			{
-				exporter.exportImage(Paint.main.gui.canvas.getImage(), new File(fileName));
+				try {
+					exporter.exportImage(Paint.main.gui.canvas.getImage(), new File(fileName));
+				} catch (IOException e) {
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null,"An error occurred while saving the Image:\n"+e.getLocalizedMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 			}
 			else
 			{
-				exporter.exportImage(Paint.main.gui.canvas.getImage(), new File(fileName));
-				Paint.main.openFile = new File(fileName + ".png");
+				try {
+					exporter.exportImage(Paint.main.gui.canvas.getImage(), new File(fileName));
+					Paint.main.openFile = new File(fileName + ".png");
+				} catch (IOException e) {
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null,"An error occurred while saving the Image:\n"+e.getLocalizedMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 			}
 			
 			main.saved = true;
@@ -287,7 +302,14 @@ public class Paint extends Application
 			}
 			
 			Paint.main.openDir = Paint.main.openFile.getParentFile();
-			formatToSaveIn.exportImage(Paint.main.gui.canvas.getImage(), Paint.main.openFile);
+			
+			try {
+				formatToSaveIn.exportImage(Paint.main.gui.canvas.getImage(), Paint.main.openFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n"+e.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			
 			main.saved = true;
 		}

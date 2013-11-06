@@ -17,14 +17,34 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.plugin;
+package heroesgrave.utils.io;
 
-import heroesgrave.utils.io.ImageExporter;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
-public class RegisterExporters {
-	
-	public void register(ImageExporter exporter){
-		ImageExporter.add(exporter);
+import javax.swing.filechooser.FileFilter;
+
+public abstract class ImageImporter extends FileFilter {
+
+	/**
+	 * Reads an Image.
+	 **/
+	public abstract BufferedImage read(File file);
+
+	public abstract String getFormat();
+
+	@Override
+	public boolean accept(File f) {
+		if(f.isDirectory())
+			return true;
+		
+		if(f.getAbsolutePath().endsWith("." + getFormat()))
+			return true;
+		
+		return false;
 	}
+
+	@Override
+	public abstract String getDescription();
 	
 }

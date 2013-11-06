@@ -181,9 +181,13 @@ public class Menu
 			
 			public String getDescription()
 			{
-				return "Supported import image formats (.png, .jpg, .bmp)";
+				return "ImageIO Supported import image formats (.png, .jpg, .bmp)";
 			}
 		});
+		
+		// Add ALL the custom image-importers!
+		ImageLoader.addAllImporters(chooser);
+		
 		int returned = chooser.showOpenDialog(new CentredJDialog());
 		
 		if(returned == JFileChooser.APPROVE_OPTION)

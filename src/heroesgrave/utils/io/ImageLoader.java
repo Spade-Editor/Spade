@@ -1,5 +1,5 @@
 /*
- *	Copyright 2013 HeroesGrave
+ *	Copyright 2013 HeroesGrave & Longor1996
  *
  *	This file is part of Paint.JAVA
  *
@@ -19,14 +19,38 @@
 
 package heroesgrave.utils.io;
 
+import heroesgrave.utils.misc.UnsafeTroughReflectionHelper;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 
+/**
+ * 
+ * NOTE/TODO: Rename this class into something more appropriate, because this is NOT just an ImageLoader!
+ * 
+ **/
 public class ImageLoader
 {
+	private static final HashMap<String, ImageImporter> importers = new HashMap<String, ImageImporter>();
+	
+	static
+	{
+		/// initialize importers?
+		
+		// Nothing here yet! Feel free to expand by adding new image-importers!
+		
+	}
+	
+	public static void add(ImageImporter exporter) {
+		importers.put(exporter.getFormat(), exporter);
+	}
+	
 	private ImageLoader()
 	{
 		
@@ -40,7 +64,29 @@ public class ImageLoader
 		{
 			try
 			{
-				return ImageIO.read(file);
+				String fileName = file.getAbsolutePath();
+				String extension = "";
+				
+				int i = fileName.lastIndexOf('.');
+				
+				if(i > 0)
+				{
+					extension = fileName.substring(i + 1);
+				}
+				
+				// Get the ImageImporter
+				ImageImporter importer = importers.get(extension);
+				
+				// If there is a custom importer for the given format, use the custom importer...
+				if(importer != null)
+				{
+					return importer.read(file);
+				}
+				else
+				// If there is NO custom importer, use the default ImageIO.read() method, and prey that it can read it!
+				{
+					return ImageIO.read(file);
+				}
 			}
 			catch(IOException e)
 			{
@@ -68,6 +114,18 @@ public class ImageLoader
 		catch(IOException e)
 		{
 			e.printStackTrace();
+			
+			// Throw the exception, so the use is notified that something went terribly wrong!
+			UnsafeTroughReflectionHelper.throwException(e);
 		}
+	}
+
+	public static void addAllImporters(JFileChooser chooser) {
+		
+		for(Entry<String, ImageImporter> importer : importers.entrySet())
+		{
+			chooser.addChoosableFileFilter(importer.getValue());
+		}
+		
 	}
 }
