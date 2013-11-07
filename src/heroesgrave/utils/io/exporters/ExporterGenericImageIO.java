@@ -9,6 +9,8 @@ import java.io.File;
 /**
  * GENERIC Exporter.
  * 
+ * This exporter uses the ImageIO API to export images. It can only handle the registered formats of the JRE.
+ * 
  * @author Longor1996 & /ORACLE/
  **/
 public class ExporterGenericImageIO extends ImageExporter

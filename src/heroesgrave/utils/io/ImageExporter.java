@@ -22,12 +22,8 @@ package heroesgrave.utils.io;
 
 import heroesgrave.utils.io.exporters.*;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -38,7 +34,7 @@ public abstract class ImageExporter extends FileFilter {
 	
 	static
 	{
-		
+		// Add ALL the exporters!
 		exporters.add(new ExporterGenericImageIO("png", "PNG - Portable Network Graphics Image"));
 		exporters.add(new ExporterGenericImageIO("bmp", "BMP - Microsoft Bitmap Image"));
 		exporters.add(new ExporterGenericImageIO("gif", "GIF - Graphics Interchange Format"));

@@ -33,7 +33,9 @@ import javax.swing.JFileChooser;
 
 /**
  * 
- * NOTE/TODO: Rename this class into something more appropriate, because this is NOT just an ImageLoader!
+ * NOTES:
+ * TODO: Rename this class into something more appropriate, because this is NOT just an ImageLoader!
+ * TODO: Make it, so the ImageLoader automatically converts the image into a more appropriate FASTER format for image editing. (INT_ARGB!)
  * 
  **/
 public class ImageLoader
@@ -42,6 +44,9 @@ public class ImageLoader
 	
 	static
 	{
+		// Set this to FALSE, because it is NOT faster to use this!
+		ImageIO.setUseCache(false);
+		
 		/// initialize importers?
 		
 		// Nothing here yet! Feel free to expand by adding new image-importers!

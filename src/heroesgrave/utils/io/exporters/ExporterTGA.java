@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import heroesgrave.paint.gui.SimpleModalProgressDialog;
 import heroesgrave.utils.io.ImageExporter;
 
 /**
@@ -62,9 +63,10 @@ public class ExporterTGA extends ImageExporter {
 		
 		// Write out the image data
 		Color c;
+		SimpleModalProgressDialog DIALOG = new SimpleModalProgressDialog("Saving...", "Saving Image...",image.getWidth() * image.getHeight() + 1);
 		
-		for (int y = image.getHeight()-1; y >= 0; y--) {
-			for (int x = 0; x < image.getWidth(); x++) {
+		for (int y = image.getHeight()-1, count = 0; y >= 0; y--) {
+			for (int x = 0; x < image.getWidth(); x++, count++) {
 				c = new Color(image.getRGB(x, y));
 				
 				out.writeByte((byte) (c.getBlue()));
@@ -74,10 +76,14 @@ public class ExporterTGA extends ImageExporter {
 				if (writeAlpha) {
 					out.writeByte((byte) (c.getAlpha()));
 				}
+				
+				if(count % 128 == 0)
+					DIALOG.setValue(count);
 			}
 		}
 		
 		out.close();
+		DIALOG.close();
 	}
 
 	private short flipEndian(short signedShort) {

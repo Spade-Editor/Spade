@@ -1,5 +1,6 @@
 package heroesgrave.utils.io.exporters;
 
+import heroesgrave.paint.gui.SimpleModalProgressDialog;
 import heroesgrave.utils.io.ImageExporter;
 
 import java.awt.image.BufferedImage;
@@ -43,6 +44,8 @@ public class ExporterZipBIN extends ImageExporter
 		byte abyte0[] = new byte[width * height * 4];
 		bufferedImage.getRGB(0, 0, width, height, ai, 0, width);
 		
+		SimpleModalProgressDialog DIALOG = new SimpleModalProgressDialog("Saving...", "Saving Image...", ai.length + 1);
+		
 		// Go trough ALL the pixels and convert from INT_ARGB to INT_RGBA
 		for (int k = 0; k < ai.length; k++)
 		{
@@ -55,7 +58,12 @@ public class ExporterZipBIN extends ImageExporter
 			abyte0[(k * 4) + 1] = (byte) G;//G
 			abyte0[(k * 4) + 2] = (byte) B;//B
 			abyte0[(k * 4) + 3] = (byte) A;//A
+			
+			if(k % 128 == 0)
+				DIALOG.setValue(k);
 		}
+		
+		DIALOG.setMessage("COMPRESSING!");
 		
 		// Compress Image Data!
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -80,6 +88,7 @@ public class ExporterZipBIN extends ImageExporter
 		
 		// Done!
 		output.close();
+		DIALOG.close();
 	}
 	
 	@Override
