@@ -153,6 +153,7 @@ public class SimplexNoise { // Simplex noise in 2D, 3D and 4D
 	}
 	
 	// 2D Simplex Simplex Noise
+	// This method COULD be wrong written. Please fix if time is avaible!
 	public final double noiseO(double xin, double yin, int octaves, double d,double r) {
 		double a = 0;
 		

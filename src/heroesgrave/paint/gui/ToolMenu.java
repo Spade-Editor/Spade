@@ -20,10 +20,13 @@
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.imageops.Clear;
+import heroesgrave.paint.imageops.FlipHoriz;
+import heroesgrave.paint.imageops.FlipVert;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.imageops.Invert;
 import heroesgrave.paint.imageops.Noise;
 import heroesgrave.paint.imageops.Resize;
+import heroesgrave.paint.imageops.RotateRightBy90;
 import heroesgrave.paint.imageops.SimplexNoiseOp;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Ellipse;
@@ -74,8 +77,11 @@ public class ToolMenu
 		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
 		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
 		menu.add(new ImageMenuItem("Clear Image", new Clear(), "C"));
-		menu.add(new ImageMenuItem("White Noise", new Noise(), "WN"));
-		menu.add(new ImageMenuItem("Simplex Noise", new SimplexNoiseOp(), "SN"));
+		menu.add(new ImageMenuItem("Flip Vertically", new FlipVert(), null));
+		menu.add(new ImageMenuItem("Flip Horizontally", new FlipHoriz(), null));
+		menu.add(new ImageMenuItem("Rotate Right by 90", new RotateRightBy90(), null));
+		menu.add(new ImageMenuItem("White Noise", new Noise(), null));
+		menu.add(new ImageMenuItem("Simplex Noise", new SimplexNoiseOp(), null));
 		// BUGGED -> menu.add(new ImageMenuItem("Perlin Noise", new PerlinNoiseOp(), "PN"));
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerImageOps(menu);
@@ -91,8 +97,12 @@ public class ToolMenu
 		
 		public ToolMenuItem(String name, Tool t, String key)
 		{
-			super(name + " (" + key + ")");
-			Paint.addTool(key, t);
+			super(key == null ? (name) : (name + " (Ctrl+Shift+" + key + ")"));
+			
+			// This is here, so some Tools don't have to have a key assigned. We can't have key-code's for ALL the Tools! It's impossible!
+			if(key != null)
+				Paint.addTool(key, t);
+			
 			this.tool = t;
 			
 			// TRY to load the icon!
@@ -126,9 +136,27 @@ public class ToolMenu
 		
 		public ImageMenuItem(String name, ImageOp o, String key)
 		{
-			super(name + " (Ctrl+Shift+" + key + ")");
-			Paint.addImageOp(key, o);
+			super(key == null ? (name) : (name + " (Ctrl+Shift+" + key + ")"));
+			
+			// This is here, so some ImageOps don't have to have a key assigned. We can't have key-code's for ALL the ImageOp's! It's impossible!
+			if(key != null)
+				Paint.addImageOp(key, o);
+			
 			this.op = o;
+			
+			// TRY to load the icon!
+			try {
+				URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/imageops/" + name + ".png");
+				
+				if(url != null)
+					this.setIcon(new ImageIcon(ImageIO.read(url)));
+				else
+					throw new IOException();
+				
+			} catch (IOException e1) {
+				System.err.println("Error: ImageOp '"+name+"' is missing an icon!");
+			}
+			
 			this.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
