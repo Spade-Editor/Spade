@@ -20,7 +20,7 @@
 package heroesgrave.utils.io;
 
 import heroesgrave.paint.main.Paint;
-import heroesgrave.utils.misc.UnsafeTroughReflectionHelper;
+import heroesgrave.paint.main.Popup;
 
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
@@ -195,9 +195,7 @@ public class ImageLoader
 		catch(IOException e)
 		{
 			e.printStackTrace();
-			
-			// Throw the exception, so the use is notified that something went terribly wrong!
-			UnsafeTroughReflectionHelper.throwException(e);
+			Popup.show("Save Image", "An error occured while trying to save the image in " + format + " format to " + path + ".");
 		}
 	}
 
