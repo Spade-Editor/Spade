@@ -5,7 +5,7 @@ public class StringUtil {
 	/**
 	 * Method to transform raw byte-count into a human-readable format.
 	 * 
-	 * @author aioobe
+	 * Author: aioobe
 	 * (from <a href="http://stackoverflow.com/questions/3758606/how-to-convert-byte-size-into-human-readable-format-in-java">Stackoverflow</a>})
 	 **/
 	public static String humanReadableByteCount(long bytes, boolean si) {
