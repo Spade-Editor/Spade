@@ -160,7 +160,7 @@ public class Menu
 	
 	public static void showOpenMenu()
 	{
-		JFileChooser chooser = new JFileChooser(Paint.main.openDir);
+		final JFileChooser chooser = new JFileChooser(Paint.main.openDir);
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setFileFilter(new FileFilter()
@@ -181,16 +181,27 @@ public class Menu
 			
 			public String getDescription()
 			{
-				return "Supported import image formats (.png, .jpg, .bmp)";
+				return "ImageIO Supported import image formats (.png, .jpg, .bmp)";
 			}
 		});
+		
+		// Add ALL the custom image-importers!
+		ImageLoader.addAllImporters(chooser);
+		
 		int returned = chooser.showOpenDialog(new CentredJDialog());
 		
 		if(returned == JFileChooser.APPROVE_OPTION)
 		{
 			Paint.main.openFile = chooser.getSelectedFile();
 			Paint.main.openDir = Paint.main.openFile.getParentFile();
-			Paint.main.gui.canvas.setImage(ImageLoader.loadImage(chooser.getSelectedFile().getAbsolutePath()));
+			
+			// If a Image takes too long, the application might crash.
+			// By running the actual loading process in another thread, the AWT-Event Thread can continue working while the image is being loaded.
+			new Thread(new Runnable(){
+				@Override public void run() {
+					Paint.main.gui.canvas.setImage(ImageLoader.loadImage(chooser.getSelectedFile().getAbsolutePath()));
+				}
+			}).start();
 		}
 	}
 	
