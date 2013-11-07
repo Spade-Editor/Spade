@@ -37,7 +37,11 @@ import heroesgrave.paint.tools.Tool;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
@@ -90,6 +94,20 @@ public class ToolMenu
 			super(name + " (" + key + ")");
 			Paint.addTool(key, t);
 			this.tool = t;
+			
+			// TRY to load the icon!
+			try {
+				URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/tools/" + name + ".png");
+				
+				if(url != null)
+					this.setIcon(new ImageIcon(ImageIO.read(url)));
+				else
+					throw new IOException();
+				
+			} catch (IOException e1) {
+				System.err.println("Error: Tool '"+name+"' is missing an icon!");
+			}
+			
 			this.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
