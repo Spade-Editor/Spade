@@ -43,6 +43,10 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+//
+// "Ninety-nine little bugs in the code, ninety-nine little bugs! Take one down, patch it around, one-hundred and seventeen bugs in the code!"
+//       -Aoefanatic (/r/Minecraft)
+
 public class Paint extends Application
 {
 	public static Paint main = new Paint();
