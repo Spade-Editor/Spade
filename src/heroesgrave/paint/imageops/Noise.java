@@ -33,7 +33,7 @@ public class Noise extends ImageOp
 		BufferedImage old = Paint.main.gui.canvas.getImage();
 		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Random random = new Random();
-		int chance = 100;
+		int chance = 50;
 		
 		for(int i = 0; i < old.getWidth(); i++)
 		{

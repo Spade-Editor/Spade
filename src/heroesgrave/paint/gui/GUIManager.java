@@ -31,7 +31,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -198,6 +200,13 @@ public class GUIManager
 			}
 		});
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		
+		// Load the frames Icon. It looks a lot nicer with an actual logo. Remove if inappropriate.
+		try {
+			frame.setIconImage(ImageIO.read(this.getClass().getResource("/heroesgrave/paint/res/favicon.png")));
+		} catch (IOException e1) {
+			// Ignore the error if there is one! The logo doesn't matter so much as to crash the application.
+		}
 		
 		heroesgrave.paint.plugin.PluginManager.instance.frameCreationEvent(frame);
 		

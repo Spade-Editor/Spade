@@ -29,13 +29,17 @@ public class SimplexNoiseOp extends ImageOp
 {
 	public void operation()
 	{
-		// TODO: Add dialog with sliders to configure the noise!
 		
 		BufferedImage old = Paint.main.gui.canvas.getImage();
 		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		SimplexNoise noise = new SimplexNoise(System.currentTimeMillis());
 		
+		// TODO: Add dialog with sliders to configure the noise!
 		double scale = 0.125;
+		
+		int OCTAVES = 8;
+		double START_SCALE = 1;
+		double MULTIPLY_SCALE = 0.25;
 		
 		for(int i = 0; i < old.getWidth(); i++)
 		{
@@ -44,7 +48,7 @@ public class SimplexNoiseOp extends ImageOp
 				int before = old.getRGB(i, j);
 				int after = before;
 				
-				double valD = noise.noiseO(i * scale, j * scale, 8, 1 , 0.25);
+				double valD = noise.noiseO(i * scale, j * scale, OCTAVES, START_SCALE , MULTIPLY_SCALE);
 				valD = valD * 0.5D + 0.5D;
 				int valI = MathUtils.clamp((int)(valD * 256),255,0) & 0xFF;
 				
