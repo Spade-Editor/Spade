@@ -59,24 +59,24 @@ public class ExporterTGA extends ImageExporter {
 			// needs to not have 0x20 set to indicate it's not a flipped image
 			out.writeByte((byte) 0);
 		}
-
+		
 		// Write out the image data
 		Color c;
-
-		for (int y = 0; y < image.getHeight(); y++) {
+		
+		for (int y = image.getHeight()-1; y >= 0; y--) {
 			for (int x = 0; x < image.getWidth(); x++) {
 				c = new Color(image.getRGB(x, y));
-
+				
 				out.writeByte((byte) (c.getBlue()));
 				out.writeByte((byte) (c.getGreen()));
 				out.writeByte((byte) (c.getRed()));
-
+				
 				if (writeAlpha) {
 					out.writeByte((byte) (c.getAlpha()));
 				}
 			}
 		}
-
+		
 		out.close();
 	}
 
