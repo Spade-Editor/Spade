@@ -44,6 +44,8 @@ public abstract class ImageExporter extends FileFilter {
 		exporters.add(new ExporterGenericImageIO("gif", "GIF - Graphics Interchange Format"));
 		exporters.add(new ExporterJPEG());
 		exporters.add(new ExporterTGA());
+		exporters.add(new ExporterBIN());
+		exporters.add(new ExporterZipBIN());
 		
 	}
 	
