@@ -27,6 +27,9 @@ import heroesgrave.paint.imageops.Invert;
 import heroesgrave.paint.imageops.Noise;
 import heroesgrave.paint.imageops.Resize;
 import heroesgrave.paint.imageops.RotateRightBy90;
+import heroesgrave.paint.imageops.SimpleBlur;
+import heroesgrave.paint.imageops.SimpleEdgeDetect;
+import heroesgrave.paint.imageops.SimpleSharpen;
 import heroesgrave.paint.imageops.SimplexNoiseOp;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Ellipse;
@@ -82,6 +85,9 @@ public class ToolMenu
 		menu.add(new ImageMenuItem("Rotate Right by 90", new RotateRightBy90(), null));
 		menu.add(new ImageMenuItem("White Noise", new Noise(), null));
 		menu.add(new ImageMenuItem("Simplex Noise", new SimplexNoiseOp(), null));
+		menu.add(new ImageMenuItem("Simple Blur", new SimpleBlur(), null));
+		menu.add(new ImageMenuItem("Simple Sharpen", new SimpleSharpen(), null));
+		// BUGGED -> menu.add(new ImageMenuItem("Simple Edge Detect", new SimpleEdgeDetect(), null));
 		// BUGGED -> menu.add(new ImageMenuItem("Perlin Noise", new PerlinNoiseOp(), "PN"));
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerImageOps(menu);
