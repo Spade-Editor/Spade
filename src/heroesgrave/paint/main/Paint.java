@@ -222,22 +222,30 @@ public class Paint extends Application
 			
 			if(fileName.endsWith("." + exporter.getFileExtension()))
 			{
-				try {
+				try
+				{
 					exporter.exportImage(Paint.main.gui.canvas.getImage(), new File(fileName));
-				} catch (IOException e) {
+				}
+				catch(IOException e)
+				{
 					e.printStackTrace();
-					JOptionPane.showMessageDialog(null,"An error occurred while saving the Image:\n"+e.getLocalizedMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error",
+							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}
 			else
 			{
-				try {
+				try
+				{
 					exporter.exportImage(Paint.main.gui.canvas.getImage(), new File(fileName));
 					Paint.main.openFile = new File(fileName + ".png");
-				} catch (IOException e) {
+				}
+				catch(IOException e)
+				{
 					e.printStackTrace();
-					JOptionPane.showMessageDialog(null,"An error occurred while saving the Image:\n"+e.getLocalizedMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error",
+							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}
@@ -307,11 +315,15 @@ public class Paint extends Application
 			
 			Paint.main.openDir = Paint.main.openFile.getParentFile();
 			
-			try {
+			try
+			{
 				formatToSaveIn.exportImage(Paint.main.gui.canvas.getImage(), Paint.main.openFile);
-			} catch (IOException e) {
+			}
+			catch(IOException e)
+			{
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n"+e.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error",
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			

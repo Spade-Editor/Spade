@@ -39,7 +39,7 @@ import javax.swing.SwingConstants;
 public class InfoMenu
 {
 	private JLabel scale, saved, tool;
-	private MemoryWatcher memoryWatcher;
+	//private MemoryWatcher memoryWatcher;
 	private ColourTextPanel left, right;
 	
 	public JMenuBar createInfoMenuBar()
@@ -51,7 +51,7 @@ public class InfoMenu
 		scale = new JLabel("Scale: 100%");
 		saved = new JLabel("Saved: Yes");
 		tool = new JLabel("Tool: Pencil");
-		memoryWatcher = new MemoryWatcher();
+		//memoryWatcher = new MemoryWatcher();
 		scale.setHorizontalAlignment(SwingConstants.CENTER);
 		saved.setHorizontalAlignment(SwingConstants.CENTER);
 		tool.setHorizontalAlignment(SwingConstants.CENTER);
@@ -103,7 +103,7 @@ public class InfoMenu
 		menuBar.add(colourPanel);
 		menuBar.add(scale);
 		menuBar.add(saved);
-		menuBar.add(memoryWatcher);
+		//menuBar.add(memoryWatcher);
 		
 		return menuBar;
 	}

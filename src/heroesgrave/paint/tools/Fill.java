@@ -62,11 +62,11 @@ public class Fill extends Tool
 			{
 				if(button == MouseEvent.BUTTON1)
 				{
-					Paint.main.gui.canvas.bufferChange(new PixelChange(p.x, p.y, Paint.main.getLeftColour()));
+					Paint.main.gui.canvas.preview(new PixelChange(p.x, p.y, Paint.main.getLeftColour()));
 				}
 				else if(button == MouseEvent.BUTTON3)
 				{
-					Paint.main.gui.canvas.bufferChange(new PixelChange(p.x, p.y, Paint.main.getRightColour()));
+					Paint.main.gui.canvas.preview(new PixelChange(p.x, p.y, Paint.main.getRightColour()));
 				}
 			}
 			
@@ -92,7 +92,7 @@ public class Fill extends Tool
 			}
 		}
 		
-		Paint.main.gui.canvas.flushChanges();
+		Paint.main.gui.canvas.applyPreview();
 	}
 	
 	private int getColour(int x, int y)

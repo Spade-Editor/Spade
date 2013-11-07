@@ -28,7 +28,6 @@ import heroesgrave.paint.imageops.Noise;
 import heroesgrave.paint.imageops.Resize;
 import heroesgrave.paint.imageops.RotateRightBy90;
 import heroesgrave.paint.imageops.SimpleBlur;
-import heroesgrave.paint.imageops.SimpleEdgeDetect;
 import heroesgrave.paint.imageops.SimpleSharpen;
 import heroesgrave.paint.imageops.SimplexNoiseOp;
 import heroesgrave.paint.main.Paint;
@@ -103,7 +102,7 @@ public class ToolMenu
 		
 		public ToolMenuItem(String name, Tool t, String key)
 		{
-			super(key == null ? (name) : (name + " (Ctrl+Shift+" + key + ")"));
+			super(key == null ? (name) : (name + " (" + key + ")"));
 			
 			// This is here, so some Tools don't have to have a key assigned. We can't have key-code's for ALL the Tools! It's impossible!
 			if(key != null)

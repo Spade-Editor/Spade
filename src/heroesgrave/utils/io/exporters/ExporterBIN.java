@@ -21,12 +21,15 @@ import java.io.IOException;
  **/
 public class ExporterBIN extends ImageExporter
 {
-	
-	@Override public String getFileExtension() {
+	@Override
+	public String getFileExtension()
+	{
 		return "bin";
 	}
 	
-	@Override public void exportImage(BufferedImage bufferedImage, File destination) throws IOException {
+	@Override
+	public void exportImage(BufferedImage bufferedImage, File destination) throws IOException
+	{
 		DataOutputStream output = new DataOutputStream(new FileOutputStream(destination));
 		
 		// Get width and height.
@@ -45,7 +48,7 @@ public class ExporterBIN extends ImageExporter
 		SimpleModalProgressDialog DIALOG = new SimpleModalProgressDialog("Saving...", "Saving Image...", ai.length + 1);
 		
 		// Go trough ALL the pixels and convert from INT_ARGB to INT_RGBA
-		for (int k = 0; k < ai.length; k++)
+		for(int k = 0; k < ai.length; k++)
 		{
 			int A = (ai[k] >> 24) & 0xff;
 			int R = (ai[k] >> 16) & 0xff;
@@ -76,7 +79,8 @@ public class ExporterBIN extends ImageExporter
 	}
 	
 	@Override
-	public String getFileExtensionDescription() {
+	public String getFileExtensionDescription()
+	{
 		return "BIN - Raw Binary Image Data Format";
 	}
 }

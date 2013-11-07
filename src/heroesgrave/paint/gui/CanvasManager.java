@@ -42,7 +42,6 @@ public class CanvasManager
 	private BufferedImage image, preview;
 	private LinkedList<Change> changes = new LinkedList<Change>();
 	private LinkedList<Change> reverted = new LinkedList<Change>();
-	private LinkedList<Change> buffering = new LinkedList<Change>();
 	private LinkedList<Change> previewing = new LinkedList<Change>();
 	private int size;
 	
@@ -110,40 +109,6 @@ public class CanvasManager
 			for(Change c : reverted)
 			{
 				size -= c.getSize();
-			}
-			reverted.clear();
-		}
-		
-		while(size > MAX_SIZE)
-		{
-			size -= changes.removeFirst().getSize();
-		}
-		Paint.main.saved = false;
-	}
-	
-	public void bufferChange(Change change)
-	{
-		change.apply(image);
-		buffering.add(change);
-		canvas.repaint();
-	}
-	
-	public void flushChanges()
-	{
-		Change[] c = new Change[buffering.size()];
-		buffering.toArray(c);
-		
-		MultiChange bc = new MultiChange(c);
-		changes.add(bc);
-		size += bc.getSize();
-		
-		buffering.clear();
-		
-		if(!reverted.isEmpty())
-		{
-			for(Change ch : reverted)
-			{
-				size -= ch.getSize();
 			}
 			reverted.clear();
 		}
@@ -256,6 +221,7 @@ public class CanvasManager
 				public void mousePressed(MouseEvent e)
 				{
 					lastButton = e.getButton();
+					System.out.println("MouseDown");
 					Paint.main.currentTool.onPressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), e.getButton());
 				}
 				

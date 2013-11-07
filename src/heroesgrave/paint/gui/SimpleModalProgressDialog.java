@@ -25,8 +25,8 @@ import javax.swing.JProgressBar;
  * 
  * @author Longor1996
  **/
-public class SimpleModalProgressDialog implements AutoCloseable {
-	
+public class SimpleModalProgressDialog implements AutoCloseable
+{
 	// ALL FIELDS ARE PRIVATE, because there are nice methods, and you should use them Sir!
 	private final JDialog dlg;
 	private final JProgressBar dpb;
@@ -37,14 +37,15 @@ public class SimpleModalProgressDialog implements AutoCloseable {
 	/**
 	 * Constructor
 	 **/
-	public SimpleModalProgressDialog(String title, String message, int maxValue){
+	public SimpleModalProgressDialog(String title, String message, int maxValue)
+	{
 		
 		// Create/Assign variables.
 		this.maxValue = maxValue;
 		this.dlg = new JDialog(Paint.main.gui.frame, title, true);
 		this.dpb = new JProgressBar(0, maxValue);
 		this.dpm = new JLabel(message);
-	    
+		
 		// set text
 		dpb.setString("Working...");
 		dpb.setStringPainted(true);
@@ -54,23 +55,25 @@ public class SimpleModalProgressDialog implements AutoCloseable {
 		dpm.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		
 		// Create Dialog
-	    dlg.add(BorderLayout.CENTER, dpb);
-	    dlg.add(BorderLayout.NORTH, dpm);
-	    dlg.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-	    dlg.setSize(400, 80);
-	    dlg.setLocationRelativeTo(Paint.main.gui.frame);
-	    
-	    // Create a new thread, so the call of setVisible(true) doesn't block the Thread that called this constructor.
-	    // + Make the new Thread a daemon, so the application can be closed while the dialog is still opened.
-	    // + Make the new Thread run on the lowest priority, because the Thread will sleep forever, until the dialog is closed.
-	    Thread t = new Thread(new Runnable() {
-	      public void run() {
-	  	    Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-	        dlg.setVisible(true);
-	      }
-	    });
-	    t.setDaemon(true);
-	    t.start();
+		dlg.add(BorderLayout.CENTER, dpb);
+		dlg.add(BorderLayout.NORTH, dpm);
+		dlg.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		dlg.setSize(400, 80);
+		dlg.setLocationRelativeTo(Paint.main.gui.frame);
+		
+		// Create a new thread, so the call of setVisible(true) doesn't block the Thread that called this constructor.
+		// + Make the new Thread a daemon, so the application can be closed while the dialog is still opened.
+		// + Make the new Thread run on the lowest priority, because the Thread will sleep forever, until the dialog is closed.
+		Thread t = new Thread(new Runnable()
+		{
+			public void run()
+			{
+				Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+				dlg.setVisible(true);
+			}
+		});
+		t.setDaemon(true);
+		t.start();
 	}
 	
 	/**

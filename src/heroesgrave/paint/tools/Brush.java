@@ -19,19 +19,13 @@
 
 package heroesgrave.paint.tools;
 
-import heroesgrave.paint.main.Change;
-import heroesgrave.paint.main.MultiChange;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.PixelChange;
 import heroesgrave.utils.math.MathUtils;
 
-import java.util.ArrayList;
-
 public abstract class Brush extends Tool
 {
 	private int lastX, lastY;
-	
-	private ArrayList<Change> buffer = new ArrayList<Change>();
 	
 	public Brush(String name)
 	{
@@ -40,34 +34,12 @@ public abstract class Brush extends Tool
 	
 	public void buffer(PixelChange c)
 	{
-		for(Change ch : buffer)
-		{
-			if(ch.samePos(c.x, c.y))
-				return;
-		}
-		buffer.add(c);
-		Paint.main.gui.canvas.bufferChange(c);
-	}
-	
-	public void buffer(MultiChange c)
-	{
-		for(Change change : c.changes)
-		{
-			if(change instanceof PixelChange)
-			{
-				buffer((PixelChange) change);
-			}
-			else if(change instanceof MultiChange)
-			{
-				buffer((MultiChange) change);
-			}
-		}
+		Paint.main.gui.canvas.preview(c);
 	}
 	
 	public void flush()
 	{
-		buffer.clear();
-		Paint.main.gui.canvas.flushChanges();
+		Paint.main.gui.canvas.applyPreview();
 	}
 	
 	public void onPressed(int x, int y, int button)
