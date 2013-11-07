@@ -19,6 +19,7 @@
 
 package heroesgrave.utils.io;
 
+import heroesgrave.paint.gui.SimpleModalProgressDialog;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.Popup;
 
@@ -62,21 +63,8 @@ public class ImageLoader
 				int surfaceArea = width * height;
 				int[] raw = new int[surfaceArea];
 				
-			    final JDialog dlg = new JDialog(Paint.main.gui.frame, "Progress Dialog", true);
-			    JProgressBar dpb = new JProgressBar(0, surfaceArea);
-			    dlg.add(BorderLayout.CENTER, dpb);
-			    dlg.add(BorderLayout.NORTH, new JLabel("Loading..."));
-			    dlg.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-			    dlg.setSize(300, 75);
-			    dlg.setLocationRelativeTo(Paint.main.gui.frame);
+				SimpleModalProgressDialog DIALOG = new SimpleModalProgressDialog("Working!", "Loading Image...", surfaceArea);
 			    
-			    Thread t = new Thread(new Runnable() {
-			      public void run() {
-			        dlg.setVisible(true);
-			      }
-			    });
-			    t.start();
-				
 				for(int I = 0; I < surfaceArea; I++)
 				{
 					// get
@@ -97,11 +85,16 @@ public class ImageLoader
 					// put
 					raw[I] = pixel;
 					
-				    dpb.setValue(I);
+					// Don't update the progress-bar for every value, since that can cause some serious slowdown!
+					if(I % 128 == 0)
+						DIALOG.setValue(I);
 				}
 				
+				// set progress to 100
+				DIALOG.setValue(surfaceArea-1);
+				
 				// close progress dialog
-				dlg.setVisible(false);
+				DIALOG.close();
 				
 				// Read 'EOID'
 				in.readInt();
