@@ -20,6 +20,7 @@
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.imageops.Clear;
+import heroesgrave.paint.imageops.Clear2;
 import heroesgrave.paint.imageops.FlipHoriz;
 import heroesgrave.paint.imageops.FlipVert;
 import heroesgrave.paint.imageops.ImageOp;
@@ -77,19 +78,28 @@ public class ToolMenu
 		JMenu menu = new JMenu("Image");
 		
 		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
-		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
 		menu.add(new ImageMenuItem("Clear Image", new Clear(), "C"));
+		menu.add(new ImageMenuItem("Clear Image + Alpha", new Clear2(), null));
 		menu.add(new ImageMenuItem("Flip Vertically", new FlipVert(), null));
 		menu.add(new ImageMenuItem("Flip Horizontally", new FlipHoriz(), null));
 		menu.add(new ImageMenuItem("Rotate Right by 90", new RotateRightBy90(), null));
-		menu.add(new ImageMenuItem("White Noise", new Noise(), null));
-		menu.add(new ImageMenuItem("Simplex Noise", new SimplexNoiseOp(), null));
-		menu.add(new ImageMenuItem("Simple Blur", new SimpleBlur(), null));
-		menu.add(new ImageMenuItem("Simple Sharpen", new SimpleSharpen(), null));
 		// BUGGED -> menu.add(new ImageMenuItem("Simple Edge Detect", new SimpleEdgeDetect(), null));
 		// BUGGED -> menu.add(new ImageMenuItem("Perlin Noise", new PerlinNoiseOp(), "PN"));
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerImageOps(menu);
+		
+		return menu;
+	}
+	
+	public static JMenu createEffectMenu()
+	{
+		JMenu menu = new JMenu("Effects");
+		
+		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
+		menu.add(new ImageMenuItem("White Noise", new Noise(), null));
+		menu.add(new ImageMenuItem("Simplex Noise", new SimplexNoiseOp(), null));
+		menu.add(new ImageMenuItem("Simple Blur", new SimpleBlur(), null));
+		menu.add(new ImageMenuItem("Simple Sharpen", new SimpleSharpen(), null));
 		
 		return menu;
 	}

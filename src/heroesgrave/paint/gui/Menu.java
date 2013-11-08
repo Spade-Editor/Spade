@@ -57,6 +57,7 @@ public class Menu
 		menuBar.add(createViewMenu());
 		menuBar.add(ToolMenu.createImageMenu());
 		menuBar.add(ToolMenu.createToolMenu());
+		menuBar.add(ToolMenu.createEffectMenu());
 		menuBar.add(createWindowMenu());
 		menuBar.add(createHelpMenu());
 		
