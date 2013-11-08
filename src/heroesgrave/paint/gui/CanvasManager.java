@@ -28,35 +28,65 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.TexturePaint;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.LinkedList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class CanvasManager
 {
+	/**
+	 * The special Canvas that draws the Image.
+	 **/
 	private final Canvas canvas;
-	private BufferedImage image, preview;
-	private LinkedList<Change> changes = new LinkedList<Change>();
-	private LinkedList<Change> reverted = new LinkedList<Change>();
-	private LinkedList<Change> previewing = new LinkedList<Change>();
-	private int size;
 	
+	//
+	private BufferedImage image, preview;
+	private static BufferedImage transparenzyBG;
+	
+	/****/
+	private LinkedList<Change> changes = new LinkedList<Change>();
+
+	/****/
+	private LinkedList<Change> reverted = new LinkedList<Change>();
+
+	/****/
+	private LinkedList<Change> previewing = new LinkedList<Change>();
+
+	/****/
 	private static final int MAX_SIZE = 2 << 21;
 	
+	/****/
+	private int size;
+	
+	/****/
 	private float zoom = 1;
 	
 	public CanvasManager()
 	{
+		// Create the startup Image.
 		image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
 		g.setBackground(Color.WHITE);
 		g.clearRect(0, 0, 800, 600);
 		g.dispose();
 		
+		// Load the 'transparency'-background image.
+		try {
+			transparenzyBG = ImageIO.read(this.getClass().getResource("/heroesgrave/paint/res/tbg.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			transparenzyBG = null;
+		}
+		
+		// Crea the canvas that displays the Image.
 		canvas = new Canvas(image);
 	}
 	
@@ -261,7 +291,16 @@ public class CanvasManager
 		{
 			super.paint(g);
 			Graphics2D g2d = (Graphics2D) g;
+			
+			// Draw the 'transparency' background.
+			g2d.setPaint(new TexturePaint(transparenzyBG, new Rectangle2D.Float(0,0,16,16)));
+			g2d.fillRect(0, 0, MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale));
+			
+			// Draw the actual Image
+			g2d.setPaint(null);
 			g2d.drawImage(image, 0, 0, MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale), null);
+			
+			// if the Pixel-Grid is active, draw it.
 			if(Menu.GRID_ENABLED && scale >= 4)
 			{
 				g2d.setColor(Color.gray);
@@ -277,6 +316,9 @@ public class CanvasManager
 		}
 	}
 	
+	/**
+	 * Returns the Image.
+	 **/
 	public BufferedImage getImage()
 	{
 		return image;
