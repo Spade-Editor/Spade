@@ -23,15 +23,17 @@ public class MakeGrid extends ImageOp {
 
 	private void dialog()
 	{
+		// create dialog
 		final SimpleImageOpDialog dialog = new SimpleImageOpDialog("Grid-Maker", new GridLayout(0,2));
-		dialog.setSize(0,0);
 		
+		// create components
 		final NumberTextField WIDTH = new NumberTextField("16");
 		final NumberTextField HEIGHT= new NumberTextField("16");
 		
-		JButton create = new JButton("Draw");
+		JButton create = new JButton("Draw Grid");
 		JButton cancel = new JButton("Cancel");
 		
+		// create actions
 		create.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -40,7 +42,6 @@ public class MakeGrid extends ImageOp {
 				operation_do(WIDTH.get(), HEIGHT.get());
 			}
 		});
-		
 		cancel.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -49,6 +50,7 @@ public class MakeGrid extends ImageOp {
 			}
 		});
 		
+		// add components
 		dialog.add(new CentredJLabel("Width"));
 		dialog.add(WIDTH);
 		dialog.add(new CentredJLabel("Height"));
@@ -56,8 +58,7 @@ public class MakeGrid extends ImageOp {
 		dialog.add(create);
 		dialog.add(cancel);
 		
-		
-		
+		// show
 		dialog.show();
 	}
 	
