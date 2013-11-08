@@ -272,6 +272,10 @@ public class ColourChooser
 		// 2. Yes: TABS. Use TABS (JTabbedPane?) to do the different color choosers! It just looks better in my opinion.
 		// 3. You should go and use the property-change methods of the inputs to update the color value.
 		// 4. Format the stuff in here!
+		//
+		// XXX: HeroesGrave:
+		// 
+		// This was meant to be temporary, but got a little bit bloated.
 		
 		top.add(buttonPanel, BorderLayout.NORTH);
 		
@@ -382,19 +386,6 @@ public class ColourChooser
 				Paint.main.setRightColour(rightColour);
 			}
 		}
-		else if(HSB.isSelected())
-		{
-			if(leftRadio.isSelected())
-			{
-				leftColour = (Color.getHSBColor(r.getValue() / 255f, g.getValue() / 255f, b.getValue() / 255f).getRGB() & 0xFFFFFF) | (a.getValue() << 24);
-				Paint.main.setLeftColour(leftColour);
-			}
-			else if(rightRadio.isSelected())
-			{
-				rightColour = (Color.getHSBColor(r.getValue() / 255f, g.getValue() / 255f, b.getValue() / 255f).getRGB() & 0xFFFFFF) | (a.getValue() << 24);
-				Paint.main.setRightColour(rightColour);
-			}
-		}
 	}
 	
 	public void show()
@@ -427,7 +418,7 @@ public class ColourChooser
 			this.setHorizontalAlignment(SwingConstants.CENTER);
 		}
 	}
-
+	
 	public static class ColourPanel extends JPanel
 	{
 		private static final long serialVersionUID = 7541204326016173356L;

@@ -53,13 +53,13 @@ public class CanvasManager
 	
 	/****/
 	private LinkedList<Change> changes = new LinkedList<Change>();
-
+	
 	/****/
 	private LinkedList<Change> reverted = new LinkedList<Change>();
-
+	
 	/****/
 	private LinkedList<Change> previewing = new LinkedList<Change>();
-
+	
 	/****/
 	private static final int MAX_SIZE = 2 << 21;
 	
@@ -79,9 +79,12 @@ public class CanvasManager
 		g.dispose();
 		
 		// Load the 'transparency'-background image.
-		try {
+		try
+		{
 			transparenzyBG = ImageIO.read(this.getClass().getResource("/heroesgrave/paint/res/tbg.png"));
-		} catch (IOException e) {
+		}
+		catch(IOException e)
+		{
 			e.printStackTrace();
 			transparenzyBG = null;
 		}
@@ -251,7 +254,6 @@ public class CanvasManager
 				public void mousePressed(MouseEvent e)
 				{
 					lastButton = e.getButton();
-					System.out.println("MouseDown");
 					Paint.main.currentTool.onPressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), e.getButton());
 				}
 				
@@ -293,7 +295,7 @@ public class CanvasManager
 			Graphics2D g2d = (Graphics2D) g;
 			
 			// Draw the 'transparency' background.
-			g2d.setPaint(new TexturePaint(transparenzyBG, new Rectangle2D.Float(0,0,16,16)));
+			g2d.setPaint(new TexturePaint(transparenzyBG, new Rectangle2D.Float(0, 0, 16, 16)));
 			g2d.fillRect(0, 0, MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale));
 			
 			// Draw the actual Image

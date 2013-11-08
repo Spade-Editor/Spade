@@ -1,10 +1,11 @@
-package heroesgrave.paint.imageops;
+package heroesgrave.paint.effects;
 
 import heroesgrave.paint.gui.SimpleImageOpDialog;
 import heroesgrave.paint.main.Paint;
-
 import heroesgrave.paint.gui.Menu.CentredJLabel;
 import heroesgrave.paint.gui.Menu.NumberTextField;
+import heroesgrave.paint.imageops.ImageChange;
+import heroesgrave.paint.imageops.ImageOp;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;

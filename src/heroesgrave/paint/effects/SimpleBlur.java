@@ -1,5 +1,7 @@
-package heroesgrave.paint.imageops;
+package heroesgrave.paint.effects;
 
+import heroesgrave.paint.imageops.ImageChange;
+import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.image.BufferedImage;

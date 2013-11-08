@@ -96,7 +96,8 @@ public class GUIManager
 		}
 		toolOptions = options;
 		menus.add(toolOptions);
-		toolOptions.revalidate();
+		menus.revalidate();
+		menus.repaint();
 	}
 	
 	public void setTitle(String title)

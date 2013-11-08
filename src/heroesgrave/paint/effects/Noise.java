@@ -17,28 +17,25 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.imageops;
+package heroesgrave.paint.effects;
 
+import heroesgrave.paint.imageops.ImageChange;
+import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.utils.math.MathUtils;
-import heroesgrave.utils.math.SimplexNoise;
 
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
-public class SimplexNoiseOp extends ImageOp
+public class Noise extends ImageOp
 {
 	public void operation()
 	{
+		// TODO: Implement a GUI to make it possible to modify the 'chance' value.
+		
 		BufferedImage old = Paint.main.gui.canvas.getImage();
 		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		SimplexNoise noise = new SimplexNoise(System.currentTimeMillis());
-		
-		// TODO: Add dialog with sliders to configure the noise!
-		double scale = 0.125;
-		
-		int OCTAVES = 8;
-		double START_SCALE = 1;
-		double MULTIPLY_SCALE = 0.25;
+		Random random = new Random();
+		int chance = 50;
 		
 		for(int i = 0; i < old.getWidth(); i++)
 		{
@@ -47,15 +44,16 @@ public class SimplexNoiseOp extends ImageOp
 				int before = old.getRGB(i, j);
 				int after = before;
 				
-				double valD = noise.noiseO(i * scale, j * scale, OCTAVES, START_SCALE , MULTIPLY_SCALE);
-				valD = valD * 0.5D + 0.5D;
-				int valI = MathUtils.clamp((int)(valD * 256),255,0) & 0xFF;
+				int rand = random.nextInt(256) & 0xFF;
 				
-				after &= 0xFF000000;
-				
-				after |= valI << 0;
-				after |= valI << 8;
-				after |= valI << 16;
+				if(random.nextFloat() * 100 > chance)
+				{
+					after &= 0xFF000000;
+					
+					after |= rand << 0;
+					after |= rand << 8;
+					after |= rand << 16;
+				}
 				
 				newImage.setRGB(i, j, after);
 			}
@@ -63,5 +61,4 @@ public class SimplexNoiseOp extends ImageOp
 		
 		Paint.addChange(new ImageChange(newImage));
 	}
-	
 }

@@ -398,6 +398,8 @@ public class Menu
 	
 	public static class NumberTextField extends JTextField
 	{
+		private static final long serialVersionUID = -8289311655265709303L;
+
 		public NumberTextField(String text)
 		{
 			super(text);
@@ -414,5 +416,4 @@ public class Menu
 			return Integer.valueOf(this.getText());
 		}
 	}
-	
 }

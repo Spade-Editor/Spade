@@ -19,9 +19,29 @@
 
 package heroesgrave.paint.gui;
 
-import heroesgrave.paint.imageops.*;
+import heroesgrave.paint.effects.Invert;
+import heroesgrave.paint.effects.MakeGrid;
+import heroesgrave.paint.effects.Noise;
+import heroesgrave.paint.effects.SimpleBlur;
+import heroesgrave.paint.effects.SimpleSharpen;
+import heroesgrave.paint.effects.SimplexNoiseOp;
+import heroesgrave.paint.imageops.Clear;
+import heroesgrave.paint.imageops.Clear2;
+import heroesgrave.paint.imageops.FlipHoriz;
+import heroesgrave.paint.imageops.FlipVert;
+import heroesgrave.paint.imageops.ImageOp;
+import heroesgrave.paint.imageops.Resize;
+import heroesgrave.paint.imageops.ResizeCanvas;
+import heroesgrave.paint.imageops.RotateRightBy90;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.tools.*;
+import heroesgrave.paint.tools.Ellipse;
+import heroesgrave.paint.tools.Fill;
+import heroesgrave.paint.tools.Line;
+import heroesgrave.paint.tools.PaintBrush;
+import heroesgrave.paint.tools.Picker;
+import heroesgrave.paint.tools.Pixel;
+import heroesgrave.paint.tools.Rectangle;
+import heroesgrave.paint.tools.Tool;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,14 +55,16 @@ import javax.swing.JMenuItem;
 
 public class ToolMenu
 {
+	public static Tool DEF;
+	
 	public static JMenu createToolMenu()
 	{
 		JMenu menu = new JMenu("Tools");
 		
-		Tool def = new Pixel("Pencil");
-		Paint.main.currentTool = def;
+		DEF = new Pixel("Pencil");
+		Paint.main.currentTool = DEF;
 		
-		menu.add(new ToolMenuItem("Pencil", def, "P"));
+		menu.add(new ToolMenuItem("Pencil", DEF, "P"));
 		menu.add(new ToolMenuItem("Paint Brush", new PaintBrush("Paint Brush"), "B"));
 		menu.add(new ToolMenuItem("Line", new Line("Straight Line"), "L"));
 		menu.add(new ToolMenuItem("Colour Picker", new Picker("Colour Picker"), "K"));
@@ -60,7 +82,8 @@ public class ToolMenu
 		JMenu menu = new JMenu("Image");
 		
 		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
-		menu.add(new ImageMenuItem("Clear Image", new Clear(), "C"));
+		menu.add(new ImageMenuItem("Resize Canvas", new ResizeCanvas(), "C"));
+		menu.add(new ImageMenuItem("Clear Image", new Clear(), "N"));
 		menu.add(new ImageMenuItem("Clear Image + Alpha", new Clear2(), null));
 		menu.add(new ImageMenuItem("Flip Vertically", new FlipVert(), null));
 		menu.add(new ImageMenuItem("Flip Horizontally", new FlipHoriz(), null));
