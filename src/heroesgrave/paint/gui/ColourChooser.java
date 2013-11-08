@@ -264,6 +264,14 @@ public class ColourChooser
 		buttonPanel.add(radioButtonPanel, BorderLayout.NORTH);
 		// Not working yet. Supposed to enable HSB colour input.
 		// buttonPanel.add(colorModelPanel, BorderLayout.SOUTH);
+		// ...
+		// XXX: Longor1996:
+		//
+		// You should go and:
+		// 1. Make different methods for loading up the single color tabs.
+		// 2. Yes: TABS. Use TABS (JTabbedPane?) to do the different color choosers! It just looks better in my opinion.
+		// 3. You should go and use the property-change methods of the inputs to update the color value.
+		// 4. Format the stuff in here!
 		
 		top.add(buttonPanel, BorderLayout.NORTH);
 		

@@ -354,15 +354,30 @@ public class Paint extends Application
 	
 	public static void main(String[] args)
 	{
-		if(args.length == 1)
+		// Check for a file argument
+		if(args.length >= 1)
 		{
-			System.out.println(args[0]);
+			System.out.println("The Application will try to open file given over the command-line after startup: " + args[0]);
 			File f = new File(args[0]);
+			
 			if(f.exists())
 			{
 				main.toOpen = f;
 			}
 		}
+		
+		// Go trough ALL the arguments and...
+		for(String STR : args)
+		{
+			
+			// ...If the arguments contain the DmemoryWatcherFlag flag, set the property to true to enable the MemoryWatcher.
+			if(STR.equalsIgnoreCase("DmemoryWatcherFlag"))
+				System.setProperty("DmemoryWatcherFlag", "true");
+			
+			/// XXX: Expand here by more debugging options and system flags!
+		}
+		
+		// Finally Launch Paint.JAVA!
 		Application.launch(main);
 	}
 }

@@ -19,26 +19,9 @@
 
 package heroesgrave.paint.gui;
 
-import heroesgrave.paint.imageops.Clear;
-import heroesgrave.paint.imageops.FlipHoriz;
-import heroesgrave.paint.imageops.FlipVert;
-import heroesgrave.paint.imageops.ImageOp;
-import heroesgrave.paint.imageops.Invert;
-import heroesgrave.paint.imageops.Noise;
-import heroesgrave.paint.imageops.Resize;
-import heroesgrave.paint.imageops.RotateRightBy90;
-import heroesgrave.paint.imageops.SimpleBlur;
-import heroesgrave.paint.imageops.SimpleSharpen;
-import heroesgrave.paint.imageops.SimplexNoiseOp;
+import heroesgrave.paint.imageops.*;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.tools.Ellipse;
-import heroesgrave.paint.tools.Fill;
-import heroesgrave.paint.tools.Line;
-import heroesgrave.paint.tools.PaintBrush;
-import heroesgrave.paint.tools.Picker;
-import heroesgrave.paint.tools.Pixel;
-import heroesgrave.paint.tools.Rectangle;
-import heroesgrave.paint.tools.Tool;
+import heroesgrave.paint.tools.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -77,19 +60,29 @@ public class ToolMenu
 		JMenu menu = new JMenu("Image");
 		
 		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
-		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
 		menu.add(new ImageMenuItem("Clear Image", new Clear(), "C"));
+		menu.add(new ImageMenuItem("Clear Image + Alpha", new Clear2(), null));
 		menu.add(new ImageMenuItem("Flip Vertically", new FlipVert(), null));
 		menu.add(new ImageMenuItem("Flip Horizontally", new FlipHoriz(), null));
 		menu.add(new ImageMenuItem("Rotate Right by 90", new RotateRightBy90(), null));
-		menu.add(new ImageMenuItem("White Noise", new Noise(), null));
-		menu.add(new ImageMenuItem("Simplex Noise", new SimplexNoiseOp(), null));
-		menu.add(new ImageMenuItem("Simple Blur", new SimpleBlur(), null));
-		menu.add(new ImageMenuItem("Simple Sharpen", new SimpleSharpen(), null));
 		// BUGGED -> menu.add(new ImageMenuItem("Simple Edge Detect", new SimpleEdgeDetect(), null));
 		// BUGGED -> menu.add(new ImageMenuItem("Perlin Noise", new PerlinNoiseOp(), "PN"));
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerImageOps(menu);
+		
+		return menu;
+	}
+	
+	public static JMenu createEffectMenu()
+	{
+		JMenu menu = new JMenu("Effects");
+		
+		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
+		menu.add(new ImageMenuItem("White Noise", new Noise(), null));
+		menu.add(new ImageMenuItem("Simplex Noise", new SimplexNoiseOp(), null));
+		menu.add(new ImageMenuItem("Simple Blur", new SimpleBlur(), null));
+		menu.add(new ImageMenuItem("Simple Sharpen", new SimpleSharpen(), null));
+		menu.add(new ImageMenuItem("Grid-Maker", new MakeGrid(), null));
 		
 		return menu;
 	}
@@ -141,12 +134,22 @@ public class ToolMenu
 		
 		public ImageMenuItem(String name, ImageOp o, String key)
 		{
+			this(name,o,key,null);
+		}
+		
+		public ImageMenuItem(String name, ImageOp o, String key, String toolTip)
+		{
 			super(key == null ? (name) : (name + " (Ctrl+Shift+" + key + ")"));
 			
 			// This is here, so some ImageOps don't have to have a key assigned. We can't have key-code's for ALL the ImageOp's! It's impossible!
 			if(key != null)
 				Paint.addImageOp(key, o);
 			
+			// If there is a ToolTip Text given over the Constructor, use it.
+			if(toolTip != null)
+				this.setToolTipText(toolTip);
+			
+			// 
 			this.op = o;
 			
 			// TRY to load the icon!
@@ -157,7 +160,6 @@ public class ToolMenu
 					this.setIcon(new ImageIcon(ImageIO.read(url)));
 				else
 					throw new IOException();
-				
 			} catch (IOException e1) {
 				System.err.println("Error: ImageOp '"+name+"' is missing an icon!");
 			}

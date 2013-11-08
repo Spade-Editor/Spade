@@ -141,62 +141,13 @@ public class GUIManager
 	
 	public void initFrame()
 	{
+		// Create the Frame
 		frame = new JFrame("Untitled - Paint.JAVA");
 		frame.addWindowListener(new WindowAdapter()
 		{
 			public void windowClosing(WindowEvent e)
 			{
-				if(Paint.main.saved)
-				{
-					UserPreferences.savePrefs(frame);
-					Paint.main.terminate = true;
-					return;
-				}
-				
-				final JDialog close = new CentredJDialog();
-				close.setTitle("Save before you quit?");
-				close.setAlwaysOnTop(true);
-				close.setAutoRequestFocus(true);
-				close.setLayout(new BorderLayout());
-				
-				JButton save = new JButton("Save & Quit");
-				JButton dispose = new JButton("Quit without saving");
-				JButton cancel = new JButton("Don't Quit");
-				
-				close.add(save, BorderLayout.NORTH);
-				close.add(dispose, BorderLayout.CENTER);
-				close.add(cancel, BorderLayout.SOUTH);
-				
-				close.pack();
-				close.setResizable(false);
-				close.setVisible(true);
-				
-				save.addActionListener(new ActionListener()
-				{
-					public void actionPerformed(ActionEvent e)
-					{
-						Paint.save();
-						UserPreferences.savePrefs(frame);
-						Paint.main.terminate = true;
-						close.dispose();
-					}
-				});
-				dispose.addActionListener(new ActionListener()
-				{
-					public void actionPerformed(ActionEvent e)
-					{
-						UserPreferences.savePrefs(frame);
-						Paint.main.terminate = true;
-						close.dispose();
-					}
-				});
-				cancel.addActionListener(new ActionListener()
-				{
-					public void actionPerformed(ActionEvent e)
-					{
-						close.dispose();
-					}
-				});
+				displayCloseDialogue();
 			}
 		});
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -215,6 +166,68 @@ public class GUIManager
 		panel.setLayout(new BorderLayout());
 	}
 	
+	public void displayCloseDialogue()
+	{
+		if(Paint.main.saved)
+		{
+			UserPreferences.savePrefs(frame);
+			Paint.main.terminate = true;
+			return;
+		}
+		
+		// dialogue creation
+		final JDialog close = new CentredJDialog();
+		close.setTitle("Save before you quit?");
+		close.setAlwaysOnTop(true);
+		close.setAutoRequestFocus(true);
+		close.setLayout(new BorderLayout());
+		
+		JButton save = new JButton("Save & Quit");
+		JButton dispose = new JButton("Quit without saving");
+		JButton cancel = new JButton("Don't Quit");
+		
+		// Init all the actions
+		save.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				Paint.save();
+				UserPreferences.savePrefs(frame);
+				Paint.main.terminate = true;
+				close.dispose();
+			}
+		});
+		dispose.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				UserPreferences.savePrefs(frame);
+				Paint.main.terminate = true;
+				close.dispose();
+			}
+		});
+		cancel.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				close.dispose();
+			}
+		});
+		
+		// Add the actions to the dialogue
+		close.add(save, BorderLayout.NORTH);
+		close.add(dispose, BorderLayout.CENTER);
+		close.add(cancel, BorderLayout.SOUTH);
+		
+		// pack it, show it!
+		close.pack();
+		close.setResizable(false);
+		close.setVisible(true);
+	}
+	
+	/**
+	 * Finishe's the GUI building process.
+	 **/
 	public void finish()
 	{
 		UserPreferences.loadPrefs(frame);
