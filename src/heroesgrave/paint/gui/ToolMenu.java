@@ -35,6 +35,7 @@ import heroesgrave.paint.imageops.ResizeCanvas;
 import heroesgrave.paint.imageops.RotateRightBy90;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Ellipse;
+import heroesgrave.paint.tools.Eraser;
 import heroesgrave.paint.tools.Fill;
 import heroesgrave.paint.tools.Line;
 import heroesgrave.paint.tools.PaintBrush;
@@ -65,12 +66,13 @@ public class ToolMenu
 		Paint.main.currentTool = DEF;
 		
 		menu.add(new ToolMenuItem("Pencil", DEF, "P"));
+		menu.add(new ToolMenuItem("Eraser", new Eraser("Eraser"), "E"));
 		menu.add(new ToolMenuItem("Paint Brush", new PaintBrush("Paint Brush"), "B"));
 		menu.add(new ToolMenuItem("Line", new Line("Straight Line"), "L"));
 		menu.add(new ToolMenuItem("Colour Picker", new Picker("Colour Picker"), "K"));
 		menu.add(new ToolMenuItem("Paint Bucket", new Fill("Paint Bucket"), "F"));
 		menu.add(new ToolMenuItem("Rectangle", new Rectangle("Rectangle"), "R"));
-		menu.add(new ToolMenuItem("Ellipse", new Ellipse("Ellipse"), "E"));
+		menu.add(new ToolMenuItem("Ellipse", new Ellipse("Ellipse"), "C"));
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerTools(menu);
 		
