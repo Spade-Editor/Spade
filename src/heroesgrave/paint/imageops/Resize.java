@@ -120,33 +120,19 @@ public class Resize extends ImageOp
 		BufferedImage old = Paint.main.gui.canvas.getImage();
 		BufferedImage newImage = new BufferedImage((int) w, (int) h, BufferedImage.TYPE_INT_ARGB);
 		
+		// FANCY RESCALE CODE HERE!
 		Graphics2D g2d = (Graphics2D) newImage.getGraphics();
-		g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DEFAULT);
 		g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 		g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
 		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, getFilterHint(filter));  // RenderingHints.VALUE_INTERPOLATION_BILINEAR
 		g2d.drawImage(old, 0, 0, (int) w, (int) h, null);
 		
-		
-		/*
-		int oldW = old.getWidth();
-		int oldH = old.getHeight();
-		
-		float sx = w / oldW;
-		float sy = h / oldH;
-		
-		for(int i = 0; i < w; i++)
-		{
-			for(int j = 0; j < h; j++)
-			{
-				newImage.setRGB(i, j, old.getRGB(MathUtils.floor(i / sx), MathUtils.floor(j / sy)));
-			}
-		}
-		*/
-		
 		Paint.addChange(new ImageChange(newImage));
 	}
 
+	/**
+	 * Returns the correct RenderingHint for the given filtering label.
+	 **/
 	private Object getFilterHint(String filter) {
 		
 		if(filter.equalsIgnoreCase("Nearest Neighbor")) return RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR;

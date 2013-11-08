@@ -46,18 +46,27 @@ import javax.swing.text.AbstractDocument;
 
 public class Menu
 {
+	/**
+	 * Single boolean flag for the visibility toggle of the Pixel-Grid.
+	 **/
 	public static boolean GRID_ENABLED = false;
 	
 	public static JMenuBar createMenuBar()
 	{
+		// M.E.I. MenuBar
 		JMenuBar menuBar = new JMenuBar();
 		
+		// Main Menu's
 		menuBar.add(createFileMenu());
 		menuBar.add(createEditMenu());
 		menuBar.add(createViewMenu());
+		
+		// Editing Menu's
 		menuBar.add(ToolMenu.createImageMenu());
 		menuBar.add(ToolMenu.createToolMenu());
 		menuBar.add(ToolMenu.createEffectMenu());
+		
+		// Info Menu's
 		menuBar.add(createWindowMenu());
 		menuBar.add(createHelpMenu());
 		
@@ -77,7 +86,18 @@ public class Menu
 			}
 		});
 		
+		JMenuItem about = new JMenuItem("About...");
+		about.setEnabled(false);
+		about.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				// TODO: Implement 'About' Dialog.
+			}
+		});
+		
 		help.add(pluginManager);
+		help.add(about);
 		
 		return help;
 	}
@@ -118,11 +138,13 @@ public class Menu
 		JMenuItem load = new JMenuItem("Open (Ctrl+O)");
 		JMenuItem save = new JMenuItem("Save (Ctrl+S)");
 		final JMenuItem saveAs = new JMenuItem("Save As");
+		JMenuItem exit = new JMenuItem("Exit");
 		
 		file.add(newFile);
 		file.add(load);
 		file.add(save);
 		file.add(saveAs);
+		file.add(exit);
 		
 		newFile.addActionListener(new ActionListener()
 		{
@@ -153,6 +175,14 @@ public class Menu
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.saveAs();
+			}
+		});
+		
+		saveAs.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				Paint.main.gui.displayCloseDialogue();
 			}
 		});
 		
@@ -352,4 +382,37 @@ public class Menu
 			}
 		}
 	}
+	
+	public static class CentredJLabel extends JLabel
+	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -782420829240440738L;
+		
+		public CentredJLabel(String label)
+		{
+			super(label);
+		}
+	}
+	
+	public static class NumberTextField extends JTextField
+	{
+		public NumberTextField(String text)
+		{
+			super(text);
+			
+			setColumns(8);
+			((AbstractDocument) getDocument()).setDocumentFilter(new NumberDocumentFilter());
+		}
+		
+		public int get()
+		{
+			if(this.getText().isEmpty())
+				return -1;
+			
+			return Integer.valueOf(this.getText());
+		}
+	}
+	
 }
