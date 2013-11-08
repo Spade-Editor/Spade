@@ -29,7 +29,6 @@ public class SimplexNoiseOp extends ImageOp
 {
 	public void operation()
 	{
-		
 		BufferedImage old = Paint.main.gui.canvas.getImage();
 		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		SimplexNoise noise = new SimplexNoise(System.currentTimeMillis());
