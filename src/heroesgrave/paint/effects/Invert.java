@@ -29,16 +29,35 @@ public class Invert extends ImageOp
 {
 	public void operation()
 	{
+		// image var's
 		BufferedImage old = Paint.main.gui.canvas.getImage();
 		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		
+		// channel buffer var's
+		int channel_argb;
+		int channel_rgb;
+		int channel_a;
+		
+		// channel mask's
+		int MASK_RGB = 0xFFFFFF;
+		int MASK_ALPHA = 0xFF000000;
+		
 		for(int i = 0; i < old.getWidth(); i++)
 		{
 			for(int j = 0; j < old.getHeight(); j++)
 			{
-				int c = old.getRGB(i, j) & 0x00FFFFFF;
-				int a = c & 0xFF000000;
-				c = ~c;
-				newImage.setRGB(i, j, (c | a));
+				// get pixel
+				channel_argb = old.getRGB(i, j);
+				
+				// split ARGB into RGB and A
+				channel_rgb = channel_argb & MASK_RGB;
+				channel_a = channel_argb & MASK_ALPHA;
+				
+				// flip the colors
+				channel_rgb = ~channel_rgb;
+				
+				// set
+				newImage.setRGB(i, j, (channel_rgb | channel_a));
 			}
 		}
 		
