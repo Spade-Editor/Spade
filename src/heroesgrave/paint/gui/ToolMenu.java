@@ -126,21 +126,30 @@ public class ToolMenu
 			
 			// This is here, so some Tools don't have to have a key assigned. We can't have key-code's for ALL the Tools! It's impossible!
 			if(key != null)
+			{
 				Paint.addTool(key, t);
+			}
 			
 			this.tool = t;
 			
 			// TRY to load the icon!
-			try {
+			try
+			{
 				URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/tools/" + name + ".png");
 				
 				if(url != null)
+				{
 					this.setIcon(new ImageIcon(ImageIO.read(url)));
+				}
 				else
+				{
 					this.setIcon(new ImageIcon(ImageIO.read(Paint.questionMarkURL)));
+				}
 				
-			} catch (IOException e1) {
-				System.err.println("Error: Tool '"+name+"' is missing an icon!");
+			}
+			catch(IOException e1)
+			{
+				System.err.println("Error: Tool '" + name + "' is missing an icon!");
 			}
 			
 			this.addActionListener(new ActionListener()
@@ -161,7 +170,7 @@ public class ToolMenu
 		
 		public ImageMenuItem(String name, ImageOp o, String key)
 		{
-			this(name,o,key,null);
+			this(name, o, key, null);
 		}
 		
 		public ImageMenuItem(String name, ImageOp o, String key, String toolTip)
@@ -170,25 +179,36 @@ public class ToolMenu
 			
 			// This is here, so some ImageOps don't have to have a key assigned. We can't have key-code's for ALL the ImageOp's! It's impossible!
 			if(key != null)
+			{
 				Paint.addImageOp(key, o);
+			}
 			
 			// If there is a ToolTip Text given over the Constructor, use it.
 			if(toolTip != null)
+			{
 				this.setToolTipText(toolTip);
+			}
 			
 			// 
 			this.op = o;
 			
 			// TRY to load the icon!
-			try {
+			try
+			{
 				URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/imageops/" + name + ".png");
 				
 				if(url != null)
+				{
 					this.setIcon(new ImageIcon(ImageIO.read(url)));
+				}
 				else
+				{
 					this.setIcon(new ImageIcon(ImageIO.read(Paint.questionMarkURL)));
-			} catch (IOException e1) {
-				System.err.println("Error: ImageOp '"+name+"' is missing an icon!");
+				}
+			}
+			catch(IOException e1)
+			{
+				System.err.println("Error: ImageOp '" + name + "' is missing an icon!");
 			}
 			
 			this.addActionListener(new ActionListener()

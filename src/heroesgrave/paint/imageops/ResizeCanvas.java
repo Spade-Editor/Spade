@@ -60,7 +60,7 @@ public class ResizeCanvas extends ImageOp
 		final JTextField width = new JTextField("" + Paint.main.gui.canvas.getImage().getWidth());
 		final JTextField height = new JTextField("" + Paint.main.gui.canvas.getImage().getHeight());
 		final JComboBox<String> filter = new JComboBox<String>();
-		final DefaultComboBoxModel<String> filterModel = new DefaultComboBoxModel<String>(new String[]{"Nearest Neighbor","Bilinear","Bicubic"});
+		final DefaultComboBoxModel<String> filterModel = new DefaultComboBoxModel<String>(new String[]{"Nearest Neighbor", "Bilinear", "Bicubic"});
 		
 		((AbstractDocument) width.getDocument()).setDocumentFilter(new NumberDocumentFilter());
 		((AbstractDocument) height.getDocument()).setDocumentFilter(new NumberDocumentFilter());

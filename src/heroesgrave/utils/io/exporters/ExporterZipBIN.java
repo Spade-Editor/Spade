@@ -1,3 +1,22 @@
+/*
+ *	Copyright 2013 HeroesGrave
+ *
+ *	This file is part of Paint.JAVA
+ *
+ *	Paint.JAVA is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>
+*/
+
 package heroesgrave.utils.io.exporters;
 
 import heroesgrave.paint.gui.SimpleModalProgressDialog;
@@ -24,11 +43,15 @@ import java.util.zip.GZIPOutputStream;
 public class ExporterZipBIN extends ImageExporter
 {
 	
-	@Override public String getFileExtension() {
+	@Override
+	public String getFileExtension()
+	{
 		return "zbin";
 	}
 	
-	@Override public void exportImage(BufferedImage bufferedImage, File destination) throws IOException {
+	@Override
+	public void exportImage(BufferedImage bufferedImage, File destination) throws IOException
+	{
 		DataOutputStream output = new DataOutputStream(new FileOutputStream(destination));
 		
 		// Get width and height.
@@ -47,7 +70,7 @@ public class ExporterZipBIN extends ImageExporter
 		SimpleModalProgressDialog DIALOG = new SimpleModalProgressDialog("Saving...", "Saving Image...", ai.length + 1);
 		
 		// Go trough ALL the pixels and convert from INT_ARGB to INT_RGBA
-		for (int k = 0; k < ai.length; k++)
+		for(int k = 0; k < ai.length; k++)
 		{
 			int A = (ai[k] >> 24) & 0xff;
 			int R = (ai[k] >> 16) & 0xff;
@@ -60,7 +83,9 @@ public class ExporterZipBIN extends ImageExporter
 			abyte0[(k * 4) + 3] = (byte) A;//A
 			
 			if(k % 128 == 0)
+			{
 				DIALOG.setValue(k);
+			}
 		}
 		
 		DIALOG.setMessage("COMPRESSING!");
@@ -92,7 +117,8 @@ public class ExporterZipBIN extends ImageExporter
 	}
 	
 	@Override
-	public String getFileExtensionDescription() {
+	public String getFileExtensionDescription()
+	{
 		return "ZBIN - Raw Compressed Binary Image Data Format";
 	}
 }

@@ -1,4 +1,30 @@
+/*
+ *	Copyright 2013 HeroesGrave
+ *
+ *	This file is part of Paint.JAVA
+ *
+ *	Paint.JAVA is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>
+*/
+
 package heroesgrave.paint.effects;
+
+import heroesgrave.paint.gui.Menu;
+import heroesgrave.paint.gui.SimpleImageOpDialog;
+import heroesgrave.paint.imageops.ImageChange;
+import heroesgrave.paint.imageops.ImageOp;
+import heroesgrave.paint.main.Paint;
+import heroesgrave.paint.main.PartialImageChange;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -8,20 +34,15 @@ import java.awt.image.BufferedImage;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 
-import heroesgrave.paint.gui.Menu;
-import heroesgrave.paint.gui.SimpleImageOpDialog;
-import heroesgrave.paint.imageops.ImageChange;
-import heroesgrave.paint.imageops.ImageOp;
-import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.main.PartialImageChange;
-
-public class RemoveChannels extends ImageOp {
-
+public class RemoveChannels extends ImageOp
+{
+	
 	@Override
-	public void operation() {
+	public void operation()
+	{
 		
 		// create dialog
-		final SimpleImageOpDialog dialog = new SimpleImageOpDialog("Channel Remover", new GridLayout(0,2));
+		final SimpleImageOpDialog dialog = new SimpleImageOpDialog("Channel Remover", new GridLayout(0, 2));
 		
 		final JCheckBox channelR = new JCheckBox();
 		final JCheckBox channelG = new JCheckBox();
@@ -36,7 +57,7 @@ public class RemoveChannels extends ImageOp {
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				operation_do(channelR.isSelected(),channelG.isSelected(),channelB.isSelected(),channelA.isSelected(), true);
+				operation_do(channelR.isSelected(), channelG.isSelected(), channelB.isSelected(), channelA.isSelected(), true);
 			}
 		};
 		
@@ -51,7 +72,7 @@ public class RemoveChannels extends ImageOp {
 			public void actionPerformed(ActionEvent e)
 			{
 				dialog.close();
-				operation_do(channelR.isSelected(),channelG.isSelected(),channelB.isSelected(),channelA.isSelected(), false);
+				operation_do(channelR.isSelected(), channelG.isSelected(), channelB.isSelected(), channelA.isSelected(), false);
 			}
 		});
 		cancel.addActionListener(new ActionListener()
@@ -78,11 +99,12 @@ public class RemoveChannels extends ImageOp {
 		dialog.show();
 		
 	}
-
-	protected void operation_do(boolean R, boolean G, boolean B, boolean A, boolean AS_PREVIEW) {
+	
+	protected void operation_do(boolean R, boolean G, boolean B, boolean A, boolean AS_PREVIEW)
+	{
 		Paint.main.gui.canvas.clearPreview();
 		
-		System.out.println("OPERATION_CALL::"+R+","+G+","+B+","+A+"::"+AS_PREVIEW);
+		System.out.println("OPERATION_CALL::" + R + "," + G + "," + B + "," + A + "::" + AS_PREVIEW);
 		
 		// MASK = AA.RR.GG.BB
 		int AND_MASK = 0x00000000;
@@ -90,19 +112,29 @@ public class RemoveChannels extends ImageOp {
 		
 		// If the Red channel is NOT to be removed, OR it into the MASK.
 		if(!R)
+		{
 			AND_MASK |= 0x00FF0000;
+		}
 		
 		// If the Green channel is NOT to be removed, OR it into the MASK.
 		if(!G)
+		{
 			AND_MASK |= 0x0000FF00;
+		}
 		// If the Blue channel is NOT to be removed, OR it into the MASK.
 		if(!B)
+		{
 			AND_MASK |= 0x000000FF;
+		}
 		// If the Alpha channel is NOT to be removed, OR it into the MASK.
 		if(!A)
+		{
 			AND_MASK |= 0xFF000000;
+		}
 		else
+		{
 			OR_MASK |= 0xFF000000;
+		}
 		
 		// image var's
 		BufferedImage old = Paint.main.gui.canvas.getImage();
@@ -127,10 +159,14 @@ public class RemoveChannels extends ImageOp {
 		}
 		
 		if(AS_PREVIEW)
-			Paint.main.gui.canvas.preview(new PartialImageChange(0,0,newImage));
+		{
+			Paint.main.gui.canvas.preview(new PartialImageChange(0, 0, newImage));
+		}
 		else
+		{
 			Paint.addChange(new ImageChange(newImage));
+		}
 		
 	}
-
+	
 }

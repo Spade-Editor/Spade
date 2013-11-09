@@ -44,7 +44,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 public class GUIManager
@@ -79,14 +78,14 @@ public class GUIManager
 			{
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			}
-			catch (Exception e)
+			catch(Exception e)
 			{
 				e.printStackTrace();
 			}
 		}
 		else
 		{
-			System.out.println("[GUIManager] Trying to apply LAF '"+LAF_TO_USE+"'!");
+			System.out.println("[GUIManager] Trying to apply LAF '" + LAF_TO_USE + "'!");
 			
 			try
 			{
@@ -97,7 +96,7 @@ public class GUIManager
 					if(info.getName().equals(LAF_TO_USE))
 					{
 						UIManager.setLookAndFeel(info.getClassName());
-						System.out.println("[GUIManager] Successfully applied LAF '"+LAF_TO_USE+"'!");
+						System.out.println("[GUIManager] Successfully applied LAF '" + LAF_TO_USE + "'!");
 						success = true;
 						break;
 					}
@@ -196,9 +195,12 @@ public class GUIManager
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		
 		// Load the frames Icon. It looks a lot nicer with an actual logo. Remove if inappropriate.
-		try {
+		try
+		{
 			frame.setIconImage(ImageIO.read(this.getClass().getResource("/heroesgrave/paint/res/favicon.png")));
-		} catch (IOException e1) {
+		}
+		catch(IOException e1)
+		{
 			// Ignore the error if there is one! The logo doesn't matter so much as to crash the application.
 		}
 		
@@ -291,17 +293,23 @@ public class GUIManager
 	{
 		String fullPath = "/heroesgrave/paint/res/icons/" + name + ".png";
 		
-		try {
+		try
+		{
 			URL url = Paint.class.getResource(fullPath);
 			
 			if(url == null)
 				throw new IOException("ImageIcon Not found: " + fullPath);
 			
 			return new ImageIcon(ImageIO.read(url));
-		} catch (IOException e) {
-			try {
+		}
+		catch(IOException e)
+		{
+			try
+			{
 				return new ImageIcon(ImageIO.read(Paint.questionMarkURL));
-			} catch (IOException e1) {
+			}
+			catch(IOException e1)
+			{
 				throw new RuntimeException("FATAL ERROR WHILE LOADING ICONIMAGE: " + name);
 			}
 		}

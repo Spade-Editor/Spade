@@ -49,9 +49,9 @@ public class SimplexNoiseOp extends ImageOp
 				int before = old.getRGB(i, j);
 				int after = before;
 				
-				double valD = noise.noiseO(i * scale, j * scale, OCTAVES, START_SCALE , MULTIPLY_SCALE);
+				double valD = noise.noiseO(i * scale, j * scale, OCTAVES, START_SCALE, MULTIPLY_SCALE);
 				valD = valD * 0.5D + 0.5D;
-				int valI = MathUtils.clamp((int)(valD * 256),255,0) & 0xFF;
+				int valI = MathUtils.clamp((int) (valD * 256), 255, 0) & 0xFF;
 				
 				after &= 0xFF000000;
 				

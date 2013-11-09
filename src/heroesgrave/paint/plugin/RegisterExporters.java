@@ -21,9 +21,11 @@ package heroesgrave.paint.plugin;
 
 import heroesgrave.utils.io.ImageExporter;
 
-public class RegisterExporters {
+public class RegisterExporters
+{
 	
-	public void register(ImageExporter exporter){
+	public void register(ImageExporter exporter)
+	{
 		ImageExporter.add(exporter);
 	}
 	

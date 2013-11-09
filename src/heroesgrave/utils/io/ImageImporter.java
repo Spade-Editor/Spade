@@ -25,18 +25,20 @@ import java.io.IOException;
 
 import javax.swing.filechooser.FileFilter;
 
-public abstract class ImageImporter extends FileFilter {
-
+public abstract class ImageImporter extends FileFilter
+{
+	
 	/**
 	 * Reads an Image.
 	 * @throws IOException 
 	 **/
 	public abstract BufferedImage read(File file) throws IOException;
-
+	
 	public abstract String getFormat();
-
+	
 	@Override
-	public boolean accept(File f) {
+	public boolean accept(File f)
+	{
 		if(f.isDirectory())
 			return true;
 		
@@ -45,7 +47,7 @@ public abstract class ImageImporter extends FileFilter {
 		
 		return false;
 	}
-
+	
 	@Override
 	public abstract String getDescription();
 	

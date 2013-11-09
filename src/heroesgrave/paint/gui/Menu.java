@@ -228,8 +228,11 @@ public class Menu
 			
 			// If a Image takes too long, the application might crash.
 			// By running the actual loading process in another thread, the AWT-Event Thread can continue working while the image is being loaded.
-			new Thread(new Runnable(){
-				@Override public void run() {
+			new Thread(new Runnable()
+			{
+				@Override
+				public void run()
+				{
 					Paint.main.gui.canvas.setImage(ImageLoader.loadImage(chooser.getSelectedFile().getAbsolutePath()));
 				}
 			}).start();
@@ -274,9 +277,13 @@ public class Menu
 				int w = Integer.parseInt(width.getText());
 				int h = Integer.parseInt(height.getText());
 				if(w > 8192 || h > 8192 || w == 0 || h == 0)
+				{
 					Popup.show("Invalid Image Size", "The image dimensions must be more than 0 and less than 8192");
+				}
 				else
+				{
 					Paint.main.newImage(w, h);
+				}
 			}
 		});
 		
@@ -399,7 +406,7 @@ public class Menu
 	public static class NumberTextField extends JTextField
 	{
 		private static final long serialVersionUID = -8289311655265709303L;
-
+		
 		public NumberTextField(String text)
 		{
 			super(text);

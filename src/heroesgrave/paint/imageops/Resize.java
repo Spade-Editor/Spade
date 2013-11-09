@@ -61,7 +61,7 @@ public class Resize extends ImageOp
 		final JTextField width = new JTextField("" + Paint.main.gui.canvas.getImage().getWidth());
 		final JTextField height = new JTextField("" + Paint.main.gui.canvas.getImage().getHeight());
 		final JComboBox<String> filter = new JComboBox<String>();
-		final DefaultComboBoxModel<String> filterModel = new DefaultComboBoxModel<String>(new String[]{"Nearest Neighbor","Bilinear","Bicubic"});
+		final DefaultComboBoxModel<String> filterModel = new DefaultComboBoxModel<String>(new String[]{"Nearest Neighbor", "Bilinear", "Bicubic"});
 		
 		((AbstractDocument) width.getDocument()).setDocumentFilter(new NumberDocumentFilter());
 		((AbstractDocument) height.getDocument()).setDocumentFilter(new NumberDocumentFilter());
@@ -76,7 +76,6 @@ public class Resize extends ImageOp
 		hl.setHorizontalAlignment(SwingConstants.CENTER);
 		JLabel fl = new JLabel("Filter: ");
 		fl.setHorizontalAlignment(SwingConstants.CENTER);
-		
 		
 		JButton create = new JButton("Resize");
 		JButton cancel = new JButton("Cancel");
@@ -121,20 +120,24 @@ public class Resize extends ImageOp
 		Graphics2D g2d = (Graphics2D) newImage.getGraphics();
 		g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 		g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, getFilterHint(filter));  // RenderingHints.VALUE_INTERPOLATION_BILINEAR
+		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, getFilterHint(filter)); // RenderingHints.VALUE_INTERPOLATION_BILINEAR
 		g2d.drawImage(old, 0, 0, (int) w, (int) h, null);
 		
 		Paint.addChange(new ImageChange(newImage));
 	}
-
+	
 	/**
 	 * Returns the correct RenderingHint for the given filtering label.
 	 **/
-	private Object getFilterHint(String filter) {
+	private Object getFilterHint(String filter)
+	{
 		
-		if(filter.equalsIgnoreCase("Nearest Neighbor")) return RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR;
-		if(filter.equalsIgnoreCase("Bilinear")) return RenderingHints.VALUE_INTERPOLATION_BILINEAR;
-		if(filter.equalsIgnoreCase("Bicubic")) return RenderingHints.VALUE_INTERPOLATION_BICUBIC;
+		if(filter.equalsIgnoreCase("Nearest Neighbor"))
+			return RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR;
+		if(filter.equalsIgnoreCase("Bilinear"))
+			return RenderingHints.VALUE_INTERPOLATION_BILINEAR;
+		if(filter.equalsIgnoreCase("Bicubic"))
+			return RenderingHints.VALUE_INTERPOLATION_BICUBIC;
 		
 		throw new IllegalArgumentException("ERROR: Unknown Filter!");
 	}

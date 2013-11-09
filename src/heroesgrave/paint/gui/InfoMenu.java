@@ -63,7 +63,9 @@ public class InfoMenu
 		
 		// Check if the MemoryWatcher should be activated.
 		if(System.getProperty("DmemoryWatcherFlag") != null)
+		{
 			memoryWatcher = new MemoryWatcher();
+		}
 		
 		scale.setHorizontalAlignment(SwingConstants.CENTER);
 		saved.setHorizontalAlignment(SwingConstants.CENTER);
@@ -71,7 +73,6 @@ public class InfoMenu
 		
 		JPanel colourPanel = new JPanel();
 		colourPanel.setLayout(new GridLayout(1, 2));
-		
 		
 		left = new ColourTextPanel();
 		right = new ColourTextPanel();
@@ -86,16 +87,23 @@ public class InfoMenu
 				Paint.main.setRightColour(0xFFFFFFFF);
 			}
 		});
-		try {
+		try
+		{
 			URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/reset.png");
 			
 			if(url != null)
+			{
 				reset.setIcon(new ImageIcon(ImageIO.read(url)));
+			}
 			else
 				throw new IOException();
-		} catch (IOException e1) {
+		}
+		catch(IOException e1)
+		{
 			System.err.println("Error: 'Reset' is missing an icon!");
 		}
+		
+		reset.setFocusable(false);
 		
 		colourPanel.add(reset);
 		colourPanel.add(left);
@@ -141,7 +149,9 @@ public class InfoMenu
 		menuBar.add(saved);
 		
 		if(memoryWatcher != null)
+		{
 			menuBar.add(memoryWatcher);
+		}
 		
 		return menuBar;
 	}
@@ -153,15 +163,21 @@ public class InfoMenu
 		num = num.replaceAll("[^0-9a-fA-F]", "");
 		
 		if(num.length() > 6)
+		{
 			num = num.substring(0, 6);
+		}
 		
 		panel.setText(num);
 		
 		int c;
 		if(num.equals(""))
+		{
 			c = panel.colour.getRGB();
+		}
 		else
+		{
 			c = Integer.decode("0x" + num);
+		}
 		
 		c |= 0xff000000;
 		
@@ -225,7 +241,9 @@ public class InfoMenu
 	private static String bufferZeros(String colour)
 	{
 		while(colour.length() < 6)
+		{
 			colour = "0" + colour;
+		}
 		return colour;
 	}
 }

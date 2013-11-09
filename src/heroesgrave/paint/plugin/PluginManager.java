@@ -74,7 +74,9 @@ public class PluginManager
 		pluginRootDirectory = new File(IOUtils.assemblePath(System.getProperty("user.home"), ".paint-java", "plugins"));
 		
 		if(!pluginRootDirectory.exists())
+		{
 			pluginRootDirectory.mkdirs();
+		}
 		
 		// 
 		loadedPlugins = new ArrayList<Plugin>();
@@ -87,7 +89,9 @@ public class PluginManager
 		for(File possiblePluginRoot : possiblePluginRoots)
 		{
 			if(possiblePluginRoot.isFile() && possiblePluginRoot.getName().endsWith(".jar"))
+			{
 				handlePossibleJarBasedPlugin(possiblePluginRoot);
+			}
 		}
 		
 		System.out.println("[PluginManager] Done searching. Found " + loadedPlugins.size() + " plugins.");
@@ -168,7 +172,7 @@ public class PluginManager
 			
 			while(e.hasMoreElements())
 			{
-				JarEntry je = (JarEntry) e.nextElement();
+				JarEntry je = e.nextElement();
 				
 				if(je.isDirectory() || !je.getName().endsWith(".class"))
 				{
@@ -218,13 +222,13 @@ public class PluginManager
 							newPluginInstance.info.put("description", ((String) props.get("description")).replace("\\n", "\n"));
 							
 							// Author
-							newPluginInstance.info.put("author", ((String) props.get("author")));
+							newPluginInstance.info.put("author", (props.get("author")));
 							
 							// Version (defined by author)
-							newPluginInstance.info.put("version", ((String) props.get("version")));
+							newPluginInstance.info.put("version", (props.get("version")));
 							
 							// Date updated (defined by author)
-							newPluginInstance.info.put("updated", ((String) props.get("updated")));
+							newPluginInstance.info.put("updated", (props.get("updated")));
 						}
 						catch(ReflectiveOperationException e1)
 						{
@@ -257,7 +261,9 @@ public class PluginManager
 	public static PluginManager instance(Paint paint)
 	{
 		if(instance == null)
+		{
 			instance = new PluginManager(paint);
+		}
 		
 		return instance;
 	}

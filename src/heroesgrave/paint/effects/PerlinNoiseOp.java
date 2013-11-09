@@ -49,14 +49,15 @@ public class PerlinNoiseOp extends ImageOp
 				double valD = noise.noise3d_simplex4(i, 0, j);
 				
 				valD = valD * 0.5D + 0.5D;
-				int valI = MathUtils.clamp((int)(valD * 256), 255, 0) & 0xFF;
+				int valI = MathUtils.clamp((int) (valD * 256), 255, 0) & 0xFF;
 				
 				int after = 0xFF000000;
 				after |= valI << 0;
 				after |= valI << 8;
 				after |= valI << 16;
 				
-				if(i == j){
+				if(i == j)
+				{
 					after = 0xFFFF00FF;
 				}
 				

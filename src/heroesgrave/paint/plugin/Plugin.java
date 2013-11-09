@@ -19,9 +19,9 @@
 
 package heroesgrave.paint.plugin;
 
-import java.util.Properties;
-
 import heroesgrave.paint.main.Paint;
+
+import java.util.Properties;
 
 /**
  * 

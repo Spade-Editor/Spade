@@ -39,8 +39,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -57,7 +55,6 @@ public class Paint extends Application
 	
 	public GUIManager gui;
 	public heroesgrave.paint.plugin.PluginManager pluginManager;
-	
 	
 	public File openFile;
 	public File openDir;
@@ -377,10 +374,14 @@ public class Paint extends Application
 			
 			// ...If the arguments contain the DmemoryWatcherFlag flag, set the property to true to enable the MemoryWatcher.
 			if(STR.equalsIgnoreCase("DmemoryWatcherFlag"))
+			{
 				System.setProperty("DmemoryWatcherFlag", "true");
+			}
 			
 			if(STR.startsWith("DlafClassName="))
+			{
 				System.setProperty("DlafClassName", STR.substring(14));
+			}
 			
 			/// XXX: Expand here by adding more debugging options and system flags!
 		}

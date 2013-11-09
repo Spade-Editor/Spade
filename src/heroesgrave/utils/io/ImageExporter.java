@@ -19,8 +19,11 @@
 
 package heroesgrave.utils.io;
 
-
-import heroesgrave.utils.io.exporters.*;
+import heroesgrave.utils.io.exporters.ExporterBIN;
+import heroesgrave.utils.io.exporters.ExporterGenericImageIO;
+import heroesgrave.utils.io.exporters.ExporterJPEG;
+import heroesgrave.utils.io.exporters.ExporterTGA;
+import heroesgrave.utils.io.exporters.ExporterZipBIN;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -29,7 +32,8 @@ import java.util.ArrayList;
 
 import javax.swing.filechooser.FileFilter;
 
-public abstract class ImageExporter extends FileFilter {
+public abstract class ImageExporter extends FileFilter
+{
 	public static ArrayList<ImageExporter> exporters = new ArrayList<ImageExporter>();
 	
 	static
@@ -53,10 +57,11 @@ public abstract class ImageExporter extends FileFilter {
 	
 	public abstract String getFileExtensionDescription();
 	
-	public abstract void exportImage(BufferedImage image, File destination) throws IOException ;
+	public abstract void exportImage(BufferedImage image, File destination) throws IOException;
 	
 	@Override
-	public boolean accept(File f) {
+	public boolean accept(File f)
+	{
 		if(f.isDirectory())
 			return true;
 		
@@ -67,26 +72,29 @@ public abstract class ImageExporter extends FileFilter {
 	}
 	
 	@Override
-	public String getDescription() {
+	public String getDescription()
+	{
 		return getFileExtensionDescription();
 	}
-
-	public static ImageExporter get(String extension) {
+	
+	public static ImageExporter get(String extension)
+	{
 		
-		for(ImageExporter exporter : exporters){
-			if(exporter.getFileExtension().equalsIgnoreCase(extension)){
+		for(ImageExporter exporter : exporters)
+		{
+			if(exporter.getFileExtension().equalsIgnoreCase(extension))
 				return exporter;
-			}
 		}
 		
-		throw new RuntimeException("Image Exporter for the given Format '"+extension+"' could not be found!");
+		throw new RuntimeException("Image Exporter for the given Format '" + extension + "' could not be found!");
 	}
-
-	public static void add(ImageExporter exporter) {
+	
+	public static void add(ImageExporter exporter)
+	{
 		if(exporter == null)
 			throw new IllegalArgumentException("Input cannot be null!");
 		
 		exporters.add(exporter);
 	}
-
+	
 }

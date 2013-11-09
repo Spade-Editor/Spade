@@ -1,12 +1,31 @@
+/*
+ *	Copyright 2013 HeroesGrave
+ *
+ *	This file is part of Paint.JAVA
+ *
+ *	Paint.JAVA is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>
+*/
+
 package heroesgrave.paint.effects;
 
-import heroesgrave.paint.gui.SimpleImageOpDialog;
-import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.main.PartialImageChange;
 import heroesgrave.paint.gui.Menu.CentredJLabel;
 import heroesgrave.paint.gui.Menu.NumberTextField;
+import heroesgrave.paint.gui.SimpleImageOpDialog;
 import heroesgrave.paint.imageops.ImageChange;
 import heroesgrave.paint.imageops.ImageOp;
+import heroesgrave.paint.main.Paint;
+import heroesgrave.paint.main.PartialImageChange;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -17,36 +36,44 @@ import javax.swing.JButton;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-public class MakeGrid extends ImageOp {
-
+public class MakeGrid extends ImageOp
+{
+	
 	@Override
 	public void operation()
 	{
 		dialog();
 	}
-
+	
 	private void dialog()
 	{
 		// create dialog
-		final SimpleImageOpDialog dialog = new SimpleImageOpDialog("Grid-Maker", new GridLayout(0,2));
+		final SimpleImageOpDialog dialog = new SimpleImageOpDialog("Grid-Maker", new GridLayout(0, 2));
 		
 		// create components
 		final NumberTextField WIDTH = new NumberTextField("16");
-		final NumberTextField HEIGHT= new NumberTextField("16");
+		final NumberTextField HEIGHT = new NumberTextField("16");
 		
 		JButton create = new JButton("Draw Grid");
 		JButton cancel = new JButton("Cancel");
 		
-		DocumentListener PREVIEW_ACTION = new DocumentListener(){
-			@Override public void insertUpdate(DocumentEvent e) {
+		DocumentListener PREVIEW_ACTION = new DocumentListener()
+		{
+			@Override
+			public void insertUpdate(DocumentEvent e)
+			{
 				operation_do(WIDTH.get(), HEIGHT.get(), true);
 			}
 			
-			@Override public void removeUpdate(DocumentEvent e) {
+			@Override
+			public void removeUpdate(DocumentEvent e)
+			{
 				operation_do(WIDTH.get(), HEIGHT.get(), true);
 			}
 			
-			@Override public void changedUpdate(DocumentEvent e) {
+			@Override
+			public void changedUpdate(DocumentEvent e)
+			{
 				operation_do(WIDTH.get(), HEIGHT.get(), true);
 			}
 		};
@@ -94,9 +121,13 @@ public class MakeGrid extends ImageOp {
 		
 		// Checks to prevent division by zero.
 		if(W == 0)
+		{
 			W = 1;
+		}
 		if(H == 0)
+		{
 			H = 1;
+		}
 		
 		BufferedImage old = Paint.main.gui.canvas.getImage();
 		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -118,9 +149,13 @@ public class MakeGrid extends ImageOp {
 		}
 		
 		if(AS_PREVIEW)
-			Paint.main.gui.canvas.preview(new PartialImageChange(0,0,newImage));
+		{
+			Paint.main.gui.canvas.preview(new PartialImageChange(0, 0, newImage));
+		}
 		else
+		{
 			Paint.addChange(new ImageChange(newImage));
+		}
 	}
-
+	
 }

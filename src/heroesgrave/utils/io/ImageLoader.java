@@ -20,7 +20,7 @@
 package heroesgrave.utils.io;
 
 import heroesgrave.paint.main.Popup;
-import heroesgrave.utils.io.importers.*;
+import heroesgrave.utils.io.importers.ImporterBIN;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -54,7 +54,8 @@ public class ImageLoader
 		
 	}
 	
-	public static void add(ImageImporter exporter) {
+	public static void add(ImageImporter exporter)
+	{
 		importers.put(exporter.getFormat(), exporter);
 	}
 	
@@ -86,14 +87,9 @@ public class ImageLoader
 				
 				// If there is a custom importer for the given format, use the custom importer...
 				if(importer != null)
-				{
 					return importer.read(file);
-				}
 				else
-				// If there is NO custom importer, use the default ImageIO.read() method, and prey that it can read it!
-				{
 					return ImageIO.read(file);
-				}
 			}
 			catch(IOException e)
 			{
@@ -124,8 +120,9 @@ public class ImageLoader
 			Popup.show("Save Image", "An error occured while trying to save the image in " + format + " format to " + path + ".");
 		}
 	}
-
-	public static void addAllImporters(JFileChooser chooser) {
+	
+	public static void addAllImporters(JFileChooser chooser)
+	{
 		
 		for(Entry<String, ImageImporter> importer : importers.entrySet())
 		{

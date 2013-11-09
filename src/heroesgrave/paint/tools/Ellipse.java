@@ -19,12 +19,12 @@
 
 package heroesgrave.paint.tools;
 
-import java.awt.event.MouseEvent;
-
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.PixelChange;
 import heroesgrave.utils.math.MathUtils;
+
+import java.awt.event.MouseEvent;
 
 public class Ellipse extends Tool
 {

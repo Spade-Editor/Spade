@@ -19,10 +19,10 @@
 
 package heroesgrave.paint.tools;
 
-import java.awt.event.MouseEvent;
-
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.PixelChange;
+
+import java.awt.event.MouseEvent;
 
 public class Eraser extends Brush
 {

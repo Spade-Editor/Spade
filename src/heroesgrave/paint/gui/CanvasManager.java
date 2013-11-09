@@ -62,7 +62,6 @@ public class CanvasManager
 	 * 
 	 */
 	
-	
 	/**
 	 * The special Canvas that draws the Image.
 	 **/

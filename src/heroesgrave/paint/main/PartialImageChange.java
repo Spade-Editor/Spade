@@ -32,7 +32,7 @@ public class PartialImageChange implements Change
 		this.y = (short) y;
 		this.newPart = change;
 	}
-
+	
 	public BufferedImage apply(BufferedImage image)
 	{
 		oldPart = image.getSubimage(x, y, newPart.getWidth(), newPart.getHeight());
@@ -48,7 +48,7 @@ public class PartialImageChange implements Change
 	
 	public int getSize()
 	{
-		return 1 + (oldPart.getWidth()*oldPart.getHeight());
+		return 1 + (oldPart.getWidth() * oldPart.getHeight());
 	}
 	
 	public boolean samePos(int x, int y)
