@@ -13,6 +13,7 @@ import heroesgrave.paint.gui.SimpleImageOpDialog;
 import heroesgrave.paint.imageops.ImageChange;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.main.Paint;
+import heroesgrave.paint.main.PartialImageChange;
 
 public class RemoveChannels extends ImageOp {
 
@@ -29,20 +30,35 @@ public class RemoveChannels extends ImageOp {
 		
 		JButton create = new JButton("Remove Channels");
 		JButton cancel = new JButton("Cancel");
-
+		
+		ActionListener preview = new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				operation_do(channelR.isSelected(),channelG.isSelected(),channelB.isSelected(),channelA.isSelected(), true);
+			}
+		};
+		
+		channelR.addActionListener(preview);
+		channelG.addActionListener(preview);
+		channelB.addActionListener(preview);
+		channelA.addActionListener(preview);
+		
 		// create actions
 		create.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				dialog.close();
-				operation_do(channelR.isSelected(),channelG.isSelected(),channelB.isSelected(),channelA.isSelected());
+				operation_do(channelR.isSelected(),channelG.isSelected(),channelB.isSelected(),channelA.isSelected(), false);
 			}
 		});
 		cancel.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
+				Paint.main.gui.canvas.clearPreview();
 				dialog.close();
 			}
 		});
@@ -63,7 +79,10 @@ public class RemoveChannels extends ImageOp {
 		
 	}
 
-	protected void operation_do(boolean R, boolean G, boolean B, boolean A) {
+	protected void operation_do(boolean R, boolean G, boolean B, boolean A, boolean AS_PREVIEW) {
+		Paint.main.gui.canvas.clearPreview();
+		
+		System.out.println("OPERATION_CALL::"+R+","+G+","+B+","+A+"::"+AS_PREVIEW);
 		
 		// MASK = AA.RR.GG.BB
 		int AND_MASK = 0x00000000;
@@ -107,7 +126,10 @@ public class RemoveChannels extends ImageOp {
 			}
 		}
 		
-		Paint.addChange(new ImageChange(newImage));	
+		if(AS_PREVIEW)
+			Paint.main.gui.canvas.preview(new PartialImageChange(0,0,newImage));
+		else
+			Paint.addChange(new ImageChange(newImage));
 		
 	}
 

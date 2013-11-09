@@ -178,6 +178,7 @@ public class CanvasManager
 	public void addChange(Change change)
 	{
 		BufferedImage nimage = change.apply(image);
+		
 		if(nimage != image)
 		{
 			setImage(nimage);
