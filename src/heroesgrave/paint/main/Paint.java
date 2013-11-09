@@ -36,8 +36,11 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -50,9 +53,11 @@ import javax.swing.JOptionPane;
 public class Paint extends Application
 {
 	public static Paint main = new Paint();
+	public static URL questionMarkURL = Paint.class.getResource("/heroesgrave/paint/res/icons/questionmark.png");
 	
 	public GUIManager gui;
 	public heroesgrave.paint.plugin.PluginManager pluginManager;
+	
 	
 	public File openFile;
 	public File openDir;
@@ -374,7 +379,10 @@ public class Paint extends Application
 			if(STR.equalsIgnoreCase("DmemoryWatcherFlag"))
 				System.setProperty("DmemoryWatcherFlag", "true");
 			
-			/// XXX: Expand here by more debugging options and system flags!
+			if(STR.startsWith("DlafClassName="))
+				System.setProperty("DlafClassName", STR.substring(14));
+			
+			/// XXX: Expand here by adding more debugging options and system flags!
 		}
 		
 		// Finally Launch Paint.JAVA!
