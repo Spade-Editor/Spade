@@ -360,7 +360,7 @@ public class Paint extends Application
 			System.out.println("The Application will try to open file given over the command-line after startup: " + args[0]);
 			File f = new File(args[0]);
 			
-			if(f.exists())
+			if(f.exists() && f.isFile() && !f.isHidden())
 			{
 				main.toOpen = f;
 			}
