@@ -22,6 +22,7 @@ package heroesgrave.paint.gui;
 import heroesgrave.paint.effects.Invert;
 import heroesgrave.paint.effects.MakeGrid;
 import heroesgrave.paint.effects.Noise;
+import heroesgrave.paint.effects.RemoveChannels;
 import heroesgrave.paint.effects.SimpleBlur;
 import heroesgrave.paint.effects.SimpleSharpen;
 import heroesgrave.paint.effects.SimplexNoiseOp;
@@ -108,6 +109,7 @@ public class ToolMenu
 		menu.add(new ImageMenuItem("Simple Blur", new SimpleBlur(), null));
 		menu.add(new ImageMenuItem("Simple Sharpen", new SimpleSharpen(), null));
 		menu.add(new ImageMenuItem("Grid-Maker", new MakeGrid(), null));
+		menu.add(new ImageMenuItem("Channel Remover", new RemoveChannels(), null));
 		
 		return menu;
 	}
