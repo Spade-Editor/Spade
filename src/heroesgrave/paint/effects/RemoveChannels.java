@@ -66,21 +66,24 @@ public class RemoveChannels extends ImageOp {
 	protected void operation_do(boolean R, boolean G, boolean B, boolean A) {
 		
 		// MASK = AA.RR.GG.BB
-		int MASK = 0x00000000;
+		int AND_MASK = 0x00000000;
+		int OR_MASK = 0x00000000;
 		
 		// If the Red channel is NOT to be removed, OR it into the MASK.
 		if(!R)
-			MASK |= 0x00FF0000;
+			AND_MASK |= 0x00FF0000;
 		
 		// If the Green channel is NOT to be removed, OR it into the MASK.
 		if(!G)
-			MASK |= 0x0000FF00;
+			AND_MASK |= 0x0000FF00;
 		// If the Blue channel is NOT to be removed, OR it into the MASK.
 		if(!B)
-			MASK |= 0x000000FF;
+			AND_MASK |= 0x000000FF;
 		// If the Alpha channel is NOT to be removed, OR it into the MASK.
 		if(!A)
-			MASK |= 0xFF000000;
+			AND_MASK |= 0xFF000000;
+		else
+			OR_MASK |= 0xFF000000;
 		
 		// image var's
 		BufferedImage old = Paint.main.gui.canvas.getImage();
@@ -96,7 +99,8 @@ public class RemoveChannels extends ImageOp {
 				ARGB = old.getRGB(i, j);
 				
 				// apply channel mask
-				ARGB &= MASK;
+				ARGB &= AND_MASK;
+				ARGB |= OR_MASK;
 				
 				// put pixel back in
 				newImage.setRGB(i, j, ARGB);

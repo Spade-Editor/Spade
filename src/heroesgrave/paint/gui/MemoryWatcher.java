@@ -10,11 +10,30 @@ import heroesgrave.utils.misc.StringUtil;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-@SuppressWarnings("serial")
+/**
+ * This class is a simple MemoryWatcher.<br>
+ * It consists solely of a ProgressBar that displays how much memory is used by the Application.
+ **/
 public class MemoryWatcher extends JPanel implements Runnable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8135215618742759998L;
+	
+	/**
+	 * The Memory-Watcher Thread Instance
+	 **/
 	private final Thread THIS;
+	
+	/**
+	 * The Runtime object used to fetch the Memory-State.
+	 **/
 	private final Runtime RUNTIME;
+	
+	/**
+	 * The JProgressBar that is used to display the Memory-State
+	 **/
 	private final JProgressBar PB;
 	
 	public MemoryWatcher()

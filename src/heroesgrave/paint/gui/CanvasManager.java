@@ -203,6 +203,16 @@ public class CanvasManager
 		Paint.main.saved = false;
 	}
 	
+	/*
+	 * (Longor1996) Small Note here:
+	 * The Zoom function currently has the bug, that it zooms into the top-left corner of the image, which is WRONG.
+	 * To fix this, we need to apply the cursor or half-screen-size,
+	 * divided/multiplied with the zoom factor, onto the 'camera' position.
+	 * 
+	 * I don't know how to do it exactly, so I won't do anything with it, but it should/could work this way.
+	 * 
+	 */
+	
 	public void incZoom()
 	{
 		if(zoom < 1)

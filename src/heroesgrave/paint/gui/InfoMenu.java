@@ -75,7 +75,7 @@ public class InfoMenu
 		
 		left = new ColourTextPanel();
 		right = new ColourTextPanel();
-		reset = new JButton();
+		reset = new JButton("Reset");
 		
 		// reset creation
 		reset.addActionListener(new ActionListener()
