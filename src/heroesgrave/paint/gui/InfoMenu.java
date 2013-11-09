@@ -29,7 +29,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.io.IOException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -42,6 +47,7 @@ import javax.swing.SwingConstants;
 public class InfoMenu
 {
 	private JLabel scale, saved, tool;
+	private JButton reset;
 	private MemoryWatcher memoryWatcher;
 	private ColourTextPanel left, right;
 	
@@ -66,9 +72,32 @@ public class InfoMenu
 		JPanel colourPanel = new JPanel();
 		colourPanel.setLayout(new GridLayout(1, 2));
 		
+		
 		left = new ColourTextPanel();
 		right = new ColourTextPanel();
+		reset = new JButton();
 		
+		// reset creation
+		reset.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent arg0)
+			{
+				Paint.main.setLeftColour(0xFF000000);
+				Paint.main.setRightColour(0xFFFFFFFF);
+			}
+		});
+		try {
+			URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/reset.png");
+			
+			if(url != null)
+				reset.setIcon(new ImageIcon(ImageIO.read(url)));
+			else
+				throw new IOException();
+		} catch (IOException e1) {
+			System.err.println("Error: 'Reset' is missing an icon!");
+		}
+		
+		colourPanel.add(reset);
 		colourPanel.add(left);
 		colourPanel.add(right);
 		
