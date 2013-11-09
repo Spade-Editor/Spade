@@ -77,7 +77,7 @@ public class Menu
 	{
 		JMenu help = new JMenu("Help/Info");
 		
-		JMenuItem pluginManager = new JMenuItem("Plugin Viewer");
+		JMenuItem pluginManager = new JMenuItem("Plugin Viewer", GUIManager.getIcon("plugin_viewer"));
 		pluginManager.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -86,7 +86,7 @@ public class Menu
 			}
 		});
 		
-		JMenuItem about = new JMenuItem("About...");
+		JMenuItem about = new JMenuItem("About...", GUIManager.getIcon("about"));
 		about.setEnabled(false);
 		about.addActionListener(new ActionListener()
 		{
@@ -106,7 +106,7 @@ public class Menu
 	{
 		JMenu dialogs = new JMenu("Manage Dialogs");
 		
-		JMenuItem colourChooser = new JMenuItem("Colour Chooser (F5)");
+		JMenuItem colourChooser = new JMenuItem("Colour Chooser (F5)", GUIManager.getIcon("colour_chooser"));
 		
 		colourChooser.addActionListener(new ActionListener()
 		{
@@ -134,11 +134,11 @@ public class Menu
 	{
 		JMenu file = new JMenu("File");
 		
-		JMenuItem newFile = new JMenuItem("New (Ctrl+N)");
-		JMenuItem load = new JMenuItem("Open (Ctrl+O)");
-		JMenuItem save = new JMenuItem("Save (Ctrl+S)");
-		final JMenuItem saveAs = new JMenuItem("Save As");
-		JMenuItem exit = new JMenuItem("Exit");
+		JMenuItem newFile = new JMenuItem("New (Ctrl+N)", GUIManager.getIcon("new"));
+		JMenuItem load = new JMenuItem("Open (Ctrl+O)", GUIManager.getIcon("open"));
+		JMenuItem save = new JMenuItem("Save (Ctrl+S)", GUIManager.getIcon("save"));
+		final JMenuItem saveAs = new JMenuItem("Save As", GUIManager.getIcon("save"));
+		JMenuItem exit = new JMenuItem("Exit", GUIManager.getIcon("exit"));
 		
 		file.add(newFile);
 		file.add(load);
@@ -178,7 +178,7 @@ public class Menu
 			}
 		});
 		
-		saveAs.addActionListener(new ActionListener()
+		exit.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
@@ -304,8 +304,8 @@ public class Menu
 	{
 		JMenu edit = new JMenu("Edit");
 		
-		JMenuItem undo = new JMenuItem("Undo (Ctrl+Z)");
-		JMenuItem redo = new JMenuItem("Redo (Ctrl+Y)");
+		JMenuItem undo = new JMenuItem("Undo (Ctrl+Z)", GUIManager.getIcon("undo"));
+		JMenuItem redo = new JMenuItem("Redo (Ctrl+Y)", GUIManager.getIcon("redo"));
 		
 		undo.addActionListener(new ActionListener()
 		{
@@ -333,9 +333,9 @@ public class Menu
 	{
 		JMenu view = new JMenu("View");
 		
-		JMenuItem zoomIn = new JMenuItem("Zoom In (Ctrl++)");
-		JMenuItem zoomOut = new JMenuItem("Zoom Out (Ctrl+-)");
-		JMenuItem grid = new JMenuItem("Toggle Grid (Ctrl+G)");
+		JMenuItem zoomIn = new JMenuItem("Zoom In (Ctrl++)", GUIManager.getIcon("zoom_inc"));
+		JMenuItem zoomOut = new JMenuItem("Zoom Out (Ctrl+-)", GUIManager.getIcon("zoom_dec"));
+		JMenuItem grid = new JMenuItem("Toggle Grid (Ctrl+G)", GUIManager.getIcon("toggle_grid"));
 		
 		zoomIn.addActionListener(new ActionListener()
 		{
