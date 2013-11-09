@@ -90,16 +90,21 @@ public class GUIManager
 			
 			try
 			{
+				boolean success = false;
+				
 				for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
 				{
 					if(info.getName().equals(LAF_TO_USE))
 					{
 						UIManager.setLookAndFeel(info.getClassName());
 						System.out.println("[GUIManager] Successfully applied LAF '"+LAF_TO_USE+"'!");
+						success = true;
 						break;
 					}
 				}
-				throw new Exception("Failed to apply LAF! LAF not found: " + LAF_TO_USE);
+				
+				if(!success)
+					throw new Exception("Failed to apply LAF! LAF not found: " + LAF_TO_USE);
 			}
 			catch(Exception e)
 			{
