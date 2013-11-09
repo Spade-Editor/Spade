@@ -137,7 +137,7 @@ public class ToolMenu
 				if(url != null)
 					this.setIcon(new ImageIcon(ImageIO.read(url)));
 				else
-					throw new IOException();
+					this.setIcon(new ImageIcon(ImageIO.read(Paint.questionMarkURL)));
 				
 			} catch (IOException e1) {
 				System.err.println("Error: Tool '"+name+"' is missing an icon!");
@@ -186,7 +186,7 @@ public class ToolMenu
 				if(url != null)
 					this.setIcon(new ImageIcon(ImageIO.read(url)));
 				else
-					throw new IOException();
+					this.setIcon(new ImageIcon(ImageIO.read(Paint.questionMarkURL)));
 			} catch (IOException e1) {
 				System.err.println("Error: ImageOp '"+name+"' is missing an icon!");
 			}
