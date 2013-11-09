@@ -79,6 +79,10 @@ public class CanvasManager
 	 * XXX: LayerSystemModificationMark
 	 **/
 	private BufferedImage preview;
+	
+	/**
+	 * The Image used for rendering the 'Transparency' Background-Image.
+	 **/
 	private static BufferedImage transparenzyBG;
 	
 	/**
@@ -96,10 +100,15 @@ public class CanvasManager
 	 **/
 	private LinkedList<Change> previewing = new LinkedList<Change>();
 	
-	/****/
+	/**
+	 * The maximum amount of changes allowed to reside in the changes list.
+	 **/
 	private static final int MAX_SIZE = 2 << 21;
 	
-	/****/
+	/**
+	 * ???
+	 * The size of the changes list.
+	 **/
 	private int size;
 	
 	/****/
@@ -107,6 +116,7 @@ public class CanvasManager
 	
 	public CanvasManager()
 	{
+		// XXX: LayerSystemModificationMark (~Image Class?)
 		// Create the startup Image.
 		image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
@@ -129,7 +139,7 @@ public class CanvasManager
 		canvas = new Canvas(image);
 	}
 	
-	// XXX: LayerSystemModificationMark
+	// XXX: LayerSystemModificationMark (+Param:LayerID??)
 	public void clearPreview()
 	{
 		previewing.clear();
@@ -138,7 +148,7 @@ public class CanvasManager
 		preview = null;
 	}
 	
-	// XXX: LayerSystemModificationMark
+	// XXX: LayerSystemModificationMark (+Param:LayerID??)
 	public void preview(Change change)
 	{
 		if(preview == null)
@@ -154,7 +164,7 @@ public class CanvasManager
 		canvas.repaint();
 	}
 	
-	// XXX: LayerSystemModificationMark
+	// XXX: LayerSystemModificationMark (+Param:LayerID??)
 	public void applyPreview()
 	{
 		Change[] c = new Change[previewing.size()];
@@ -164,7 +174,7 @@ public class CanvasManager
 		clearPreview();
 	}
 	
-	// XXX: LayerSystemModificationMark
+	// XXX: LayerSystemModificationMark (+Param:LayerID)
 	public void addChange(Change change)
 	{
 		BufferedImage nimage = change.apply(image);
@@ -225,7 +235,7 @@ public class CanvasManager
 		canvas.revalidate();
 	}
 	
-	// XXX: LayerSystemModificationMark
+	// XXX: LayerSystemModificationMark (+Param:LayerID)
 	public void revertChange()
 	{
 		if(changes.isEmpty())
@@ -243,7 +253,7 @@ public class CanvasManager
 		Paint.main.saved = false;
 	}
 	
-	// XXX: LayerSystemModificationMark
+	// XXX: LayerSystemModificationMark (+Param:LayerID)
 	public void repeatChange()
 	{
 		if(reverted.isEmpty())
@@ -261,7 +271,7 @@ public class CanvasManager
 		Paint.main.saved = false;
 	}
 	
-	// XXX: LayerSystemModificationMark
+	// XXX: LayerSystemModificationMark (+Param:LayerID//Override?)
 	public void setImage(BufferedImage image)
 	{
 		this.image = image;
@@ -285,7 +295,7 @@ public class CanvasManager
 	{
 		private static final long serialVersionUID = 4162295507195065688L;
 		
-		// XXX: LayerSystemModificationMark
+		// XXX: LayerSystemModificationMark (???)
 		private BufferedImage image;
 		private float scale = 1;
 		private int lastButton = 0;
@@ -327,7 +337,7 @@ public class CanvasManager
 			this.setPreferredSize(new Dimension(MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale)));
 		}
 		
-		// XXX: LayerSystemModificationMark
+		// XXX: LayerSystemModificationMark (+Param:LayerID)
 		public void setImage(BufferedImage image)
 		{
 			this.image = image;
@@ -343,7 +353,7 @@ public class CanvasManager
 			g2d.setPaint(new TexturePaint(transparenzyBG, new Rectangle2D.Float(0, 0, 16, 16)));
 			g2d.fillRect(0, 0, MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale));
 			
-			// XXX: LayerSystemModificationMark
+			// XXX: LayerSystemModificationMark (~Layered Rendering)
 			// Draw the actual Image
 			g2d.setPaint(null);
 			g2d.drawImage(image, 0, 0, MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale), null);
@@ -366,7 +376,7 @@ public class CanvasManager
 	
 	/**
 	 * Returns the Image.
-	 * XXX: LayerSystemModificationMark
+	 * XXX: LayerSystemModificationMark (+Param:LayerID)
 	 **/
 	public BufferedImage getImage()
 	{
