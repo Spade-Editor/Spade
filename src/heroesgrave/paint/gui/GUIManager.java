@@ -32,8 +32,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -42,6 +44,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 public class GUIManager
@@ -62,21 +65,60 @@ public class GUIManager
 	public GUIManager()
 	{
 		/* Remove/Add Slash at the end of this line to switch between Nimbus L&F and the Default */
-		try
+		String LAF_TO_USE = "Nimbus";
+		
+		// Check if the DlafClassName-property is avaible, and if so, use it's value as LAF name.
+		if(System.getProperty("DlafClassName") != null)
 		{
-			for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
+			LAF_TO_USE = System.getProperty("DlafClassName");
+		}
+		
+		if(LAF_TO_USE.equalsIgnoreCase("system_default"))
+		{
+			try
 			{
-				if(info.getName().equals("Nimbus"))
-				{
-					UIManager.setLookAndFeel(info.getClassName());
-					break;
-				}
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 		}
-		catch(Exception e)
+		else
 		{
-			e.printStackTrace();
+			System.out.println("[GUIManager] Trying to apply LAF '"+LAF_TO_USE+"'!");
+			
+			try
+			{
+				boolean success = false;
+				
+				for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
+				{
+					if(info.getName().equals(LAF_TO_USE))
+					{
+						UIManager.setLookAndFeel(info.getClassName());
+						System.out.println("[GUIManager] Successfully applied LAF '"+LAF_TO_USE+"'!");
+						success = true;
+						break;
+					}
+				}
+				
+				if(!success)
+					throw new Exception("Failed to apply LAF! LAF not found: " + LAF_TO_USE);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				
+				System.out.println("Applying LAF failed. Printing all LAF names for correction:");
+				for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
+				{
+					System.out.println("LAF: " + info.getName() + " / " + info.getClassName());
+				}
+				
+			}
 		}
+		
 		/**/
 		
 		initFrame();
@@ -243,5 +285,25 @@ public class GUIManager
 		
 		frame.addKeyListener(in);
 		frame.addMouseWheelListener(in);
+	}
+	
+	public static final ImageIcon getIcon(String name)
+	{
+		String fullPath = "/heroesgrave/paint/res/icons/" + name + ".png";
+		
+		try {
+			URL url = Paint.class.getResource(fullPath);
+			
+			if(url == null)
+				throw new IOException("ImageIcon Not found: " + fullPath);
+			
+			return new ImageIcon(ImageIO.read(url));
+		} catch (IOException e) {
+			try {
+				return new ImageIcon(ImageIO.read(Paint.questionMarkURL));
+			} catch (IOException e1) {
+				throw new RuntimeException("FATAL ERROR WHILE LOADING ICONIMAGE: " + name);
+			}
+		}
 	}
 }

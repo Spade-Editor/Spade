@@ -42,28 +42,73 @@ import javax.swing.JPanel;
 
 public class CanvasManager
 {
+	
+	/*
+	 * Notes for the layer-system:
+	 * 
+	 * - Layers must be able to be disabled, deleted, moved, removed, added.
+	 * - Layers must be able to change the way they are applied onto each other, also called 'Blending' or 'Image Compositing'.
+	 * - Layers should be able to have a name (that can be changed).
+	 *   - Layers should IGNORE their names! The names do NOT matter! Don't use them for indexing or any inter-system communications/actions.
+	 *   - The identifier (position in layer list/array) is what counts, and what should be used for selecting layers!
+	 * 
+	 * - Layers should be their own class!
+	 *   - Means: 'image' and 'preview' have to become lists of layers (Put that in a special class too?), and images consist of layers.
+	 *     - Resulting classes:
+	 *       - ImageLayer
+	 *         {Name,ID,BlendingMode,Visible}
+	 *       - LayeredImage
+	 *         {List<ImageLayer>,Width,Height, etc.etc.}
+	 * 
+	 */
+	
+	
 	/**
 	 * The special Canvas that draws the Image.
 	 **/
 	private final Canvas canvas;
 	
-	//
-	private BufferedImage image, preview;
+	/**
+	 * The active+loaded image itself.
+	 * XXX: LayerSystemModificationMark
+	 **/
+	private BufferedImage image;
+	
+	/**
+	 * The preview of the image. The preview displays a 'change' before it is applied to the actual image.
+	 * XXX: LayerSystemModificationMark
+	 **/
+	private BufferedImage preview;
+	
+	/**
+	 * The Image used for rendering the 'Transparency' Background-Image.
+	 **/
 	private static BufferedImage transparenzyBG;
 	
-	/****/
+	/**
+	 * XXX: LayerSystemModificationMark
+	 **/
 	private LinkedList<Change> changes = new LinkedList<Change>();
 	
-	/****/
+	/**
+	 * XXX: LayerSystemModificationMark
+	 **/
 	private LinkedList<Change> reverted = new LinkedList<Change>();
 	
-	/****/
+	/**
+	 * XXX: LayerSystemModificationMark
+	 **/
 	private LinkedList<Change> previewing = new LinkedList<Change>();
 	
-	/****/
+	/**
+	 * The maximum amount of changes allowed to reside in the changes list.
+	 **/
 	private static final int MAX_SIZE = 2 << 21;
 	
-	/****/
+	/**
+	 * ???
+	 * The size of the changes list.
+	 **/
 	private int size;
 	
 	/****/
@@ -71,6 +116,7 @@ public class CanvasManager
 	
 	public CanvasManager()
 	{
+		// XXX: LayerSystemModificationMark (~Image Class?)
 		// Create the startup Image.
 		image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
@@ -93,6 +139,7 @@ public class CanvasManager
 		canvas = new Canvas(image);
 	}
 	
+	// XXX: LayerSystemModificationMark (+Param:LayerID??)
 	public void clearPreview()
 	{
 		previewing.clear();
@@ -101,6 +148,7 @@ public class CanvasManager
 		preview = null;
 	}
 	
+	// XXX: LayerSystemModificationMark (+Param:LayerID??)
 	public void preview(Change change)
 	{
 		if(preview == null)
@@ -116,6 +164,7 @@ public class CanvasManager
 		canvas.repaint();
 	}
 	
+	// XXX: LayerSystemModificationMark (+Param:LayerID??)
 	public void applyPreview()
 	{
 		Change[] c = new Change[previewing.size()];
@@ -125,9 +174,11 @@ public class CanvasManager
 		clearPreview();
 	}
 	
+	// XXX: LayerSystemModificationMark (+Param:LayerID)
 	public void addChange(Change change)
 	{
 		BufferedImage nimage = change.apply(image);
+		
 		if(nimage != image)
 		{
 			setImage(nimage);
@@ -152,6 +203,16 @@ public class CanvasManager
 		}
 		Paint.main.saved = false;
 	}
+	
+	/*
+	 * (Longor1996) Small Note here:
+	 * The Zoom function currently has the bug, that it zooms into the top-left corner of the image, which is WRONG.
+	 * To fix this, we need to apply the cursor or half-screen-size,
+	 * divided/multiplied with the zoom factor, onto the 'camera' position.
+	 * 
+	 * I don't know how to do it exactly, so I won't do anything with it, but it should/could work this way.
+	 * 
+	 */
 	
 	public void incZoom()
 	{
@@ -185,6 +246,7 @@ public class CanvasManager
 		canvas.revalidate();
 	}
 	
+	// XXX: LayerSystemModificationMark (+Param:LayerID)
 	public void revertChange()
 	{
 		if(changes.isEmpty())
@@ -202,6 +264,7 @@ public class CanvasManager
 		Paint.main.saved = false;
 	}
 	
+	// XXX: LayerSystemModificationMark (+Param:LayerID)
 	public void repeatChange()
 	{
 		if(reverted.isEmpty())
@@ -219,6 +282,7 @@ public class CanvasManager
 		Paint.main.saved = false;
 	}
 	
+	// XXX: LayerSystemModificationMark (+Param:LayerID//Override?)
 	public void setImage(BufferedImage image)
 	{
 		this.image = image;
@@ -242,6 +306,7 @@ public class CanvasManager
 	{
 		private static final long serialVersionUID = 4162295507195065688L;
 		
+		// XXX: LayerSystemModificationMark (???)
 		private BufferedImage image;
 		private float scale = 1;
 		private int lastButton = 0;
@@ -283,6 +348,7 @@ public class CanvasManager
 			this.setPreferredSize(new Dimension(MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale)));
 		}
 		
+		// XXX: LayerSystemModificationMark (+Param:LayerID)
 		public void setImage(BufferedImage image)
 		{
 			this.image = image;
@@ -298,6 +364,7 @@ public class CanvasManager
 			g2d.setPaint(new TexturePaint(transparenzyBG, new Rectangle2D.Float(0, 0, 16, 16)));
 			g2d.fillRect(0, 0, MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale));
 			
+			// XXX: LayerSystemModificationMark (~Layered Rendering)
 			// Draw the actual Image
 			g2d.setPaint(null);
 			g2d.drawImage(image, 0, 0, MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale), null);
@@ -320,6 +387,7 @@ public class CanvasManager
 	
 	/**
 	 * Returns the Image.
+	 * XXX: LayerSystemModificationMark (+Param:LayerID)
 	 **/
 	public BufferedImage getImage()
 	{

@@ -54,7 +54,15 @@ public class ColourChooser
 	private JTextField tr, tg, tb, ta;
 	private JRadioButton leftRadio, rightRadio, RGB, HSB;
 	private ColourPanel colour;
+	
+	/**
+	 * The 'left'-colour.
+	 **/
 	private int leftColour;
+	
+	/**
+	 * The 'right'-colour.
+	 **/
 	private int rightColour;
 	
 	public ColourChooser()
