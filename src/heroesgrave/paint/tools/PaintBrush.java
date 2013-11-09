@@ -96,7 +96,8 @@ public class PaintBrush extends Brush
 		
 		for(int y = centerY-size; y <= centerY+size; y++)
 			for(int x = centerX-size; x <= centerX+size; x++)
-				buffer(new PixelChange(x, y, color));
+				if(!notInBound(x,y))
+					buffer(new PixelChange(x, y, color));
 	}
 	
 	public boolean notInBound(int x,int y){
