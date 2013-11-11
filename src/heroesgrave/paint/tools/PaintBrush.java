@@ -18,6 +18,7 @@
 */
 
 package heroesgrave.paint.tools;
+
 /*
  *	Copyright 2013 HeroesGrave
  *
@@ -37,7 +38,9 @@ package heroesgrave.paint.tools;
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-
+import heroesgrave.paint.gui.ColourChooser.CentredLabel;
+import heroesgrave.paint.main.Paint;
+import heroesgrave.paint.main.PixelChange;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -48,10 +51,7 @@ import java.awt.geom.GeneralPath;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
-
-import heroesgrave.paint.gui.ColourChooser.CentredLabel;
-import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.main.ShapeChange;
+import javax.swing.SwingConstants;
 
 public class PaintBrush extends Tool
 {
@@ -62,8 +62,10 @@ public class PaintBrush extends Tool
 	public PaintBrush(String name)
 	{
 		super(name);
-		slider = new JSlider(1, 8, 1);
-		slider.setFocusable(false);
+		slider = new JSlider(0, 16, 0);
+		slider.setMajorTickSpacing(2);
+		slider.setMinorTickSpacing(1);
+		slider.setPaintTicks(true);
 		
 		menu.setLayout(new GridLayout(1, 8));
 		
@@ -74,22 +76,39 @@ public class PaintBrush extends Tool
 		panel.add(new CentredLabel("Size: "), BorderLayout.WEST);
 		panel.add(slider, BorderLayout.CENTER);
 		
+		slider.setFocusable(false);
+		
 		menu.add(panel);
-		menu.add(new JSeparator(JSeparator.VERTICAL));
-		menu.add(new JSeparator(JSeparator.VERTICAL));
-		menu.add(new JSeparator(JSeparator.VERTICAL));
+		menu.add(new JSeparator(SwingConstants.VERTICAL));
+		menu.add(new JSeparator(SwingConstants.VERTICAL));
+		menu.add(new JSeparator(SwingConstants.VERTICAL));
 	}
-
-    @Override
+	
+	public void brush(int centerX, int centerY, int button)
     public void onPressed(int x, int y, int button) {
-        pixels = new GeneralPath();
+		if(notInBound(centerX, centerY))
         pixels.moveTo(x, y);
-        if(button == MouseEvent.BUTTON1) {
-            shapeChange = new ShapeChange(pixels, Paint.main.getLeftColour(), new BasicStroke(slider.getValue(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        }
-        else if(button == MouseEvent.BUTTON3) {
-            shapeChange = new ShapeChange(pixels, Paint.main.getRightColour(), new BasicStroke(slider.getValue(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        }
+		
+		// if(slider.getValue() == 1)
+		int size = slider.getValue();
+		int color = -1;
+		
+		if(button == MouseEvent.BUTTON1)
+		{
+			color = Paint.main.getLeftColour();
+		}
+		if(button == MouseEvent.BUTTON3)
+		{
+			color = Paint.main.getRightColour();
+		}
+		
+		for(int y = centerY - size; y <= centerY + size; y++)
+		{
+			for(int x = centerX - size; x <= centerX + size; x++)
+				if(!notInBound(x, y))
+				{
+					buffer(new PixelChange(x, y, color));
+				}
         Paint.main.gui.canvas.preview(shapeChange);
     }
 
@@ -102,11 +121,11 @@ public class PaintBrush extends Tool
         pixels = null;
         shapeChange = null;
     }
-
-    @Override
-    public void whilePressed(int x, int y, int button) {
-        if(pixels != null) {
-            pixels.lineTo(x, y);
+	}
+	
+	public boolean notInBound(int x, int y)
+	{
+		return x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight();
             Paint.main.gui.canvas.preview(shapeChange);
         }
     }

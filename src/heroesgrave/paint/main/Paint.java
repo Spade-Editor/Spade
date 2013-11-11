@@ -25,7 +25,7 @@ import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.paint.tools.Tool;
 import heroesgrave.utils.app.Application;
-import heroesgrave.utils.io.IOUtils;
+import heroesgrave.utils.io.ImageExporter;
 import heroesgrave.utils.io.ImageLoader;
 
 import java.awt.BorderLayout;
@@ -35,63 +35,76 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.JOptionPane;
+
+//
+// "Ninety-nine little bugs in the code, ninety-nine little bugs! Take one down, patch it around, one-hundred and seventeen bugs in the code!"
+//       -Aoefanatic (/r/Minecraft)
 
 public class Paint extends Application
 {
 	public static Paint main = new Paint();
-
+	public static URL questionMarkURL = Paint.class.getResource("/heroesgrave/paint/res/icons/questionmark.png");
+	
 	public GUIManager gui;
 	public heroesgrave.paint.plugin.PluginManager pluginManager;
-
+	
 	public File openFile;
 	public File openDir;
-
+	
+	private File toOpen;
+	
 	public Tool currentTool;
 	
-	public Selection selection;
-
-    public static int leftColour = 0xff000000;
-    public static int rightColour = 0xff000000;
-
+	public static int leftColour = 0xff000000;
+	public static int rightColour = 0xffffffff;
+	
 	public boolean saved = true;
-
+	
 	private static HashMap<String, Tool> tools = new HashMap<String, Tool>();
 	private static HashMap<String, ImageOp> imageOps = new HashMap<String, ImageOp>();
-
+	
 	public void init()
 	{
 		pluginManager = PluginManager.instance(this);
-		selection = new Selection();
 		gui = new GUIManager();
-        setLeftColour(0xffffffff);
-        setRightColour(0xff000000);
+		setRightColour(0xffffffff);
+		setLeftColour(0xff000000);
 		setTool(currentTool);
 		pluginManager.onLaunch();
+		
+		if(toOpen != null)
+		{
+			Paint.main.openFile = toOpen;
+			Paint.main.openDir = toOpen.getParentFile();
+			Paint.main.gui.canvas.setImage(ImageLoader.loadImage(toOpen.getAbsolutePath()));
+		}
 	}
-
+	
 	public void update()
 	{
 		gui.info.setSaved(saved);
 		gui.info.setScale(gui.canvas.getScale());
 		gui.setFile(openFile);
 	}
-
+	
 	public void render()
 	{
-
+		
 	}
-
+	
 	public void dispose()
 	{
-
+		
 	}
-
+	
 	public void newImage(final int width, final int height)
 	{
 		if(!saved)
@@ -101,20 +114,20 @@ public class Paint extends Application
 			newImage.setAlwaysOnTop(true);
 			newImage.setAutoRequestFocus(true);
 			newImage.setLayout(new BorderLayout());
-
+			
 			JButton save = new JButton("Save & Create New Image");
 			JButton dispose = new JButton("Create new image without saving");
 			JButton cancel = new JButton("Don't create new image");
-
+			
 			newImage.add(save, BorderLayout.NORTH);
 			newImage.add(dispose, BorderLayout.CENTER);
 			newImage.add(cancel, BorderLayout.SOUTH);
-
+			
 			newImage.pack();
 			newImage.setResizable(false);
 			newImage.setVisible(true);
 			newImage.setLocationRelativeTo(null);
-
+			
 			save.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
@@ -145,7 +158,7 @@ public class Paint extends Application
 			createImage(width, height);
 		}
 	}
-
+	
 	private void createImage(int width, int height)
 	{
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -156,59 +169,86 @@ public class Paint extends Application
 		gui.canvas.setImage(image);
 		this.openFile = null;
 	}
-
+	
 	public static void addTool(String key, Tool tool)
 	{
 		tools.put(key.toLowerCase(), tool);
 	}
-
+	
 	public static void addImageOp(String key, ImageOp op)
 	{
 		imageOps.put(key.toLowerCase(), op);
 	}
-
+	
 	public static Tool getTool(String key)
 	{
 		return tools.get(key.toLowerCase());
 	}
-
+	
 	public static ImageOp getImageOp(String key)
 	{
 		return imageOps.get(key.toLowerCase());
 	}
-
-	public static void main(String[] args)
-	{
-		IOUtils.setMainClass(Paint.class);
-		Application.launch(main);
-	}
-
+	
 	public static void addChange(Change change)
 	{
 		main.gui.canvas.addChange(change);
 	}
-
+	
 	public static void setTool(Tool tool)
 	{
 		main.currentTool = tool;
 		main.gui.info.setTool(tool);
 		main.gui.setToolOption(tool.getOptions());
 	}
-
+	
 	public static void save()
 	{
 		if(Paint.main.openFile != null)
 		{
 			String fileName = Paint.main.openFile.getAbsolutePath();
-			if(fileName.endsWith(".png"))
+			
+			String extension = "";
+			
+			int i = fileName.lastIndexOf('.');
+			
+			if(i > 0)
 			{
-				ImageLoader.writeImage(Paint.main.gui.canvas.getImage(), "PNG", fileName);
+				extension = fileName.substring(i + 1);
+			}
+			
+			ImageExporter exporter = ImageExporter.get(extension);
+			
+			if(fileName.endsWith("." + exporter.getFileExtension()))
+			{
+				try
+				{
+					exporter.exportImage(Paint.main.gui.canvas.getImage(), new File(fileName));
+				}
+				catch(IOException e)
+				{
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 			}
 			else
 			{
-				ImageLoader.writeImage(Paint.main.gui.canvas.getImage(), "PNG", fileName + ".png");
-				Paint.main.openFile = new File(fileName + ".png");
+				try
+				{
+					exporter.exportImage(Paint.main.gui.canvas.getImage(), new File(fileName));
+					Paint.main.openFile = new File(fileName + ".png");
+				}
+				catch(IOException e)
+				{
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 			}
+			
 			main.saved = true;
 		}
 		else
@@ -216,71 +256,137 @@ public class Paint extends Application
 			saveAs();
 		}
 	}
-
+	
 	public static void saveAs()
 	{
+		
+		/**
+		 * How the new system works:
+		 *
+		JFileChooser fileChooser = new JFileChooser();  
+		
+		// Add ALL the FileFilter's!
+		fileChooser.addChoosableFileFilter(...);  
+		fileChooser.addChoosableFileFilter(...);  
+		fileChooser.addChoosableFileFilter(...);  
+		fileChooser.addChoosableFileFilter(...);  
+		
+		...  
+		
+		int result = fileChooser.showSaveDialog(parentComponent);  
+		if (result == JFileChooser.APPROVE_OPTION)  
+		{  
+		// the user pressed OK  
+		File file = fileChooser.getSelectedFile();  
+		FileFilter fileFilter = fileChooser.getFileFilter();  
+		
+		...  
+		}  
+		
+		 * 
+		 **/
+		
 		JFileChooser chooser = new JFileChooser(Paint.main.openDir);
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
-		chooser.setFileFilter(new FileFilter()
+		
+		for(ImageExporter exporter : ImageExporter.exporters)
 		{
-			public boolean accept(File f)
-			{
-				if(f.isDirectory())
-					return true;
-				String name = f.getAbsolutePath();
-				if(name.endsWith(".png"))
-					return true;
-				return false;
-			}
-
-			public String getDescription()
-			{
-				return "Supported export image formats (.png)";
-			}
-		});
-
+			chooser.addChoosableFileFilter(exporter);
+		}
+		
 		int returned = chooser.showSaveDialog(new CentredJDialog());
-
+		ImageExporter formatToSaveIn = (ImageExporter) chooser.getFileFilter();
+		
 		if(returned == JFileChooser.APPROVE_OPTION)
 		{
 			Paint.main.openFile = chooser.getSelectedFile();
-			Paint.main.openDir = Paint.main.openFile.getParentFile();
-			String fileName = Paint.main.openFile.getAbsolutePath();
-			if(fileName.endsWith(".png"))
+			
+			if(Paint.main.openFile.getAbsolutePath().endsWith("." + formatToSaveIn.getFileExtension()))
 			{
-				ImageLoader.writeImage(Paint.main.gui.canvas.getImage(), "PNG", fileName);
+				// Do nothing.
 			}
 			else
 			{
-				ImageLoader.writeImage(Paint.main.gui.canvas.getImage(), "PNG", fileName + ".png");
-				Paint.main.openFile = new File(fileName + ".png");
+				// Put the format at the end of the File-Name!
+				Paint.main.openFile = new File(Paint.main.openFile.getAbsolutePath() + "." + formatToSaveIn.getFileExtension());
 			}
+			
+			Paint.main.openDir = Paint.main.openFile.getParentFile();
+			
+			try
+			{
+				formatToSaveIn.exportImage(Paint.main.gui.canvas.getImage(), Paint.main.openFile);
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
 			main.saved = true;
 		}
 	}
-
-    public void setLeftColour(int c)
-    {
-        gui.chooser.setLeftColour(c);
-        gui.info.setLeftColour(c);
-        this.leftColour = c;
-    }
-
-    public int getLeftColour()
-    {
-        return this.leftColour;
-    }
-    
-    public void setRightColour(int c)
-    {
-        gui.chooser.setRightColour(c);
-        gui.info.setRightColour(c);
-        this.rightColour = c;
-    }
-
-    public int getRightColour()
-    {
-        return this.rightColour;
-    }
+	
+	public void setLeftColour(int c)
+	{
+		gui.chooser.setLeftColour(c);
+		gui.info.setLeftColour(c);
+		Paint.leftColour = c;
+	}
+	
+	public int getLeftColour()
+	{
+		return Paint.leftColour;
+	}
+	
+	public void setRightColour(int c)
+	{
+		gui.chooser.setRightColour(c);
+		gui.info.setRightColour(c);
+		Paint.rightColour = c;
+	}
+	
+	public int getRightColour()
+	{
+		return Paint.rightColour;
+	}
+	
+	public static void main(String[] args)
+	{
+		// Check for a file argument
+		if(args.length >= 1)
+		{
+			System.out.println("The Application will try to open file given over the command-line after startup: " + args[0]);
+			File f = new File(args[0]);
+			
+			if(f.exists() && f.isFile() && !f.isHidden())
+			{
+				main.toOpen = f;
+			}
+		}
+		
+		// Go trough ALL the arguments and...
+		for(String STR : args)
+		{
+			
+			// ...If the arguments contain the DmemoryWatcherFlag flag, set the property to true to enable the MemoryWatcher.
+			if(STR.equalsIgnoreCase("DmemoryWatcherFlag"))
+			{
+				System.setProperty("DmemoryWatcherFlag", "true");
+			}
+			
+			if(STR.startsWith("DlafClassName="))
+			{
+				System.setProperty("DlafClassName", STR.substring(14));
+			}
+			
+			/// XXX: Expand here by adding more debugging options and system flags!
+		}
+		
+		// Finally Launch Paint.JAVA!
+		Application.launch(main);
+	}
 }

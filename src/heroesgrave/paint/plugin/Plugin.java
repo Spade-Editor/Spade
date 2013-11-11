@@ -19,9 +19,9 @@
 
 package heroesgrave.paint.plugin;
 
-import java.util.Properties;
-
 import heroesgrave.paint.main.Paint;
+
+import java.util.Properties;
 
 /**
  * 
@@ -56,5 +56,10 @@ public abstract class Plugin
 	public abstract void onLaunch();
 	
 	public abstract void registerImageOps(RegisterImageOps register);
+	
 	public abstract void registerTools(RegisterTools register);
+	
+	public abstract void registerExporters(RegisterExporters register);
+	
+	public abstract void registerImporters(RegisterImporters register);
 }

@@ -19,23 +19,23 @@
 
 package heroesgrave.paint.tools;
 
-import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
-
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.ShapeChange;
+
+import java.awt.event.MouseEvent;
 
 public class Ellipse extends Tool
 {
     int sx, sy;
 	private Ellipse2D.Float ellipse;
 	private ShapeChange shapeChange;
-
+	
 	public Ellipse(String name)
 	{
 		super(name);
 	}
-
+	
 	public void onPressed(int x, int y, int button)
 	{
 	    sx = x;
@@ -44,45 +44,51 @@ public class Ellipse extends Tool
         if(button == MouseEvent.BUTTON1) {
             shapeChange = new ShapeChange(ellipse, Paint.main.getLeftColour());
         }
-        else if(button == MouseEvent.BUTTON3) {
+	
             shapeChange = new ShapeChange(ellipse, Paint.main.getRightColour());
         }
-        Paint.main.gui.canvas.preview(shapeChange);
+	
 	}
-
+	
 	public void onReleased(int x, int y, int button)
 	{
         adjustEllipse(x, y);
-
+		
         Paint.main.gui.canvas.applyPreview();
 	}
-
+	
 	public void whilePressed(int x, int y, int button)
 	{
 	    adjustEllipse(x, y);
-        
+		
         Paint.main.gui.canvas.preview(shapeChange);
 	}
-
+		
 	public void whileReleased(int x, int y, int button)
 	{
-
+			
+			
 	}
-
+		
 	private void adjustEllipse(int x, int y) {
         ellipse.width = Math.abs(x - sx);
         ellipse.height = Math.abs(y - sy);
-        if(x < sx) {
+			
             ellipse.x = x;
+			
         }
         else {
             ellipse.x = sx;
         }
-        if(y < sy) {
+	
             ellipse.y = y;
-        }
-        else {
-            ellipse.y = sy;
-        }
+		if(button == MouseEvent.BUTTON1)
+		{
+			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
+		}
+		else if(button == MouseEvent.BUTTON3)
+		{
+			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getRightColour()));
+		}
 	}
 }

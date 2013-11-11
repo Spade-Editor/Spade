@@ -19,23 +19,23 @@
 
 package heroesgrave.paint.tools;
 
-import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
-
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.ShapeChange;
+
+import java.awt.event.MouseEvent;
 
 public class Rectangle extends Tool
 {
 	private int sx, sy;
 	private Rectangle2D.Float rectangle;
 	private ShapeChange shapeChange;
-
+	
 	public Rectangle(String name)
 	{
 		super(name);
 	}
-
+	
 	public void onPressed(int x, int y, int button)
 	{
 		sx = x;
@@ -44,31 +44,32 @@ public class Rectangle extends Tool
         if(button == MouseEvent.BUTTON1) {
             shapeChange = new ShapeChange(rectangle, Paint.main.getLeftColour());
         }
-        else if(button == MouseEvent.BUTTON3) {
+	
             shapeChange = new ShapeChange(rectangle, Paint.main.getRightColour());
         }
-        Paint.main.gui.canvas.preview(shapeChange);
+	
 	}
-
+	
 	public void onReleased(int x, int y, int button)
 	{
         adjustRectangle(x, y);
-
+		
         Paint.main.gui.canvas.applyPreview();
 	}
-
+	
 	public void whilePressed(int x, int y, int button)
 	{
 		adjustRectangle(x, y);
-        
+	
+		
         Paint.main.gui.canvas.preview(shapeChange);
 	}
-
+		
 	public void whileReleased(int x, int y, int button)
 	{
-
+		
 	}
-
+		
 	private void adjustRectangle(int x, int y) {
 	    rectangle.width = Math.abs(x - sx);
 	    rectangle.height = Math.abs(y - sy);
@@ -78,11 +79,15 @@ public class Rectangle extends Tool
         else {
             rectangle.x = sx;
         }
-        if(y < sy) {
+	
             rectangle.y = y;
-        }
-        else {
-            rectangle.y = sy;
-        }
+		if(button == MouseEvent.BUTTON1)
+		{
+			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
+		}
+		else if(button == MouseEvent.BUTTON3)
+		{
+			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getRightColour()));
+		}
     }
 }

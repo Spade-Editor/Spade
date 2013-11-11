@@ -19,11 +19,24 @@
 
 package heroesgrave.paint.gui;
 
+import heroesgrave.paint.effects.Invert;
+import heroesgrave.paint.effects.MakeGrid;
+import heroesgrave.paint.effects.Noise;
+import heroesgrave.paint.effects.RemoveChannels;
+import heroesgrave.paint.effects.SimpleBlur;
+import heroesgrave.paint.effects.SimpleSharpen;
+import heroesgrave.paint.effects.SimplexNoiseOp;
+import heroesgrave.paint.imageops.Clear;
+import heroesgrave.paint.imageops.Clear2;
+import heroesgrave.paint.imageops.FlipHoriz;
+import heroesgrave.paint.imageops.FlipVert;
 import heroesgrave.paint.imageops.ImageOp;
-import heroesgrave.paint.imageops.Invert;
 import heroesgrave.paint.imageops.Resize;
+import heroesgrave.paint.imageops.ResizeCanvas;
+import heroesgrave.paint.imageops.RotateRightBy90;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Ellipse;
+import heroesgrave.paint.tools.Eraser;
 import heroesgrave.paint.tools.Fill;
 import heroesgrave.paint.tools.Line;
 import heroesgrave.paint.tools.PaintBrush;
@@ -34,55 +47,111 @@ import heroesgrave.paint.tools.Tool;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 public class ToolMenu
 {
+	public static Tool DEF;
+	
 	public static JMenu createToolMenu()
 	{
 		JMenu menu = new JMenu("Tools");
-
-		Tool def = new Pixel("Pencil");
-		Paint.main.currentTool = def;
-
-		menu.add(new ToolMenuItem("Pencil", def, "P"));
+		
+		DEF = new Pixel("Pencil");
+		Paint.main.currentTool = DEF;
+		
+		menu.add(new ToolMenuItem("Pencil", DEF, "P"));
+		menu.add(new ToolMenuItem("Eraser", new Eraser("Eraser"), "E"));
 		menu.add(new ToolMenuItem("Paint Brush", new PaintBrush("Paint Brush"), "B"));
 		menu.add(new ToolMenuItem("Line", new Line("Straight Line"), "L"));
 		menu.add(new ToolMenuItem("Colour Picker", new Picker("Colour Picker"), "K"));
 		menu.add(new ToolMenuItem("Paint Bucket", new Fill("Paint Bucket"), "F"));
 		menu.add(new ToolMenuItem("Rectangle", new Rectangle("Rectangle"), "R"));
-		menu.add(new ToolMenuItem("Ellipse", new Ellipse("Ellipse"), "E"));
+		menu.add(new ToolMenuItem("Ellipse", new Ellipse("Ellipse"), "C"));
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerTools(menu);
 		
 		return menu;
 	}
-
+	
 	public static JMenu createImageMenu()
 	{
 		JMenu menu = new JMenu("Image");
-
+		
 		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
-		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
+		menu.add(new ImageMenuItem("Resize Canvas", new ResizeCanvas(), "C"));
+		menu.add(new ImageMenuItem("Clear Image", new Clear(), "N"));
+		menu.add(new ImageMenuItem("Clear Image + Alpha", new Clear2(), null));
+		menu.add(new ImageMenuItem("Flip Vertically", new FlipVert(), null));
+		menu.add(new ImageMenuItem("Flip Horizontally", new FlipHoriz(), null));
+		menu.add(new ImageMenuItem("Rotate Right by 90", new RotateRightBy90(), null));
+		// BUGGED -> menu.add(new ImageMenuItem("Simple Edge Detect", new SimpleEdgeDetect(), null));
+		// BUGGED -> menu.add(new ImageMenuItem("Perlin Noise", new PerlinNoiseOp(), "PN"));
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerImageOps(menu);
 		
 		return menu;
 	}
-
+	
+	public static JMenu createEffectMenu()
+	{
+		JMenu menu = new JMenu("Effects");
+		
+		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
+		menu.add(new ImageMenuItem("White Noise", new Noise(), null));
+		menu.add(new ImageMenuItem("Simplex Noise", new SimplexNoiseOp(), null));
+		menu.add(new ImageMenuItem("Simple Blur", new SimpleBlur(), null));
+		menu.add(new ImageMenuItem("Simple Sharpen", new SimpleSharpen(), null));
+		menu.add(new ImageMenuItem("Grid-Maker", new MakeGrid(), null));
+		menu.add(new ImageMenuItem("Channel Remover", new RemoveChannels(), null));
+		
+		return menu;
+	}
+	
 	public static class ToolMenuItem extends JMenuItem
 	{
 		private static final long serialVersionUID = 5766656521451633454L;
-
+		
 		private Tool tool;
-
+		
 		public ToolMenuItem(String name, Tool t, String key)
 		{
-			super(name + " (" + key + ")");
-			Paint.addTool(key, t);
+			super(key == null ? (name) : (name + " (" + key + ")"));
+			
+			// This is here, so some Tools don't have to have a key assigned. We can't have key-code's for ALL the Tools! It's impossible!
+			if(key != null)
+			{
+				Paint.addTool(key, t);
+			}
+			
 			this.tool = t;
+			
+			// TRY to load the icon!
+			try
+			{
+				URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/tools/" + name + ".png");
+				
+				if(url != null)
+				{
+					this.setIcon(new ImageIcon(ImageIO.read(url)));
+				}
+				else
+				{
+					this.setIcon(new ImageIcon(ImageIO.read(Paint.questionMarkURL)));
+				}
+				
+			}
+			catch(IOException e1)
+			{
+				System.err.println("Error: Tool '" + name + "' is missing an icon!");
+			}
+			
 			this.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
@@ -92,18 +161,56 @@ public class ToolMenu
 			});
 		}
 	}
-
+	
 	public static class ImageMenuItem extends JMenuItem
 	{
 		private static final long serialVersionUID = 7018700148731008154L;
-
+		
 		private ImageOp op;
-
+		
 		public ImageMenuItem(String name, ImageOp o, String key)
 		{
-			super(name + " (Ctrl+Shift+" + key + ")");
-			Paint.addImageOp(key, o);
+			this(name, o, key, null);
+		}
+		
+		public ImageMenuItem(String name, ImageOp o, String key, String toolTip)
+		{
+			super(key == null ? (name) : (name + " (Ctrl+Shift+" + key + ")"));
+			
+			// This is here, so some ImageOps don't have to have a key assigned. We can't have key-code's for ALL the ImageOp's! It's impossible!
+			if(key != null)
+			{
+				Paint.addImageOp(key, o);
+			}
+			
+			// If there is a ToolTip Text given over the Constructor, use it.
+			if(toolTip != null)
+			{
+				this.setToolTipText(toolTip);
+			}
+			
+			// 
 			this.op = o;
+			
+			// TRY to load the icon!
+			try
+			{
+				URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/imageops/" + name + ".png");
+				
+				if(url != null)
+				{
+					this.setIcon(new ImageIcon(ImageIO.read(url)));
+				}
+				else
+				{
+					this.setIcon(new ImageIcon(ImageIO.read(Paint.questionMarkURL)));
+				}
+			}
+			catch(IOException e1)
+			{
+				System.err.println("Error: ImageOp '" + name + "' is missing an icon!");
+			}
+			
 			this.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)

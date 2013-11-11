@@ -19,42 +19,79 @@
 
 package heroesgrave.paint.tools;
 
+import heroesgrave.paint.gui.ToolMenu;
+import heroesgrave.paint.main.Paint;
+
 import java.awt.event.MouseEvent;
 
-import heroesgrave.paint.main.Paint;
+import javax.swing.JCheckBox;
 
 public class Picker extends Tool
 {
+	private JCheckBox switchPencil;
+	
 	public Picker(String name)
 	{
 		super(name);
+		
+		this.switchPencil = new JCheckBox("Switch to Pencil");
+		menu.add(switchPencil);
+		
+		switchPencil.setFocusable(false);
 	}
-
+	
 	public void onPressed(int x, int y, int button)
 	{
-
+		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
+			return;
+		
+		if(button == MouseEvent.BUTTON1)
+		{
+			Paint.main.setLeftColour(Paint.main.gui.canvas.getImage().getRGB(x, y));
+		}
+		else if(button == MouseEvent.BUTTON3)
+		{
+			Paint.main.setRightColour(Paint.main.gui.canvas.getImage().getRGB(x, y));
+		}
 	}
-
+	
 	public void onReleased(int x, int y, int button)
 	{
 		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
 			return;
 		
-        if(button == MouseEvent.BUTTON1) {
-            Paint.main.setLeftColour(Paint.main.gui.canvas.getImage().getRGB(x, y));
-        }
-        else if(button == MouseEvent.BUTTON3) {
-            Paint.main.setRightColour(Paint.main.gui.canvas.getImage().getRGB(x, y));
-        }
+		if(button == MouseEvent.BUTTON1)
+		{
+			Paint.main.setLeftColour(Paint.main.gui.canvas.getImage().getRGB(x, y));
+		}
+		else if(button == MouseEvent.BUTTON3)
+		{
+			Paint.main.setRightColour(Paint.main.gui.canvas.getImage().getRGB(x, y));
+		}
+		
+		if(switchPencil.isSelected())
+		{
+			Paint.setTool(ToolMenu.DEF);
+		}
 	}
-
+	
 	public void whilePressed(int x, int y, int button)
 	{
-
+		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
+			return;
+		
+		if(button == MouseEvent.BUTTON1)
+		{
+			Paint.main.setLeftColour(Paint.main.gui.canvas.getImage().getRGB(x, y));
+		}
+		else if(button == MouseEvent.BUTTON3)
+		{
+			Paint.main.setRightColour(Paint.main.gui.canvas.getImage().getRGB(x, y));
+		}
 	}
-
+	
 	public void whileReleased(int x, int y, int button)
 	{
-
+		
 	}
 }

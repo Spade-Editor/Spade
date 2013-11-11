@@ -22,6 +22,7 @@ package heroesgrave.paint.plugin;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.Popup;
 import heroesgrave.utils.io.IOUtils;
+import heroesgrave.utils.misc.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,36 +38,60 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 
 /**
+ * PluginManager class.<hr>
  * 
+ * This class loads and manages Plugin's, small libraries that can be added to the application to make it more powerful and awesome.
+ * 
+ * <br><br>
  * @author Longor1996 & HeroesGrave
  *
  */
 public class PluginManager
 {
+	/**
+	 * The instance of the PluginManager. There should ALWAYS only be ONE PluginManagaer in existance!
+	 **/
 	public static PluginManager instance = null;
+	
+	/**
+	 * The directory in which all the Plugin's are stored.
+	 **/
 	private File pluginRootDirectory;
+	
+	/**
+	 * The list of loaded, and thus active, Plugin's.
+	 **/
 	private ArrayList<Plugin> loadedPlugins;
+	
+	/**
+	 * The PluginManager Viewer.
+	 **/
 	private PluginManagerViewer pluginViewer;
 	
 	public PluginManager(Paint paint)
 	{
 		// Make sure the plugin folder exists and is accessible!
-		pluginRootDirectory = new File(IOUtils.assemblePath(IOUtils.jarDir(), "plugins"));
+		pluginRootDirectory = new File(IOUtils.assemblePath(System.getProperty("user.home"), ".paint-java", "plugins"));
 		
 		if(!pluginRootDirectory.exists())
+		{
 			pluginRootDirectory.mkdirs();
+		}
 		
 		// 
 		loadedPlugins = new ArrayList<Plugin>();
 		
-		File[] possiblePluginRoots = pluginRootDirectory.listFiles();
+		// Get a list of all files and directories in the folder using a filter that filters for directories and jar-files.
+		File[] possiblePluginRoots = pluginRootDirectory.listFiles(new PluginFileFilter());
 		
 		System.out.println("[PluginManager] Searching for Plugins...");
 		
 		for(File possiblePluginRoot : possiblePluginRoots)
 		{
 			if(possiblePluginRoot.isFile() && possiblePluginRoot.getName().endsWith(".jar"))
+			{
 				handlePossibleJarBasedPlugin(possiblePluginRoot);
+			}
 		}
 		
 		System.out.println("[PluginManager] Done searching. Found " + loadedPlugins.size() + " plugins.");
@@ -147,7 +172,7 @@ public class PluginManager
 			
 			while(e.hasMoreElements())
 			{
-				JarEntry je = (JarEntry) e.nextElement();
+				JarEntry je = e.nextElement();
 				
 				if(je.isDirectory() || !je.getName().endsWith(".class"))
 				{
@@ -185,23 +210,25 @@ public class PluginManager
 							Plugin newPluginInstance = pluginClass.newInstance();
 							this.loadedPlugins.add(newPluginInstance);
 							
-							System.out.println("[PluginManager] Plugin " + newPluginInstance.name + " loaded.");
+							System.out.println("[PluginManager] Plugin " + newPluginInstance.name + " found and loaded.");
 							
 							// Create info object.
 							newPluginInstance.info = new Properties();
 							
 							// Format 'Size'
-							newPluginInstance.info.put("size", humanReadableByteCount(possiblePluginRoot.length(), true));
+							newPluginInstance.info.put("size", StringUtil.humanReadableByteCount(possiblePluginRoot.length(), true));
 							
 							// Format 'Description'
 							newPluginInstance.info.put("description", ((String) props.get("description")).replace("\\n", "\n"));
 							
 							// Author
-							newPluginInstance.info.put("author", ((String) props.get("author")));
+							newPluginInstance.info.put("author", (props.get("author")));
+							
 							// Version (defined by author)
-							newPluginInstance.info.put("version", ((String) props.get("version")));
+							newPluginInstance.info.put("version", (props.get("version")));
+							
 							// Date updated (defined by author)
-							newPluginInstance.info.put("updated", ((String) props.get("updated")));
+							newPluginInstance.info.put("updated", (props.get("updated")));
 						}
 						catch(ReflectiveOperationException e1)
 						{
@@ -215,31 +242,28 @@ public class PluginManager
 				}
 			}
 			
+			cl.close();
+			
 			// Close JAR
 			jarFile.close();
 		}
 		catch(IOException e)
 		{
-			//System.out.println("[PluginManager] The file '" + possiblePluginRoot.getAbsolutePath() + "' looks like a Jar-based plugin, but it is not one!");
+			System.out.println("[PluginManager] The JAR-file '" + possiblePluginRoot.getAbsolutePath() + "' could not be read!");
 			e.printStackTrace();
 			return;
 		}
 	}
 	
-	private static String humanReadableByteCount(long bytes, boolean si)
-	{
-		int unit = si ? 1000 : 1024;
-		if(bytes < unit)
-			return bytes + " B";
-		int exp = (int) (Math.log(bytes) / Math.log(unit));
-		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
-	}
-	
+	/**
+	 * Initial instance construction method. Call this method only ONCE on application startup.
+	 **/
 	public static PluginManager instance(Paint paint)
 	{
 		if(instance == null)
+		{
 			instance = new PluginManager(paint);
+		}
 		
 		return instance;
 	}
@@ -281,11 +305,17 @@ public class PluginManager
 		}
 	}
 	
+	/**
+	 * Makes the PluginManager-Viewer Dialog pop-up.
+	 **/
 	public void showPluginManager()
 	{
 		pluginViewer.show();
 	}
 	
+	/**
+	 * Return's a list of all loaded and active plugin's.
+	 **/
 	public ArrayList<Plugin> getPluginList()
 	{
 		return this.loadedPlugins;

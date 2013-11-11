@@ -29,7 +29,7 @@ public class NumberDocumentFilter extends DocumentFilter
 	{
 		fb.insertString(off, str.replaceAll("\\D++", ""), att);
 	}
-
+	
 	public void replace(FilterBypass fb, int off, int len, String str, AttributeSet att) throws BadLocationException
 	{
 		fb.replace(off, len, str.replaceAll("\\D++", ""), att);

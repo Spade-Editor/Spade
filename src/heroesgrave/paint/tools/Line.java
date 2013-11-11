@@ -19,43 +19,52 @@
 
 package heroesgrave.paint.tools;
 
-import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
-
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.ShapeChange;
+
+import java.awt.event.MouseEvent;
 
 public class Line extends Tool
 {
 	private Line2D.Float line;
 	private ShapeChange shapeChange;
-
+	
 	public Line(String name)
 	{
 		super(name);
 	}
-
+	
 	public void onPressed(int x, int y, int button)
 	{
 	    line = new Line2D.Float(x, y, x, y);
         if(button == MouseEvent.BUTTON1) {
             shapeChange = new ShapeChange(line, Paint.main.getLeftColour());
         }
-        else if(button == MouseEvent.BUTTON3) {
+	
             shapeChange = new ShapeChange(line, Paint.main.getRightColour());
         }
         Paint.main.gui.canvas.preview(shapeChange);
 	}
-
+	
 	public void onReleased(int x, int y, int button)
 	{
 		line.x2 = x;
-		line.y2 = y;
+		
+		
 		
 		Paint.main.gui.canvas.applyPreview();
 	}
-
-
+	
+		if(button == MouseEvent.BUTTON1)
+		{
+			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
+		}
+		else if(button == MouseEvent.BUTTON3)
+		{
+			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getRightColour()));
+		}
+	
 	public void whilePressed(int x, int y, int button)
 	{
 	    line.x2 = x;
@@ -63,9 +72,9 @@ public class Line extends Tool
 
         Paint.main.gui.canvas.preview(shapeChange);
 	}
-
+	
 	public void whileReleased(int x, int y, int button)
 	{
-
+		
 	}
 }

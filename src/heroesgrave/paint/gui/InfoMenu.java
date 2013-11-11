@@ -19,22 +19,37 @@
 
 package heroesgrave.paint.gui;
 
+import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Tool;
 import heroesgrave.utils.math.MathUtils;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.io.IOException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+/**
+ * This should be renamed into "InfoMenuBar". The current name is a -bit- confusing.
+ **/
 public class InfoMenu
 {
 	private JLabel scale, saved, tool;
-	private ColourPanel colour;
+	private JButton reset;
+	private MemoryWatcher memoryWatcher;
+	private ColourTextPanel left, right;
 	
 	public JMenuBar createInfoMenuBar()
 	{
@@ -45,18 +60,135 @@ public class InfoMenu
 		scale = new JLabel("Scale: 100%");
 		saved = new JLabel("Saved: Yes");
 		tool = new JLabel("Tool: Pencil");
+		
+		// Check if the MemoryWatcher should be activated.
+		if(System.getProperty("DmemoryWatcherFlag") != null)
+		{
+			memoryWatcher = new MemoryWatcher();
+		}
+		
 		scale.setHorizontalAlignment(SwingConstants.CENTER);
 		saved.setHorizontalAlignment(SwingConstants.CENTER);
 		tool.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		this.colour = new ColourPanel();
+		JPanel colourPanel = new JPanel();
+		colourPanel.setLayout(new GridLayout(1, 2));
+		
+		left = new ColourTextPanel();
+		right = new ColourTextPanel();
+		reset = new JButton("Reset");
+		
+		// reset creation
+		reset.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent arg0)
+			{
+				Paint.main.setLeftColour(0xFF000000);
+				Paint.main.setRightColour(0xFFFFFFFF);
+			}
+		});
+		try
+		{
+			URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/reset.png");
+			
+			if(url != null)
+			{
+				reset.setIcon(new ImageIcon(ImageIO.read(url)));
+			}
+			else
+				throw new IOException();
+		}
+		catch(IOException e1)
+		{
+			System.err.println("Error: 'Reset' is missing an icon!");
+		}
+		
+		reset.setFocusable(false);
+		
+		colourPanel.add(reset);
+		colourPanel.add(left);
+		colourPanel.add(right);
+		
+		left.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent arg0)
+			{
+				read(left);
+				Paint.main.gui.frame.requestFocus();
+			}
+		});
+		left.addFocusListener(new FocusAdapter()
+		{
+			public void focusLost(FocusEvent arg0)
+			{
+				read(left);
+				Paint.main.gui.frame.requestFocus();
+			}
+		});
+		
+		right.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent arg0)
+			{
+				read(right);
+				Paint.main.gui.frame.requestFocus();
+			}
+		});
+		right.addFocusListener(new FocusAdapter()
+		{
+			public void focusLost(FocusEvent arg0)
+			{
+				read(right);
+				Paint.main.gui.frame.requestFocus();
+			}
+		});
 		
 		menuBar.add(tool);
-		menuBar.add(colour);
+		menuBar.add(colourPanel);
 		menuBar.add(scale);
 		menuBar.add(saved);
 		
+		if(memoryWatcher != null)
+		{
+			menuBar.add(memoryWatcher);
+		}
+		
 		return menuBar;
+	}
+	
+	private void read(ColourTextPanel panel)
+	{
+		String num = panel.getText();
+		
+		num = num.replaceAll("[^0-9a-fA-F]", "");
+		
+		if(num.length() > 6)
+		{
+			num = num.substring(0, 6);
+		}
+		
+		panel.setText(num);
+		
+		int c;
+		if(num.equals(""))
+		{
+			c = panel.colour.getRGB();
+		}
+		else
+		{
+			c = Integer.decode("0x" + num);
+		}
+		
+		c |= 0xff000000;
+		
+		if(panel == left)
+		{
+			Paint.main.setLeftColour(c);
+		}
+		else if(panel == right)
+		{
+			Paint.main.setRightColour(c);
+		}
 	}
 	
 	public void setScale(float scale)
@@ -74,61 +206,44 @@ public class InfoMenu
 		this.tool.setText("Tool: " + tool.name);
 	}
 	
-    public void setLeftColour(int colour)
-    {
-        this.colour.setLeftColour(colour);
-    }
-    
-    public void setRightColour(int colour)
-    {
-        this.colour.setRightColour(colour);
-    }
-    
-	public static class ColourPanel extends JPanel
+	public void setLeftColour(int colour)
 	{
-		private static final long serialVersionUID = 7541204326016173356L;
+		this.left.setColour(colour);
+	}
+	
+	public void setRightColour(int colour)
+	{
+		this.right.setColour(colour);
+	}
+	
+	public static class ColourTextPanel extends JTextField
+	{
+		private static final long serialVersionUID = -2244995065320398599L;
 		
-		private Color leftColour;
-		private Color rightColour;
+		public Color colour;
 		
-		public ColourPanel()
+		public ColourTextPanel()
 		{
-		    
+			super();
+			this.setEditable(true);
 		}
 		
-        public void setLeftColour(int colour)
-        {
-            this.leftColour = new Color(colour);
-            this.repaint();
-        }
-        
-        public void setRightColour(int colour)
-        {
-            this.rightColour = new Color(colour);
-            this.repaint();
-        }
-        
-        public int getLeftColour() {
-            return ( ((leftColour.getAlpha() & 0xff) << 24) | 
-                    ((leftColour.getRed() & 0xff) << 16) | 
-                    ((leftColour.getGreen() & 0xff) << 8) | 
-                    (leftColour.getBlue() & 0xff) );
-        }
-        
-        public int getRightColour() {
-            return ( ((rightColour.getAlpha() & 0xff) << 24) | 
-                    ((rightColour.getRed() & 0xff) << 16) | 
-                    ((rightColour.getGreen() & 0xff) << 8) | 
-                    (rightColour.getBlue() & 0xff) );
-        }
-        
-		public void paint(Graphics g)
+		public void setColour(int colour)
 		{
-			super.paint(g);
-            g.setColor(leftColour);
-            g.fillRect(0, 0, this.getWidth() / 2, this.getHeight());
-            g.setColor(rightColour);
-            g.fillRect(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
+			this.colour = new Color(colour);
+			this.setText(bufferZeros(Integer.toHexString(colour & 0xffffff)));
+			this.setBackground(this.colour);
+			this.setForeground(new Color(this.colour.getRGB() ^ 0x00ffffff));
+			this.repaint();
 		}
+	}
+	
+	private static String bufferZeros(String colour)
+	{
+		while(colour.length() < 6)
+		{
+			colour = "0" + colour;
+		}
+		return colour;
 	}
 }

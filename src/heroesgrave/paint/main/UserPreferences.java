@@ -19,6 +19,7 @@
 
 package heroesgrave.paint.main;
 
+import java.awt.Frame;
 import java.util.prefs.Preferences;
 
 import javax.swing.JFrame;
@@ -52,7 +53,7 @@ public class UserPreferences
 		
 		if(prefs.getBoolean(WINDOW_MAXIMIZED, false))
 		{
-			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		}
 		windowX = prefs.getInt(WINDOW_X, 0);
 		windowY = prefs.getInt(WINDOW_Y, 0);
@@ -70,7 +71,7 @@ public class UserPreferences
 	{
 		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);
 		
-		if((frame.getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH)
+		if((frame.getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH)
 		{
 			prefs.putBoolean(WINDOW_MAXIMIZED, true);
 		}

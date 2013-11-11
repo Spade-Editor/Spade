@@ -34,40 +34,42 @@ public class Fill extends Tool
 	{
 		super(name);
 	}
-
+	
 	public void onPressed(int x, int y, int button)
 	{
 		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
 			return;
-
+		
 		Stack<Point> stack = new Stack<Point>();
 		HashSet<Point> explored = new HashSet<Point>();
-
+		
 		stack.push(new Point(x, y));
 		final int c = getColour(x, y);
 		if((c == Paint.main.getLeftColour() && button == MouseEvent.BUTTON1) || (c == Paint.main.getRightColour() && button == MouseEvent.BUTTON3))
 			return;
-
+		
 		Rectangle imageRect = new Rectangle(0, 0, Paint.main.gui.canvas.getImage().getWidth(), Paint.main.gui.canvas.getImage().getHeight());
-
+		
 		while(!stack.isEmpty())
 		{
 			Point p = stack.pop();
-
+			
 			if(getColour(p.x, p.y) != c)
 			{
 				continue;
 			}
 			else
 			{
-			    if(button == MouseEvent.BUTTON1) {
-			        Paint.main.gui.canvas.bufferChange(new PixelChange(p.x, p.y, Paint.main.getLeftColour()));
-			    }
-			    else if(button == MouseEvent.BUTTON3) {
-                    Paint.main.gui.canvas.bufferChange(new PixelChange(p.x, p.y, Paint.main.getRightColour()));
-                } 
+				if(button == MouseEvent.BUTTON1)
+				{
+					Paint.main.gui.canvas.preview(new PixelChange(p.x, p.y, Paint.main.getLeftColour()));
+				}
+				else if(button == MouseEvent.BUTTON3)
+				{
+					Paint.main.gui.canvas.preview(new PixelChange(p.x, p.y, Paint.main.getRightColour()));
+				}
 			}
-
+			
 			Point neighbour = new Point(p.x + 1, p.y);
 			if(imageRect.contains(neighbour) && explored.add(neighbour))
 			{
@@ -89,27 +91,27 @@ public class Fill extends Tool
 				stack.push(neighbour);
 			}
 		}
-
-		Paint.main.gui.canvas.flushChanges();
+		
+		Paint.main.gui.canvas.applyPreview();
 	}
-
+	
 	private int getColour(int x, int y)
 	{
 		return Paint.main.gui.canvas.getImage().getRGB(x, y);
 	}
-
+	
 	public void onReleased(int x, int y, int button)
 	{
-
+		
 	}
-
+	
 	public void whilePressed(int x, int y, int button)
 	{
-
+		
 	}
-
+	
 	public void whileReleased(int x, int y, int button)
 	{
-
+		
 	}
 }

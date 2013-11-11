@@ -46,17 +46,27 @@ import javax.swing.text.AbstractDocument;
 
 public class Menu
 {
+	/**
+	 * Single boolean flag for the visibility toggle of the Pixel-Grid.
+	 **/
 	public static boolean GRID_ENABLED = false;
-
+	
 	public static JMenuBar createMenuBar()
 	{
+		// M.E.I. MenuBar
 		JMenuBar menuBar = new JMenuBar();
-
+		
+		// Main Menu's
 		menuBar.add(createFileMenu());
 		menuBar.add(createEditMenu());
 		menuBar.add(createViewMenu());
+		
+		// Editing Menu's
 		menuBar.add(ToolMenu.createImageMenu());
 		menuBar.add(ToolMenu.createToolMenu());
+		menuBar.add(ToolMenu.createEffectMenu());
+		
+		// Info Menu's
 		menuBar.add(createWindowMenu());
 		menuBar.add(createHelpMenu());
 		
@@ -66,8 +76,8 @@ public class Menu
 	private static JMenu createHelpMenu()
 	{
 		JMenu help = new JMenu("Help/Info");
-
-		JMenuItem pluginManager = new JMenuItem("Plugin Viewer");
+		
+		JMenuItem pluginManager = new JMenuItem("Plugin Viewer", GUIManager.getIcon("plugin_viewer"));
 		pluginManager.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -76,17 +86,28 @@ public class Menu
 			}
 		});
 		
+		JMenuItem about = new JMenuItem("About...", GUIManager.getIcon("about"));
+		about.setEnabled(false);
+		about.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				// TODO: Implement 'About' Dialog.
+			}
+		});
+		
 		help.add(pluginManager);
+		help.add(about);
 		
 		return help;
 	}
-
+	
 	private static JMenu createDialogsMenu()
 	{
 		JMenu dialogs = new JMenu("Manage Dialogs");
-
-		JMenuItem colourChooser = new JMenuItem("Colour Chooser (F5)");
-
+		
+		JMenuItem colourChooser = new JMenuItem("Colour Chooser (F5)", GUIManager.getIcon("colour_chooser"));
+		
 		colourChooser.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -94,35 +115,37 @@ public class Menu
 				Paint.main.gui.chooser.toggle();
 			}
 		});
-
+		
 		dialogs.add(colourChooser);
-
+		
 		return dialogs;
 	}
-
+	
 	private static JMenu createWindowMenu()
 	{
 		JMenu window = new JMenu("Window");
-
+		
 		window.add(createDialogsMenu());
-
+		
 		return window;
 	}
-
+	
 	private static JMenu createFileMenu()
 	{
 		JMenu file = new JMenu("File");
-
-		JMenuItem newFile = new JMenuItem("New (Ctrl+N)");
-		JMenuItem load = new JMenuItem("Open (Ctrl+O)");
-		JMenuItem save = new JMenuItem("Save (Ctrl+S)");
-		final JMenuItem saveAs = new JMenuItem("Save As");
-
+		
+		JMenuItem newFile = new JMenuItem("New (Ctrl+N)", GUIManager.getIcon("new"));
+		JMenuItem load = new JMenuItem("Open (Ctrl+O)", GUIManager.getIcon("open"));
+		JMenuItem save = new JMenuItem("Save (Ctrl+S)", GUIManager.getIcon("save"));
+		final JMenuItem saveAs = new JMenuItem("Save As", GUIManager.getIcon("save"));
+		JMenuItem exit = new JMenuItem("Exit", GUIManager.getIcon("exit"));
+		
 		file.add(newFile);
 		file.add(load);
 		file.add(save);
 		file.add(saveAs);
-
+		file.add(exit);
+		
 		newFile.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -130,7 +153,7 @@ public class Menu
 				showNewMenu();
 			}
 		});
-
+		
 		load.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -138,7 +161,7 @@ public class Menu
 				showOpenMenu();
 			}
 		});
-
+		
 		save.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -146,7 +169,7 @@ public class Menu
 				Paint.save();
 			}
 		});
-
+		
 		saveAs.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -155,12 +178,20 @@ public class Menu
 			}
 		});
 		
+		exit.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				Paint.main.gui.displayCloseDialogue();
+			}
+		});
+		
 		return file;
 	}
-
+	
 	public static void showOpenMenu()
 	{
-		JFileChooser chooser = new JFileChooser(Paint.main.openDir);
+		final JFileChooser chooser = new JFileChooser(Paint.main.openDir);
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setFileFilter(new FileFilter()
@@ -178,52 +209,66 @@ public class Menu
 					return true;
 				return false;
 			}
-
+			
 			public String getDescription()
 			{
-				return "Supported import image formats (.png, .jpg, .bmp)";
+				return "ImageIO Supported import image formats (.png, .jpg, .bmp)";
 			}
 		});
+		
+		// Add ALL the custom image-importers!
+		ImageLoader.addAllImporters(chooser);
+		
 		int returned = chooser.showOpenDialog(new CentredJDialog());
 		
 		if(returned == JFileChooser.APPROVE_OPTION)
 		{
 			Paint.main.openFile = chooser.getSelectedFile();
 			Paint.main.openDir = Paint.main.openFile.getParentFile();
-			Paint.main.gui.canvas.setImage(ImageLoader.loadImage(chooser.getSelectedFile().getAbsolutePath()));
+			
+			// If a Image takes too long, the application might crash.
+			// By running the actual loading process in another thread, the AWT-Event Thread can continue working while the image is being loaded.
+			new Thread(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					Paint.main.gui.canvas.setImage(ImageLoader.loadImage(chooser.getSelectedFile().getAbsolutePath()));
+				}
+			}).start();
 		}
 	}
-
+	
 	public static void showNewMenu()
 	{
 		final JDialog dialog = new CentredJDialog();
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
+		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0, 2));
-
+		
 		dialog.getContentPane().add(panel);
-
+		
 		dialog.setAlwaysOnTop(true);
 		dialog.setAutoRequestFocus(true);
-
+		
 		dialog.setTitle("New Image");
-
+		
 		final JTextField width = new JTextField("800");
 		final JTextField height = new JTextField("600");
 		((AbstractDocument) width.getDocument()).setDocumentFilter(new NumberDocumentFilter());
 		((AbstractDocument) height.getDocument()).setDocumentFilter(new NumberDocumentFilter());
 		width.setColumns(8);
 		height.setColumns(8);
-
+		
 		JLabel wl = new JLabel("Width: ");
 		wl.setHorizontalAlignment(SwingConstants.CENTER);
 		JLabel hl = new JLabel("Height: ");
 		hl.setHorizontalAlignment(SwingConstants.CENTER);
-
+		
 		JButton create = new JButton("Create");
 		JButton cancel = new JButton("Cancel");
-
+		
 		create.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -232,12 +277,16 @@ public class Menu
 				int w = Integer.parseInt(width.getText());
 				int h = Integer.parseInt(height.getText());
 				if(w > 8192 || h > 8192 || w == 0 || h == 0)
+				{
 					Popup.show("Invalid Image Size", "The image dimensions must be more than 0 and less than 8192");
+				}
 				else
+				{
 					Paint.main.newImage(w, h);
+				}
 			}
 		});
-
+		
 		cancel.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -245,26 +294,26 @@ public class Menu
 				dialog.dispose();
 			}
 		});
-
+		
 		panel.add(wl);
 		panel.add(width);
 		panel.add(hl);
 		panel.add(height);
 		panel.add(create);
 		panel.add(cancel);
-
+		
 		dialog.pack();
 		dialog.setResizable(false);
 		dialog.setVisible(true);
 	}
-
+	
 	private static JMenu createEditMenu()
 	{
 		JMenu edit = new JMenu("Edit");
-
-		JMenuItem undo = new JMenuItem("Undo (Ctrl+Z)");
-		JMenuItem redo = new JMenuItem("Redo (Ctrl+Y)");
-
+		
+		JMenuItem undo = new JMenuItem("Undo (Ctrl+Z)", GUIManager.getIcon("undo"));
+		JMenuItem redo = new JMenuItem("Redo (Ctrl+Y)", GUIManager.getIcon("redo"));
+		
 		undo.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
@@ -272,7 +321,7 @@ public class Menu
 				Paint.main.gui.canvas.revertChange();
 			}
 		});
-
+		
 		redo.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
@@ -280,21 +329,21 @@ public class Menu
 				Paint.main.gui.canvas.repeatChange();
 			}
 		});
-
+		
 		edit.add(undo);
 		edit.add(redo);
-
+		
 		return edit;
 	}
-
+	
 	private static JMenu createViewMenu()
 	{
 		JMenu view = new JMenu("View");
-
-		JMenuItem zoomIn = new JMenuItem("Zoom In (Ctrl++)");
-		JMenuItem zoomOut = new JMenuItem("Zoom Out (Ctrl+-)");
-		JMenuItem grid = new JMenuItem("Toggle Grid (Ctrl+G)");
-
+		
+		JMenuItem zoomIn = new JMenuItem("Zoom In (Ctrl++)", GUIManager.getIcon("zoom_inc"));
+		JMenuItem zoomOut = new JMenuItem("Zoom Out (Ctrl+-)", GUIManager.getIcon("zoom_dec"));
+		JMenuItem grid = new JMenuItem("Toggle Grid (Ctrl+G)", GUIManager.getIcon("toggle_grid"));
+		
 		zoomIn.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -302,7 +351,7 @@ public class Menu
 				Paint.main.gui.canvas.incZoom();
 			}
 		});
-
+		
 		zoomOut.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -310,7 +359,7 @@ public class Menu
 				Paint.main.gui.canvas.decZoom();
 			}
 		});
-
+		
 		grid.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -319,18 +368,18 @@ public class Menu
 				Paint.main.gui.canvas.getCanvas().repaint();
 			}
 		});
-
+		
 		view.add(zoomIn);
 		view.add(zoomOut);
 		view.add(grid);
-
+		
 		return view;
 	}
-
+	
 	public static class CentredJDialog extends JDialog
 	{
 		private static final long serialVersionUID = 2628868597000831164L;
-
+		
 		public void setVisible(boolean b)
 		{
 			super.setVisible(b);
@@ -338,6 +387,40 @@ public class Menu
 			{
 				this.setLocationRelativeTo(null);
 			}
+		}
+	}
+	
+	public static class CentredJLabel extends JLabel
+	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -782420829240440738L;
+		
+		public CentredJLabel(String label)
+		{
+			super(label);
+		}
+	}
+	
+	public static class NumberTextField extends JTextField
+	{
+		private static final long serialVersionUID = -8289311655265709303L;
+		
+		public NumberTextField(String text)
+		{
+			super(text);
+			
+			setColumns(8);
+			((AbstractDocument) getDocument()).setDocumentFilter(new NumberDocumentFilter());
+		}
+		
+		public int get()
+		{
+			if(this.getText().isEmpty())
+				return -1;
+			
+			return Integer.valueOf(this.getText());
 		}
 	}
 }
