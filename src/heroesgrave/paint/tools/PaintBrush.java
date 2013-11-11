@@ -42,18 +42,22 @@ import heroesgrave.paint.gui.ColourChooser.CentredLabel;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.PixelChange;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
+import java.awt.geom.GeneralPath;
 
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 
-public class PaintBrush extends Brush
+public class PaintBrush extends Tool
 {
 	private JSlider slider;
+    private GeneralPath pixels;
+    private ShapeChange shapeChange;
 	
 	public PaintBrush(String name)
 	{
@@ -81,9 +85,9 @@ public class PaintBrush extends Brush
 	}
 	
 	public void brush(int centerX, int centerY, int button)
-	{
+    public void onPressed(int x, int y, int button) {
 		if(notInBound(centerX, centerY))
-			return;
+        pixels.moveTo(x, y);
 		
 		// if(slider.getValue() == 1)
 		int size = slider.getValue();
@@ -105,11 +109,28 @@ public class PaintBrush extends Brush
 				{
 					buffer(new PixelChange(x, y, color));
 				}
-		}
+        Paint.main.gui.canvas.preview(shapeChange);
+    }
+
+    @Override
+    public void onReleased(int x, int y, int button) {
+        if(pixels != null) {
+            pixels.lineTo(x, y);
+            Paint.main.gui.canvas.applyPreview();
+        }
+        pixels = null;
+        shapeChange = null;
+    }
 	}
 	
 	public boolean notInBound(int x, int y)
 	{
 		return x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight();
-	}
+            Paint.main.gui.canvas.preview(shapeChange);
+        }
+    }
+
+    @Override
+    public void whileReleased(int x, int y, int button) {
+    }
 }

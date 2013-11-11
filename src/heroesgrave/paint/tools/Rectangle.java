@@ -19,15 +19,17 @@
 
 package heroesgrave.paint.tools;
 
-import heroesgrave.paint.main.Input;
+import java.awt.geom.Rectangle2D;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.main.PixelChange;
+import heroesgrave.paint.main.ShapeChange;
 
 import java.awt.event.MouseEvent;
 
 public class Rectangle extends Tool
 {
 	private int sx, sy;
+	private Rectangle2D.Float rectangle;
+	private ShapeChange shapeChange;
 	
 	public Rectangle(String name)
 	{
@@ -38,86 +40,47 @@ public class Rectangle extends Tool
 	{
 		sx = x;
 		sy = y;
+		rectangle = new Rectangle2D.Float(x, y, 1, 1);
+        if(button == MouseEvent.BUTTON1) {
+            shapeChange = new ShapeChange(rectangle, Paint.main.getLeftColour());
+        }
+	
+            shapeChange = new ShapeChange(rectangle, Paint.main.getRightColour());
+        }
+	
 	}
 	
 	public void onReleased(int x, int y, int button)
 	{
-		rectangle(sx, sy, x, y, button);
-		Paint.main.gui.canvas.applyPreview();
+        adjustRectangle(x, y);
+		
+        Paint.main.gui.canvas.applyPreview();
 	}
 	
 	public void whilePressed(int x, int y, int button)
 	{
-		rectangle(sx, sy, x, y, button);
-	}
+		adjustRectangle(x, y);
 	
+		
+        Paint.main.gui.canvas.preview(shapeChange);
+	}
+		
 	public void whileReleased(int x, int y, int button)
 	{
 		
 	}
+		
+	private void adjustRectangle(int x, int y) {
+	    rectangle.width = Math.abs(x - sx);
+	    rectangle.height = Math.abs(y - sy);
+        if(x < sx) {
+            rectangle.x = x;
+        }
+        else {
+            rectangle.x = sx;
+        }
 	
-	private int sign(int i)
-	{
-		if(i < 0)
-			return -1;
-		else if(i > 0)
-			return 1;
-		return 0;
-	}
-	
-	public void rectangle(int x1, int y1, int x2, int y2, int button)
-	{
-		Paint.main.gui.canvas.clearPreview();
-		
-		if(Input.CTRL)
-		{
-			int w = x2 - x1;
-			int h = y2 - y1;
-			if(Math.abs(w) > Math.abs(h))
-			{
-				int r = Math.abs(w);
-				h = sign(h) * r;
-			}
-			else
-			{
-				int r = Math.abs(h);
-				w = sign(w) * r;
-			}
-			x2 = x1 + w;
-			y2 = y1 + h;
-		}
-		
-		int temp;
-		if(x2 < x1)
-		{
-			temp = x2;
-			x2 = x1;
-			x1 = temp;
-		}
-		if(y2 < y1)
-		{
-			temp = y2;
-			y2 = y1;
-			y1 = temp;
-		}
-		
-		for(int i = x1; i <= x2; i++)
-		{
-			brush(i, y1, button);
-			brush(i, y2, button);
-		}
-		
-		for(int j = y1; j <= y2; j++)
-		{
-			brush(x1, j, button);
-			brush(x2, j, button);
-		}
-	}
-	
-	public void brush(int x, int y, int button)
-	{
-		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
-			return;
+            rectangle.y = y;
 		if(button == MouseEvent.BUTTON1)
 		{
 			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
@@ -126,5 +89,5 @@ public class Rectangle extends Tool
 		{
 			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getRightColour()));
 		}
-	}
+    }
 }

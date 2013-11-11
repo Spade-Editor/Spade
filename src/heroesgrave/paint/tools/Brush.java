@@ -32,8 +32,14 @@ public abstract class Brush extends Tool
 		super(name);
 	}
 	
-	public void buffer(PixelChange c)
-	{
+    public void buffer(Change c)
+    {
+        buffer.add(c);
+        Paint.main.gui.canvas.bufferChange(c);
+    }
+
+    public void buffer(PixelChange c)
+    {
 		Paint.main.gui.canvas.preview(c);
 	}
 	
