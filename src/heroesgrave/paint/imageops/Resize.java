@@ -21,7 +21,7 @@ package heroesgrave.paint.imageops;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.utils.misc.NumberDocumentFilter;
+import heroesgrave.utils.misc.NumberFilter;
 
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -63,8 +63,8 @@ public class Resize extends ImageOp
 		final JComboBox<String> filter = new JComboBox<String>();
 		final DefaultComboBoxModel<String> filterModel = new DefaultComboBoxModel<String>(new String[]{"Nearest Neighbor", "Bilinear", "Bicubic"});
 		
-		((AbstractDocument) width.getDocument()).setDocumentFilter(new NumberDocumentFilter());
-		((AbstractDocument) height.getDocument()).setDocumentFilter(new NumberDocumentFilter());
+		((AbstractDocument) width.getDocument()).setDocumentFilter(new NumberFilter());
+		((AbstractDocument) height.getDocument()).setDocumentFilter(new NumberFilter());
 		filter.setModel(filterModel);
 		
 		width.setColumns(8);

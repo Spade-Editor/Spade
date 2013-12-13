@@ -34,6 +34,7 @@ import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.imageops.Resize;
 import heroesgrave.paint.imageops.ResizeCanvas;
 import heroesgrave.paint.imageops.RotateRightBy90;
+import heroesgrave.paint.imageops.Shift;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Ellipse;
 import heroesgrave.paint.tools.Eraser;
@@ -86,6 +87,7 @@ public class ToolMenu
 		
 		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
 		menu.add(new ImageMenuItem("Resize Canvas", new ResizeCanvas(), "C"));
+		menu.add(new ImageMenuItem("Shift Canvas", new Shift(), "H"));
 		menu.add(new ImageMenuItem("Clear Image", new Clear(), "N"));
 		menu.add(new ImageMenuItem("Clear Image + Alpha", new Clear2(), null));
 		menu.add(new ImageMenuItem("Flip Vertically", new FlipVert(), null));

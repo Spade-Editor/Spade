@@ -23,7 +23,7 @@ import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.Popup;
 import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.utils.io.ImageLoader;
-import heroesgrave.utils.misc.NumberDocumentFilter;
+import heroesgrave.utils.misc.NumberFilter;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -256,8 +256,8 @@ public class Menu
 		
 		final JTextField width = new JTextField("800");
 		final JTextField height = new JTextField("600");
-		((AbstractDocument) width.getDocument()).setDocumentFilter(new NumberDocumentFilter());
-		((AbstractDocument) height.getDocument()).setDocumentFilter(new NumberDocumentFilter());
+		((AbstractDocument) width.getDocument()).setDocumentFilter(new NumberFilter());
+		((AbstractDocument) height.getDocument()).setDocumentFilter(new NumberFilter());
 		width.setColumns(8);
 		height.setColumns(8);
 		
@@ -412,7 +412,7 @@ public class Menu
 			super(text);
 			
 			setColumns(8);
-			((AbstractDocument) getDocument()).setDocumentFilter(new NumberDocumentFilter());
+			((AbstractDocument) getDocument()).setDocumentFilter(new NumberFilter());
 		}
 		
 		public int get()
