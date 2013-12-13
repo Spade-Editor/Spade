@@ -19,8 +19,8 @@
 
 package heroesgrave.paint.effects;
 
-import heroesgrave.paint.imageops.ImageChange;
 import heroesgrave.paint.imageops.ImageOp;
+import heroesgrave.paint.imageops.StoredImageChange;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
 import heroesgrave.utils.math.SimplexNoise;
@@ -63,7 +63,7 @@ public class SimplexNoiseOp extends ImageOp
 			}
 		}
 		
-		Paint.addChange(new ImageChange(newImage));
+		Paint.addChange(new StoredImageChange(newImage));
 	}
 	
 }

@@ -23,31 +23,13 @@ import heroesgrave.paint.main.Change;
 
 import java.awt.image.BufferedImage;
 
-public class ImageChange implements Change
+public abstract class ImageChange implements Change
 {
-	private BufferedImage newImage, oldImage;
+	public abstract BufferedImage apply(BufferedImage image);
 	
-	public ImageChange(BufferedImage newImage)
-	{
-		this.newImage = newImage;
-	}
+	public abstract BufferedImage revert(BufferedImage image);
 	
-	public BufferedImage apply(BufferedImage image)
-	{
-		oldImage = image;
-		
-		return newImage;
-	}
-	
-	public BufferedImage revert(BufferedImage image)
-	{
-		return oldImage;
-	}
-	
-	public int getSize()
-	{
-		return oldImage.getWidth() * oldImage.getHeight();
-	}
+	public abstract int getSize();
 	
 	public boolean samePos(int x, int y)
 	{

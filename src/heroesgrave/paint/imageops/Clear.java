@@ -36,6 +36,6 @@ public class Clear extends ImageOp
 		g.setColor(new Color(Paint.main.getRightColour()));
 		g.fillRect(0, 0, newImage.getWidth(), newImage.getHeight());
 		
-		Paint.addChange(new ImageChange(newImage));
+		Paint.addChange(new StoredImageChange(newImage));
 	}
 }

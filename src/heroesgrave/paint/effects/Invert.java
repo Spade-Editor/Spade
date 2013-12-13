@@ -29,38 +29,54 @@ public class Invert extends ImageOp
 {
 	public void operation()
 	{
-		// image var's
-		BufferedImage old = Paint.main.gui.canvas.getImage();
-		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		
-		// channel buffer var's
-		int channel_argb;
-		int channel_rgb;
-		int channel_a;
-		
-		// channel mask's
-		int MASK_RGB = 0xFFFFFF;
-		int MASK_ALPHA = 0xFF000000;
-		
-		for(int i = 0; i < old.getWidth(); i++)
+		Paint.addChange(new InvertCh());
+	}
+	
+	private static class InvertCh extends ImageChange
+	{
+		public BufferedImage apply(BufferedImage image)
 		{
-			for(int j = 0; j < old.getHeight(); j++)
+			BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			
+			// channel buffer var's
+			int channel_argb;
+			int channel_rgb;
+			int channel_a;
+			
+			// channel mask's
+			int MASK_RGB = 0xFFFFFF;
+			int MASK_ALPHA = 0xFF000000;
+			
+			for(int i = 0; i < image.getWidth(); i++)
 			{
-				// get pixel
-				channel_argb = old.getRGB(i, j);
-				
-				// split ARGB into RGB and A
-				channel_rgb = channel_argb & MASK_RGB;
-				channel_a = channel_argb & MASK_ALPHA;
-				
-				// flip the colors
-				channel_rgb = ~channel_rgb;
-				
-				// set
-				newImage.setRGB(i, j, (channel_rgb | channel_a));
+				for(int j = 0; j < image.getHeight(); j++)
+				{
+					// get pixel
+					channel_argb = image.getRGB(i, j);
+					
+					// split ARGB into RGB and A
+					channel_rgb = channel_argb & MASK_RGB;
+					channel_a = channel_argb & MASK_ALPHA;
+					
+					// flip the colors
+					channel_rgb = ~channel_rgb;
+					
+					// set
+					newImage.setRGB(i, j, (channel_rgb | channel_a));
+				}
 			}
+			
+			return newImage;
 		}
 		
-		Paint.addChange(new ImageChange(newImage));
+		public BufferedImage revert(BufferedImage image)
+		{
+			return apply(image);
+		}
+		
+		public int getSize()
+		{
+			return 1;
+		}
 	}
 }

@@ -29,25 +29,60 @@ public class RotateRightBy90 extends ImageOp
 {
 	public void operation()
 	{
-		BufferedImage old = Paint.main.gui.canvas.getImage();
-		BufferedImage newImage = new BufferedImage(old.getHeight(), old.getWidth(), BufferedImage.TYPE_INT_ARGB);
 		
-		Graphics2D g2d = (Graphics2D) newImage.getGraphics();
+		Paint.addChange(new RotateCh());
+	}
+	
+	private static class RotateCh extends ImageChange
+	{
+		public BufferedImage apply(BufferedImage image)
+		{
+			BufferedImage newImage = new BufferedImage(image.getHeight(), image.getWidth(), BufferedImage.TYPE_INT_ARGB);
+			
+			Graphics2D g2d = (Graphics2D) newImage.getGraphics();
+			
+			// create the transform, note that the transformations happen
+			// in reversed order (so check them backwards)
+			AffineTransform at = new AffineTransform();
+			
+			// 4. translate it to the center of the component ???
+			at.translate(newImage.getWidth(), 0);
+			
+			// 3. do the actual rotation
+			at.rotate(Math.toRadians(90));
+			
+			g2d.drawImage(image, at, null);
+			g2d.dispose();
+			
+			return newImage;
+		}
 		
-		// create the transform, note that the transformations happen
-		// in reversed order (so check them backwards)
-		AffineTransform at = new AffineTransform();
+		public BufferedImage revert(BufferedImage image)
+		{
+			BufferedImage newImage = new BufferedImage(image.getHeight(), image.getWidth(), BufferedImage.TYPE_INT_ARGB);
+			
+			Graphics2D g2d = (Graphics2D) newImage.getGraphics();
+			
+			// create the transform, note that the transformations happen
+			// in reversed order (so check them backwards)
+			AffineTransform at = new AffineTransform();
+			
+			// 4. translate it to the center of the component ???
+			at.translate(newImage.getWidth(), 0);
+			
+			// 3. do the actual rotation
+			at.rotate(Math.toRadians(-90));
+			
+			g2d.drawImage(image, at, null);
+			g2d.dispose();
+			
+			return newImage;
+		}
 		
-		// 4. translate it to the center of the component ???
-		at.translate(newImage.getWidth(), 0);
-		
-		// 3. do the actual rotation
-		at.rotate(Math.toRadians(90));
-		
-		g2d.drawImage(old, at, null);
-		g2d.dispose();
-		
-		Paint.addChange(new ImageChange(newImage));
+		public int getSize()
+		{
+			return 1;
+		}
 	}
 	
 	/**

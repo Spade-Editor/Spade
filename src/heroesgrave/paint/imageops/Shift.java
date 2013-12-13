@@ -102,24 +102,70 @@ public class Shift extends ImageOp
 	
 	public void shift(int x, int y)
 	{
-		BufferedImage old = Paint.main.gui.canvas.getImage();
-		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Paint.addChange(new ShiftCh(x, y));
+	}
+	
+	private static class ShiftCh extends ImageChange
+	{
+		private int x, y;
 		
-		if(x < 0)
-			x += old.getWidth();
-		if(y < 0)
-			y += old.getHeight();
-		
-		for(int i = 0; i < old.getWidth(); i++)
+		public ShiftCh(int x, int y)
 		{
-			for(int j = 0; j < old.getHeight(); j++)
-			{
-				int i1 = (i + x) % old.getWidth();
-				int j1 = (j + y) % old.getHeight();
-				newImage.setRGB(i1, j1, old.getRGB(i, j));
-			}
+			this.x = x;
+			this.y = y;
 		}
 		
-		Paint.addChange(new ImageChange(newImage));
+		public BufferedImage apply(BufferedImage image)
+		{
+			BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			
+			if(x < 0)
+				x += image.getWidth();
+			if(y < 0)
+				y += image.getHeight();
+			
+			for(int i = 0; i < image.getWidth(); i++)
+			{
+				for(int j = 0; j < image.getHeight(); j++)
+				{
+					int i1 = (i + x) % image.getWidth();
+					int j1 = (j + y) % image.getHeight();
+					newImage.setRGB(i1, j1, image.getRGB(i, j));
+				}
+			}
+			
+			return newImage;
+		}
+		
+		public BufferedImage revert(BufferedImage image)
+		{
+			BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			
+			int x = -this.x;
+			int y = -this.y;
+			
+			if(x < 0)
+				x += image.getWidth();
+			if(y < 0)
+				y += image.getHeight();
+			
+			for(int i = 0; i < image.getWidth(); i++)
+			{
+				for(int j = 0; j < image.getHeight(); j++)
+				{
+					int i1 = (i + x) % image.getWidth();
+					int j1 = (j + y) % image.getHeight();
+					newImage.setRGB(i1, j1, image.getRGB(i, j));
+				}
+			}
+			
+			return newImage;
+		}
+		
+		@Override
+		public int getSize()
+		{
+			return 2;
+		}
 	}
 }

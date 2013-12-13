@@ -288,7 +288,6 @@ public class CanvasManager
 		canvas.setImage(this.image);
 		canvas.repaint();
 		canvas.revalidate();
-		changes.clear();
 	}
 	
 	public JPanel getCanvas()

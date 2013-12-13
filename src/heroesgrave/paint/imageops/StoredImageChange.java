@@ -17,31 +17,38 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.effects;
-
-import heroesgrave.paint.imageops.ImageOp;
-import heroesgrave.paint.imageops.StoredImageChange;
-import heroesgrave.paint.main.Paint;
+package heroesgrave.paint.imageops;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
 
-public class SimpleBlur extends ImageOp
+public class StoredImageChange extends ImageChange
 {
+	private BufferedImage newImage, oldImage;
 	
-	@Override
-	public void operation()
+	public StoredImageChange(BufferedImage newImage)
 	{
-		BufferedImage source = Paint.main.gui.canvas.getImage();
-		BufferedImage dest = new BufferedImage(source.getWidth(), source.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		
-		float data[] = {0.0625f, 0.125f, 0.0625f, 0.125f, 0.25f, 0.125f, 0.0625f, 0.125f, 0.0625f};
-		Kernel kernel = new Kernel(3, 3, data);
-		ConvolveOp convolve = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
-		convolve.filter(source, dest);
-		
-		Paint.addChange(new StoredImageChange(dest));
+		this.newImage = newImage;
 	}
 	
+	public BufferedImage apply(BufferedImage image)
+	{
+		oldImage = image;
+		
+		return newImage;
+	}
+	
+	public BufferedImage revert(BufferedImage image)
+	{
+		return oldImage;
+	}
+	
+	public int getSize()
+	{
+		return oldImage.getWidth() * oldImage.getHeight();
+	}
+	
+	public boolean samePos(int x, int y)
+	{
+		return false;
+	}
 }

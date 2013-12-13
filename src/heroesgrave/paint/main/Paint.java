@@ -371,7 +371,6 @@ public class Paint extends Application
 		// Go trough ALL the arguments and...
 		for(String STR : args)
 		{
-			
 			// ...If the arguments contain the DmemoryWatcherFlag flag, set the property to true to enable the MemoryWatcher.
 			if(STR.equalsIgnoreCase("DmemoryWatcherFlag"))
 			{

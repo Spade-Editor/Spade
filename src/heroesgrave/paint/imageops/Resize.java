@@ -111,27 +111,16 @@ public class Resize extends ImageOp
 		dialog.setVisible(true);
 	}
 	
-	public void resize(float w, float h, String filter)
+	public void resize(int w, int h, String filter)
 	{
-		BufferedImage old = Paint.main.gui.canvas.getImage();
-		BufferedImage newImage = new BufferedImage((int) w, (int) h, BufferedImage.TYPE_INT_ARGB);
-		
-		// FANCY RESCALE CODE HERE!
-		Graphics2D g2d = (Graphics2D) newImage.getGraphics();
-		g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-		g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, getFilterHint(filter)); // RenderingHints.VALUE_INTERPOLATION_BILINEAR
-		g2d.drawImage(old, 0, 0, (int) w, (int) h, null);
-		
-		Paint.addChange(new ImageChange(newImage));
+		Paint.addChange(new ResizeCh(w, h, filter));
 	}
 	
 	/**
 	 * Returns the correct RenderingHint for the given filtering label.
 	 **/
-	private Object getFilterHint(String filter)
+	private static Object getFilterHint(String filter)
 	{
-		
 		if(filter.equalsIgnoreCase("Nearest Neighbor"))
 			return RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR;
 		if(filter.equalsIgnoreCase("Bilinear"))
@@ -140,5 +129,55 @@ public class Resize extends ImageOp
 			return RenderingHints.VALUE_INTERPOLATION_BICUBIC;
 		
 		throw new IllegalArgumentException("ERROR: Unknown Filter!");
+	}
+	
+	private static class ResizeCh extends ImageChange
+	{
+		private int ox, oy, nx, ny;
+		private String filter;
+		
+		public ResizeCh(int nx, int ny, String filter)
+		{
+			this.nx = nx;
+			this.ny = ny;
+			this.filter = filter;
+		}
+		
+		public BufferedImage apply(BufferedImage image)
+		{
+			this.ox = image.getWidth();
+			this.oy = image.getHeight();
+			BufferedImage newImage = new BufferedImage((int) nx, (int) ny, BufferedImage.TYPE_INT_ARGB);
+			
+			// FANCY RESCALE CODE HERE!
+			Graphics2D g2d = (Graphics2D) newImage.getGraphics();
+			g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+			g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, getFilterHint(filter)); // RenderingHints.VALUE_INTERPOLATION_BILINEAR
+			g2d.drawImage(image, 0, 0, (int) nx, (int) ny, null);
+			
+			return newImage;
+		}
+		
+		@Override
+		public BufferedImage revert(BufferedImage image)
+		{
+			BufferedImage newImage = new BufferedImage((int) ox, (int) oy, BufferedImage.TYPE_INT_ARGB);
+			
+			// FANCY RESCALE CODE HERE!
+			Graphics2D g2d = (Graphics2D) newImage.getGraphics();
+			g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+			g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, getFilterHint(filter)); // RenderingHints.VALUE_INTERPOLATION_BILINEAR
+			g2d.drawImage(image, 0, 0, (int) ox, (int) oy, null);
+			
+			return newImage;
+		}
+		
+		@Override
+		public int getSize()
+		{
+			return 4;
+		}
 	}
 }

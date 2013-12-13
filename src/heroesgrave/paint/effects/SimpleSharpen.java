@@ -19,8 +19,8 @@
 
 package heroesgrave.paint.effects;
 
-import heroesgrave.paint.imageops.ImageChange;
 import heroesgrave.paint.imageops.ImageOp;
+import heroesgrave.paint.imageops.StoredImageChange;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.image.BufferedImage;
@@ -41,7 +41,7 @@ public class SimpleSharpen extends ImageOp
 		ConvolveOp convolve = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
 		convolve.filter(source, dest);
 		
-		Paint.addChange(new ImageChange(dest));
+		Paint.addChange(new StoredImageChange(dest));
 	}
 	
 }

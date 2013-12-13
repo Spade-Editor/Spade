@@ -38,6 +38,6 @@ public class Clear2 extends ImageOp
 			}
 		}
 		
-		Paint.addChange(new ImageChange(newImage));
+		Paint.addChange(new StoredImageChange(newImage));
 	}
 }
