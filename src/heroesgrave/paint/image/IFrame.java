@@ -17,38 +17,9 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.imageops;
+package heroesgrave.paint.image;
 
-import java.awt.image.BufferedImage;
-
-public class StoredImageChange extends ImageChange
+public interface IFrame
 {
-	private BufferedImage newImage, oldImage;
 	
-	public StoredImageChange(BufferedImage newImage)
-	{
-		this.newImage = newImage;
-	}
-	
-	public BufferedImage apply(BufferedImage image)
-	{
-		oldImage = image;
-		
-		return newImage;
-	}
-	
-	public BufferedImage revert(BufferedImage image)
-	{
-		return oldImage;
-	}
-	
-	public int getSize()
-	{
-		return oldImage.getWidth() * oldImage.getHeight();
-	}
-	
-	public boolean samePos(int x, int y)
-	{
-		return false;
-	}
 }

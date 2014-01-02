@@ -51,7 +51,6 @@ public class ImageLoader
 		
 		// Nothing here yet! Feel free to expand by adding new image-importers!
 		add(new ImporterBIN());
-		
 	}
 	
 	public static void add(ImageImporter exporter)
@@ -123,11 +122,9 @@ public class ImageLoader
 	
 	public static void addAllImporters(JFileChooser chooser)
 	{
-		
 		for(Entry<String, ImageImporter> importer : importers.entrySet())
 		{
 			chooser.addChoosableFileFilter(importer.getValue());
 		}
-		
 	}
 }

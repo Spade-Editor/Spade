@@ -19,17 +19,22 @@
 
 package heroesgrave.paint.tools;
 
+import heroesgrave.paint.image.Canvas;
+import heroesgrave.paint.image.PixelChange;
+import heroesgrave.paint.main.MultiChange;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.main.PixelChange;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Stack;
 
 public class Fill extends Tool
 {
+	private ArrayList<PixelChange> buffer = new ArrayList<PixelChange>();
+	
 	public Fill(String name)
 	{
 		super(name);
@@ -37,37 +42,46 @@ public class Fill extends Tool
 	
 	public void onPressed(int x, int y, int button)
 	{
-		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
+		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getCanvas().getWidth() || y >= Paint.main.gui.canvas.getCanvas().getHeight())
 			return;
 		
 		Stack<Point> stack = new Stack<Point>();
 		HashSet<Point> explored = new HashSet<Point>();
 		
+		Canvas canvas = Paint.main.gui.canvas.getCanvas();
+		
 		stack.push(new Point(x, y));
-		final int c = getColour(x, y);
+		final int c = canvas.getRGB(x, y);
 		if((c == Paint.main.getLeftColour() && button == MouseEvent.BUTTON1) || (c == Paint.main.getRightColour() && button == MouseEvent.BUTTON3))
 			return;
 		
-		Rectangle imageRect = new Rectangle(0, 0, Paint.main.gui.canvas.getImage().getWidth(), Paint.main.gui.canvas.getImage().getHeight());
+		final int colour;
+		if(button == MouseEvent.BUTTON1)
+		{
+			colour = Paint.main.getLeftColour();
+		}
+		else if(button == MouseEvent.BUTTON3)
+		{
+			colour = Paint.main.getRightColour();
+		}
+		else
+		{
+			return;
+		}
+		
+		Rectangle imageRect = new Rectangle(0, 0, Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getCanvas().getHeight());
 		
 		while(!stack.isEmpty())
 		{
 			Point p = stack.pop();
 			
-			if(getColour(p.x, p.y) != c)
+			if(canvas.getRGB(p.x, p.y) != c)
 			{
 				continue;
 			}
 			else
 			{
-				if(button == MouseEvent.BUTTON1)
-				{
-					Paint.main.gui.canvas.preview(new PixelChange(p.x, p.y, Paint.main.getLeftColour()));
-				}
-				else if(button == MouseEvent.BUTTON3)
-				{
-					Paint.main.gui.canvas.preview(new PixelChange(p.x, p.y, Paint.main.getRightColour()));
-				}
+				buffer.add(new PixelChange(p.x, p.y, colour));
 			}
 			
 			Point neighbour = new Point(p.x + 1, p.y);
@@ -92,12 +106,10 @@ public class Fill extends Tool
 			}
 		}
 		
-		Paint.main.gui.canvas.applyPreview();
-	}
-	
-	private int getColour(int x, int y)
-	{
-		return Paint.main.gui.canvas.getImage().getRGB(x, y);
+		PixelChange[] fl = new PixelChange[buffer.size()];
+		buffer.toArray(fl);
+		
+		Paint.addChange(new MultiChange(fl));
 	}
 	
 	public void onReleased(int x, int y, int button)
@@ -106,11 +118,6 @@ public class Fill extends Tool
 	}
 	
 	public void whilePressed(int x, int y, int button)
-	{
-		
-	}
-	
-	public void whileReleased(int x, int y, int button)
 	{
 		
 	}

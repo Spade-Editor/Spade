@@ -19,29 +19,56 @@
 
 package heroesgrave.paint.tools;
 
+import heroesgrave.paint.image.ShapeChange;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.main.PixelChange;
 
 import java.awt.event.MouseEvent;
+import java.awt.geom.GeneralPath;
 
-public class Pixel extends Brush
+public class Pixel extends Tool
 {
+	private GeneralPath path;
+	private ShapeChange change;
+	
 	public Pixel(String name)
 	{
 		super(name);
 	}
 	
-	public void brush(int x, int y, int button)
+	public void onPressed(int x, int y, int button)
 	{
-		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
-			return;
+		path = new GeneralPath();
+		path.moveTo(x, y);
 		if(button == MouseEvent.BUTTON1)
 		{
-			buffer(new PixelChange(x, y, Paint.main.getLeftColour()));
+			change = new ShapeChange(path, Paint.main.getLeftColour());
 		}
 		else if(button == MouseEvent.BUTTON3)
 		{
-			buffer(new PixelChange(x, y, Paint.main.getRightColour()));
+			change = new ShapeChange(path, Paint.main.getRightColour());
 		}
+		Paint.main.gui.canvas.preview(change);
+		Paint.main.gui.canvas.getPanel().repaint();
+	}
+	
+	public void onReleased(int x, int y, int button)
+	{
+		if(path != null)
+		{
+			path.lineTo(x, y);
+		}
+		Paint.main.gui.canvas.applyPreview();
+		Paint.main.gui.canvas.getPanel().repaint();
+		path = null;
+		change = null;
+	}
+	
+	public void whilePressed(int x, int y, int button)
+	{
+		if(path != null)
+		{
+			path.lineTo(x, y);
+		}
+		Paint.main.gui.canvas.getPanel().repaint();
 	}
 }

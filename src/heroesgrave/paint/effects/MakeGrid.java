@@ -23,7 +23,6 @@ import heroesgrave.paint.gui.Menu.CentredJLabel;
 import heroesgrave.paint.gui.Menu.NumberTextField;
 import heroesgrave.paint.gui.SimpleImageOpDialog;
 import heroesgrave.paint.imageops.ImageOp;
-import heroesgrave.paint.imageops.StoredImageChange;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.PartialImageChange;
 
@@ -154,7 +153,7 @@ public class MakeGrid extends ImageOp
 		}
 		else
 		{
-			Paint.addChange(new StoredImageChange(newImage));
+			//Paint.addChange(new StoredImageChange(newImage));
 		}
 	}
 	

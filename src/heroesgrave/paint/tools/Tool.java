@@ -44,5 +44,8 @@ public abstract class Tool
 	
 	public abstract void whilePressed(int x, int y, int button);
 	
-	public abstract void whileReleased(int x, int y, int button);
+	public void whileReleased(int x, int y, int button)
+	{
+		
+	}
 }

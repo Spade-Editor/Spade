@@ -32,10 +32,7 @@ public class Popup
 {
 	public static void show(String title, String msg)
 	{
-		JDialog dialog = new CentredJDialog();
-		
-		dialog.setAutoRequestFocus(true);
-		dialog.setAlwaysOnTop(true);
+		JDialog dialog = new CentredJDialog(Paint.main.gui.frame, title);
 		
 		JTextArea text = new JTextArea();
 		text.setEditable(false);
@@ -49,7 +46,6 @@ public class Popup
 		
 		panel.setPreferredSize(new Dimension(400, 200));
 		
-		dialog.setTitle(title);
 		panel.add(text, BorderLayout.CENTER);
 		
 		dialog.pack();

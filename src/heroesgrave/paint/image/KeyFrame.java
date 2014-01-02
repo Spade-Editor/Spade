@@ -17,26 +17,39 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.main;
-
-import heroesgrave.paint.image.Frame;
+package heroesgrave.paint.image;
 
 import java.awt.image.BufferedImage;
 
-public class MultiChange extends Frame
+public class KeyFrame implements IFrame
 {
-	public Frame[] changes;
+	private BufferedImage image;
 	
-	public MultiChange(Frame... c)
+	public KeyFrame(BufferedImage image)
 	{
-		this.changes = c;
+		this.image = image;
 	}
 	
-	public void apply(BufferedImage image)
+	/**
+	 * Gets the image held by the keyframe.
+	 * For most cases, you should be using {@link #takeImage()}
+	 * 
+	 * @return The image held by the keyframe
+	 */
+	public BufferedImage getImage()
 	{
-		for(int i = 0; i < changes.length; i++)
-		{
-			changes[i].apply(image);
-		}
+		return image;
+	}
+	
+	/**
+	 * Gets a copy of the image for use as a canvas
+	 * 
+	 * @return A copy of the image held by the keyframe
+	 */
+	public BufferedImage takeImage()
+	{
+		BufferedImage give = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		give.getGraphics().drawImage(image, 0, 0, null);
+		return give;
 	}
 }

@@ -17,26 +17,13 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.main;
+package heroesgrave.paint.gui;
 
-import heroesgrave.paint.image.Frame;
-
-import java.awt.image.BufferedImage;
-
-public class MultiChange extends Frame
+public interface ICanvasManager
 {
-	public Frame[] changes;
+	public void addChange();
 	
-	public MultiChange(Frame... c)
-	{
-		this.changes = c;
-	}
+	public void revertChange();
 	
-	public void apply(BufferedImage image)
-	{
-		for(int i = 0; i < changes.length; i++)
-		{
-			changes[i].apply(image);
-		}
-	}
+	public void repeatChange();
 }

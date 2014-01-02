@@ -20,6 +20,7 @@
 package heroesgrave.paint.plugin;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
+import heroesgrave.paint.main.Paint;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -51,7 +52,7 @@ public class PluginManagerViewer
 	
 	public PluginManagerViewer(final PluginManager pluginManager)
 	{
-		dialog = new CentredJDialog();
+		dialog = new CentredJDialog(Paint.main.gui.frame, "Plugin Manager");
 		dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		dialog.setTitle("Plugin Manager");
 		dialog.setSize(640, 480);

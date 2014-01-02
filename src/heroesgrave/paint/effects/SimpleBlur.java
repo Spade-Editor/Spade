@@ -20,7 +20,6 @@
 package heroesgrave.paint.effects;
 
 import heroesgrave.paint.imageops.ImageOp;
-import heroesgrave.paint.imageops.StoredImageChange;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.image.BufferedImage;
@@ -41,7 +40,7 @@ public class SimpleBlur extends ImageOp
 		ConvolveOp convolve = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
 		convolve.filter(source, dest);
 		
-		Paint.addChange(new StoredImageChange(dest));
+		//Paint.addChange(new StoredImageChange(dest));
 	}
 	
 }

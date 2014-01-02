@@ -19,11 +19,13 @@
 
 package heroesgrave.utils.io.exporters;
 
+import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.ImageExporter;
 import heroesgrave.utils.io.ImageLoader;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * GENERIC Exporter.
@@ -50,15 +52,19 @@ public class ExporterGenericImageIO extends ImageExporter
 	}
 	
 	@Override
-	public void exportImage(BufferedImage image, File destination)
-	{
-		ImageLoader.writeImage(image, getFileExtension().toUpperCase(), destination.getAbsolutePath());
-	}
-	
-	@Override
 	public String getFileExtensionDescription()
 	{
 		return description;
 	}
 	
+	@Override
+	public void export(Canvas canvas, File destination) throws IOException
+	{
+		BufferedImage image = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		int[] buf = new int[canvas.getWidth() * canvas.getHeight()];
+		canvas.draw(buf);
+		image.setRGB(0, 0, canvas.getWidth(), canvas.getHeight(), buf, 0, canvas.getWidth());
+		
+		ImageLoader.writeImage(image, getFileExtension().toUpperCase(), destination.getAbsolutePath());
+	}
 }

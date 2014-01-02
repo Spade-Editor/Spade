@@ -19,6 +19,8 @@
 
 package heroesgrave.paint.imageops;
 
+import heroesgrave.paint.image.KeyFrame;
+import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.Color;
@@ -29,13 +31,12 @@ public class Clear extends ImageOp
 {
 	public void operation()
 	{
-		BufferedImage old = Paint.main.gui.canvas.getImage();
-		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		BufferedImage newImage = new BufferedImage(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		
 		Graphics g = newImage.getGraphics();
 		g.setColor(new Color(Paint.main.getRightColour()));
 		g.fillRect(0, 0, newImage.getWidth(), newImage.getHeight());
 		
-		Paint.addChange(new StoredImageChange(newImage));
+		Paint.addChange(new KeyFrame(newImage));
 	}
 }

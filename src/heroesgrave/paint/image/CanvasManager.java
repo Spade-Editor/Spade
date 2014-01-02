@@ -17,8 +17,9 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.gui;
+package heroesgrave.paint.image;
 
+import heroesgrave.paint.gui.Menu;
 import heroesgrave.paint.main.Change;
 import heroesgrave.paint.main.MultiChange;
 import heroesgrave.paint.main.Paint;

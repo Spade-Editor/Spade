@@ -19,13 +19,13 @@
 
 package heroesgrave.utils.io;
 
+import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.exporters.ExporterBIN;
 import heroesgrave.utils.io.exporters.ExporterGenericImageIO;
 import heroesgrave.utils.io.exporters.ExporterJPEG;
 import heroesgrave.utils.io.exporters.ExporterTGA;
 import heroesgrave.utils.io.exporters.ExporterZipBIN;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public abstract class ImageExporter extends FileFilter
 {
 	public static ArrayList<ImageExporter> exporters = new ArrayList<ImageExporter>();
 	
-	static
+	public static void registerExporters()
 	{
 		// Add ALL the exporters!
 		exporters.add(new ExporterGenericImageIO("png", "PNG - Portable Network Graphics Image"));
@@ -46,7 +46,6 @@ public abstract class ImageExporter extends FileFilter
 		exporters.add(new ExporterTGA());
 		exporters.add(new ExporterBIN());
 		exporters.add(new ExporterZipBIN());
-		
 	}
 	
 	/**
@@ -57,7 +56,7 @@ public abstract class ImageExporter extends FileFilter
 	
 	public abstract String getFileExtensionDescription();
 	
-	public abstract void exportImage(BufferedImage image, File destination) throws IOException;
+	public abstract void export(Canvas canvas, File destination) throws IOException;
 	
 	@Override
 	public boolean accept(File f)
@@ -79,7 +78,6 @@ public abstract class ImageExporter extends FileFilter
 	
 	public static ImageExporter get(String extension)
 	{
-		
 		for(ImageExporter exporter : exporters)
 		{
 			if(exporter.getFileExtension().equalsIgnoreCase(extension))

@@ -20,9 +20,9 @@
 package heroesgrave.utils.io.exporters;
 
 import heroesgrave.paint.gui.SimpleModalProgressDialog;
+import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.ImageExporter;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -50,32 +50,28 @@ public class ExporterZipBIN extends ImageExporter
 	}
 	
 	@Override
-	public void exportImage(BufferedImage bufferedImage, File destination) throws IOException
+	public void export(Canvas canvas, File destination) throws IOException
 	{
+		int[] buf = new int[canvas.getWidth() * canvas.getHeight()];
+		canvas.draw(buf);
+		
 		DataOutputStream output = new DataOutputStream(new FileOutputStream(destination));
 		
-		// Get width and height.
-		int width = bufferedImage.getWidth();
-		int height = bufferedImage.getHeight();
-		
-		// Write width and height as int32 (Signed 32-Bit Integer).
-		output.writeInt(width);
-		output.writeInt(height);
+		output.writeInt(canvas.getWidth());
+		output.writeInt(canvas.getHeight());
 		
 		// Buffer the Image-Data
-		int ai[] = new int[width * height];
-		byte abyte0[] = new byte[width * height * 4];
-		bufferedImage.getRGB(0, 0, width, height, ai, 0, width);
+		byte abyte0[] = new byte[canvas.getWidth() * canvas.getHeight() * 4];
 		
-		SimpleModalProgressDialog DIALOG = new SimpleModalProgressDialog("Saving...", "Saving Image...", ai.length + 1);
+		SimpleModalProgressDialog DIALOG = new SimpleModalProgressDialog("Saving...", "Saving Image...", buf.length + 1);
 		
 		// Go trough ALL the pixels and convert from INT_ARGB to INT_RGBA
-		for(int k = 0; k < ai.length; k++)
+		for(int k = 0; k < buf.length; k++)
 		{
-			int A = (ai[k] >> 24) & 0xff;
-			int R = (ai[k] >> 16) & 0xff;
-			int G = (ai[k] >> 8) & 0xff;
-			int B = ai[k] & 0xff;
+			int A = (buf[k] >> 24) & 0xff;
+			int R = (buf[k] >> 16) & 0xff;
+			int G = (buf[k] >> 8) & 0xff;
+			int B = buf[k] & 0xff;
 			
 			abyte0[(k * 4) + 0] = (byte) R;//R
 			abyte0[(k * 4) + 1] = (byte) G;//G

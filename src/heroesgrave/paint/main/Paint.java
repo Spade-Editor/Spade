@@ -21,6 +21,7 @@ package heroesgrave.paint.main;
 
 import heroesgrave.paint.gui.GUIManager;
 import heroesgrave.paint.gui.Menu.CentredJDialog;
+import heroesgrave.paint.image.IFrame;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.paint.tools.Tool;
@@ -50,6 +51,7 @@ import javax.swing.JOptionPane;
 
 public class Paint extends Application
 {
+	public static boolean debug;
 	public static Paint main = new Paint();
 	public static URL questionMarkURL = Paint.class.getResource("/heroesgrave/paint/res/icons/questionmark.png");
 	
@@ -73,8 +75,11 @@ public class Paint extends Application
 	
 	public void init()
 	{
+		ImageExporter.registerExporters();
+		
 		pluginManager = PluginManager.instance(this);
 		gui = new GUIManager();
+		gui.init();
 		setRightColour(0xffffffff);
 		setLeftColour(0xff000000);
 		setTool(currentTool);
@@ -190,9 +195,10 @@ public class Paint extends Application
 		return imageOps.get(key.toLowerCase());
 	}
 	
-	public static void addChange(Change change)
+	public static void addChange(IFrame frame)
 	{
-		main.gui.canvas.addChange(change);
+		main.gui.canvas.getCanvas().addChange(frame);
+		main.gui.canvas.getPanel().repaint();
 	}
 	
 	public static void setTool(Tool tool)
@@ -219,26 +225,14 @@ public class Paint extends Application
 			
 			ImageExporter exporter = ImageExporter.get(extension);
 			
+			if(!fileName.endsWith("." + exporter.getFileExtension()))
+				fileName += "." + exporter.getFileExtension();
+			
 			if(fileName.endsWith("." + exporter.getFileExtension()))
 			{
 				try
 				{
-					exporter.exportImage(Paint.main.gui.canvas.getImage(), new File(fileName));
-				}
-				catch(IOException e)
-				{
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-			}
-			else
-			{
-				try
-				{
-					exporter.exportImage(Paint.main.gui.canvas.getImage(), new File(fileName));
-					Paint.main.openFile = new File(fileName + ".png");
+					exporter.export(Paint.main.gui.canvas.getRoot(), new File(fileName));
 				}
 				catch(IOException e)
 				{
@@ -295,7 +289,7 @@ public class Paint extends Application
 			chooser.addChoosableFileFilter(exporter);
 		}
 		
-		int returned = chooser.showSaveDialog(new CentredJDialog());
+		int returned = chooser.showSaveDialog(new CentredJDialog(main.gui.frame, "Save Image"));
 		ImageExporter formatToSaveIn = (ImageExporter) chooser.getFileFilter();
 		
 		if(returned == JFileChooser.APPROVE_OPTION)
@@ -316,7 +310,7 @@ public class Paint extends Application
 			
 			try
 			{
-				formatToSaveIn.exportImage(Paint.main.gui.canvas.getImage(), Paint.main.openFile);
+				formatToSaveIn.export(Paint.main.gui.canvas.getRoot(), Paint.main.openFile);
 			}
 			catch(IOException e)
 			{
@@ -380,6 +374,11 @@ public class Paint extends Application
 			if(STR.startsWith("DlafClassName="))
 			{
 				System.setProperty("DlafClassName", STR.substring(14));
+			}
+			
+			if(STR.equals("--debug"))
+			{
+				debug = true;
 			}
 			
 			/// XXX: Expand here by adding more debugging options and system flags!

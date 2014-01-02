@@ -20,7 +20,6 @@
 package heroesgrave.paint.effects;
 
 import heroesgrave.paint.imageops.ImageOp;
-import heroesgrave.paint.imageops.StoredImageChange;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
 import heroesgrave.utils.math.Perlin;
@@ -65,7 +64,7 @@ public class PerlinNoiseOp extends ImageOp
 			}
 		}
 		
-		Paint.addChange(new StoredImageChange(newImage));
+		//Paint.addChange(new StoredImageChange(newImage));
 	}
 	
 }

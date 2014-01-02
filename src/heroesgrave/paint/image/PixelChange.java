@@ -17,26 +17,24 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.main;
-
-import heroesgrave.paint.image.Frame;
+package heroesgrave.paint.image;
 
 import java.awt.image.BufferedImage;
 
-public class MultiChange extends Frame
+public class PixelChange extends Frame
 {
-	public Frame[] changes;
+	public short x, y;
+	public int n;
 	
-	public MultiChange(Frame... c)
+	public PixelChange(int x, int y, int n)
 	{
-		this.changes = c;
+		this.x = (short) x;
+		this.y = (short) y;
+		this.n = n;
 	}
 	
 	public void apply(BufferedImage image)
 	{
-		for(int i = 0; i < changes.length; i++)
-		{
-			changes[i].apply(image);
-		}
+		image.setRGB(x, y, n);
 	}
 }

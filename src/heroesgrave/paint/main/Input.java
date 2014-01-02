@@ -55,6 +55,11 @@ public class Input implements KeyListener, MouseWheelListener
 			Paint.main.gui.chooser.toggle();
 		}
 		
+		if(e.getKeyCode() == KeyEvent.VK_F6)
+		{
+			Paint.main.gui.layers.toggle();
+		}
+		
 		if(e.isControlDown())
 		{
 			if(e.isShiftDown())
@@ -72,11 +77,13 @@ public class Input implements KeyListener, MouseWheelListener
 			{
 				if(e.getKeyCode() == KeyEvent.VK_Z)
 				{
-					Paint.main.gui.canvas.revertChange();
+					Paint.main.gui.canvas.getCanvas().revertChange();
+					Paint.main.gui.canvas.getPanel().repaint();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_Y)
 				{
-					Paint.main.gui.canvas.repeatChange();
+					Paint.main.gui.canvas.getCanvas().repeatChange();
+					Paint.main.gui.canvas.getPanel().repaint();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_EQUALS)
 				{
@@ -101,7 +108,7 @@ public class Input implements KeyListener, MouseWheelListener
 				else if(e.getKeyCode() == KeyEvent.VK_G)
 				{
 					Menu.GRID_ENABLED = !Menu.GRID_ENABLED;
-					Paint.main.gui.canvas.getCanvas().repaint();
+					Paint.main.gui.canvas.getPanel().repaint();
 				}
 			}
 		}

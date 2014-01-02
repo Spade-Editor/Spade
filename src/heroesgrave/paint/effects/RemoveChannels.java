@@ -22,7 +22,6 @@ package heroesgrave.paint.effects;
 import heroesgrave.paint.gui.Menu;
 import heroesgrave.paint.gui.SimpleImageOpDialog;
 import heroesgrave.paint.imageops.ImageOp;
-import heroesgrave.paint.imageops.StoredImageChange;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.PartialImageChange;
 
@@ -164,7 +163,7 @@ public class RemoveChannels extends ImageOp
 		}
 		else
 		{
-			Paint.addChange(new StoredImageChange(newImage));
+			//Paint.addChange(new StoredImageChange(newImage));
 		}
 		
 	}

@@ -19,12 +19,14 @@
 
 package heroesgrave.utils.io.exporters;
 
+import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.ImageExporter;
 import heroesgrave.utils.io.ImageLoader;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * JPEG Exporter.<br>
@@ -41,21 +43,31 @@ public class ExporterJPEG extends ImageExporter
 		return "jpeg";
 	}
 	
-	@Override
-	public void exportImage(BufferedImage imageIn, File destination)
+	public BufferedImage clean(BufferedImage imageIn)
 	{
 		// 'Color Corruption' Fix
 		BufferedImage imageOut = new BufferedImage(imageIn.getWidth(), imageIn.getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics g = imageOut.getGraphics();
 		g.drawImage(imageIn, 0, 0, null);
 		
-		ImageLoader.writeImage(imageOut, getFileExtension().toUpperCase(), destination.getAbsolutePath());
+		return imageOut;
 	}
 	
 	@Override
 	public String getFileExtensionDescription()
 	{
 		return "JPEG - JPEG File Interchange Format";
+	}
+	
+	@Override
+	public void export(Canvas canvas, File destination) throws IOException
+	{
+		BufferedImage image = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		int[] buf = new int[canvas.getWidth() * canvas.getHeight()];
+		canvas.draw(buf);
+		image.setRGB(0, 0, canvas.getWidth(), canvas.getHeight(), buf, 0, canvas.getWidth());
+		
+		ImageLoader.writeImage(clean(image), getFileExtension().toUpperCase(), destination.getAbsolutePath());
 	}
 	
 }

@@ -20,6 +20,7 @@
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
+import heroesgrave.paint.image.NewCanvasManager;
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.UserPreferences;
@@ -53,8 +54,9 @@ public class GUIManager
 	private JMenuBar menuBar;
 	private JScrollPane canvasZone;
 	
-	public CanvasManager canvas;
+	public NewCanvasManager canvas;
 	public ColourChooser chooser;
+	public LayerManager layers;
 	public InfoMenu info;
 	
 	private JMenuBar toolOptions;
@@ -119,14 +121,19 @@ public class GUIManager
 		}
 		
 		/**/
-		
+	}
+	
+	public void init()
+	{
 		initFrame();
 		initMenu();
-		initInputs();
 		createCanvas();
 		finish();
 		
 		chooser = new ColourChooser();
+		layers = new LayerManager(canvas.getCanvas());
+		
+		initInputs();
 	}
 	
 	public void setToolOption(JMenuBar options)
@@ -148,10 +155,10 @@ public class GUIManager
 	
 	public void createCanvas()
 	{
-		canvas = new CanvasManager();
+		canvas = new NewCanvasManager();
 		
 		JPanel panel = new JPanel();
-		panel.add(canvas.getCanvas());
+		panel.add(canvas.getPanel());
 		
 		canvasZone = new JScrollPane(panel);
 		canvasZone.addMouseWheelListener(input);
@@ -221,8 +228,7 @@ public class GUIManager
 		}
 		
 		// dialogue creation
-		final JDialog close = new CentredJDialog();
-		close.setTitle("Save before you quit?");
+		final JDialog close = new CentredJDialog(frame, "Save before you quit?");
 		close.setAlwaysOnTop(true);
 		close.setAutoRequestFocus(true);
 		close.setLayout(new BorderLayout());
@@ -287,6 +293,8 @@ public class GUIManager
 		
 		frame.addKeyListener(in);
 		frame.addMouseWheelListener(in);
+		chooser.getDialog().addKeyListener(in);
+		layers.getDialog().addKeyListener(in);
 	}
 	
 	public static final ImageIcon getIcon(String name)

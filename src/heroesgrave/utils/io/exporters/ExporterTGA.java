@@ -20,11 +20,9 @@
 package heroesgrave.utils.io.exporters;
 
 import heroesgrave.paint.gui.SimpleModalProgressDialog;
+import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.ImageExporter;
 
-import java.awt.Color;
-import java.awt.Transparency;
-import java.awt.image.BufferedImage;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,10 +42,9 @@ public class ExporterTGA extends ImageExporter
 	}
 	
 	@Override
-	public void exportImage(BufferedImage image, File destination) throws IOException
+	public void export(Canvas canvas, File destination) throws IOException
 	{
 		DataOutputStream out = new DataOutputStream(new FileOutputStream(destination));
-		boolean writeAlpha = image.getTransparency() != Transparency.OPAQUE;
 		
 		// ID Length
 		out.writeByte((byte) 0);
@@ -68,42 +65,31 @@ public class ExporterTGA extends ImageExporter
 		out.writeShort(flipEndian((short) 0));
 		
 		// Width, Height, Depth
-		out.writeShort(flipEndian((short) image.getWidth()));
-		out.writeShort(flipEndian((short) image.getHeight()));
+		out.writeShort(flipEndian((short) canvas.getWidth()));
+		out.writeShort(flipEndian((short) canvas.getHeight()));
 		
-		if(writeAlpha)
-		{
-			out.writeByte((byte) 32);
-			// Image Descriptor (can't be 0 since we're using 32-bit TGAs)
-			// needs to not have 0x20 set to indicate it's not a flipped image
-			out.writeByte((byte) 1);
-		}
-		else
-		{
-			out.writeByte((byte) 24);
-			// Image Descriptor (must be 0 since we're using 24-bit TGAs)
-			// needs to not have 0x20 set to indicate it's not a flipped image
-			out.writeByte((byte) 0);
-		}
+		out.writeByte((byte) 32);
+		// Image Descriptor (can't be 0 since we're using 32-bit TGAs)
+		// needs to not have 0x20 set to indicate it's not a flipped image
+		out.writeByte((byte) 1);
+		
+		int[] buf = new int[canvas.getWidth() * canvas.getHeight()];
+		canvas.draw(buf);
 		
 		// Write out the image data
-		Color c;
-		SimpleModalProgressDialog DIALOG = new SimpleModalProgressDialog("Saving...", "Saving Image...", image.getWidth() * image.getHeight() + 1);
+		int c;
+		SimpleModalProgressDialog DIALOG = new SimpleModalProgressDialog("Saving...", "Saving Image...", buf.length + 1);
 		
-		for(int y = image.getHeight() - 1, count = 0; y >= 0; y--)
+		for(int y = canvas.getHeight() - 1, count = 0; y >= 0; y--)
 		{
-			for(int x = 0; x < image.getWidth(); x++, count++)
+			for(int x = 0; x < canvas.getWidth(); x++, count++)
 			{
-				c = new Color(image.getRGB(x, y));
+				c = buf[x + y * canvas.getWidth()];
 				
-				out.writeByte((byte) (c.getBlue()));
-				out.writeByte((byte) (c.getGreen()));
-				out.writeByte((byte) (c.getRed()));
-				
-				if(writeAlpha)
-				{
-					out.writeByte((byte) (c.getAlpha()));
-				}
+				out.writeByte((byte) (c & 0xff));
+				out.writeByte((byte) ((c >> 8) & 0xff));
+				out.writeByte((byte) ((c >> 16) & 0xff));
+				out.writeByte((byte) ((c >> 24) & 0xff));
 				
 				if(count % 128 == 0)
 				{

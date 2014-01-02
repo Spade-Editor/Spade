@@ -17,17 +17,18 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.main;
+package heroesgrave.paint.image.blend;
 
-import java.awt.image.BufferedImage;
-
-public class ImageLayer
+public class Normal extends BlendMode
 {
+	public Normal()
+	{
+		super("Normal");
+	}
 	
-	String name;
-	
-	// BlendMode blending;
-	
-	BufferedImage image;
-	
+	public int blend(int src, int dst)
+	{
+		int ff = multA(getAlpha(dst), 255 - getAlpha(src));
+		return mix(getAlpha(src) + ff, multC(src, getAlpha(src)) + multC(dst, ff));
+	}
 }

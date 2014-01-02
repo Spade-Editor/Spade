@@ -33,6 +33,7 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -116,7 +117,18 @@ public class Menu
 			}
 		});
 		
+		JMenuItem layerManager = new JMenuItem("Layer Manager (F6)", GUIManager.getIcon("layer_manager"));
+		
+		layerManager.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				Paint.main.gui.layers.toggle();
+			}
+		});
+		
 		dialogs.add(colourChooser);
+		dialogs.add(layerManager);
 		
 		return dialogs;
 	}
@@ -219,7 +231,7 @@ public class Menu
 		// Add ALL the custom image-importers!
 		ImageLoader.addAllImporters(chooser);
 		
-		int returned = chooser.showOpenDialog(new CentredJDialog());
+		int returned = chooser.showOpenDialog(new CentredJDialog(Paint.main.gui.frame, "Load Image"));
 		
 		if(returned == JFileChooser.APPROVE_OPTION)
 		{
@@ -241,7 +253,7 @@ public class Menu
 	
 	public static void showNewMenu()
 	{
-		final JDialog dialog = new CentredJDialog();
+		final JDialog dialog = new CentredJDialog(Paint.main.gui.frame, "New Image");
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
@@ -313,12 +325,13 @@ public class Menu
 		
 		JMenuItem undo = new JMenuItem("Undo (Ctrl+Z)", GUIManager.getIcon("undo"));
 		JMenuItem redo = new JMenuItem("Redo (Ctrl+Y)", GUIManager.getIcon("redo"));
+		JMenuItem clear = new JMenuItem("Clear History", GUIManager.getIcon("clear_history"));
 		
 		undo.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Paint.main.gui.canvas.revertChange();
+				Paint.main.gui.canvas.getCanvas().revertChange();
 			}
 		});
 		
@@ -326,12 +339,21 @@ public class Menu
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Paint.main.gui.canvas.repeatChange();
+				Paint.main.gui.canvas.getCanvas().repeatChange();
+			}
+		});
+		
+		clear.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent arg0)
+			{
+				Paint.main.gui.canvas.getCanvas().clearHistory();
 			}
 		});
 		
 		edit.add(undo);
 		edit.add(redo);
+		edit.add(clear);
 		
 		return edit;
 	}
@@ -365,7 +387,7 @@ public class Menu
 			public void actionPerformed(ActionEvent e)
 			{
 				GRID_ENABLED = !GRID_ENABLED;
-				Paint.main.gui.canvas.getCanvas().repaint();
+				Paint.main.gui.canvas.getPanel().repaint();
 			}
 		});
 		
@@ -379,6 +401,11 @@ public class Menu
 	public static class CentredJDialog extends JDialog
 	{
 		private static final long serialVersionUID = 2628868597000831164L;
+		
+		public CentredJDialog(JFrame frame, String title)
+		{
+			super(frame, title);
+		}
 		
 		public void setVisible(boolean b)
 		{

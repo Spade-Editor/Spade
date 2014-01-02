@@ -122,6 +122,6 @@ public class ResizeCanvas extends ImageOp
 		Graphics2D g2d = (Graphics2D) newImage.getGraphics();
 		g2d.drawImage(old, 0, 0, null);
 		
-		Paint.addChange(new StoredImageChange(newImage));
+		//Paint.addChange(new StoredImageChange(newImage));
 	}
 }

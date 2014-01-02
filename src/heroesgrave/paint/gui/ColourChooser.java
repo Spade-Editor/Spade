@@ -67,7 +67,7 @@ public class ColourChooser
 	
 	public ColourChooser()
 	{
-		dialog = new CentredJDialog();
+		dialog = new CentredJDialog(Paint.main.gui.frame, "Colour Chooser");
 		dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		
 		JPanel panel = (JPanel) dialog.getContentPane();
@@ -294,8 +294,6 @@ public class ColourChooser
 		
 		dialog.pack();
 		dialog.setResizable(false);
-		dialog.setAutoRequestFocus(true);
-		dialog.setAlwaysOnTop(true);
 		
 		leftRadio.addActionListener(new ActionListener()
 		{
@@ -471,5 +469,10 @@ public class ColourChooser
 			g.setColor(rightColour);
 			g.fillRect(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
 		}
+	}
+	
+	public JDialog getDialog()
+	{
+		return dialog;
 	}
 }
