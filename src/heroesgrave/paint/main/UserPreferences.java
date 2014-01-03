@@ -107,7 +107,6 @@ public class UserPreferences
 			prefs.putInt(WINDOW_HEIGHT, windowHeight);
 			prefs.putBoolean(WINDOW_MAXIMIZED, false);
 		}
-		prefs.putBoolean(COLOUR_PICKER_VISIBLE, chooser.isVisible());
 		if(chooser.isVisible())
 		{
 			colourPickerX = chooser.getDialog().getX();
@@ -126,5 +125,7 @@ public class UserPreferences
 		prefs.putInt(LAYERS_WIDTH, layersWidth);
 		prefs.putInt(LAYERS_HEIGHT, layersHeight);
 		prefs.putBoolean(LAYERS_VISIBLE, layers.isVisible());
+		
+		prefs.putBoolean(COLOUR_PICKER_VISIBLE, chooser.isVisible());
 	}
 }
