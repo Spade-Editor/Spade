@@ -120,6 +120,7 @@ public class UserPreferences
 		layersY = layers.dialog.getY();
 		layersWidth = layers.dialog.getWidth();
 		layersHeight = layers.dialog.getHeight();
+		
 		prefs.putInt(LAYERS_X, layersX);
 		prefs.putInt(LAYERS_Y, layersY);
 		prefs.putInt(LAYERS_WIDTH, layersWidth);
