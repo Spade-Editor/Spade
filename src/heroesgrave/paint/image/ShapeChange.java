@@ -39,7 +39,7 @@ public class ShapeChange extends Frame
 		this.changeShape = shape;
 		this.colour = colour;
 		if((colour & 0xff000000) != 0xff000000)
-			trans = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((colour >> 24) & 0xff) / 255f);
+			trans = AlphaComposite.getInstance(AlphaComposite.SRC, ((colour >> 24) & 0xff) / 255f);
 	}
 	
 	public ShapeChange(Shape shape, int colour, Stroke stroke)
@@ -48,7 +48,7 @@ public class ShapeChange extends Frame
 		this.colour = colour;
 		this.stroke = stroke;
 		if((colour & 0xff000000) != 0xff000000)
-			trans = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((colour >> 24) & 0xff) / 255f);
+			trans = AlphaComposite.getInstance(AlphaComposite.SRC, ((colour >> 24) & 0xff) / 255f);
 	}
 	
 	public void apply(BufferedImage image)
