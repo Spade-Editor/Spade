@@ -61,12 +61,7 @@ public class ExporterJPEG extends ImageExporter
 	@Override
 	public void export(Canvas canvas, File destination) throws IOException
 	{
-		BufferedImage image = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		int[] buf = new int[canvas.getWidth() * canvas.getHeight()];
-		canvas.draw(buf);
-		image.setRGB(0, 0, canvas.getWidth(), canvas.getHeight(), buf, 0, canvas.getWidth());
-		
-		writeImage(clean(image), getFileExtension().toUpperCase(), destination.getAbsolutePath());
+		writeImage(clean(canvas.getFullImage()), getFileExtension().toUpperCase(), destination.getAbsolutePath());
 	}
 	
 }

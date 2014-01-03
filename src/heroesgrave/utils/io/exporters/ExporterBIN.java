@@ -23,6 +23,7 @@ import heroesgrave.paint.gui.SimpleModalProgressDialog;
 import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.ImageExporter;
 
+import java.awt.image.BufferedImage;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -49,8 +50,7 @@ public class ExporterBIN extends ImageExporter
 	@Override
 	public void export(Canvas canvas, File destination) throws IOException
 	{
-		int[] buf = new int[canvas.getWidth() * canvas.getHeight()];
-		canvas.draw(buf);
+		BufferedImage image = canvas.getFullImage();
 		
 		DataOutputStream output = new DataOutputStream(new FileOutputStream(destination));
 		
@@ -59,7 +59,10 @@ public class ExporterBIN extends ImageExporter
 		output.writeInt(canvas.getHeight());
 		
 		// Buffer the Image-Data
-		byte abyte0[] = new byte[canvas.getWidth() * canvas.getHeight() * 4];
+		int[] buf = new int[image.getWidth() * image.getHeight()];
+		byte[] abyte0 = new byte[canvas.getWidth() * canvas.getHeight() * 4];
+		
+		image.getRGB(0, 0, image.getWidth(), image.getHeight(), buf, 0, image.getWidth());
 		
 		SimpleModalProgressDialog DIALOG = new SimpleModalProgressDialog("Saving...", "Saving Image...", buf.length + 1);
 		

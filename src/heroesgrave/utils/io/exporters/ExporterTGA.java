@@ -74,7 +74,7 @@ public class ExporterTGA extends ImageExporter
 		out.writeByte((byte) 1);
 		
 		int[] buf = new int[canvas.getWidth() * canvas.getHeight()];
-		canvas.draw(buf);
+		canvas.getFullImage().getRGB(0, 0, canvas.getWidth(), canvas.getHeight(), buf, 0, canvas.getWidth());
 		
 		// Write out the image data
 		int c;

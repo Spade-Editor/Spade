@@ -223,6 +223,7 @@ public class LayerManager
 			this.canvas.addLayer(canvas);
 			model.reload();
 			tree.setSelectionPath(new TreePath(node.getPath()));
+			Paint.main.gui.canvas.getPanel().repaint();
 		}
 		
 		public void delete()

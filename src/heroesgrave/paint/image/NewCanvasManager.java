@@ -24,6 +24,7 @@ import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
 
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -34,7 +35,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -50,8 +50,6 @@ public class NewCanvasManager
 	private int width, height;
 	
 	private float scale = 1;
-	
-	private int[] buf;
 	
 	public NewCanvasManager()
 	{
@@ -123,7 +121,6 @@ public class NewCanvasManager
 		this.selected = this.root = new Canvas("Base", image);
 		this.width = root.getWidth();
 		this.height = root.getHeight();
-		this.buf = new int[width * height];
 		panel.setScale(scale);
 		panel.repaint();
 		panel.revalidate();
@@ -139,20 +136,6 @@ public class NewCanvasManager
 		return scale;
 	}
 	
-	public int[] getBuffer()
-	{
-		if(this.buf == null)
-			throw new RuntimeException("Tried to access buffer while it was in use");
-		int[] buf = this.buf;
-		this.buf = null;
-		return buf;
-	}
-	
-	public void returnBuffer(int[] buf)
-	{
-		this.buf = buf;
-	}
-	
 	public static class CanvasRenderer extends JPanel
 	{
 		private static final long serialVersionUID = 6250531364061875156L;
@@ -161,7 +144,8 @@ public class NewCanvasManager
 		private float scale = 1;
 		private int lastButton = 0;
 		private BufferedImage background;
-		private int[] buf;
+		
+		private static final Color TRANSPARENT = new Color(255, 255, 255, 0);
 		
 		public CanvasRenderer(NewCanvasManager mgr)
 		{
@@ -197,7 +181,6 @@ public class NewCanvasManager
 		public void init()
 		{
 			background = new BufferedImage(mgr.getWidth(), mgr.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			buf = new int[mgr.getWidth() * mgr.getHeight()];
 		}
 		
 		public void setScale(float scale)
@@ -206,17 +189,23 @@ public class NewCanvasManager
 			this.scale = scale;
 		}
 		
-		public void paint(Graphics gg)
+		public void paint(Graphics arg0)
 		{
-			super.paint(gg);
-			Graphics2D g = (Graphics2D) gg;
+			super.paint(arg0);
+			
+			Graphics2D g = (Graphics2D) arg0;
+			Graphics2D draw = background.createGraphics();
+			draw.setBackground(TRANSPARENT);
+			draw.clearRect(0, 0, background.getWidth(), background.getHeight());
+			
 			g.setPaint(new TexturePaint(transparencyBG, new Rectangle2D.Float(0, 0, 16, 16)));
 			g.fillRect(0, 0, MathUtils.floor(mgr.getWidth() * scale), MathUtils.floor(mgr.getHeight() * scale));
 			
 			g.setPaint(null);
-			Arrays.fill(buf, 0);
-			mgr.root.draw(buf);
-			background.setRGB(0, 0, background.getWidth(), background.getHeight(), buf, 0, background.getWidth());
+			
+			Composite comp = draw.getComposite();
+			mgr.root.draw(draw);
+			draw.setComposite(comp);
 			
 			if(mgr.preview != null)
 			{
@@ -230,6 +219,7 @@ public class NewCanvasManager
 					((Frame) mgr.preview).apply(background);
 				}
 			}
+			
 			g.drawImage(background, 0, 0, MathUtils.floor(background.getWidth() * scale), MathUtils.floor(background.getHeight() * scale), null);
 			
 			if(Menu.GRID_ENABLED && scale >= 4)

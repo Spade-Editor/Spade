@@ -19,9 +19,10 @@
 
 package heroesgrave.paint.image;
 
-import heroesgrave.paint.image.blend.BlendMode;
+import heroesgrave.paint.image.blend.NewBlendMode;
 import heroesgrave.paint.main.Paint;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -30,9 +31,8 @@ public class Canvas
 	private ArrayList<Canvas> layers = new ArrayList<Canvas>();
 	private BufferedImage image;
 	public String name;
-	public BlendMode mode;
+	public NewBlendMode mode;
 	private History hist;
-	private int[] buffer;
 	
 	public Canvas(String name, int width, int height)
 	{
@@ -43,15 +43,13 @@ public class Canvas
 	{
 		this.image = image;
 		this.name = name;
-		this.mode = BlendMode.NORMAL;
-		this.buffer = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+		this.mode = NewBlendMode.NORMAL;
 		hist = new History(image);
 	}
 	
 	public void changeImage(BufferedImage image)
 	{
 		this.image = image;
-		this.buffer = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
 		hist.addChange(new KeyFrame(image));
 	}
 	
@@ -120,24 +118,37 @@ public class Canvas
 		return image;
 	}
 	
-	public void draw(int[] buf)
+	public BufferedImage getFullImage()
+	{
+		BufferedImage image = hist.getUpdatedImage();
+		Graphics2D g = image.createGraphics();
+		g.setComposite(mode);
+		g.drawImage(this.image, 0, 0, null);
+		if(!layers.isEmpty())
+		{
+			for(int i = layers.size() - 1; i >= 0; i--)
+			{
+				layers.get(i).draw(g);
+			}
+		}
+		return image;
+	}
+	
+	public void draw(Graphics2D g)
 	{
 		if(hist.wasChanged())
 		{
 			this.image = hist.getUpdatedImage();
-			image.getRGB(0, 0, image.getWidth(), image.getHeight(), buffer, 0, image.getWidth());
 		}
 		
-		for(int i = 0; i < buf.length; i++)
-		{
-			buf[i] = mode.blend(buffer[i], buf[i]);
-		}
+		g.setComposite(mode);
+		g.drawImage(this.image, 0, 0, null);
 		
 		if(!layers.isEmpty())
 		{
 			for(int i = layers.size() - 1; i >= 0; i--)
 			{
-				layers.get(i).draw(buf);
+				layers.get(i).draw(g);
 			}
 		}
 	}
