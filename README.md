@@ -1,6 +1,8 @@
 Paint.JAVA
 ==========
 
+![](https://github.com/HeroesGrave/Paint.JAVA/raw/master/etc/Screenshot.png)
+
 I was annoyed at the lack of a suitable (Pinta is horrible, GIMP is overcomplicated and sucks at pixel art, etc.) equivalent of Paint.NET for Linux, and was unable to do pixel art for my games.
 If you want something done well, you have to do it yourself it seems.
 
