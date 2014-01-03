@@ -121,6 +121,7 @@ public class NewCanvasManager
 		this.selected = this.root = new Canvas("Base", image);
 		this.width = root.getWidth();
 		this.height = root.getHeight();
+		panel.init();
 		panel.setScale(scale);
 		panel.repaint();
 		panel.revalidate();
