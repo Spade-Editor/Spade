@@ -19,6 +19,9 @@
 
 package heroesgrave.paint.main;
 
+import heroesgrave.paint.gui.ColourChooser;
+import heroesgrave.paint.gui.LayerManager;
+
 import java.awt.Frame;
 import java.util.prefs.Preferences;
 
@@ -36,18 +39,25 @@ public class UserPreferences
 	private static final String WINDOW_WIDTH = "window.width";
 	private static final String WINDOW_HEIGHT = "window.height";
 	private static final String WINDOW_MAXIMIZED = "window.maximized";
+	private static final String COLOUR_PICKER_X = "colour.x";
+	private static final String COLOUR_PICKER_Y = "colour.y";
+	private static final String COLOUR_PICKER_VISIBLE = "colour.visible";
+	private static final String LAYERS_X = "layers.x";
+	private static final String LAYERS_Y = "layers.y";
+	private static final String LAYERS_WIDTH = "layers.width";
+	private static final String LAYERS_HEIGHT = "layers.height";
+	private static final String LAYERS_VISIBLE = "layers.visible";
 	
-	private static int windowX;
-	private static int windowY;
-	private static int windowWidth;
-	private static int windowHeight;
+	private static int windowWidth, windowHeight;
+	private static int layersX, layersY, layersWidth, layersHeight;
+	private static int colourPickerX, colourPickerY;
 	
 	/**
 	 * Setup the provided
 	 * 
 	 * @param frame
 	 */
-	public static void loadPrefs(JFrame frame)
+	public static void loadPrefs(JFrame frame, ColourChooser chooser, LayerManager layers)
 	{
 		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);
 		
@@ -55,11 +65,25 @@ public class UserPreferences
 		{
 			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		}
-		windowX = prefs.getInt(WINDOW_X, 0);
-		windowY = prefs.getInt(WINDOW_Y, 0);
 		windowWidth = prefs.getInt(WINDOW_WIDTH, 800);
 		windowHeight = prefs.getInt(WINDOW_HEIGHT, 600);
-		frame.setBounds(windowX, windowY, windowWidth, windowHeight);
+		colourPickerX = prefs.getInt(COLOUR_PICKER_X, 0);
+		colourPickerY = prefs.getInt(COLOUR_PICKER_Y, 0);
+		layersX = prefs.getInt(LAYERS_X, 0);
+		layersY = prefs.getInt(LAYERS_Y, 0);
+		layersWidth = prefs.getInt(LAYERS_WIDTH, 200);
+		layersHeight = prefs.getInt(LAYERS_HEIGHT, 300);
+		
+		frame.setSize(windowWidth, windowHeight);
+		frame.setLocationRelativeTo(null);
+		if(prefs.getBoolean(COLOUR_PICKER_VISIBLE, false))
+		{
+			chooser.show();
+			chooser.getDialog().setLocation(colourPickerX, colourPickerY);
+		}
+		
+		layers.dialog.setVisible(prefs.getBoolean(LAYERS_VISIBLE, false));
+		layers.dialog.setBounds(layersX, layersY, layersWidth, layersHeight);
 	}
 	
 	/**
@@ -67,7 +91,7 @@ public class UserPreferences
 	 * 
 	 * @param frame
 	 */
-	public static void savePrefs(JFrame frame)
+	public static void savePrefs(JFrame frame, ColourChooser chooser, LayerManager layers)
 	{
 		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);
 		
@@ -77,15 +101,29 @@ public class UserPreferences
 		}
 		else
 		{
-			windowX = frame.getX();
-			windowY = frame.getY();
 			windowWidth = frame.getWidth();
 			windowHeight = frame.getHeight();
-			prefs.putInt(WINDOW_X, windowX);
-			prefs.putInt(WINDOW_Y, windowY);
 			prefs.putInt(WINDOW_WIDTH, windowWidth);
 			prefs.putInt(WINDOW_HEIGHT, windowHeight);
 			prefs.putBoolean(WINDOW_MAXIMIZED, false);
 		}
+		prefs.putBoolean(COLOUR_PICKER_VISIBLE, chooser.isVisible());
+		if(chooser.isVisible())
+		{
+			colourPickerX = chooser.getDialog().getX();
+			colourPickerY = chooser.getDialog().getY();
+			prefs.putInt(COLOUR_PICKER_X, colourPickerX);
+			prefs.putInt(COLOUR_PICKER_Y, colourPickerY);
+		}
+		
+		layersX = layers.dialog.getX();
+		layersY = layers.dialog.getY();
+		layersWidth = layers.dialog.getWidth();
+		layersHeight = layers.dialog.getHeight();
+		prefs.putInt(LAYERS_X, layersX);
+		prefs.putInt(LAYERS_Y, layersY);
+		prefs.putInt(LAYERS_WIDTH, layersWidth);
+		prefs.putInt(LAYERS_HEIGHT, layersHeight);
+		prefs.putBoolean(LAYERS_VISIBLE, layers.isVisible());
 	}
 }
