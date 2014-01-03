@@ -27,7 +27,7 @@ import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.paint.tools.Tool;
 import heroesgrave.utils.app.Application;
 import heroesgrave.utils.io.ImageExporter;
-import heroesgrave.utils.io.ImageLoader;
+import heroesgrave.utils.io.ImageImporter;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -89,7 +89,7 @@ public class Paint extends Application
 		{
 			Paint.main.openFile = toOpen;
 			Paint.main.openDir = toOpen.getParentFile();
-			Paint.main.gui.canvas.setImage(ImageLoader.loadImage(toOpen.getAbsolutePath()));
+			Paint.main.gui.canvas.setImage(ImageImporter.loadImage(toOpen.getAbsolutePath()));
 		}
 	}
 	
@@ -361,6 +361,8 @@ public class Paint extends Application
 				main.toOpen = f;
 			}
 		}
+		// Test Blending at startup
+		//*/ System.out.println(Integer.toHexString(BlendMode.NORMAL.blend(0x7f0000ff, 0xffff0000)));
 		
 		// Go trough ALL the arguments and...
 		for(String STR : args)

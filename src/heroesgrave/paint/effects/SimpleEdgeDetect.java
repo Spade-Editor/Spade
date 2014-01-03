@@ -19,6 +19,7 @@
 
 package heroesgrave.paint.effects;
 
+import heroesgrave.paint.image.KeyFrame;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.main.Paint;
 
@@ -32,7 +33,7 @@ public class SimpleEdgeDetect extends ImageOp
 	@Override
 	public void operation()
 	{
-		BufferedImage source = Paint.main.gui.canvas.getImage();
+		BufferedImage source = Paint.main.gui.canvas.getCanvas().getImage();
 		BufferedImage dest = new BufferedImage(source.getWidth(), source.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		
 		float data[] = {1.0f, 0.0f, -1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f, -1.0f};
@@ -41,7 +42,7 @@ public class SimpleEdgeDetect extends ImageOp
 		ConvolveOp convolve = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
 		convolve.filter(source, dest);
 		
-		//Paint.addChange(new StoredImageChange(dest));
+		Paint.addChange(new KeyFrame(dest));
 	}
 	
 }

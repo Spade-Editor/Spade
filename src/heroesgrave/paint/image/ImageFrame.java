@@ -17,42 +17,24 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.main;
+package heroesgrave.paint.image;
 
 import java.awt.image.BufferedImage;
 
-public class PartialImageChange implements Change
+public class ImageFrame extends KeyFrame
 {
-	private short x, y;
-	private BufferedImage oldPart, newPart;
-	
-	public PartialImageChange(int x, int y, BufferedImage change)
+	public ImageFrame()
 	{
-		this.x = (short) x;
-		this.y = (short) y;
-		this.newPart = change;
+		super(null);
 	}
 	
-	public BufferedImage apply(BufferedImage image)
+	public BufferedImage apply(Canvas canvas)
 	{
-		oldPart = image.getSubimage(x, y, newPart.getWidth(), newPart.getHeight());
-		image.getGraphics().drawImage(newPart, x, y, null);
-		return image;
+		return canvas.getImage();
 	}
 	
-	public BufferedImage revert(BufferedImage image)
+	public BufferedImage revert(Canvas canvas)
 	{
-		image.getGraphics().drawImage(oldPart, x, y, null);
-		return image;
-	}
-	
-	public int getSize()
-	{
-		return 1 + (oldPart.getWidth() * oldPart.getHeight());
-	}
-	
-	public boolean samePos(int x, int y)
-	{
-		return false;
+		return canvas.getImage();
 	}
 }

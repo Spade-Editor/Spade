@@ -19,14 +19,83 @@
 
 package heroesgrave.utils.io;
 
+import heroesgrave.utils.io.importers.ImporterBIN;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
 public abstract class ImageImporter extends FileFilter
 {
+	private static final HashMap<String, ImageImporter> importers = new HashMap<String, ImageImporter>();
+	
+	static
+	{
+		// Set this to FALSE, because it is NOT faster to use this!
+		ImageIO.setUseCache(false);
+		
+		/// initialize importers?
+		
+		// Nothing here yet! Feel free to expand by adding new image-importers!
+		add(new ImporterBIN());
+	}
+	
+	public static void add(ImageImporter exporter)
+	{
+		importers.put(exporter.getFormat(), exporter);
+	}
+	
+	public static BufferedImage loadImage(String path)
+	{
+		File file = new File(path);
+		
+		if(file.exists())
+		{
+			try
+			{
+				String fileName = file.getAbsolutePath();
+				String extension = "";
+				
+				int i = fileName.lastIndexOf('.');
+				
+				if(i > 0)
+				{
+					extension = fileName.substring(i + 1);
+				}
+				
+				// Get the ImageImporter
+				ImageImporter importer = importers.get(extension);
+				
+				// If there is a custom importer for the given format, use the custom importer...
+				if(importer != null)
+					return importer.read(file);
+				else
+					return ImageIO.read(file);
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		else
+			throw new RuntimeException("The resource \"" + path + "\" was missing!");
+		
+		return null;
+	}
+	
+	public static void addAllImporters(JFileChooser chooser)
+	{
+		for(Entry<String, ImageImporter> importer : importers.entrySet())
+		{
+			chooser.addChoosableFileFilter(importer.getValue());
+		}
+	}
 	
 	/**
 	 * Reads an Image.

@@ -48,6 +48,13 @@ public class Canvas
 		hist = new History(image);
 	}
 	
+	public void changeImage(BufferedImage image)
+	{
+		this.image = image;
+		this.buffer = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+		hist.addChange(new KeyFrame(image));
+	}
+	
 	public void addLayer(Canvas c)
 	{
 		layers.add(c);
@@ -66,6 +73,13 @@ public class Canvas
 	public void addChange(IFrame frame)
 	{
 		hist.addChange(frame);
+	}
+	
+	public void fullChange(KeyFrame frame)
+	{
+		hist.addChange(frame);
+		for(Canvas c : layers)
+			c.fullChange(frame);
 	}
 	
 	public void revertChange()
@@ -101,6 +115,11 @@ public class Canvas
 		}
 	}
 	
+	public BufferedImage getImage()
+	{
+		return image;
+	}
+	
 	public void draw(int[] buf)
 	{
 		if(hist.wasChanged())
@@ -109,16 +128,17 @@ public class Canvas
 			image.getRGB(0, 0, image.getWidth(), image.getHeight(), buffer, 0, image.getWidth());
 		}
 		
+		for(int i = 0; i < buf.length; i++)
+		{
+			buf[i] = mode.blend(buffer[i], buf[i]);
+		}
+		
 		if(!layers.isEmpty())
 		{
 			for(int i = layers.size() - 1; i >= 0; i--)
 			{
 				layers.get(i).draw(buf);
 			}
-		}
-		for(int i = 0; i < buf.length; i++)
-		{
-			buf[i] = mode.blend(buffer[i], buf[i]);
 		}
 	}
 	

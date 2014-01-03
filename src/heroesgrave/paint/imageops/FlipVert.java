@@ -19,6 +19,7 @@
 
 package heroesgrave.paint.imageops;
 
+import heroesgrave.paint.image.KeyFrame;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.image.BufferedImage;
@@ -27,34 +28,17 @@ public class FlipVert extends ImageOp
 {
 	public void operation()
 	{
-		Paint.addChange(new FlipV());
-	}
-	
-	private static class FlipV extends ImageChange
-	{
-		public BufferedImage apply(BufferedImage image)
+		BufferedImage image = Paint.main.gui.canvas.getCanvas().getImage();
+		BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		
+		for(int i = 0; i < image.getWidth(); i++)
 		{
-			BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			
-			for(int i = 0; i < image.getWidth(); i++)
+			for(int j = 0; j < image.getHeight(); j++)
 			{
-				for(int j = 0; j < image.getHeight(); j++)
-				{
-					newImage.setRGB(i, j, image.getRGB(i, image.getHeight() - j - 1));
-				}
+				newImage.setRGB(i, j, image.getRGB(i, image.getHeight() - j - 1));
 			}
-			
-			return newImage;
 		}
 		
-		public BufferedImage revert(BufferedImage image)
-		{
-			return apply(image);
-		}
-		
-		public int getSize()
-		{
-			return 1;
-		}
+		Paint.addChange(new KeyFrame(newImage));
 	}
 }

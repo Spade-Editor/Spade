@@ -64,11 +64,15 @@ public class NewCanvasManager
 	public void preview(IFrame frame)
 	{
 		preview = frame;
+		panel.repaint();
 	}
 	
 	public void applyPreview()
 	{
+		if(preview == null)
+			return;
 		selected.addChange(preview);
+		panel.repaint();
 		preview = null;
 	}
 	

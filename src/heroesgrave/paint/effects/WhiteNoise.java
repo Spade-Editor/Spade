@@ -19,19 +19,20 @@
 
 package heroesgrave.paint.effects;
 
+import heroesgrave.paint.image.KeyFrame;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-public class Noise extends ImageOp
+public class WhiteNoise extends ImageOp
 {
 	public void operation()
 	{
 		// TODO: Implement a GUI to make it possible to modify the 'chance' value.
 		
-		BufferedImage old = Paint.main.gui.canvas.getImage();
+		BufferedImage old = Paint.main.gui.canvas.getCanvas().getImage();
 		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Random random = new Random();
 		int chance = 50;
@@ -58,6 +59,6 @@ public class Noise extends ImageOp
 			}
 		}
 		
-		//Paint.addChange(new StoredImageChange(newImage));
+		Paint.addChange(new KeyFrame(newImage));
 	}
 }

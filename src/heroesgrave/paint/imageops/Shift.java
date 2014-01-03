@@ -20,6 +20,7 @@
 package heroesgrave.paint.imageops;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
+import heroesgrave.paint.image.KeyFrame;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.misc.NumberFilter.SignedNumberFilter;
 
@@ -41,18 +42,13 @@ public class Shift extends ImageOp
 {
 	public void operation()
 	{
-		final JDialog dialog = new CentredJDialog();
+		final JDialog dialog = new CentredJDialog(Paint.main.gui.frame, "Shift Canvas");
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0, 2));
 		
 		dialog.getContentPane().add(panel);
-		
-		dialog.setAlwaysOnTop(true);
-		dialog.setAutoRequestFocus(true);
-		
-		dialog.setTitle("Shift Canvas");
 		
 		final JTextField width = new JTextField("0");
 		final JTextField height = new JTextField("0");
@@ -102,70 +98,24 @@ public class Shift extends ImageOp
 	
 	public void shift(int x, int y)
 	{
-		Paint.addChange(new ShiftCh(x, y));
-	}
-	
-	private static class ShiftCh extends ImageChange
-	{
-		private int x, y;
+		BufferedImage image = Paint.main.gui.canvas.getCanvas().getImage();
+		BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		
-		public ShiftCh(int x, int y)
-		{
-			this.x = x;
-			this.y = y;
-		}
+		if(x < 0)
+			x += image.getWidth();
+		if(y < 0)
+			y += image.getHeight();
 		
-		public BufferedImage apply(BufferedImage image)
+		for(int i = 0; i < image.getWidth(); i++)
 		{
-			BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			
-			if(x < 0)
-				x += image.getWidth();
-			if(y < 0)
-				y += image.getHeight();
-			
-			for(int i = 0; i < image.getWidth(); i++)
+			for(int j = 0; j < image.getHeight(); j++)
 			{
-				for(int j = 0; j < image.getHeight(); j++)
-				{
-					int i1 = (i + x) % image.getWidth();
-					int j1 = (j + y) % image.getHeight();
-					newImage.setRGB(i1, j1, image.getRGB(i, j));
-				}
+				int i1 = (i + x) % image.getWidth();
+				int j1 = (j + y) % image.getHeight();
+				newImage.setRGB(i1, j1, image.getRGB(i, j));
 			}
-			
-			return newImage;
 		}
 		
-		public BufferedImage revert(BufferedImage image)
-		{
-			BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			
-			int x = -this.x;
-			int y = -this.y;
-			
-			if(x < 0)
-				x += image.getWidth();
-			if(y < 0)
-				y += image.getHeight();
-			
-			for(int i = 0; i < image.getWidth(); i++)
-			{
-				for(int j = 0; j < image.getHeight(); j++)
-				{
-					int i1 = (i + x) % image.getWidth();
-					int j1 = (j + y) % image.getHeight();
-					newImage.setRGB(i1, j1, image.getRGB(i, j));
-				}
-			}
-			
-			return newImage;
-		}
-		
-		@Override
-		public int getSize()
-		{
-			return 2;
-		}
+		Paint.addChange(new KeyFrame(newImage));
 	}
 }

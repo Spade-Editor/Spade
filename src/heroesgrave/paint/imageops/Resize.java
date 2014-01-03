@@ -20,6 +20,7 @@
 package heroesgrave.paint.imageops;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
+import heroesgrave.paint.image.KeyFrame;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.misc.NumberFilter;
 
@@ -45,7 +46,7 @@ public class Resize extends ImageOp
 {
 	public void operation()
 	{
-		final JDialog dialog = new CentredJDialog();
+		final JDialog dialog = new CentredJDialog(Paint.main.gui.frame, "Resize");
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
@@ -56,10 +57,8 @@ public class Resize extends ImageOp
 		dialog.setAlwaysOnTop(true);
 		dialog.setAutoRequestFocus(true);
 		
-		dialog.setTitle("Resize");
-		
-		final JTextField width = new JTextField("" + Paint.main.gui.canvas.getImage().getWidth());
-		final JTextField height = new JTextField("" + Paint.main.gui.canvas.getImage().getHeight());
+		final JTextField width = new JTextField("" + Paint.main.gui.canvas.getWidth());
+		final JTextField height = new JTextField("" + Paint.main.gui.canvas.getHeight());
 		final JComboBox<String> filter = new JComboBox<String>();
 		final DefaultComboBoxModel<String> filterModel = new DefaultComboBoxModel<String>(new String[]{"Nearest Neighbor", "Bilinear", "Bicubic"});
 		
@@ -120,9 +119,9 @@ public class Resize extends ImageOp
 		g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 		g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
 		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, getFilterHint(filter)); // RenderingHints.VALUE_INTERPOLATION_BILINEAR
-		g2d.drawImage(Paint.main.gui.canvas.getImage(), 0, 0, (int) nx, (int) ny, null);
+		g2d.drawImage(Paint.main.gui.canvas.getCanvas().getImage(), 0, 0, (int) nx, (int) ny, null);
 		
-		//Paint.addChange(new KeyFrame(newImage));
+		Paint.main.gui.canvas.getRoot().fullChange(new KeyFrame(newImage));
 	}
 	
 	/**

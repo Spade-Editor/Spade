@@ -20,16 +20,19 @@
 package heroesgrave.utils.io;
 
 import heroesgrave.paint.image.Canvas;
+import heroesgrave.paint.main.Popup;
 import heroesgrave.utils.io.exporters.ExporterBIN;
 import heroesgrave.utils.io.exporters.ExporterGenericImageIO;
 import heroesgrave.utils.io.exporters.ExporterJPEG;
 import heroesgrave.utils.io.exporters.ExporterTGA;
 import heroesgrave.utils.io.exporters.ExporterZipBIN;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.filechooser.FileFilter;
 
 public abstract class ImageExporter extends FileFilter
@@ -95,4 +98,22 @@ public abstract class ImageExporter extends FileFilter
 		exporters.add(exporter);
 	}
 	
+	public static void writeImage(BufferedImage image, String format, String path)
+	{
+		File file = new File(path);
+		
+		try
+		{
+			if(!file.exists())
+			{
+				file.createNewFile();
+			}
+			ImageIO.write(image, format, file);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			Popup.show("Save Image", "An error occured while trying to save the image in " + format + " format to " + path + ".");
+		}
+	}
 }

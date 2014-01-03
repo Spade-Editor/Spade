@@ -290,6 +290,16 @@ public class PluginManager
 		}
 	}
 	
+	public void registerEffects(JMenu menu)
+	{
+		RegisterEffects register = new RegisterEffects(menu);
+		
+		for(Plugin plugin : loadedPlugins)
+		{
+			plugin.registerEffects(register);
+		}
+	}
+	
 	public void frameCreationEvent(JFrame frame)
 	{
 		//System.out.println("[Event] Frame creation.");
@@ -320,5 +330,4 @@ public class PluginManager
 	{
 		return this.loadedPlugins;
 	}
-	
 }

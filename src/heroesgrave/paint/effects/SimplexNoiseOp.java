@@ -19,6 +19,7 @@
 
 package heroesgrave.paint.effects;
 
+import heroesgrave.paint.image.KeyFrame;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
@@ -30,8 +31,7 @@ public class SimplexNoiseOp extends ImageOp
 {
 	public void operation()
 	{
-		BufferedImage old = Paint.main.gui.canvas.getImage();
-		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		BufferedImage newImage = new BufferedImage(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		SimplexNoise noise = new SimplexNoise(System.currentTimeMillis());
 		
 		// TODO: Add dialog with sliders to configure the noise!
@@ -41,12 +41,11 @@ public class SimplexNoiseOp extends ImageOp
 		double START_SCALE = 1;
 		double MULTIPLY_SCALE = 0.25;
 		
-		for(int i = 0; i < old.getWidth(); i++)
+		for(int i = 0; i < newImage.getWidth(); i++)
 		{
-			for(int j = 0; j < old.getHeight(); j++)
+			for(int j = 0; j < newImage.getHeight(); j++)
 			{
-				int before = old.getRGB(i, j);
-				int after = before;
+				int after = 0xFFFFFFFF;
 				
 				double valD = noise.noiseO(i * scale, j * scale, OCTAVES, START_SCALE, MULTIPLY_SCALE);
 				valD = valD * 0.5D + 0.5D;
@@ -62,7 +61,7 @@ public class SimplexNoiseOp extends ImageOp
 			}
 		}
 		
-		//Paint.addChange(new StoredImageChange(newImage));
+		Paint.addChange(new KeyFrame(newImage));
 	}
 	
 }

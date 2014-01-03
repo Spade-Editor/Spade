@@ -108,6 +108,7 @@ public class Fill extends Tool
 		
 		PixelChange[] fl = new PixelChange[buffer.size()];
 		buffer.toArray(fl);
+		buffer.clear();
 		
 		Paint.addChange(new MultiChange(fl));
 	}

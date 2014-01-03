@@ -100,7 +100,6 @@ public class Brush extends Tool
 					BasicStroke.JOIN_ROUND));
 		}
 		Paint.main.gui.canvas.preview(change);
-		Paint.main.gui.canvas.getPanel().repaint();
 	}
 	
 	public void onReleased(int x, int y, int button)
@@ -110,7 +109,6 @@ public class Brush extends Tool
 			path.lineTo(x, y);
 		}
 		Paint.main.gui.canvas.applyPreview();
-		Paint.main.gui.canvas.getPanel().repaint();
 		path = null;
 		change = null;
 	}

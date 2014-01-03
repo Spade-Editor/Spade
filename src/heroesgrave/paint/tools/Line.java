@@ -19,15 +19,16 @@
 
 package heroesgrave.paint.tools;
 
+import heroesgrave.paint.image.ShapeChange;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.main.PixelChange;
-import heroesgrave.utils.math.MathUtils;
 
 import java.awt.event.MouseEvent;
+import java.awt.geom.Line2D;
 
 public class Line extends Tool
 {
-	private int startX, startY;
+	private Line2D.Float line;
+	private ShapeChange change;
 	
 	public Line(String name)
 	{
@@ -36,84 +37,29 @@ public class Line extends Tool
 	
 	public void onPressed(int x, int y, int button)
 	{
-		startX = x;
-		startY = y;
+		line = new Line2D.Float(x, y, x, y);
+		if(button == MouseEvent.BUTTON1)
+		{
+			change = new ShapeChange(line, Paint.main.getLeftColour());
+		}
+		else if(button == MouseEvent.BUTTON3)
+		{
+			change = new ShapeChange(line, Paint.main.getRightColour());
+		}
+		Paint.main.gui.canvas.preview(change);
 	}
 	
 	public void onReleased(int x, int y, int button)
 	{
-		stroke(startX, startY, x, y, button);
+		line.x2 = x;
+		line.y2 = y;
 		Paint.main.gui.canvas.applyPreview();
-	}
-	
-	private void stroke(int x1, int y1, int x2, int y2, int button)
-	{
-		Paint.main.gui.canvas.clearPreview();
-		
-		float dx = x2 - x1;
-		float dy = y2 - y1;
-		
-		float grad;
-		
-		if(Math.abs(dx) > Math.abs(dy))
-		{
-			grad = dy / dx;
-			if(dx > 0)
-			{
-				for(int x = x1; x <= x2; x++)
-				{
-					brush(x, MathUtils.floor((grad * (x - x1)) + y1), button);
-				}
-			}
-			else
-			{
-				for(int x = x1; x >= x2; x--)
-				{
-					brush(x, MathUtils.floor((grad * (x - x1)) + y1), button);
-				}
-			}
-		}
-		else
-		{
-			grad = dx / dy;
-			if(dy > 0)
-			{
-				for(int y = y1; y <= y2; y++)
-				{
-					brush(MathUtils.floor((grad * (y - y1)) + x1), y, button);
-				}
-			}
-			else
-			{
-				for(int y = y1; y >= y2; y--)
-				{
-					brush(MathUtils.floor((grad * (y - y1)) + x1), y, button);
-				}
-			}
-		}
-	}
-	
-	public void brush(int x, int y, int button)
-	{
-		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getImage().getWidth() || y >= Paint.main.gui.canvas.getImage().getHeight())
-			return;
-		if(button == MouseEvent.BUTTON1)
-		{
-			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getLeftColour()));
-		}
-		else if(button == MouseEvent.BUTTON3)
-		{
-			Paint.main.gui.canvas.preview(new PixelChange(x, y, Paint.main.getRightColour()));
-		}
 	}
 	
 	public void whilePressed(int x, int y, int button)
 	{
-		stroke(startX, startY, x, y, button);
-	}
-	
-	public void whileReleased(int x, int y, int button)
-	{
-		
+		line.x2 = x;
+		line.y2 = y;
+		Paint.main.gui.canvas.getPanel().repaint();
 	}
 }

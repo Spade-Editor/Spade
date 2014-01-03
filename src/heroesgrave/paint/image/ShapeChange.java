@@ -19,7 +19,9 @@
 
 package heroesgrave.paint.image;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -30,11 +32,14 @@ public class ShapeChange extends Frame
 	private Shape changeShape;
 	private int colour;
 	private Stroke stroke;
+	private AlphaComposite trans;
 	
 	public ShapeChange(Shape shape, int colour)
 	{
 		this.changeShape = shape;
 		this.colour = colour;
+		if((colour & 0xff000000) != 0xff000000)
+			trans = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((colour >> 24) & 0xff) / 255f);
 	}
 	
 	public ShapeChange(Shape shape, int colour, Stroke stroke)
@@ -42,31 +47,37 @@ public class ShapeChange extends Frame
 		this.changeShape = shape;
 		this.colour = colour;
 		this.stroke = stroke;
+		if((colour & 0xff000000) != 0xff000000)
+			trans = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((colour >> 24) & 0xff) / 255f);
 	}
 	
 	public void apply(BufferedImage image)
 	{
 		Graphics2D g2d = image.createGraphics();
 		
-		Color oldColor = g2d.getColor();
-		
-		g2d.setColor(new Color(colour));
-		
 		Stroke oldStroke = null;
+		Composite oldComp = null;
+		Color oldColor = g2d.getColor();
 		
 		if(stroke != null)
 		{
 			oldStroke = g2d.getStroke();
 			g2d.setStroke(stroke);
 		}
+		if(trans != null)
+		{
+			oldComp = g2d.getComposite();
+			g2d.setComposite(trans);
+		}
+		g2d.setColor(new Color(colour));
 		
 		g2d.draw(changeShape);
-		g2d.setColor(oldColor);
 		
+		g2d.setColor(oldColor);
+		if(trans != null)
+			g2d.setComposite(oldComp);
 		if(stroke != null)
-		{
 			g2d.setStroke(oldStroke);
-		}
 	}
 	
 	public void setStroke(Stroke stroke)

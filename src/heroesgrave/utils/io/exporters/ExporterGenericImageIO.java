@@ -21,7 +21,6 @@ package heroesgrave.utils.io.exporters;
 
 import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.ImageExporter;
-import heroesgrave.utils.io.ImageLoader;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -65,6 +64,6 @@ public class ExporterGenericImageIO extends ImageExporter
 		canvas.draw(buf);
 		image.setRGB(0, 0, canvas.getWidth(), canvas.getHeight(), buf, 0, canvas.getWidth());
 		
-		ImageLoader.writeImage(image, getFileExtension().toUpperCase(), destination.getAbsolutePath());
+		writeImage(image, getFileExtension().toUpperCase(), destination.getAbsolutePath());
 	}
 }

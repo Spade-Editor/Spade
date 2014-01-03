@@ -21,9 +21,9 @@ package heroesgrave.paint.effects;
 
 import heroesgrave.paint.gui.Menu;
 import heroesgrave.paint.gui.SimpleImageOpDialog;
+import heroesgrave.paint.image.KeyFrame;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.main.PartialImageChange;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -35,13 +35,11 @@ import javax.swing.JCheckBox;
 
 public class RemoveChannels extends ImageOp
 {
-	
 	@Override
 	public void operation()
 	{
-		
 		// create dialog
-		final SimpleImageOpDialog dialog = new SimpleImageOpDialog("Channel Remover", new GridLayout(0, 2));
+		final SimpleImageOpDialog dialog = new SimpleImageOpDialog("Channel Filter", new GridLayout(0, 2));
 		
 		final JCheckBox channelR = new JCheckBox();
 		final JCheckBox channelG = new JCheckBox();
@@ -56,7 +54,7 @@ public class RemoveChannels extends ImageOp
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				operation_do(channelR.isSelected(), channelG.isSelected(), channelB.isSelected(), channelA.isSelected(), true);
+				operation_do(channelR.isSelected(), channelG.isSelected(), channelB.isSelected(), channelA.isSelected());
 			}
 		};
 		
@@ -71,14 +69,15 @@ public class RemoveChannels extends ImageOp
 			public void actionPerformed(ActionEvent e)
 			{
 				dialog.close();
-				operation_do(channelR.isSelected(), channelG.isSelected(), channelB.isSelected(), channelA.isSelected(), false);
+				operation_do(channelR.isSelected(), channelG.isSelected(), channelB.isSelected(), channelA.isSelected());
+				Paint.main.gui.canvas.applyPreview();
 			}
 		});
 		cancel.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				Paint.main.gui.canvas.clearPreview();
+				Paint.main.gui.canvas.preview(null);
 				dialog.close();
 			}
 		});
@@ -96,15 +95,10 @@ public class RemoveChannels extends ImageOp
 		dialog.add(cancel);
 		
 		dialog.show();
-		
 	}
 	
-	protected void operation_do(boolean R, boolean G, boolean B, boolean A, boolean AS_PREVIEW)
+	protected void operation_do(boolean R, boolean G, boolean B, boolean A)
 	{
-		Paint.main.gui.canvas.clearPreview();
-		
-		System.out.println("OPERATION_CALL::" + R + "," + G + "," + B + "," + A + "::" + AS_PREVIEW);
-		
 		// MASK = AA.RR.GG.BB
 		int AND_MASK = 0x00000000;
 		int OR_MASK = 0x00000000;
@@ -136,7 +130,7 @@ public class RemoveChannels extends ImageOp
 		}
 		
 		// image var's
-		BufferedImage old = Paint.main.gui.canvas.getImage();
+		BufferedImage old = Paint.main.gui.canvas.getCanvas().getImage();
 		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		
 		int ARGB;
@@ -157,15 +151,7 @@ public class RemoveChannels extends ImageOp
 			}
 		}
 		
-		if(AS_PREVIEW)
-		{
-			Paint.main.gui.canvas.preview(new PartialImageChange(0, 0, newImage));
-		}
-		else
-		{
-			//Paint.addChange(new StoredImageChange(newImage));
-		}
-		
+		Paint.main.gui.canvas.preview(new KeyFrame(newImage));
 	}
 	
 }

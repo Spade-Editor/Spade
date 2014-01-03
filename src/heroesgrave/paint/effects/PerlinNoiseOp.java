@@ -34,7 +34,7 @@ public class PerlinNoiseOp extends ImageOp
 	{
 		// TODO: Add dialog with sliders to configure the noise!
 		
-		BufferedImage old = Paint.main.gui.canvas.getImage();
+		BufferedImage old = Paint.main.gui.canvas.getCanvas().getImage();
 		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Perlin noise = new Perlin(System.currentTimeMillis());
 		

@@ -19,7 +19,7 @@
 
 package heroesgrave.paint.effects;
 
-import heroesgrave.paint.imageops.ImageChange;
+import heroesgrave.paint.image.KeyFrame;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.main.Paint;
 
@@ -29,54 +29,37 @@ public class Invert extends ImageOp
 {
 	public void operation()
 	{
-		Paint.addChange(new InvertCh());
-	}
-	
-	private static class InvertCh extends ImageChange
-	{
-		public BufferedImage apply(BufferedImage image)
+		BufferedImage image = Paint.main.gui.canvas.getCanvas().getImage();
+		BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		
+		// channel buffer var's
+		int channel_argb;
+		int channel_rgb;
+		int channel_a;
+		
+		// channel mask's
+		int MASK_RGB = 0xFFFFFF;
+		int MASK_ALPHA = 0xFF000000;
+		
+		for(int i = 0; i < image.getWidth(); i++)
 		{
-			BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			
-			// channel buffer var's
-			int channel_argb;
-			int channel_rgb;
-			int channel_a;
-			
-			// channel mask's
-			int MASK_RGB = 0xFFFFFF;
-			int MASK_ALPHA = 0xFF000000;
-			
-			for(int i = 0; i < image.getWidth(); i++)
+			for(int j = 0; j < image.getHeight(); j++)
 			{
-				for(int j = 0; j < image.getHeight(); j++)
-				{
-					// get pixel
-					channel_argb = image.getRGB(i, j);
-					
-					// split ARGB into RGB and A
-					channel_rgb = channel_argb & MASK_RGB;
-					channel_a = channel_argb & MASK_ALPHA;
-					
-					// flip the colors
-					channel_rgb = ~channel_rgb;
-					
-					// set
-					newImage.setRGB(i, j, (channel_rgb | channel_a));
-				}
+				// get pixel
+				channel_argb = image.getRGB(i, j);
+				
+				// split ARGB into RGB and A
+				channel_rgb = channel_argb & MASK_RGB;
+				channel_a = channel_argb & MASK_ALPHA;
+				
+				// flip the colors
+				channel_rgb = ~channel_rgb;
+				
+				// set
+				newImage.setRGB(i, j, (channel_rgb | channel_a));
 			}
-			
-			return newImage;
 		}
 		
-		public BufferedImage revert(BufferedImage image)
-		{
-			return apply(image);
-		}
-		
-		public int getSize()
-		{
-			return 1;
-		}
+		Paint.addChange(new KeyFrame(newImage));
 	}
 }

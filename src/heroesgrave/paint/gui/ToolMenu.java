@@ -19,13 +19,28 @@
 
 package heroesgrave.paint.gui;
 
+import heroesgrave.paint.effects.Invert;
+import heroesgrave.paint.effects.MakeGrid;
+import heroesgrave.paint.effects.RemoveChannels;
+import heroesgrave.paint.effects.SimpleBlur;
+import heroesgrave.paint.effects.SimpleSharpen;
+import heroesgrave.paint.effects.SimplexNoiseOp;
+import heroesgrave.paint.effects.WhiteNoise;
 import heroesgrave.paint.imageops.Clear;
 import heroesgrave.paint.imageops.Clear2;
+import heroesgrave.paint.imageops.FlipHoriz;
+import heroesgrave.paint.imageops.FlipVert;
 import heroesgrave.paint.imageops.ImageOp;
+import heroesgrave.paint.imageops.Shift;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Brush;
+import heroesgrave.paint.tools.Ellipse;
+import heroesgrave.paint.tools.Eraser;
 import heroesgrave.paint.tools.Fill;
+import heroesgrave.paint.tools.Line;
+import heroesgrave.paint.tools.Picker;
 import heroesgrave.paint.tools.Pixel;
+import heroesgrave.paint.tools.Rectangle;
 import heroesgrave.paint.tools.Tool;
 
 import java.awt.event.ActionEvent;
@@ -50,15 +65,13 @@ public class ToolMenu
 		Paint.main.currentTool = DEF;
 		
 		menu.add(new ToolMenuItem("Pencil", DEF, "P"));
-		menu.add(new ToolMenuItem("Paint Bucket", new Fill("Paint Bucket"), "F"));
 		menu.add(new ToolMenuItem("Brush", new Brush("Brush"), "B"));
-		/*
 		menu.add(new ToolMenuItem("Eraser", new Eraser("Eraser"), "E"));
-		menu.add(new ToolMenuItem("Line", new Line("Straight Line"), "L"));
 		menu.add(new ToolMenuItem("Colour Picker", new Picker("Colour Picker"), "K"));
+		menu.add(new ToolMenuItem("Paint Bucket", new Fill("Paint Bucket"), "F"));
+		menu.add(new ToolMenuItem("Line", new Line("Straight Line"), "L"));
 		menu.add(new ToolMenuItem("Rectangle", new Rectangle("Rectangle"), "R"));
 		menu.add(new ToolMenuItem("Ellipse", new Ellipse("Ellipse"), "C"));
-		*/
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerTools(menu);
 		
@@ -71,17 +84,16 @@ public class ToolMenu
 		
 		menu.add(new ImageMenuItem("Clear Image", new Clear(), "B"));
 		menu.add(new ImageMenuItem("Clear Image + Alpha", new Clear2(), "N"));
-		/*
-		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
-		menu.add(new ImageMenuItem("Resize Canvas", new ResizeCanvas(), "C"));
-		
 		menu.add(new ImageMenuItem("Shift Canvas", new Shift(), "H"));
 		menu.add(new ImageMenuItem("Flip Vertically", new FlipVert(), null));
 		menu.add(new ImageMenuItem("Flip Horizontally", new FlipHoriz(), null));
+		/*
+		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
+		menu.add(new ImageMenuItem("Resize Canvas", new ResizeCanvas(), "C"));
+		*/
+		/*
 		menu.add(new ImageMenuItem("Rotate Right by 90", new RotateRightBy90(), null));
 		*/
-		// BUGGED -> menu.add(new ImageMenuItem("Simple Edge Detect", new SimpleEdgeDetect(), null));
-		// BUGGED -> menu.add(new ImageMenuItem("Perlin Noise", new PerlinNoiseOp(), "PN"));
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerImageOps(menu);
 		
@@ -92,15 +104,17 @@ public class ToolMenu
 	{
 		JMenu menu = new JMenu("Effects");
 		
-		/*
 		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
-		menu.add(new ImageMenuItem("White Noise", new Noise(), null));
+		menu.add(new ImageMenuItem("Grid-Maker", new MakeGrid(), "G"));
+		menu.add(new ImageMenuItem("Channel Filter", new RemoveChannels(), "F"));
+		menu.add(new ImageMenuItem("White Noise", new WhiteNoise(), null));
 		menu.add(new ImageMenuItem("Simplex Noise", new SimplexNoiseOp(), null));
 		menu.add(new ImageMenuItem("Simple Blur", new SimpleBlur(), null));
 		menu.add(new ImageMenuItem("Simple Sharpen", new SimpleSharpen(), null));
-		menu.add(new ImageMenuItem("Grid-Maker", new MakeGrid(), null));
-		menu.add(new ImageMenuItem("Channel Remover", new RemoveChannels(), null));
-		*/
+		// BUGGED -> menu.add(new ImageMenuItem("Simple Edge Detect", new SimpleEdgeDetect(), null));
+		// BUGGED -> menu.add(new ImageMenuItem("Perlin Noise", new PerlinNoiseOp(), null));
+		
+		heroesgrave.paint.plugin.PluginManager.instance.registerEffects(menu);
 		
 		return menu;
 	}

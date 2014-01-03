@@ -22,9 +22,9 @@ package heroesgrave.paint.effects;
 import heroesgrave.paint.gui.Menu.CentredJLabel;
 import heroesgrave.paint.gui.Menu.NumberTextField;
 import heroesgrave.paint.gui.SimpleImageOpDialog;
+import heroesgrave.paint.image.KeyFrame;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.main.PartialImageChange;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -37,8 +37,6 @@ import javax.swing.event.DocumentListener;
 
 public class MakeGrid extends ImageOp
 {
-	
-	@Override
 	public void operation()
 	{
 		dialog();
@@ -61,19 +59,19 @@ public class MakeGrid extends ImageOp
 			@Override
 			public void insertUpdate(DocumentEvent e)
 			{
-				operation_do(WIDTH.get(), HEIGHT.get(), true);
+				operation_do(WIDTH.get(), HEIGHT.get());
 			}
 			
 			@Override
 			public void removeUpdate(DocumentEvent e)
 			{
-				operation_do(WIDTH.get(), HEIGHT.get(), true);
+				operation_do(WIDTH.get(), HEIGHT.get());
 			}
 			
 			@Override
 			public void changedUpdate(DocumentEvent e)
 			{
-				operation_do(WIDTH.get(), HEIGHT.get(), true);
+				operation_do(WIDTH.get(), HEIGHT.get());
 			}
 		};
 		
@@ -86,14 +84,15 @@ public class MakeGrid extends ImageOp
 			public void actionPerformed(ActionEvent e)
 			{
 				dialog.close();
-				operation_do(WIDTH.get(), HEIGHT.get(), false);
+				operation_do(WIDTH.get(), HEIGHT.get());
+				Paint.main.gui.canvas.applyPreview();
 			}
 		});
 		cancel.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				Paint.main.gui.canvas.clearPreview();
+				Paint.main.gui.canvas.preview(null);
 				dialog.close();
 			}
 		});
@@ -110,10 +109,8 @@ public class MakeGrid extends ImageOp
 		dialog.show();
 	}
 	
-	public void operation_do(int W, int H, boolean AS_PREVIEW)
+	public void operation_do(int W, int H)
 	{
-		Paint.main.gui.canvas.clearPreview();
-		
 		// If ANY of the size arguments are -1, return.
 		if(W == -1 || H == -1)
 			return;
@@ -128,7 +125,7 @@ public class MakeGrid extends ImageOp
 			H = 1;
 		}
 		
-		BufferedImage old = Paint.main.gui.canvas.getImage();
+		BufferedImage old = Paint.main.gui.canvas.getCanvas().getImage();
 		BufferedImage newImage = new BufferedImage(old.getWidth(), old.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		
 		for(int i = 0; i < old.getWidth(); i++)
@@ -147,14 +144,7 @@ public class MakeGrid extends ImageOp
 			}
 		}
 		
-		if(AS_PREVIEW)
-		{
-			Paint.main.gui.canvas.preview(new PartialImageChange(0, 0, newImage));
-		}
-		else
-		{
-			//Paint.addChange(new StoredImageChange(newImage));
-		}
+		Paint.main.gui.canvas.preview(new KeyFrame(newImage));
 	}
 	
 }

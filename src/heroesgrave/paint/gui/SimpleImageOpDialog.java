@@ -45,9 +45,6 @@ public class SimpleImageOpDialog
 		
 		dialog.getContentPane().add(panel);
 		
-		dialog.setAlwaysOnTop(true);
-		dialog.setAutoRequestFocus(true);
-		
 		dialog.setTitle(title);
 	}
 	

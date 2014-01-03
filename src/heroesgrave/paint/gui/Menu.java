@@ -22,7 +22,7 @@ package heroesgrave.paint.gui;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.Popup;
 import heroesgrave.paint.plugin.PluginManager;
-import heroesgrave.utils.io.ImageLoader;
+import heroesgrave.utils.io.ImageImporter;
 import heroesgrave.utils.misc.NumberFilter;
 
 import java.awt.GridLayout;
@@ -229,7 +229,7 @@ public class Menu
 		});
 		
 		// Add ALL the custom image-importers!
-		ImageLoader.addAllImporters(chooser);
+		ImageImporter.addAllImporters(chooser);
 		
 		int returned = chooser.showOpenDialog(new CentredJDialog(Paint.main.gui.frame, "Load Image"));
 		
@@ -245,7 +245,7 @@ public class Menu
 				@Override
 				public void run()
 				{
-					Paint.main.gui.canvas.setImage(ImageLoader.loadImage(chooser.getSelectedFile().getAbsolutePath()));
+					Paint.main.gui.canvas.setImage(ImageImporter.loadImage(chooser.getSelectedFile().getAbsolutePath()));
 				}
 			}).start();
 		}

@@ -17,17 +17,24 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.main;
+package heroesgrave.paint.plugin;
 
-import java.awt.image.BufferedImage;
+import heroesgrave.paint.gui.ToolMenu.ImageMenuItem;
+import heroesgrave.paint.imageops.ImageOp;
 
-public interface Change
+import javax.swing.JMenu;
+
+public class RegisterEffects
 {
-	public BufferedImage apply(BufferedImage image);
+	private JMenu menu;
 	
-	public BufferedImage revert(BufferedImage image);
+	public RegisterEffects(JMenu menu)
+	{
+		this.menu = menu;
+	}
 	
-	public int getSize();
-	
-	public boolean samePos(int x, int y);
+	public void register(String name, ImageOp op, String key)
+	{
+		menu.add(new ImageMenuItem(name, op, key));
+	}
 }
