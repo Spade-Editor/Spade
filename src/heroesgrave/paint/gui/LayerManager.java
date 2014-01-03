@@ -23,13 +23,20 @@ import heroesgrave.paint.image.Canvas;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -37,11 +44,41 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 public class LayerManager
 {
+	public class LayerManagerTreeCellRenderer implements TreeCellRenderer {
+		JLabel label = new JLabel("Node");
+		Icon nodeIcon;
+		
+		LayerManagerTreeCellRenderer()
+		{
+			BufferedImage img = new BufferedImage(16, 16,BufferedImage.TYPE_INT_ARGB);
+			Graphics g = img.getGraphics();
+			g.setColor(Color.BLACK);
+			g.fillOval(0, 0, 16, 16);
+			nodeIcon = new ImageIcon(img);
+		}
+		
+		@Override
+		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus)
+		{
+			
+			if(value instanceof LayerNode)
+			{
+				LayerNode node = (LayerNode) value;
+				label.setText(node.canvas.name);
+				label.setIcon(nodeIcon);
+			}
+			
+			return label;
+		}
+		
+	}
+
 	public JDialog dialog;
 	
 	protected LayerNode rootNode;
@@ -65,6 +102,7 @@ public class LayerManager
 		tree.getSelectionModel().addTreeSelectionListener(new SelectionListener());
 		tree.setVisibleRowCount(10);
 		tree.setExpandsSelectedPaths(true);
+		tree.setCellRenderer(new LayerManagerTreeCellRenderer());
 		
 		JScrollPane scroll = new JScrollPane(tree);
 		
