@@ -88,12 +88,11 @@ public class Menu
 		});
 		
 		JMenuItem about = new JMenuItem("About...", GUIManager.getIcon("about"));
-		about.setEnabled(false);
 		about.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				// TODO: Implement 'About' Dialog.
+				Paint.main.gui.about.setVisible(true);
 			}
 		});
 		

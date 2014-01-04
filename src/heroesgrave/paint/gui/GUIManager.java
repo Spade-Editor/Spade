@@ -59,6 +59,8 @@ public class GUIManager
 	public LayerManager layers;
 	public InfoMenu info;
 	
+	AboutDialog about;
+	
 	private JMenuBar toolOptions;
 	
 	private Input input = new Input();
@@ -128,10 +130,11 @@ public class GUIManager
 		initFrame();
 		initMenu();
 		createCanvas();
-		finish();
 		
 		chooser = new ColourChooser();
 		layers = new LayerManager(canvas.getCanvas());
+		about = new AboutDialog(frame);
+		finish();
 		
 		initInputs();
 	}
@@ -222,7 +225,7 @@ public class GUIManager
 	{
 		if(Paint.main.saved)
 		{
-			UserPreferences.savePrefs(frame);
+			UserPreferences.savePrefs(frame, chooser, layers);
 			Paint.main.terminate = true;
 			return;
 		}
@@ -243,7 +246,7 @@ public class GUIManager
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.save();
-				UserPreferences.savePrefs(frame);
+				UserPreferences.savePrefs(frame, chooser, layers);
 				Paint.main.terminate = true;
 				close.dispose();
 			}
@@ -252,7 +255,7 @@ public class GUIManager
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				UserPreferences.savePrefs(frame);
+				UserPreferences.savePrefs(frame, chooser, layers);
 				Paint.main.terminate = true;
 				close.dispose();
 			}
@@ -281,7 +284,7 @@ public class GUIManager
 	 **/
 	public void finish()
 	{
-		UserPreferences.loadPrefs(frame);
+		UserPreferences.loadPrefs(frame, chooser, layers);
 		frame.setVisible(true);
 		frame.setResizable(true);
 		frame.requestFocus();

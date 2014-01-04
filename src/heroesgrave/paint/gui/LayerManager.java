@@ -19,6 +19,7 @@
 
 package heroesgrave.paint.gui;
 
+import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.image.Canvas;
 import heroesgrave.paint.main.Paint;
 
@@ -92,7 +93,7 @@ public class LayerManager
 	
 	public LayerManager(Canvas root)
 	{
-		dialog = new JDialog(Paint.main.gui.frame, "Layers");
+		dialog = new CentredJDialog(Paint.main.gui.frame, "Layers");
 		dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		dialog.setTitle("Layers");
 		dialog.getContentPane().setPreferredSize(new Dimension(200, 300));
