@@ -53,7 +53,7 @@ public class Invert extends ImageOp
 				channel_a = channel_argb & MASK_ALPHA;
 				
 				// flip the colors
-				channel_rgb = ~channel_rgb;
+				channel_rgb = 0xFFFFFF ^ channel_rgb;
 				
 				// set
 				newImage.setRGB(i, j, (channel_rgb | channel_a));
