@@ -19,7 +19,7 @@
 
 package heroesgrave.paint.image;
 
-import heroesgrave.paint.image.blend.NewBlendMode;
+import heroesgrave.paint.image.blend.BlendMode;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.Graphics2D;
@@ -31,7 +31,7 @@ public class Canvas
 	private ArrayList<Canvas> layers = new ArrayList<Canvas>();
 	private BufferedImage image;
 	public String name;
-	public NewBlendMode mode;
+	public BlendMode mode;
 	private History hist;
 	
 	public Canvas(String name, int width, int height)
@@ -43,7 +43,7 @@ public class Canvas
 	{
 		this.image = image;
 		this.name = name;
-		this.mode = NewBlendMode.NORMAL;
+		this.mode = BlendMode.NORMAL;
 		hist = new History(image);
 	}
 	

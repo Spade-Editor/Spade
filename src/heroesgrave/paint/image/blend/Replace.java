@@ -22,8 +22,13 @@ package heroesgrave.paint.image.blend;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
-public class Replace extends NewBlendMode
+public class Replace extends BlendMode
 {
+	public Replace()
+	{
+		super("Replace");
+	}
+	
 	public void compose(Raster src, Raster dst, WritableRaster out)
 	{
 		out.setRect(src);

@@ -26,10 +26,17 @@ import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
-public abstract class NewBlendMode implements Composite, CompositeContext
+public abstract class BlendMode implements Composite, CompositeContext
 {
-	public static final NewBlendMode REPLACE = new Replace();
-	public static final NewBlendMode NORMAL = new Normal();
+	public static final BlendMode REPLACE = new Replace();
+	public static final BlendMode NORMAL = new Normal();
+	
+	public final String name;
+	
+	public BlendMode(String name)
+	{
+		this.name = name;
+	}
 	
 	public abstract void compose(Raster src, Raster dst, WritableRaster out);
 	
@@ -41,5 +48,10 @@ public abstract class NewBlendMode implements Composite, CompositeContext
 	public CompositeContext createContext(ColorModel arg0, ColorModel arg1, RenderingHints arg2)
 	{
 		return this;
+	}
+	
+	public String toString()
+	{
+		return name;
 	}
 }

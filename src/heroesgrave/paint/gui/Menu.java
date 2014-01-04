@@ -426,6 +426,7 @@ public class Menu
 		public CentredJLabel(String label)
 		{
 			super(label);
+			this.setHorizontalAlignment(JLabel.CENTER);
 		}
 	}
 	

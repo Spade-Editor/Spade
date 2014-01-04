@@ -26,8 +26,13 @@ import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
-public class Normal extends NewBlendMode
+public class Normal extends BlendMode
 {
+	public Normal()
+	{
+		super("Normal");
+	}
+	
 	public CompositeContext createContext(ColorModel arg0, ColorModel arg1, RenderingHints arg2)
 	{
 		return AlphaComposite.SrcOver.createContext(arg0, arg1, arg2);
