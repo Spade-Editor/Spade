@@ -25,12 +25,19 @@ import java.awt.RenderingHints;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
+import java.util.HashSet;
 
 public abstract class BlendMode implements Composite, CompositeContext
 {
-	public static final BlendMode REPLACE = new Replace();
-	public static final BlendMode MASKREPLACE = new MaskReplace();
+	private static HashSet<BlendMode> modes = new HashSet<BlendMode>();
 	public static final BlendMode NORMAL = new Normal();
+	
+	static
+	{
+		addBlendMode(NORMAL);
+		addBlendMode(new Replace());
+		addBlendMode(new MaskReplace());
+	}
 	
 	public final String name;
 	
@@ -54,5 +61,15 @@ public abstract class BlendMode implements Composite, CompositeContext
 	public String toString()
 	{
 		return name;
+	}
+	
+	public static void addBlendMode(BlendMode mode)
+	{
+		modes.add(mode);
+	}
+	
+	public static HashSet<BlendMode> getBlendModes()
+	{
+		return new HashSet<BlendMode>(modes);
 	}
 }

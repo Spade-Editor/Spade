@@ -98,6 +98,7 @@ public class Paint extends Application
 		setRightColour(0xffffffff);
 		setLeftColour(0xff000000);
 		setTool(currentTool);
+		pluginManager.registerOther();
 		pluginManager.onLaunch();
 		
 		if(toOpen != null)

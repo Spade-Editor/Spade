@@ -300,6 +300,12 @@ public class PluginManager
 		}
 	}
 	
+	public void registerOther()
+	{
+		for(Plugin plugin : loadedPlugins)
+			plugin.registerOther();
+	}
+	
 	public void frameCreationEvent(JFrame frame)
 	{
 		//System.out.println("[Event] Frame creation.");

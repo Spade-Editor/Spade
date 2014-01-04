@@ -28,6 +28,7 @@ import heroesgrave.paint.main.Paint;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
 
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -50,9 +51,10 @@ public class LayerSettings
 		dialog.setLayout(new GridLayout(0, 2));
 		
 		blendMode = new JComboBox<BlendMode>();
-		blendMode.addItem(BlendMode.NORMAL);
-		blendMode.addItem(BlendMode.REPLACE);
-		blendMode.addItem(BlendMode.MASKREPLACE);
+		
+		HashSet<BlendMode> modes = BlendMode.getBlendModes();
+		for(BlendMode mode : modes)
+			blendMode.addItem(mode);
 		
 		label = new JTextField("");
 		label.addActionListener(new ActionListener()

@@ -61,7 +61,5 @@ public abstract class Plugin
 	
 	public abstract void registerTools(RegisterTools register);
 	
-	public abstract void registerExporters(RegisterExporters register);
-	
-	public abstract void registerImporters(RegisterImporters register);
+	public abstract void registerOther();
 }
