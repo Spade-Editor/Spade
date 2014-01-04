@@ -233,7 +233,10 @@ public class InfoMenu
 			this.colour = new Color(colour);
 			this.setText(bufferZeros(Integer.toHexString(colour & 0xffffff)));
 			this.setBackground(this.colour);
-			this.setForeground(new Color(this.colour.getRGB() ^ 0x00ffffff));
+			if((colour & 0xFF) + ((colour >> 8) & 0xFF) + ((colour >> 16) & 0xFF) < 0x17E)
+				this.setForeground(Color.WHITE);
+			else
+				this.setForeground(Color.BLACK);
 			this.repaint();
 		}
 	}
