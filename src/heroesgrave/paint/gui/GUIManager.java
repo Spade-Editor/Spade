@@ -20,7 +20,7 @@
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
-import heroesgrave.paint.image.NewCanvasManager;
+import heroesgrave.paint.image.CanvasManager;
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.UserPreferences;
@@ -53,7 +53,7 @@ public class GUIManager
 	private JMenuBar menuBar;
 	private JScrollPane canvasZone;
 	
-	public NewCanvasManager canvas;
+	public CanvasManager canvas;
 	public ColourChooser chooser;
 	public LayerManager layers;
 	public InfoMenu info;
@@ -157,10 +157,10 @@ public class GUIManager
 	
 	public void createCanvas()
 	{
-		canvas = new NewCanvasManager();
+		canvas = new CanvasManager();
 		
 		JPanel panel = new JPanel();
-		panel.add(canvas.getPanel());
+		panel.add(canvas.getPanel(), BorderLayout.CENTER);
 		
 		canvasZone = new JScrollPane(panel);
 		canvasZone.addMouseWheelListener(input);

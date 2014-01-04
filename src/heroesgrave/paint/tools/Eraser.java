@@ -44,13 +44,10 @@ import heroesgrave.paint.main.Paint;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.geom.GeneralPath;
 
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JSlider;
-import javax.swing.SwingConstants;
 
 public class Eraser extends Tool
 {
@@ -65,8 +62,7 @@ public class Eraser extends Tool
 		slider.setMajorTickSpacing(2);
 		slider.setMinorTickSpacing(1);
 		slider.setPaintTicks(true);
-		
-		menu.setLayout(new GridLayout(1, 8));
+		menu.setLayout(new BorderLayout());
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -77,10 +73,7 @@ public class Eraser extends Tool
 		
 		slider.setFocusable(false);
 		
-		menu.add(panel);
-		menu.add(new JSeparator(SwingConstants.VERTICAL));
-		menu.add(new JSeparator(SwingConstants.VERTICAL));
-		menu.add(new JSeparator(SwingConstants.VERTICAL));
+		menu.add(panel, BorderLayout.CENTER);
 	}
 	
 	@Override

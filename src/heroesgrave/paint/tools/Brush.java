@@ -70,7 +70,7 @@ public class Brush extends Tool
 		panel.setOpaque(false);
 		
 		panel.add(new CentredLabel("Size: "), BorderLayout.WEST);
-		panel.add(slider, BorderLayout.EAST);
+		panel.add(slider, BorderLayout.CENTER);
 		
 		slider.setFocusable(false);
 		

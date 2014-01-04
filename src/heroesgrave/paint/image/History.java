@@ -41,7 +41,7 @@ public class History
 	 * Higher = Less keyframes, so less RAM but more CPU.
 	 * Lower = More keyframes, so more RAM but less CPU.
 	 */
-	public static final int MAX_FRAMES = 20;
+	public static final int MAX_FRAMES = 32;
 	
 	private Stack<IFrame> history = new Stack<IFrame>();
 	private Stack<IFrame> reverted = new Stack<IFrame>();

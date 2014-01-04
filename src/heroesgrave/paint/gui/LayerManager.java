@@ -111,7 +111,8 @@ public class LayerManager
 		tree.getSelectionModel().addTreeSelectionListener(new SelectionListener());
 		tree.setVisibleRowCount(10);
 		tree.setExpandsSelectedPaths(true);
-		tree.setCellRenderer(new LayerManagerTreeCellRenderer());
+		// XXX: I like the default renderer better.
+		// tree.setCellRenderer(new LayerManagerTreeCellRenderer());
 		
 		JScrollPane scroll = new JScrollPane(tree);
 		
