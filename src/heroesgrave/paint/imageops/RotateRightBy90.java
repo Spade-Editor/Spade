@@ -17,6 +17,7 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
+/*
 package heroesgrave.paint.imageops;
 
 import heroesgrave.paint.main.Paint;
@@ -108,4 +109,4 @@ public class RotateRightBy90 extends ImageOp
 	 * 
 	 **/
 	
-}
+// }
