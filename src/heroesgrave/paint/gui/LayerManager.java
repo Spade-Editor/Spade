@@ -31,6 +31,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.Enumeration;
+import java.util.Vector;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -61,6 +63,7 @@ public class LayerManager
 			g.setColor(Color.BLACK);
 			g.fillOval(0, 0, 16, 16);
 			nodeIcon = new ImageIcon(img);
+			label.setMinimumSize(new Dimension(128, 16));
 		}
 		
 		@Override
@@ -72,13 +75,14 @@ public class LayerManager
 				LayerNode node = (LayerNode) value;
 				label.setText(node.canvas.name);
 				label.setIcon(nodeIcon);
+				label.revalidate();
 			}
 			
 			return label;
 		}
 		
 	}
-
+	
 	public JDialog dialog;
 	
 	protected LayerNode rootNode;
@@ -113,6 +117,7 @@ public class LayerManager
 		JButton deleteLayer = new JButton("Delete");
 		JButton moveUp = new JButton("Move Up");
 		JButton moveDown = new JButton("Move Down");
+		JButton properties = new JButton("Properties");
 		
 		newLayer.addActionListener(new ActionListener()
 		{
@@ -200,10 +205,27 @@ public class LayerManager
 			}
 		});
 		
+		properties.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				TreePath path = tree.getSelectionModel().getSelectionPath();
+				LayerNode n;
+				
+				if(path == null)
+					n = rootNode;
+				else
+					n = (LayerNode) path.getLastPathComponent();
+				
+				LayerManager.this.openPropertiesDialog(n);
+			}
+		});
+		
 		controls.add(newLayer);
 		controls.add(deleteLayer);
 		controls.add(moveUp);
 		controls.add(moveDown);
+		controls.add(properties);
 		controls.setVisible(false);
 		
 		dialog.setLayout(new BorderLayout());
@@ -214,6 +236,10 @@ public class LayerManager
 		dialog.setResizable(true);
 	}
 	
+	protected void openPropertiesDialog(LayerNode n) {
+		new LayerPropertiesDialog(this, n).show();
+	}
+
 	public void show()
 	{
 		dialog.setVisible(true);
@@ -227,6 +253,32 @@ public class LayerManager
 	public void toggle()
 	{
 		dialog.setVisible(!dialog.isVisible());
+	}
+	
+	public void redrawTree() {
+		// Capture the current state of the JTree node expansions.
+		Vector<TreePath> paths = new Vector<TreePath>();
+		
+		Enumeration<TreePath> e = tree.getExpandedDescendants(new TreePath(rootNode));
+		TreePath selpath = tree.getSelectionPath();
+		
+		if(e != null) while(e.hasMoreElements())
+		{
+			paths.addElement(e.nextElement());
+		}
+		
+		// Force the JTree to rebuild itself.
+		DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
+		model.reload();
+		
+		// Recover the old expanded state of the JTree.
+		for (int i=0; i < paths.size(); i++) {
+			TreePath path = (TreePath)paths.elementAt(i);
+			tree.expandPath(path);
+		}
+		
+		tree.setSelectionPath(selpath);
+		
 	}
 	
 	public boolean isVisible()
