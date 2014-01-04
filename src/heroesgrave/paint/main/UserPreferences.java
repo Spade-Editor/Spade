@@ -34,8 +34,6 @@ import javax.swing.JFrame;
  */
 public class UserPreferences
 {
-	private static final String WINDOW_X = "window.x";
-	private static final String WINDOW_Y = "window.y";
 	private static final String WINDOW_WIDTH = "window.width";
 	private static final String WINDOW_HEIGHT = "window.height";
 	private static final String WINDOW_MAXIMIZED = "window.maximized";

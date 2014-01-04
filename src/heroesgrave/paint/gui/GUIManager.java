@@ -59,6 +59,8 @@ public class GUIManager
 	public LayerManager layers;
 	public InfoMenu info;
 	
+	AboutDialog about;
+	
 	private JMenuBar toolOptions;
 	
 	private Input input = new Input();
@@ -131,6 +133,7 @@ public class GUIManager
 		
 		chooser = new ColourChooser();
 		layers = new LayerManager(canvas.getCanvas());
+		about = new AboutDialog(frame);
 		finish();
 		
 		initInputs();
