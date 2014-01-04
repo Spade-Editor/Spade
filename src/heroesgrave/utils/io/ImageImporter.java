@@ -20,6 +20,7 @@
 package heroesgrave.utils.io;
 
 import heroesgrave.utils.io.importers.ImporterBIN;
+import heroesgrave.utils.io.importers.ImporterZipBIN;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -44,6 +45,7 @@ public abstract class ImageImporter extends FileFilter
 		
 		// Nothing here yet! Feel free to expand by adding new image-importers!
 		add(new ImporterBIN());
+		add(new ImporterZipBIN());
 	}
 	
 	public static void add(ImageImporter exporter)

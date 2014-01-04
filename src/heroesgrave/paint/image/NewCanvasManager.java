@@ -28,6 +28,7 @@ import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.TexturePaint;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -145,6 +146,7 @@ public class NewCanvasManager
 		private float scale = 1;
 		private int lastButton = 0;
 		private BufferedImage background;
+		private TexturePaint backgroundPaint;
 		
 		private static final Color TRANSPARENT = new Color(255, 255, 255, 0);
 		
@@ -198,11 +200,20 @@ public class NewCanvasManager
 			Graphics2D draw = background.createGraphics();
 			draw.setBackground(TRANSPARENT);
 			draw.clearRect(0, 0, background.getWidth(), background.getHeight());
+			// Insert RenderingHints here. User should be able to change them.
 			
-			g.setPaint(new TexturePaint(transparencyBG, new Rectangle2D.Float(0, 0, 16, 16)));
+			if(backgroundPaint == null)
+				backgroundPaint = new TexturePaint(transparencyBG, new Rectangle2D.Float(0, 0, 16, 16));
+			
+			g.setPaint(backgroundPaint);
 			g.fillRect(0, 0, MathUtils.floor(mgr.getWidth() * scale), MathUtils.floor(mgr.getHeight() * scale));
 			
 			g.setPaint(null);
+			
+			if(scale <= 0.9)
+				g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			else
+				g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 			
 			Composite comp = draw.getComposite();
 			mgr.root.draw(draw);
