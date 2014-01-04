@@ -37,6 +37,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -49,7 +50,8 @@ import javax.swing.WindowConstants;
 public class GUIManager
 {
 	public JFrame frame;
-	private JPanel panel, menus, infoBar;
+	private JPanel panel, menus;
+	private JComponent infoBar;
 	private JMenuBar menuBar;
 	private JScrollPane canvasZone;
 	
@@ -142,10 +144,10 @@ public class GUIManager
 	{
 		if(toolOptions != null)
 		{
-			infoBar.remove(toolOptions);
+			info.getSpacer().remove(toolOptions);
 		}
 		toolOptions = options;
-		infoBar.add(toolOptions);
+		info.getSpacer().add(toolOptions);
 		menus.revalidate();
 		menus.repaint();
 	}
@@ -284,6 +286,7 @@ public class GUIManager
 	public void finish()
 	{
 		UserPreferences.loadPrefs(frame, chooser, layers);
+		frame.pack();
 		frame.setVisible(true);
 		frame.setResizable(true);
 		frame.requestFocus();

@@ -59,9 +59,6 @@ public class Eraser extends Tool
 	{
 		super(name);
 		slider = new JSlider(0, 16, 0);
-		slider.setMajorTickSpacing(2);
-		slider.setMinorTickSpacing(1);
-		slider.setPaintTicks(true);
 		menu.setLayout(new BorderLayout());
 		
 		JPanel panel = new JPanel();

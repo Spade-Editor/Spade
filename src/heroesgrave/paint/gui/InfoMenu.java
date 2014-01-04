@@ -35,9 +35,11 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
 /**
@@ -45,16 +47,18 @@ import javax.swing.SwingConstants;
  **/
 public class InfoMenu
 {
+	private JPanel spacer;
 	private JLabel scale, saved, tool;
 	private JButton reset;
 	private MemoryWatcher memoryWatcher;
 	private ColourTextPanel left, right;
 	
-	public JPanel createInfoMenuBar()
+	public JComponent createInfoMenuBar()
 	{
-		JPanel menuBar = new JPanel();
+		JComponent menuBar = new JPanel();
 		
-		menuBar.setLayout(new GridLayout(1, 0));
+		SpringLayout layout = new SpringLayout();
+		menuBar.setLayout(layout);
 		
 		scale = new JLabel("Scale: 100%");
 		saved = new JLabel("Saved: Yes");
@@ -147,6 +151,24 @@ public class InfoMenu
 		menuBar.add(saved);
 		menuBar.add(tool);
 		
+		spacer = new JPanel();
+		
+		menuBar.add(spacer);
+		
+		layout.putConstraint(SpringLayout.WEST, colourPanel, 5, SpringLayout.WEST, menuBar);
+		layout.putConstraint(SpringLayout.EAST, colourPanel, 270, SpringLayout.WEST, menuBar);
+		layout.putConstraint(SpringLayout.WEST, scale, 20, SpringLayout.EAST, colourPanel);
+		layout.putConstraint(SpringLayout.WEST, saved, 20, SpringLayout.EAST, scale);
+		layout.putConstraint(SpringLayout.WEST, tool, 20, SpringLayout.EAST, saved);
+		layout.putConstraint(SpringLayout.WEST, spacer, 20, SpringLayout.EAST, tool);
+		layout.putConstraint(SpringLayout.EAST, menuBar, 20, SpringLayout.EAST, spacer);
+		
+		layout.putConstraint(SpringLayout.NORTH, scale, 7, SpringLayout.NORTH, menuBar);
+		layout.putConstraint(SpringLayout.NORTH, saved, 7, SpringLayout.NORTH, menuBar);
+		layout.putConstraint(SpringLayout.NORTH, tool, 7, SpringLayout.NORTH, menuBar);
+		
+		layout.putConstraint(SpringLayout.SOUTH, menuBar, 0, SpringLayout.SOUTH, colourPanel);
+		
 		if(memoryWatcher != null)
 		{
 			menuBar.add(memoryWatcher);
@@ -155,11 +177,16 @@ public class InfoMenu
 		return menuBar;
 	}
 	
+	public JPanel getSpacer()
+	{
+		return spacer;
+	}
+	
 	private void read(ColourTextPanel panel)
 	{
 		String num = panel.getText();
 		
-		num = num.replaceAll("[^0-9a-fA-F]", "");
+		num = num.replaceAll("[^0-9a-fA-F]", "").toUpperCase();
 		
 		if(num.length() > 6)
 		{
@@ -223,7 +250,7 @@ public class InfoMenu
 		
 		public ColourTextPanel()
 		{
-			super();
+			super(6);
 			this.setEditable(true);
 		}
 		
@@ -246,6 +273,6 @@ public class InfoMenu
 		{
 			colour = "0" + colour;
 		}
-		return colour;
+		return colour.toUpperCase();
 	}
 }
