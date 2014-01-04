@@ -68,7 +68,7 @@ public class Paint extends Application
 	public static int leftColour = 0xff000000;
 	public static int rightColour = 0xffffffff;
 	
-	public boolean saved = true;
+	public boolean saved = false;
 	
 	private static HashMap<String, Tool> tools = new HashMap<String, Tool>();
 	private static HashMap<String, ImageOp> imageOps = new HashMap<String, ImageOp>();
