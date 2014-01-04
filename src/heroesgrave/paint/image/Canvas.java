@@ -142,7 +142,6 @@ public class Canvas
 		}
 		
 		g.setComposite(mode);
-		g.drawImage(this.image, 0, 0, null);
 		
 		if(!layers.isEmpty())
 		{
@@ -151,6 +150,8 @@ public class Canvas
 				layers.get(i).draw(g);
 			}
 		}
+		
+		g.drawImage(this.image, 0, 0, null);
 	}
 	
 	public History getHistory()
