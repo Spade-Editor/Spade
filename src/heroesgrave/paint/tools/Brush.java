@@ -44,14 +44,11 @@ import heroesgrave.paint.main.Paint;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.geom.GeneralPath;
 
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JSlider;
-import javax.swing.SwingConstants;
 
 public class Brush extends Tool
 {
@@ -66,22 +63,18 @@ public class Brush extends Tool
 		slider.setMajorTickSpacing(2);
 		slider.setMinorTickSpacing(1);
 		slider.setPaintTicks(true);
-		
-		menu.setLayout(new GridLayout(1, 8));
+		menu.setLayout(new BorderLayout());
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.setOpaque(false);
 		
 		panel.add(new CentredLabel("Size: "), BorderLayout.WEST);
-		panel.add(slider, BorderLayout.CENTER);
+		panel.add(slider, BorderLayout.EAST);
 		
 		slider.setFocusable(false);
 		
-		menu.add(panel);
-		menu.add(new JSeparator(SwingConstants.VERTICAL));
-		menu.add(new JSeparator(SwingConstants.VERTICAL));
-		menu.add(new JSeparator(SwingConstants.VERTICAL));
+		menu.add(panel, BorderLayout.CENTER);
 	}
 	
 	@Override

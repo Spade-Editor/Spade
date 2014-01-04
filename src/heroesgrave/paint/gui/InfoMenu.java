@@ -36,7 +36,6 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -51,9 +50,9 @@ public class InfoMenu
 	private MemoryWatcher memoryWatcher;
 	private ColourTextPanel left, right;
 	
-	public JMenuBar createInfoMenuBar()
+	public JPanel createInfoMenuBar()
 	{
-		JMenuBar menuBar = new JMenuBar();
+		JPanel menuBar = new JPanel();
 		
 		menuBar.setLayout(new GridLayout(1, 0));
 		
@@ -143,10 +142,10 @@ public class InfoMenu
 			}
 		});
 		
-		menuBar.add(tool);
 		menuBar.add(colourPanel);
 		menuBar.add(scale);
 		menuBar.add(saved);
+		menuBar.add(tool);
 		
 		if(memoryWatcher != null)
 		{

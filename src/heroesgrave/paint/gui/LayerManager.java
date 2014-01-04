@@ -33,6 +33,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -45,10 +46,13 @@ public class LayerManager
 {
 	public JDialog dialog;
 	
+	protected LayerSettings lsettings;
+	
 	protected LayerNode rootNode;
 	protected DefaultTreeModel model;
 	protected JTree tree;
 	protected JPanel controls;
+	protected JTextField name;
 	
 	public LayerManager(Canvas root)
 	{
@@ -76,6 +80,11 @@ public class LayerManager
 		JButton deleteLayer = new JButton("Delete");
 		JButton moveUp = new JButton("Move Up");
 		JButton moveDown = new JButton("Move Down");
+		JButton moveIn = new JButton("Move In");
+		JButton moveOut = new JButton("Move Out");
+		JButton settings = new JButton("Settings");
+		name = new JTextField();
+		name.setHorizontalAlignment(JTextField.CENTER);
 		
 		newLayer.addActionListener(new ActionListener()
 		{
@@ -120,9 +129,9 @@ public class LayerManager
 				if(n.equals(rootNode))
 					return;
 				LayerNode swap = (LayerNode) n.getPreviousSibling();
-				LayerNode parent = (LayerNode) n.getParent();
 				if(swap != null)
 				{
+					LayerNode parent = (LayerNode) n.getParent();
 					parent.canvas.swap(n.canvas, swap.canvas);
 					int i = parent.getIndex(n);
 					int j = parent.getIndex(swap);
@@ -148,9 +157,9 @@ public class LayerManager
 				if(n.equals(rootNode))
 					return;
 				LayerNode swap = (LayerNode) n.getNextSibling();
-				LayerNode parent = (LayerNode) n.getParent();
 				if(swap != null)
 				{
+					LayerNode parent = (LayerNode) n.getParent();
 					parent.canvas.swap(n.canvas, swap.canvas);
 					int i = parent.getIndex(n);
 					int j = parent.getIndex(swap);
@@ -163,18 +172,106 @@ public class LayerManager
 			}
 		});
 		
+		moveIn.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				TreePath path = tree.getSelectionModel().getSelectionPath();
+				LayerNode n;
+				if(path == null)
+					return;
+				else
+					n = (LayerNode) path.getLastPathComponent();
+				if(n.equals(rootNode))
+					return;
+				LayerNode newParent = (LayerNode) n.getPreviousSibling();
+				if(newParent == null)
+					return;
+				LayerNode parent = (LayerNode) n.getParent();
+				newParent.add(n);
+				parent.canvas.removeLayer(n.canvas);
+				newParent.canvas.addLayer(n.canvas);
+				model.reload();
+				tree.setSelectionPath(new TreePath(n.getPath()));
+				Paint.main.gui.canvas.getPanel().repaint();
+			}
+		});
+		
+		moveOut.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				TreePath path = tree.getSelectionModel().getSelectionPath();
+				LayerNode n;
+				if(path == null)
+					return;
+				else
+					n = (LayerNode) path.getLastPathComponent();
+				if(n.equals(rootNode))
+					return;
+				LayerNode parent = (LayerNode) n.getParent();
+				if(parent == null || parent.isRoot())
+					return;
+				LayerNode newParent = (LayerNode) parent.getParent();
+				newParent.insert(n, newParent.getIndex(parent) + 1);
+				parent.canvas.removeLayer(n.canvas);
+				newParent.canvas.addLayer(n.canvas);
+				model.reload();
+				tree.setSelectionPath(new TreePath(n.getPath()));
+				Paint.main.gui.canvas.getPanel().repaint();
+			}
+		});
+		
+		name.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				TreePath path = tree.getSelectionModel().getSelectionPath();
+				LayerNode n;
+				if(path == null)
+					return;
+				else
+					n = (LayerNode) path.getLastPathComponent();
+				n.setUserObject(name.getText());
+				n.canvas.name = name.getText();
+				model.reload();
+				tree.setSelectionPath(new TreePath(n.getPath()));
+				Paint.main.gui.frame.requestFocus();
+			}
+		});
+		
+		settings.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				TreePath path = tree.getSelectionModel().getSelectionPath();
+				LayerNode n;
+				if(path == null)
+					return;
+				else
+					n = (LayerNode) path.getLastPathComponent();
+				lsettings.showFor(n.canvas);
+			}
+		});
+		
+		controls.add(name);
+		controls.add(settings);
 		controls.add(newLayer);
 		controls.add(deleteLayer);
 		controls.add(moveUp);
 		controls.add(moveDown);
+		controls.add(moveIn);
+		controls.add(moveOut);
 		controls.setVisible(false);
 		
 		dialog.setLayout(new BorderLayout());
-		dialog.add(controls, BorderLayout.SOUTH);
+		dialog.add(controls, BorderLayout.CENTER);
 		dialog.add(scroll, BorderLayout.NORTH);
 		
 		dialog.pack();
 		dialog.setResizable(true);
+		
+		lsettings = new LayerSettings();
 	}
 	
 	public void show()
@@ -234,7 +331,8 @@ public class LayerManager
 			{
 				n.remove(this);
 				n.canvas.removeLayer(canvas);
-				Paint.main.gui.layers.model.reload();
+				model.reload();
+				tree.setSelectionPath(new TreePath(n.getPath()));
 				Paint.main.gui.canvas.getPanel().repaint();
 			}
 		}
@@ -261,7 +359,7 @@ public class LayerManager
 				Paint.main.gui.canvas.select(n.canvas);
 				controls.setVisible(true);
 			}
-			
+			name.setText(((LayerNode) tree.getSelectionPath().getLastPathComponent()).canvas.name);
 		}
 	}
 	

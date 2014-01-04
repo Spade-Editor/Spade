@@ -26,7 +26,6 @@ import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.UserPreferences;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -50,7 +49,7 @@ import javax.swing.WindowConstants;
 public class GUIManager
 {
 	public JFrame frame;
-	private JPanel panel, menus;
+	private JPanel panel, menus, infoBar;
 	private JMenuBar menuBar;
 	private JScrollPane canvasZone;
 	
@@ -61,7 +60,7 @@ public class GUIManager
 	
 	AboutDialog about;
 	
-	private JMenuBar toolOptions;
+	private JPanel toolOptions;
 	
 	private Input input = new Input();
 	
@@ -139,14 +138,14 @@ public class GUIManager
 		initInputs();
 	}
 	
-	public void setToolOption(JMenuBar options)
+	public void setToolOption(JPanel options)
 	{
 		if(toolOptions != null)
 		{
-			menus.remove(toolOptions);
+			infoBar.remove(toolOptions);
 		}
 		toolOptions = options;
-		menus.add(toolOptions);
+		infoBar.add(toolOptions);
 		menus.revalidate();
 		menus.repaint();
 	}
@@ -175,13 +174,13 @@ public class GUIManager
 		info = new InfoMenu();
 		
 		menus = new JPanel();
-		menus.setLayout(new GridLayout(0, 1));
+		menus.setLayout(new BorderLayout());
 		
 		menuBar = Menu.createMenuBar();
-		JMenuBar infoBar = info.createInfoMenuBar();
+		infoBar = info.createInfoMenuBar();
 		
-		menus.add(menuBar);
-		menus.add(infoBar);
+		menus.add(menuBar, BorderLayout.NORTH);
+		menus.add(infoBar, BorderLayout.CENTER);
 		
 		panel.add(menus, BorderLayout.NORTH);
 	}

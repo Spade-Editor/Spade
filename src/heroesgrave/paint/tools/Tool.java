@@ -19,21 +19,21 @@
 
 package heroesgrave.paint.tools;
 
-import javax.swing.JMenuBar;
+import javax.swing.JPanel;
 
 public abstract class Tool
 {
 	public final String name;
 	
-	protected final JMenuBar menu;
+	protected final JPanel menu;
 	
 	public Tool(String name)
 	{
 		this.name = name;
-		menu = new JMenuBar();
+		menu = new JPanel();
 	}
 	
-	public final JMenuBar getOptions()
+	public final JPanel getOptions()
 	{
 		return menu;
 	}

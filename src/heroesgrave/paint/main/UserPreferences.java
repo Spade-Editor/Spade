@@ -80,8 +80,11 @@ public class UserPreferences
 			chooser.getDialog().setLocation(colourPickerX, colourPickerY);
 		}
 		
-		layers.dialog.setVisible(prefs.getBoolean(LAYERS_VISIBLE, false));
-		layers.dialog.setBounds(layersX, layersY, layersWidth, layersHeight);
+		if(prefs.getBoolean(LAYERS_VISIBLE, false))
+		{
+			layers.dialog.setVisible(true);
+			layers.dialog.setBounds(layersX, layersY, layersWidth, layersHeight);
+		}
 	}
 	
 	/**
