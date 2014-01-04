@@ -19,40 +19,36 @@
 
 package heroesgrave.paint.image.blend;
 
-import java.awt.Composite;
-import java.awt.CompositeContext;
-import java.awt.RenderingHints;
-import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
-public abstract class BlendMode implements Composite, CompositeContext
+public class MaskReplace extends BlendMode
 {
-	public static final BlendMode REPLACE = new Replace();
-	public static final BlendMode MASKREPLACE = new MaskReplace();
-	public static final BlendMode NORMAL = new Normal();
-	
-	public final String name;
-	
-	public BlendMode(String name)
+	public MaskReplace()
 	{
-		this.name = name;
+		super("Mask Replace");
 	}
 	
-	public abstract void compose(Raster src, Raster dst, WritableRaster out);
-	
-	public void dispose()
+	public void compose(Raster src, Raster dst, WritableRaster out)
 	{
+		int w = out.getWidth();
+		int h = out.getHeight();
 		
-	}
-	
-	public CompositeContext createContext(ColorModel arg0, ColorModel arg1, RenderingHints arg2)
-	{
-		return this;
-	}
-	
-	public String toString()
-	{
-		return name;
+		int n = src.getNumBands();
+		
+		int[] ip = new int[n], op = new int[n];
+		
+		for(int i = 0; i < w; i++)
+		{
+			for(int j = 0; j < h; j++)
+			{
+				if(src.getSample(i, j, 3) == 0)
+					dst.getPixel(i, j, ip);
+				else
+					src.getPixel(i, j, ip);
+				System.arraycopy(ip, 0, op, 0, n);
+				out.setPixel(i, j, op);
+			}
+		}
 	}
 }

@@ -26,6 +26,8 @@ import heroesgrave.paint.image.blend.BlendMode;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -50,13 +52,45 @@ public class LayerSettings
 		blendMode = new JComboBox<BlendMode>();
 		blendMode.addItem(BlendMode.NORMAL);
 		blendMode.addItem(BlendMode.REPLACE);
+		blendMode.addItem(BlendMode.MASKREPLACE);
+		
+		label = new JTextField("");
+		label.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				canvas.name = label.getText();
+				Paint.main.gui.layers.redrawTree();
+			}
+		});
 		
 		dialog.add(new CentredJLabel("Layer Name:"));
-		dialog.add(label = new JTextField(""));
+		dialog.add(label);
 		dialog.add(new CentredJLabel("Blend Mode:"));
 		dialog.add(blendMode);
 		
+		blendMode.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				canvas.setBlendMode((BlendMode) blendMode.getSelectedItem());
+				Paint.main.gui.layers.redrawTree();
+				Paint.main.gui.canvas.getPanel().repaint();
+			}
+		});
+		
 		label.setHorizontalAlignment(JLabel.CENTER);
+	}
+	
+	public void updateIfVisible(Canvas canvas)
+	{
+		if(dialog.isVisible())
+		{
+			this.canvas = canvas;
+			label.setText(canvas.name);
+			blendMode.setSelectedItem(canvas.mode);
+		}
 	}
 	
 	public void showFor(Canvas canvas)

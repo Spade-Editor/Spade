@@ -174,4 +174,9 @@ public class Canvas
 	{
 		return layers;
 	}
+	
+	public void setBlendMode(BlendMode mode)
+	{
+		this.mode = mode;
+	}
 }

@@ -127,7 +127,6 @@ public class LayerManager
 		JButton settings = new JButton("Settings");
 		name = new JTextField();
 		name.setHorizontalAlignment(JTextField.CENTER);
-		JButton properties = new JButton("Properties");
 		
 		newLayer.addActionListener(new ActionListener()
 		{
@@ -181,8 +180,7 @@ public class LayerManager
 					parent.remove(j);
 					parent.insert(n, j);
 					parent.insert(swap, i);
-					model.reload();
-					tree.setSelectionPath(new TreePath(n.getPath()));
+					redrawTree();
 				}
 			}
 		});
@@ -209,8 +207,7 @@ public class LayerManager
 					parent.remove(i);
 					parent.insert(swap, i);
 					parent.insert(n, j);
-					model.reload();
-					tree.setSelectionPath(new TreePath(n.getPath()));
+					redrawTree();
 				}
 			}
 		});
@@ -234,8 +231,7 @@ public class LayerManager
 				newParent.add(n);
 				parent.canvas.removeLayer(n.canvas);
 				newParent.canvas.addLayer(n.canvas);
-				model.reload();
-				tree.setSelectionPath(new TreePath(n.getPath()));
+				redrawTree();
 				Paint.main.gui.canvas.getPanel().repaint();
 			}
 		});
@@ -259,8 +255,7 @@ public class LayerManager
 				newParent.insert(n, newParent.getIndex(parent) + 1);
 				parent.canvas.removeLayer(n.canvas);
 				newParent.canvas.addLayer(n.canvas);
-				model.reload();
-				tree.setSelectionPath(new TreePath(n.getPath()));
+				redrawTree();
 				Paint.main.gui.canvas.getPanel().repaint();
 			}
 		});
@@ -277,8 +272,7 @@ public class LayerManager
 					n = (LayerNode) path.getLastPathComponent();
 				n.setUserObject(name.getText());
 				n.canvas.name = name.getText();
-				model.reload();
-				tree.setSelectionPath(new TreePath(n.getPath()));
+				redrawTree();
 				Paint.main.gui.frame.requestFocus();
 			}
 		});
@@ -359,7 +353,6 @@ public class LayerManager
 		}
 		
 		tree.setSelectionPath(selpath);
-		
 	}
 	
 	public boolean isVisible()
@@ -431,6 +424,7 @@ public class LayerManager
 			{
 				Paint.main.gui.canvas.select(n.canvas);
 				controls.setVisible(true);
+				lsettings.updateIfVisible(((LayerNode) tree.getSelectionPath().getLastPathComponent()).canvas);
 			}
 			name.setText(((LayerNode) tree.getSelectionPath().getLastPathComponent()).canvas.name);
 		}
