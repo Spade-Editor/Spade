@@ -19,6 +19,8 @@
 
 package heroesgrave.paint.image;
 
+import heroesgrave.paint.main.Paint;
+
 import java.awt.image.BufferedImage;
 import java.util.Stack;
 
@@ -67,6 +69,7 @@ public class History
 	
 	public void addChange(IFrame frame)
 	{
+		Paint.main.saved = false;
 		if(frame instanceof KeyFrame)
 		{
 			history.add(frame);
@@ -90,6 +93,7 @@ public class History
 	{
 		if(history.size() == 1)
 			return;
+		Paint.main.saved = false;
 		reverted.push(history.pop());
 		lastKeyFrame--;
 		if(lastKeyFrame == 0)
@@ -103,6 +107,7 @@ public class History
 	{
 		if(reverted.isEmpty())
 			return;
+		Paint.main.saved = false;
 		IFrame frame = reverted.pop();
 		if(frame instanceof KeyFrame)
 		{

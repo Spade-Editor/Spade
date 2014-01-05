@@ -20,8 +20,6 @@
 package heroesgrave.paint.image;
 
 import heroesgrave.paint.gui.Menu;
-import heroesgrave.paint.image.IFrame;
-import heroesgrave.paint.image.KeyFrame;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
 

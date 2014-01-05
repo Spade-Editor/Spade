@@ -30,8 +30,6 @@ import heroesgrave.utils.io.ImageExporter;
 import heroesgrave.utils.io.ImageImporter;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -107,6 +105,7 @@ public class Paint extends Application
 			Paint.main.openDir = toOpen.getParentFile();
 			Paint.main.gui.canvas.setImage(ImageImporter.loadImage(toOpen.getAbsolutePath()));
 		}
+		saved = true;
 	}
 	
 	public void update()
@@ -183,12 +182,9 @@ public class Paint extends Application
 	private void createImage(int width, int height)
 	{
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D) image.getGraphics();
-		g.setBackground(Color.WHITE);
-		g.clearRect(0, 0, width, height);
-		g.dispose();
 		gui.canvas.setImage(image);
 		this.openFile = null;
+		saved = true;
 	}
 	
 	public static void addTool(String key, Tool tool)

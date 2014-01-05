@@ -111,7 +111,7 @@ public class LayerManager
 		tree.getSelectionModel().addTreeSelectionListener(new SelectionListener());
 		tree.setVisibleRowCount(10);
 		tree.setExpandsSelectedPaths(true);
-		// XXX: I like the default renderer better.
+		// XXX HeroesGrave: I like the default renderer better.
 		// tree.setCellRenderer(new LayerManagerTreeCellRenderer());
 		
 		JScrollPane scroll = new JScrollPane(tree);
