@@ -71,13 +71,13 @@
 //	
 //	/**
 //	 * The active+loaded image itself.
-//	 * XXX: LayerSystemModificationMark
+//	 * : LayerSystemModificationMark
 //	 **/
 //	private BufferedImage image;
 //	
 //	/**
 //	 * The preview of the image. The preview displays a 'change' before it is applied to the actual image.
-//	 * XXX: LayerSystemModificationMark
+//	 * : LayerSystemModificationMark
 //	 **/
 //	private BufferedImage preview;
 //	
@@ -87,17 +87,17 @@
 //	private static BufferedImage transparenzyBG;
 //	
 //	/**
-//	 * XXX: LayerSystemModificationMark
+//	 * : LayerSystemModificationMark
 //	 **/
 //	private LinkedList<Change> changes = new LinkedList<Change>();
 //	
 //	/**
-//	 * XXX: LayerSystemModificationMark
+//	 * : LayerSystemModificationMark
 //	 **/
 //	private LinkedList<Change> reverted = new LinkedList<Change>();
 //	
 //	/**
-//	 * XXX: LayerSystemModificationMark
+//	 * : LayerSystemModificationMark
 //	 **/
 //	private LinkedList<Change> previewing = new LinkedList<Change>();
 //	
@@ -117,7 +117,7 @@
 //	
 //	public CanvasManager()
 //	{
-//		// XXX: LayerSystemModificationMark (~Image Class?)
+//		// : LayerSystemModificationMark (~Image Class?)
 //		// Create the startup Image.
 //		image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
 //		Graphics2D g = (Graphics2D) image.getGraphics();
@@ -140,7 +140,7 @@
 //		canvas = new Canvas(image);
 //	}
 //	
-//	// XXX: LayerSystemModificationMark (+Param:LayerID??)
+//	// : LayerSystemModificationMark (+Param:LayerID??)
 //	public void clearPreview()
 //	{
 //		previewing.clear();
@@ -149,7 +149,7 @@
 //		preview = null;
 //	}
 //	
-//	// XXX: LayerSystemModificationMark (+Param:LayerID??)
+//	// : LayerSystemModificationMark (+Param:LayerID??)
 //	public void preview(Change change)
 //	{
 //		if(preview == null)
@@ -165,7 +165,7 @@
 //		canvas.repaint();
 //	}
 //	
-//	// XXX: LayerSystemModificationMark (+Param:LayerID??)
+//	// : LayerSystemModificationMark (+Param:LayerID??)
 //	public void applyPreview()
 //	{
 //		Change[] c = new Change[previewing.size()];
@@ -175,7 +175,7 @@
 //		clearPreview();
 //	}
 //	
-//	// XXX: LayerSystemModificationMark (+Param:LayerID)
+//	// : LayerSystemModificationMark (+Param:LayerID)
 //	public void addChange(Change change)
 //	{
 //		BufferedImage nimage = change.apply(image);
@@ -247,7 +247,7 @@
 //		canvas.revalidate();
 //	}
 //	
-//	// XXX: LayerSystemModificationMark (+Param:LayerID)
+//	// : LayerSystemModificationMark (+Param:LayerID)
 //	public void revertChange()
 //	{
 //		if(changes.isEmpty())
@@ -265,7 +265,7 @@
 //		Paint.main.saved = false;
 //	}
 //	
-//	// XXX: LayerSystemModificationMark (+Param:LayerID)
+//	// : LayerSystemModificationMark (+Param:LayerID)
 //	public void repeatChange()
 //	{
 //		if(reverted.isEmpty())
@@ -283,7 +283,7 @@
 //		Paint.main.saved = false;
 //	}
 //	
-//	// XXX: LayerSystemModificationMark (+Param:LayerID//Override?)
+//	// : LayerSystemModificationMark (+Param:LayerID//Override?)
 //	public void setImage(BufferedImage image)
 //	{
 //		this.image = image;
@@ -306,7 +306,7 @@
 //	{
 //		private static final long serialVersionUID = 4162295507195065688L;
 //		
-//		// XXX: LayerSystemModificationMark (???)
+//		// : LayerSystemModificationMark (???)
 //		private BufferedImage image;
 //		private float scale = 1;
 //		private int lastButton = 0;
@@ -348,7 +348,7 @@
 //			this.setPreferredSize(new Dimension(MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale)));
 //		}
 //		
-//		// XXX: LayerSystemModificationMark (+Param:LayerID)
+//		// : LayerSystemModificationMark (+Param:LayerID)
 //		public void setImage(BufferedImage image)
 //		{
 //			this.image = image;
@@ -364,7 +364,7 @@
 //			g2d.setPaint(new TexturePaint(transparenzyBG, new Rectangle2D.Float(0, 0, 16, 16)));
 //			g2d.fillRect(0, 0, MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale));
 //			
-//			// XXX: LayerSystemModificationMark (~Layered Rendering)
+//			// : LayerSystemModificationMark (~Layered Rendering)
 //			// Draw the actual Image
 //			g2d.setPaint(null);
 //			g2d.drawImage(image, 0, 0, MathUtils.floor(image.getWidth() * scale), MathUtils.floor(image.getHeight() * scale), null);
@@ -387,7 +387,7 @@
 //	
 //	/**
 //	 * Returns the Image.
-//	 * XXX: LayerSystemModificationMark (+Param:LayerID)
+//	 * : LayerSystemModificationMark (+Param:LayerID)
 //	 **/
 //	public BufferedImage getImage()
 //	{
