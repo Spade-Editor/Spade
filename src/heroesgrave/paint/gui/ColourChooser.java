@@ -273,7 +273,7 @@ public class ColourChooser
 		// Not working yet. Supposed to enable HSB colour input.
 		// buttonPanel.add(colorModelPanel, BorderLayout.SOUTH);
 		// ...
-		// XXX: Longor1996:
+		// XXX: Longor1996 comment:
 		//
 		// You should go and:
 		// 1. Make different methods for loading up the single color tabs.
@@ -281,9 +281,25 @@ public class ColourChooser
 		// 3. You should go and use the property-change methods of the inputs to update the color value.
 		// 4. Format the stuff in here!
 		//
-		// XXX: HeroesGrave:
+		// XXX: HeroesGrave comment:
 		// 
 		// This was meant to be temporary, but got a little bit bloated.
+		//
+		// XXX: Longor1996 comment:
+		// I think I am going to rework this entire class. Its just one huge mess in here.
+		// I am going to make some tabs, each having its own way of selecting the color.
+		// Tabs:
+		// - RGB Circle Chooser
+		// - RGB Slider Chooser
+		// - HSV Circle Chooser
+		// - HSV Slider Chooser
+		// - HSB Circle Chooser
+		// - HSB Slider Chooser
+		// - Color Pellet/Pallet like in Paint.NET
+		// - User defined Color Pellet/Pallet (Good idea?)
+		// - (?) 3D-Cube Color Chooser
+		//
+		
 		
 		top.add(buttonPanel, BorderLayout.NORTH);
 		

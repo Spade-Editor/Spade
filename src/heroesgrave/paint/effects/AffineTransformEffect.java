@@ -15,6 +15,11 @@ public class AffineTransformEffect extends ImageOp {
 	{
 		
 		// TODO: Implement GUI for AffineTransform!
+		// Use springLayout this time, as anything else looks stupid.
+		
+		// I don't know how the GUI should be done...
+		// Either by sliders, a table of values (matrix) or
+		// some clearly visible options (translation, shear, rotation, etc.etc.).
 		
 		// dialog:creation -> transform_do();
 		// dialog:anyAction -> transform_do();
