@@ -25,6 +25,8 @@ import heroesgrave.paint.main.Paint;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.SpringLayout;
 
 public class Picker extends Tool
 {
@@ -34,10 +36,23 @@ public class Picker extends Tool
 	{
 		super(name);
 		
+		JLabel label = (JLabel) menu.getComponent(0);
+		
+		SpringLayout layout = new SpringLayout();
+		menu.setLayout(layout);
+		
 		this.switchPencil = new JCheckBox("Switch to Pencil");
+		switchPencil.setFocusable(false);
+		
 		menu.add(switchPencil);
 		
-		switchPencil.setFocusable(false);
+		layout.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, menu);
+		layout.putConstraint(SpringLayout.WEST, switchPencil, 20, SpringLayout.EAST, label);
+		layout.putConstraint(SpringLayout.EAST, menu, 20, SpringLayout.EAST, switchPencil);
+		
+		layout.putConstraint(SpringLayout.NORTH, label, 3, SpringLayout.NORTH, menu);
+		
+		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
 	}
 	
 	public void onPressed(int x, int y, int button)

@@ -20,7 +20,6 @@
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.tools.Tool;
 import heroesgrave.utils.math.MathUtils;
 
 import java.awt.Color;
@@ -37,6 +36,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
@@ -47,22 +47,21 @@ import javax.swing.SwingConstants;
  **/
 public class InfoMenu
 {
-	private JPanel spacer;
-	private JLabel scale, saved, tool;
+	private JPanel tool;
+	private JLabel scale, saved;
 	private JButton reset;
 	private MemoryWatcher memoryWatcher;
 	private ColourTextPanel left, right;
 	
 	public JComponent createInfoMenuBar()
 	{
-		JComponent menuBar = new JPanel();
+		JComponent menuBar = new JMenuBar();
 		
 		SpringLayout layout = new SpringLayout();
 		menuBar.setLayout(layout);
 		
 		scale = new JLabel("Scale: 100%");
 		saved = new JLabel("Saved: Yes");
-		tool = new JLabel("Tool: Pencil");
 		
 		// Check if the MemoryWatcher should be activated.
 		if(System.getProperty("DmemoryWatcherFlag") != null)
@@ -72,10 +71,10 @@ public class InfoMenu
 		
 		scale.setHorizontalAlignment(SwingConstants.CENTER);
 		saved.setHorizontalAlignment(SwingConstants.CENTER);
-		tool.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JPanel colourPanel = new JPanel();
 		colourPanel.setLayout(new GridLayout(1, 2));
+		colourPanel.setOpaque(false);
 		
 		left = new ColourTextPanel();
 		right = new ColourTextPanel();
@@ -146,13 +145,16 @@ public class InfoMenu
 			}
 		});
 		
+		tool = new JPanel();
+		tool.setOpaque(false);
+		
+		JPanel spacer = new JPanel();
+		spacer.setOpaque(false);
+		
 		menuBar.add(colourPanel);
 		menuBar.add(scale);
 		menuBar.add(saved);
 		menuBar.add(tool);
-		
-		spacer = new JPanel();
-		
 		menuBar.add(spacer);
 		
 		layout.putConstraint(SpringLayout.WEST, colourPanel, 5, SpringLayout.WEST, menuBar);
@@ -165,7 +167,6 @@ public class InfoMenu
 		
 		layout.putConstraint(SpringLayout.NORTH, scale, 7, SpringLayout.NORTH, menuBar);
 		layout.putConstraint(SpringLayout.NORTH, saved, 7, SpringLayout.NORTH, menuBar);
-		layout.putConstraint(SpringLayout.NORTH, tool, 7, SpringLayout.NORTH, menuBar);
 		
 		layout.putConstraint(SpringLayout.SOUTH, menuBar, 0, SpringLayout.SOUTH, colourPanel);
 		
@@ -177,9 +178,9 @@ public class InfoMenu
 		return menuBar;
 	}
 	
-	public JPanel getSpacer()
+	public JPanel getSpace()
 	{
-		return spacer;
+		return tool;
 	}
 	
 	private void read(ColourTextPanel panel)
@@ -225,11 +226,6 @@ public class InfoMenu
 	public void setSaved(boolean saved)
 	{
 		this.saved.setText("Saved: " + (saved ? "Yes" : "No"));
-	}
-	
-	public void setTool(Tool tool)
-	{
-		this.tool.setText("Tool: " + tool.name);
 	}
 	
 	public void setLeftColour(int colour)

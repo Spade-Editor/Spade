@@ -42,7 +42,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -93,7 +92,6 @@ public class LayerManager
 	protected DefaultTreeModel model;
 	protected JTree tree;
 	protected JPanel controls;
-	protected JTextField name;
 	
 	public LayerManager(Canvas root)
 	{
@@ -126,8 +124,7 @@ public class LayerManager
 		JButton moveIn = new JButton("Move In");
 		JButton moveOut = new JButton("Move Out");
 		JButton settings = new JButton("Settings");
-		name = new JTextField();
-		name.setHorizontalAlignment(JTextField.CENTER);
+		JButton merge = new JButton("Merge Out");
 		
 		newLayer.addActionListener(new ActionListener()
 		{
@@ -233,6 +230,7 @@ public class LayerManager
 				parent.canvas.removeLayer(n.canvas);
 				newParent.canvas.addLayer(n.canvas);
 				redrawTree();
+				tree.setSelectionPath(new TreePath(n.getPath()));
 				Paint.main.gui.canvas.getPanel().repaint();
 			}
 		});
@@ -257,11 +255,12 @@ public class LayerManager
 				parent.canvas.removeLayer(n.canvas);
 				newParent.canvas.addLayer(n.canvas);
 				redrawTree();
+				tree.setSelectionPath(new TreePath(n.getPath()));
 				Paint.main.gui.canvas.getPanel().repaint();
 			}
 		});
 		
-		name.addActionListener(new ActionListener()
+		merge.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
@@ -271,10 +270,13 @@ public class LayerManager
 					return;
 				else
 					n = (LayerNode) path.getLastPathComponent();
-				n.setUserObject(name.getText());
-				n.canvas.name = name.getText();
+				if(n.isRoot())
+					return;
+				LayerNode parent = (LayerNode) n.getParent();
+				parent.merge(n);
+				n.delete();
 				redrawTree();
-				Paint.main.gui.frame.requestFocus();
+				tree.setSelectionPath(new TreePath(parent.getPath()));
 			}
 		});
 		
@@ -292,15 +294,15 @@ public class LayerManager
 			}
 		});
 		
-		controls.add(name);
-		controls.add(settings);
-		
 		controls.add(newLayer);
 		controls.add(deleteLayer);
+		controls.add(merge);
+		controls.add(settings);
 		controls.add(moveUp);
 		controls.add(moveDown);
 		controls.add(moveIn);
 		controls.add(moveOut);
+		
 		controls.setVisible(false);
 		
 		dialog.setLayout(new BorderLayout());
@@ -369,7 +371,7 @@ public class LayerManager
 		
 		public LayerNode(Canvas canvas)
 		{
-			super(canvas.name);
+			super(canvas);
 			this.canvas = canvas;
 			if(canvas.hasChildren())
 			{
@@ -389,6 +391,15 @@ public class LayerManager
 			model.reload();
 			tree.setSelectionPath(new TreePath(node.getPath()));
 			Paint.main.gui.canvas.getPanel().repaint();
+		}
+		
+		public void merge(LayerNode node)
+		{
+			this.canvas.mergeLayer(node.canvas);
+			while(node.getChildCount() > 0)
+			{
+				this.add((LayerNode) node.getFirstChild());
+			}
 		}
 		
 		public void delete()
@@ -427,7 +438,6 @@ public class LayerManager
 				controls.setVisible(true);
 				lsettings.updateIfVisible(((LayerNode) tree.getSelectionPath().getLastPathComponent()).canvas);
 			}
-			name.setText(((LayerNode) tree.getSelectionPath().getLastPathComponent()).canvas.name);
 		}
 	}
 	

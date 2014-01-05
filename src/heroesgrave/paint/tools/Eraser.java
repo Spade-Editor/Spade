@@ -43,11 +43,11 @@ import heroesgrave.paint.image.ShapeChange;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.BasicStroke;
-import java.awt.BorderLayout;
 import java.awt.geom.GeneralPath;
 
-import javax.swing.JPanel;
+import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.SpringLayout;
 
 public class Eraser extends Tool
 {
@@ -59,18 +59,29 @@ public class Eraser extends Tool
 	{
 		super(name);
 		slider = new JSlider(0, 16, 0);
-		menu.setLayout(new BorderLayout());
 		
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		panel.setOpaque(false);
+		JLabel label = (JLabel) menu.getComponent(0);
 		
-		panel.add(new CentredLabel("Size: "), BorderLayout.WEST);
-		panel.add(slider, BorderLayout.CENTER);
+		SpringLayout layout = new SpringLayout();
+		menu.setLayout(layout);
 		
 		slider.setFocusable(false);
 		
-		menu.add(panel, BorderLayout.CENTER);
+		JLabel size = new CentredLabel("Size: ");
+		
+		menu.add(label);
+		menu.add(size);
+		menu.add(slider);
+		
+		layout.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, menu);
+		layout.putConstraint(SpringLayout.WEST, size, 20, SpringLayout.EAST, label);
+		layout.putConstraint(SpringLayout.WEST, slider, 20, SpringLayout.EAST, size);
+		layout.putConstraint(SpringLayout.EAST, menu, 20, SpringLayout.EAST, slider);
+		
+		layout.putConstraint(SpringLayout.NORTH, label, 3, SpringLayout.NORTH, menu);
+		layout.putConstraint(SpringLayout.NORTH, size, 3, SpringLayout.NORTH, menu);
+		
+		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
 	}
 	
 	@Override

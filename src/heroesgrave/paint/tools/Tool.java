@@ -19,7 +19,9 @@
 
 package heroesgrave.paint.tools;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SpringLayout;
 
 public abstract class Tool
 {
@@ -31,6 +33,18 @@ public abstract class Tool
 	{
 		this.name = name;
 		menu = new JPanel();
+		menu.setOpaque(false);
+		
+		SpringLayout l = new SpringLayout();
+		menu.setLayout(l);
+		
+		JLabel label = new JLabel("Tool: " + name);
+		menu.add(label);
+		
+		l.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, menu);
+		l.putConstraint(SpringLayout.EAST, menu, 5, SpringLayout.EAST, label);
+		l.putConstraint(SpringLayout.NORTH, label, 3, SpringLayout.NORTH, menu);
+		l.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
 	}
 	
 	public final JPanel getOptions()

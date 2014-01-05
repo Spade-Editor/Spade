@@ -63,6 +63,17 @@ public class Canvas
 		layers.remove(canvas);
 	}
 	
+	public void mergeLayer(Canvas canvas)
+	{
+		canvas.draw(image.createGraphics());
+		this.addChange(new KeyFrame(this.image));
+		this.image = hist.getUpdatedImage();
+		for(Canvas c : canvas.getChildren())
+		{
+			addLayer(c);
+		}
+	}
+	
 	public int getRGB(int x, int y)
 	{
 		return image.getRGB(x, y);
@@ -142,6 +153,7 @@ public class Canvas
 		}
 		
 		g.setComposite(mode);
+		g.drawImage(this.image, 0, 0, null);
 		
 		if(!layers.isEmpty())
 		{
@@ -150,8 +162,6 @@ public class Canvas
 				layers.get(i).draw(g);
 			}
 		}
-		
-		g.drawImage(this.image, 0, 0, null);
 	}
 	
 	public History getHistory()
@@ -179,5 +189,10 @@ public class Canvas
 	public void setBlendMode(BlendMode mode)
 	{
 		this.mode = mode;
+	}
+	
+	public String toString()
+	{
+		return name;
 	}
 }

@@ -216,7 +216,6 @@ public class Paint extends Application
 	public static void setTool(Tool tool)
 	{
 		main.currentTool = tool;
-		main.gui.info.setTool(tool);
 		main.gui.setToolOption(tool.getOptions());
 	}
 	

@@ -30,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -45,7 +46,7 @@ public class LayerSettings
 	public LayerSettings()
 	{
 		this.dialog = new CentredJDialog(Paint.main.gui.frame, "Layer Settings");
-		dialog.setSize(200, 100);
+		dialog.setSize(200, 120);
 		dialog.setVisible(false);
 		dialog.setResizable(false);
 		dialog.setLayout(new GridLayout(0, 2));
@@ -66,10 +67,25 @@ public class LayerSettings
 			}
 		});
 		
+		JButton done = new JButton("Done");
+		
+		done.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				canvas.name = label.getText();
+				Paint.main.gui.layers.redrawTree();
+				dialog.setVisible(false);
+			}
+		});
+		
 		dialog.add(new CentredJLabel("Layer Name:"));
 		dialog.add(label);
 		dialog.add(new CentredJLabel("Blend Mode:"));
 		dialog.add(blendMode);
+		dialog.add(new JLabel());
+		dialog.add(done);
 		
 		blendMode.addActionListener(new ActionListener()
 		{

@@ -144,10 +144,10 @@ public class GUIManager
 	{
 		if(toolOptions != null)
 		{
-			info.getSpacer().remove(toolOptions);
+			info.getSpace().remove(toolOptions);
 		}
 		toolOptions = options;
-		info.getSpacer().add(toolOptions);
+		info.getSpace().add(toolOptions);
 		menus.revalidate();
 		menus.repaint();
 	}
