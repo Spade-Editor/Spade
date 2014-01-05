@@ -34,7 +34,7 @@ public class SimplexNoiseOp extends ImageOp
 		BufferedImage newImage = new BufferedImage(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		SimplexNoise noise = new SimplexNoise(System.currentTimeMillis());
 		
-		// TODO: Add dialog with sliders to configure the noise!
+		// TODO: Add dialog with sliders to configure the noise! (Should be easy, its just 4 sliders and a bunch of changeListeners! Use IFunc? Yes!)
 		double scale = 0.125;
 		
 		int OCTAVES = 8;

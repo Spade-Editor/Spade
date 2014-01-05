@@ -44,7 +44,7 @@ public class PerlinNoiseOp extends ImageOp
 			{
 				
 				// TODO: Fix the 'stripe' issue... this Op cannot be used with this strange bug being in place.
-				// The Perlin class is PROBABLY bugged!
+				// The Perlin class is PROBABLY bugged, or I am doing something wrong in this loop!
 				double valD = noise.noise3d_simplex4(i, 0, j);
 				
 				valD = valD * 0.5D + 0.5D;
