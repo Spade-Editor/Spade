@@ -91,16 +91,6 @@ public class Canvas
 			c.fullChange(frame);
 	}
 	
-	public void revertChange()
-	{
-		hist.revertChange();
-	}
-	
-	public void repeatChange()
-	{
-		hist.repeatChange();
-	}
-	
 	public int getWidth()
 	{
 		return image.getWidth();
@@ -194,5 +184,18 @@ public class Canvas
 	public String toString()
 	{
 		return name;
+	}
+	
+	public Canvas getParentOf(Canvas c)
+	{
+		if(layers.contains(c))
+			return this;
+		for(Canvas cc : layers)
+		{
+			Canvas p = cc.getParentOf(c);
+			if(p != null)
+				return p;
+		}
+		return null;
 	}
 }

@@ -69,7 +69,7 @@ public class CanvasManager
 	{
 		if(preview == null)
 			return;
-		selected.addChange(preview);
+		Paint.addChange(preview);
 		panel.repaint();
 		preview = null;
 	}
@@ -269,5 +269,12 @@ public class CanvasManager
 	public void selectRoot()
 	{
 		this.selected = this.root;
+	}
+	
+	public Canvas getParentOf(Canvas c)
+	{
+		if(c == root)
+			return null;
+		return root.getParentOf(c);
 	}
 }

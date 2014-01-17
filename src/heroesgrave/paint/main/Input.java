@@ -77,13 +77,11 @@ public class Input implements KeyListener, MouseWheelListener
 			{
 				if(e.getKeyCode() == KeyEvent.VK_Z)
 				{
-					Paint.main.gui.canvas.getCanvas().revertChange();
-					Paint.main.gui.canvas.getPanel().repaint();
+					Paint.main.history.revertChange();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_Y)
 				{
-					Paint.main.gui.canvas.getCanvas().repeatChange();
-					Paint.main.gui.canvas.getPanel().repaint();
+					Paint.main.history.repeatChange();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_EQUALS)
 				{

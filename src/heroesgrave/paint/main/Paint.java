@@ -21,6 +21,7 @@ package heroesgrave.paint.main;
 
 import heroesgrave.paint.gui.GUIManager;
 import heroesgrave.paint.gui.Menu.CentredJDialog;
+import heroesgrave.paint.image.GlobalHistory;
 import heroesgrave.paint.image.IFrame;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.plugin.PluginManager;
@@ -49,7 +50,7 @@ import javax.swing.JOptionPane;
 
 public class Paint extends Application
 {
-	// Major.Minor + letter for releases.
+	// Major.Minor + letter for releases. The letter is for tiny revisions, such as fixing bugs that slipped through.
 	// Major.Minor-Dev for development builds.
 	// Eg: 1.3b is the 2nd revision of verion 1.3
 	
@@ -58,11 +59,11 @@ public class Paint extends Application
 	// Development for under-development new features.
 	
 	public static final String VERSION = "1.0-Dev";
-	public static final String RELEASED = "05/01/2013";
+	public static final String RELEASED = "05/01/2014";
 	
 	public static final String BUILD_TYPE = "Development";
-	//public static final String BUILD_TYPE = "Beta";
-	//public static final String BUILD_TYPE = "Stable";
+	// public static final String BUILD_TYPE = "Beta";
+	// public static final String BUILD_TYPE = "Stable";
 	
 	public static boolean debug;
 	public static Paint main = new Paint();
@@ -70,6 +71,7 @@ public class Paint extends Application
 	
 	public GUIManager gui;
 	public heroesgrave.paint.plugin.PluginManager pluginManager;
+	public GlobalHistory history;
 	
 	public File openFile;
 	public File openDir;
@@ -93,6 +95,8 @@ public class Paint extends Application
 		pluginManager = PluginManager.instance(this);
 		gui = new GUIManager();
 		gui.init();
+		
+		history = new GlobalHistory();
 		setRightColour(0xffffffff);
 		setLeftColour(0xff000000);
 		setTool(currentTool);
@@ -209,8 +213,10 @@ public class Paint extends Application
 	
 	public static void addChange(IFrame frame)
 	{
+		frame.setCanvas(main.gui.canvas.getCanvas());
 		main.gui.canvas.getCanvas().addChange(frame);
 		main.gui.canvas.getPanel().repaint();
+		main.history.addChange(frame);
 	}
 	
 	public static void setTool(Tool tool)
@@ -372,10 +378,8 @@ public class Paint extends Application
 				main.toOpen = f;
 			}
 		}
-		// Test Blending at startup
-		//*/ System.out.println(Integer.toHexString(BlendMode.NORMAL.blend(0x7f0000ff, 0xffff0000)));
 		
-		// Go trough ALL the arguments and...
+		// Go through ALL the arguments and...
 		for(String STR : args)
 		{
 			// ...If the arguments contain the DmemoryWatcherFlag flag, set the property to true to enable the MemoryWatcher.

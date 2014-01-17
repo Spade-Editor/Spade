@@ -330,7 +330,7 @@ public class Menu
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Paint.main.gui.canvas.getCanvas().revertChange();
+				Paint.main.history.revertChange();
 			}
 		});
 		
@@ -338,7 +338,7 @@ public class Menu
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Paint.main.gui.canvas.getCanvas().repeatChange();
+				Paint.main.history.repeatChange();
 			}
 		});
 		
@@ -346,7 +346,7 @@ public class Menu
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Paint.main.gui.canvas.getCanvas().clearHistory();
+				Paint.main.history.clearHistory();
 			}
 		});
 		

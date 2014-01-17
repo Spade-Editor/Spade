@@ -19,9 +19,22 @@
 
 package heroesgrave.paint.image;
 
-public interface IFrame
+import java.awt.image.BufferedImage;
+
+public class MultiChange extends Frame
 {
-	public void setCanvas(Canvas canvas);
+	public Frame[] changes;
 	
-	public Canvas getCanvas();
+	public MultiChange(Frame... c)
+	{
+		this.changes = c;
+	}
+	
+	public void apply(BufferedImage image)
+	{
+		for(int i = 0; i < changes.length; i++)
+		{
+			changes[i].apply(image);
+		}
+	}
 }

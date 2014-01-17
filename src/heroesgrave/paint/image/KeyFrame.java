@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 public class KeyFrame implements IFrame
 {
 	private BufferedImage image;
+	private Canvas canvas;
 	
 	public KeyFrame(BufferedImage image)
 	{
@@ -51,5 +52,17 @@ public class KeyFrame implements IFrame
 		BufferedImage give = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		give.getGraphics().drawImage(image, 0, 0, null);
 		return give;
+	}
+	
+	@Override
+	public void setCanvas(Canvas canvas)
+	{
+		this.canvas = canvas;
+	}
+	
+	@Override
+	public Canvas getCanvas()
+	{
+		return canvas;
 	}
 }

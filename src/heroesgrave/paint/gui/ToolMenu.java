@@ -72,6 +72,8 @@ public class ToolMenu
 		menu.add(new ToolMenuItem("Line", new Line("Straight Line"), "L"));
 		menu.add(new ToolMenuItem("Rectangle", new Rectangle("Rectangle"), "R"));
 		menu.add(new ToolMenuItem("Ellipse", new Ellipse("Ellipse"), "C"));
+		// WIP
+		// menu.add(new ToolMenuItem("Layer Copy", new LayerCopy("Layer Copy"), "N"));
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerTools(menu);
 		

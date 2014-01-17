@@ -20,8 +20,8 @@
 package heroesgrave.paint.tools;
 
 import heroesgrave.paint.image.Canvas;
+import heroesgrave.paint.image.MultiChange;
 import heroesgrave.paint.image.PixelChange;
-import heroesgrave.paint.main.MultiChange;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.Point;

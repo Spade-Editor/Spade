@@ -23,5 +23,19 @@ import java.awt.image.BufferedImage;
 
 public abstract class Frame implements IFrame
 {
+	private Canvas canvas;
+	
 	public abstract void apply(BufferedImage image);
+	
+	@Override
+	public void setCanvas(Canvas canvas)
+	{
+		this.canvas = canvas;
+	}
+	
+	@Override
+	public Canvas getCanvas()
+	{
+		return canvas;
+	}
 }

@@ -17,26 +17,25 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.main;
-
-import heroesgrave.paint.image.Frame;
+package heroesgrave.paint.image;
 
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
 
-public class MultiChange extends Frame
+public class BufferedChange extends Frame
 {
-	public Frame[] changes;
+	public LinkedList<Frame> changes = new LinkedList<Frame>();
 	
-	public MultiChange(Frame... c)
+	public void buffer(Frame frame)
 	{
-		this.changes = c;
+		changes.add(frame);
 	}
 	
 	public void apply(BufferedImage image)
 	{
-		for(int i = 0; i < changes.length; i++)
+		for(Frame c : changes)
 		{
-			changes[i].apply(image);
+			c.apply(image);
 		}
 	}
 }
