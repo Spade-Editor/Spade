@@ -25,6 +25,7 @@ public class GlobalHistory
 		{
 			((ImageOpChange) frame).apply();
 		}
+		reverted.clear();
 	}
 	
 	public void revertChange()
