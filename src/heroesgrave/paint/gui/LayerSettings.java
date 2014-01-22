@@ -112,4 +112,9 @@ public class LayerSettings
 		dialog.setVisible(true);
 		blendMode.setSelectedItem(canvas.mode);
 	}
+	
+	public void dispose()
+	{
+		dialog.dispose();
+	}
 }

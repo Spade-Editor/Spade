@@ -117,7 +117,9 @@ public class CanvasManager
 	
 	public void setImage(BufferedImage image)
 	{
-		this.selected = this.root = new Canvas("Base", image);
+		this.selected = this.root = new Canvas("Background", image);
+		if(Paint.main.gui.layers != null)
+			Paint.main.gui.layers.setRoot(this.root);
 		this.width = root.getWidth();
 		this.height = root.getHeight();
 		panel.init();

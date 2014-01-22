@@ -289,6 +289,18 @@ public class LayerManager
 		lsettings = new LayerSettings();
 	}
 	
+	public void setRoot(Canvas root)
+	{
+		rootNode = new LayerNode(root);
+		model.setRoot(rootNode);
+		tree.setEditable(false);
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		tree.setShowsRootHandles(true);
+		tree.getSelectionModel().addTreeSelectionListener(new SelectionListener());
+		tree.setVisibleRowCount(10);
+		tree.setExpandsSelectedPaths(true);
+	}
+	
 	public void show()
 	{
 		dialog.setVisible(true);
@@ -302,6 +314,12 @@ public class LayerManager
 	public void toggle()
 	{
 		dialog.setVisible(!dialog.isVisible());
+	}
+	
+	public void dispose()
+	{
+		dialog.dispose();
+		lsettings.dispose();
 	}
 	
 	public void redrawTree()

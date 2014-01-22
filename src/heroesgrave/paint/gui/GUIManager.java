@@ -133,7 +133,7 @@ public class GUIManager
 		createCanvas();
 		
 		chooser = new ColourChooser();
-		layers = new LayerManager(canvas.getCanvas());
+		layers = new LayerManager(canvas.getRoot());
 		about = new AboutDialog(frame);
 		finish();
 		
