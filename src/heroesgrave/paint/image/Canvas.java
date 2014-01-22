@@ -47,15 +47,17 @@ public class Canvas
 		hist = new History(image);
 	}
 	
-	public void changeImage(BufferedImage image)
+	public void checkImage()
 	{
-		this.image = image;
-		hist.addChange(new KeyFrame(image));
+		this.image = hist.getUpdatedImage();
+		for(Canvas c : layers)
+			c.checkImage();
 	}
 	
 	public void addLayer(Canvas c)
 	{
-		layers.add(c);
+		if(!layers.contains(c))
+			layers.add(c);
 	}
 	
 	public void removeLayer(Canvas canvas)
@@ -65,13 +67,17 @@ public class Canvas
 	
 	public void mergeLayer(Canvas canvas)
 	{
-		canvas.draw(image.createGraphics());
-		this.addChange(new KeyFrame(this.image));
+		this.removeLayer(canvas);
 		this.image = hist.getUpdatedImage();
-		for(Canvas c : canvas.getChildren())
-		{
-			addLayer(c);
-		}
+		canvas.draw(image.createGraphics());
+		hist.addChange(new KeyFrame(this.image));
+	}
+	
+	public void unmergeLayer(Canvas canvas)
+	{
+		hist.revertChange();
+		this.addLayer(canvas);
+		this.image = hist.getUpdatedImage();
 	}
 	
 	public int getRGB(int x, int y)
@@ -82,13 +88,6 @@ public class Canvas
 	public void addChange(IFrame frame)
 	{
 		hist.addChange(frame);
-	}
-	
-	public void fullChange(KeyFrame frame)
-	{
-		hist.addChange(frame);
-		for(Canvas c : layers)
-			c.fullChange(frame);
 	}
 	
 	public int getWidth()

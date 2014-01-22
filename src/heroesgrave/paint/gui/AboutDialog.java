@@ -54,7 +54,7 @@ public class AboutDialog extends CentredJDialog
 		buf.append("Links:\n");
 		buf.append("\n");
 		buf.append("Github Repo: https://github.com/HeroesGrave/Paint.JAVA\n");
-		buf.append("HeroesGrave's Development Blog: http://heroesgrave.tk\n");
+		buf.append("HeroesGrave Development Blog: http://heroesgrave.github.io/\n");
 		buf.append("\n");
 		buf.append("Credits:\n");
 		buf.append("\n");

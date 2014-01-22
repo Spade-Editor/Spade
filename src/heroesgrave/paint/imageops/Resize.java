@@ -20,16 +20,12 @@
 package heroesgrave.paint.imageops;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
-import heroesgrave.paint.image.KeyFrame;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.misc.NumberFilter;
 
-import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -112,30 +108,6 @@ public class Resize extends ImageOp
 	
 	public void resize(int nx, int ny, String filter)
 	{
-		BufferedImage newImage = new BufferedImage((int) nx, (int) ny, BufferedImage.TYPE_INT_ARGB);
-		
-		// FANCY RESCALE CODE HERE!
-		Graphics2D g2d = (Graphics2D) newImage.getGraphics();
-		g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-		g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, getFilterHint(filter)); // RenderingHints.VALUE_INTERPOLATION_BILINEAR
-		g2d.drawImage(Paint.main.gui.canvas.getCanvas().getImage(), 0, 0, (int) nx, (int) ny, null);
-		
-		Paint.main.gui.canvas.getRoot().fullChange(new KeyFrame(newImage));
-	}
-	
-	/**
-	 * Returns the correct RenderingHint for the given filtering label.
-	 **/
-	private static Object getFilterHint(String filter)
-	{
-		if(filter.equalsIgnoreCase("Nearest Neighbor"))
-			return RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR;
-		if(filter.equalsIgnoreCase("Bilinear"))
-			return RenderingHints.VALUE_INTERPOLATION_BILINEAR;
-		if(filter.equalsIgnoreCase("Bicubic"))
-			return RenderingHints.VALUE_INTERPOLATION_BICUBIC;
-		
-		throw new IllegalArgumentException("ERROR: Unknown Filter!");
+		Paint.main.history.addChange(new ResizeChange(nx, ny, filter));
 	}
 }

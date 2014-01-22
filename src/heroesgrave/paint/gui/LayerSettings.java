@@ -23,6 +23,8 @@ import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.gui.Menu.CentredJLabel;
 import heroesgrave.paint.image.Canvas;
 import heroesgrave.paint.image.blend.BlendMode;
+import heroesgrave.paint.image.doc.LayerBlendChange;
+import heroesgrave.paint.image.doc.LayerNameChange;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.GridLayout;
@@ -58,14 +60,6 @@ public class LayerSettings
 			blendMode.addItem(mode);
 		
 		label = new JTextField("");
-		label.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				canvas.name = label.getText();
-				Paint.main.gui.layers.redrawTree();
-			}
-		});
 		
 		JButton done = new JButton("Done");
 		
@@ -74,8 +68,7 @@ public class LayerSettings
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				canvas.name = label.getText();
-				Paint.main.gui.layers.redrawTree();
+				Paint.main.history.addChange(new LayerNameChange(canvas, label.getText()));
 				dialog.setVisible(false);
 			}
 		});
@@ -89,12 +82,13 @@ public class LayerSettings
 		
 		blendMode.addActionListener(new ActionListener()
 		{
-			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				canvas.setBlendMode((BlendMode) blendMode.getSelectedItem());
-				Paint.main.gui.layers.redrawTree();
-				Paint.main.gui.canvas.getPanel().repaint();
+				if(blendMode.getSelectedItem() != Paint.main.gui.canvas.getCanvas().mode)
+				{
+					Paint.main.history.addChange(new LayerBlendChange(canvas, (BlendMode) blendMode.getSelectedItem()));
+					Paint.main.gui.canvas.getPanel().repaint();
+				}
 			}
 		});
 		

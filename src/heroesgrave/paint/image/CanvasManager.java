@@ -56,7 +56,6 @@ public class CanvasManager
 		panel = new CanvasRenderer(this);
 		
 		setImage(new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB));
-		panel.init();
 	}
 	
 	public void preview(IFrame frame)
@@ -276,5 +275,16 @@ public class CanvasManager
 		if(c == root)
 			return null;
 		return root.getParentOf(c);
+	}
+	
+	public void setDimensions()
+	{
+		root.checkImage();
+		this.width = root.getWidth();
+		this.height = root.getHeight();
+		panel.init();
+		panel.setScale(scale);
+		panel.repaint();
+		panel.revalidate();
 	}
 }

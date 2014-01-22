@@ -21,8 +21,8 @@ package heroesgrave.paint.main;
 
 import heroesgrave.paint.gui.GUIManager;
 import heroesgrave.paint.gui.Menu.CentredJDialog;
-import heroesgrave.paint.image.GlobalHistory;
 import heroesgrave.paint.image.IFrame;
+import heroesgrave.paint.image.doc.GlobalHistory;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.paint.tools.Tool;
@@ -58,12 +58,12 @@ public class Paint extends Application
 	// Beta for new completed features.
 	// Development for under-development new features.
 	
-	public static final String VERSION = "1.0-Dev";
-	public static final String RELEASED = "17/01/2014";
+	public static final String VERSION = "0.10";
+	public static final String RELEASED = "22/01/2014";
 	
-	public static final String BUILD_TYPE = "Development";
-	// public static final String BUILD_TYPE = "Beta";
-	// public static final String BUILD_TYPE = "Stable";
+	/**/public static final String BUILD_TYPE = "Development";
+	//*/public static final String BUILD_TYPE = "Beta";
+	//*/public static final String BUILD_TYPE = "Stable";
 	
 	public static boolean debug;
 	public static Paint main = new Paint();

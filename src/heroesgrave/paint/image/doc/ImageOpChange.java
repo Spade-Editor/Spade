@@ -1,12 +1,11 @@
-package heroesgrave.paint.image;
+package heroesgrave.paint.image.doc;
+
+import heroesgrave.paint.image.Canvas;
+import heroesgrave.paint.image.IFrame;
 
 public abstract class ImageOpChange implements IFrame
 {
 	public abstract void apply();
-	
-	public abstract void revert();
-	
-	public abstract void repeat();
 	
 	public void setCanvas(Canvas canvas)
 	{

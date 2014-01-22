@@ -21,6 +21,10 @@ package heroesgrave.paint.gui;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.image.Canvas;
+import heroesgrave.paint.image.doc.DeleteLayerOp;
+import heroesgrave.paint.image.doc.LayerMoveOp;
+import heroesgrave.paint.image.doc.MergeLayerOp;
+import heroesgrave.paint.image.doc.NewLayerOp;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.BorderLayout;
@@ -71,7 +75,6 @@ public class LayerManager
 		@Override
 		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus)
 		{
-			
 			if(value instanceof LayerNode)
 			{
 				LayerNode node = (LayerNode) value;
@@ -168,18 +171,10 @@ public class LayerManager
 					n = (LayerNode) path.getLastPathComponent();
 				if(n.equals(rootNode))
 					return;
-				LayerNode swap = (LayerNode) n.getPreviousSibling();
-				if(swap != null)
-				{
-					LayerNode parent = (LayerNode) n.getParent();
-					parent.canvas.swap(n.canvas, swap.canvas);
-					int i = parent.getIndex(n);
-					int j = parent.getIndex(swap);
-					parent.remove(j);
-					parent.insert(n, j);
-					parent.insert(swap, i);
-					redrawTree();
-				}
+				Paint.main.history.addChange(new LayerMoveOp(n, LayerMoveOp.MOVE_UP));
+				redrawTree();
+				tree.setSelectionPath(new TreePath(n.getPath()));
+				Paint.main.gui.canvas.getPanel().repaint();
 			}
 		});
 		
@@ -195,18 +190,10 @@ public class LayerManager
 					n = (LayerNode) path.getLastPathComponent();
 				if(n.equals(rootNode))
 					return;
-				LayerNode swap = (LayerNode) n.getNextSibling();
-				if(swap != null)
-				{
-					LayerNode parent = (LayerNode) n.getParent();
-					parent.canvas.swap(n.canvas, swap.canvas);
-					int i = parent.getIndex(n);
-					int j = parent.getIndex(swap);
-					parent.remove(i);
-					parent.insert(swap, i);
-					parent.insert(n, j);
-					redrawTree();
-				}
+				Paint.main.history.addChange(new LayerMoveOp(n, LayerMoveOp.MOVE_DOWN));
+				redrawTree();
+				tree.setSelectionPath(new TreePath(n.getPath()));
+				Paint.main.gui.canvas.getPanel().repaint();
 			}
 		});
 		
@@ -222,13 +209,7 @@ public class LayerManager
 					n = (LayerNode) path.getLastPathComponent();
 				if(n.equals(rootNode))
 					return;
-				LayerNode newParent = (LayerNode) n.getPreviousSibling();
-				if(newParent == null)
-					return;
-				LayerNode parent = (LayerNode) n.getParent();
-				newParent.add(n);
-				parent.canvas.removeLayer(n.canvas);
-				newParent.canvas.addLayer(n.canvas);
+				Paint.main.history.addChange(new LayerMoveOp(n, LayerMoveOp.MOVE_IN));
 				redrawTree();
 				tree.setSelectionPath(new TreePath(n.getPath()));
 				Paint.main.gui.canvas.getPanel().repaint();
@@ -247,13 +228,7 @@ public class LayerManager
 					n = (LayerNode) path.getLastPathComponent();
 				if(n.equals(rootNode))
 					return;
-				LayerNode parent = (LayerNode) n.getParent();
-				if(parent == null || parent.isRoot())
-					return;
-				LayerNode newParent = (LayerNode) parent.getParent();
-				newParent.insert(n, newParent.getIndex(parent) + 1);
-				parent.canvas.removeLayer(n.canvas);
-				newParent.canvas.addLayer(n.canvas);
+				Paint.main.history.addChange(new LayerMoveOp(n, LayerMoveOp.MOVE_OUT));
 				redrawTree();
 				tree.setSelectionPath(new TreePath(n.getPath()));
 				Paint.main.gui.canvas.getPanel().repaint();
@@ -274,7 +249,6 @@ public class LayerManager
 					return;
 				LayerNode parent = (LayerNode) n.getParent();
 				parent.merge(n);
-				n.delete();
 				redrawTree();
 				tree.setSelectionPath(new TreePath(parent.getPath()));
 			}
@@ -336,7 +310,7 @@ public class LayerManager
 		Vector<TreePath> paths = new Vector<TreePath>();
 		
 		Enumeration<TreePath> e = tree.getExpandedDescendants(new TreePath(rootNode));
-		TreePath selpath = tree.getSelectionPath();
+		LayerNode selpath = (LayerNode) tree.getSelectionPath().getLastPathComponent();
 		
 		if(e != null)
 			while(e.hasMoreElements())
@@ -355,7 +329,7 @@ public class LayerManager
 			tree.expandPath(path);
 		}
 		
-		tree.setSelectionPath(selpath);
+		tree.setSelectionPath(new TreePath(selpath.getPath()));
 	}
 	
 	public boolean isVisible()
@@ -384,6 +358,11 @@ public class LayerManager
 		
 		public void createLayer()
 		{
+			Paint.main.history.addChange(new NewLayerOp(this));
+		}
+		
+		public LayerNode createNoChange()
+		{
 			Canvas canvas = new Canvas("New Layer", this.canvas.getWidth(), this.canvas.getHeight());
 			LayerNode node = new LayerNode(canvas);
 			this.add(node);
@@ -391,18 +370,43 @@ public class LayerManager
 			model.reload();
 			tree.setSelectionPath(new TreePath(node.getPath()));
 			Paint.main.gui.canvas.getPanel().repaint();
+			return node;
+		}
+		
+		public LayerNode createNoAdd()
+		{
+			return new LayerNode(new Canvas("New Layer", this.canvas.getWidth(), this.canvas.getHeight()));
 		}
 		
 		public void merge(LayerNode node)
 		{
+			Paint.main.history.addChange(new MergeLayerOp(node, this));
+		}
+		
+		public void mergeNoChange(LayerNode node)
+		{
 			this.canvas.mergeLayer(node.canvas);
-			while(node.getChildCount() > 0)
-			{
-				this.add((LayerNode) node.getFirstChild());
-			}
+			this.remove(node);
+			model.reload();
+			tree.setSelectionPath(new TreePath(node.getPath()));
+			Paint.main.gui.canvas.getPanel().repaint();
+		}
+		
+		public void revertMerge(LayerNode node)
+		{
+			this.canvas.unmergeLayer(node.canvas);
+			this.add(node);
+			model.reload();
+			tree.setSelectionPath(new TreePath(node.getPath()));
+			Paint.main.gui.canvas.getPanel().repaint();
 		}
 		
 		public void delete()
+		{
+			Paint.main.history.addChange(new DeleteLayerOp(this));
+		}
+		
+		public void deleteNoChange()
 		{
 			LayerNode n = (LayerNode) this.getParent();
 			if(n != null)
@@ -413,6 +417,15 @@ public class LayerManager
 				tree.setSelectionPath(new TreePath(n.getPath()));
 				Paint.main.gui.canvas.getPanel().repaint();
 			}
+		}
+		
+		public void restore(LayerNode node)
+		{
+			this.add(node);
+			this.canvas.addLayer(node.canvas);
+			model.reload();
+			tree.setSelectionPath(new TreePath(node.getPath()));
+			Paint.main.gui.canvas.getPanel().repaint();
 		}
 	}
 	

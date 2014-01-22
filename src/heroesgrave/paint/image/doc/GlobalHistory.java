@@ -1,5 +1,7 @@
-package heroesgrave.paint.image;
+package heroesgrave.paint.image.doc;
 
+import heroesgrave.paint.image.Canvas;
+import heroesgrave.paint.image.IFrame;
 import heroesgrave.paint.main.Paint;
 
 import java.util.ArrayList;
@@ -20,10 +22,16 @@ public class GlobalHistory
 	
 	public void addChange(IFrame frame)
 	{
+		System.out.println("Change Added: " + frame);
 		history.push(frame);
 		if(frame instanceof ImageOpChange)
 		{
 			((ImageOpChange) frame).apply();
+			Paint.main.gui.canvas.setDimensions();
+		}
+		else if(frame instanceof DocumentChange)
+		{
+			((DocumentChange) frame).apply();
 		}
 		reverted.clear();
 	}
@@ -34,7 +42,14 @@ public class GlobalHistory
 			return;
 		IFrame frame = history.pop();
 		if(frame instanceof ImageOpChange)
-			((ImageOpChange) frame).revert();
+		{
+			revertRec(Paint.main.gui.canvas.getRoot());
+			Paint.main.gui.canvas.setDimensions();
+		}
+		else if(frame instanceof DocumentChange)
+		{
+			((DocumentChange) frame).revert();
+		}
 		else
 			frame.getCanvas().getHistory().revertChange();
 		Paint.main.gui.canvas.getPanel().repaint();
@@ -47,7 +62,14 @@ public class GlobalHistory
 			return;
 		IFrame frame = reverted.pop();
 		if(frame instanceof ImageOpChange)
-			((ImageOpChange) frame).repeat();
+		{
+			repeatRec(Paint.main.gui.canvas.getRoot());
+			Paint.main.gui.canvas.setDimensions();
+		}
+		else if(frame instanceof DocumentChange)
+		{
+			((DocumentChange) frame).apply();
+		}
 		else
 			frame.getCanvas().getHistory().repeatChange();
 		Paint.main.gui.canvas.getPanel().repaint();
@@ -56,14 +78,30 @@ public class GlobalHistory
 	
 	public void clearHistory()
 	{
-		clhRecursive(Paint.main.gui.canvas.getRoot());
+		clearHistRec(Paint.main.gui.canvas.getRoot());
 	}
 	
-	private void clhRecursive(Canvas canvas)
+	private void clearHistRec(Canvas canvas)
 	{
 		canvas.clearHistory();
 		ArrayList<Canvas> list = canvas.getChildren();
 		for(Canvas c : list)
-			clhRecursive(c);
+			clearHistRec(c);
+	}
+	
+	private void revertRec(Canvas canvas)
+	{
+		canvas.getHistory().revertChange();
+		ArrayList<Canvas> list = canvas.getChildren();
+		for(Canvas c : list)
+			revertRec(c);
+	}
+	
+	private void repeatRec(Canvas canvas)
+	{
+		canvas.getHistory().repeatChange();
+		ArrayList<Canvas> list = canvas.getChildren();
+		for(Canvas c : list)
+			repeatRec(c);
 	}
 }

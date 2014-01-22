@@ -31,6 +31,8 @@ import heroesgrave.paint.imageops.Clear2;
 import heroesgrave.paint.imageops.FlipHoriz;
 import heroesgrave.paint.imageops.FlipVert;
 import heroesgrave.paint.imageops.ImageOp;
+import heroesgrave.paint.imageops.Resize;
+import heroesgrave.paint.imageops.ResizeCanvas;
 import heroesgrave.paint.imageops.Shift;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Brush;
@@ -85,17 +87,12 @@ public class ToolMenu
 		JMenu menu = new JMenu("Image");
 		
 		menu.add(new ImageMenuItem("Clear Image", new Clear(), "B"));
-		menu.add(new ImageMenuItem("Clear Image + Alpha", new Clear2(), "N"));
+		menu.add(new ImageMenuItem("Clear Image + Alpha", new Clear2(), "C"));
+		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
+		menu.add(new ImageMenuItem("Resize Canvas", new ResizeCanvas(), null));
 		menu.add(new ImageMenuItem("Shift Canvas", new Shift(), "H"));
 		menu.add(new ImageMenuItem("Flip Vertically", new FlipVert(), null));
 		menu.add(new ImageMenuItem("Flip Horizontally", new FlipHoriz(), null));
-		/*
-		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
-		menu.add(new ImageMenuItem("Resize Canvas", new ResizeCanvas(), "C"));
-		*/
-		/*
-		menu.add(new ImageMenuItem("Rotate Right by 90", new RotateRightBy90(), null));
-		*/
 		
 		heroesgrave.paint.plugin.PluginManager.instance.registerImageOps(menu);
 		
