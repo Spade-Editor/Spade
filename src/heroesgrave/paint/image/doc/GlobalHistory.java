@@ -22,7 +22,6 @@ public class GlobalHistory
 	
 	public void addChange(IFrame frame)
 	{
-		System.out.println("Change Added: " + frame);
 		history.push(frame);
 		if(frame instanceof ImageOpChange)
 		{
