@@ -42,16 +42,11 @@ public class Resize extends ImageOp
 {
 	public void operation()
 	{
-		final JDialog dialog = new CentredJDialog(Paint.main.gui.frame, "Resize");
+		final JDialog dialog = new CentredJDialog(Paint.main.gui.frame, "Resize Image");
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		
-		JPanel panel = new JPanel();
+		JPanel panel = (JPanel) dialog.getContentPane();
 		panel.setLayout(new GridLayout(0, 2));
-		
-		dialog.getContentPane().add(panel);
-		
-		dialog.setAlwaysOnTop(true);
-		dialog.setAutoRequestFocus(true);
 		
 		final JTextField width = new JTextField("" + Paint.main.gui.canvas.getWidth());
 		final JTextField height = new JTextField("" + Paint.main.gui.canvas.getHeight());
@@ -102,6 +97,7 @@ public class Resize extends ImageOp
 		panel.add(cancel);
 		
 		dialog.pack();
+		
 		dialog.setResizable(false);
 		dialog.setVisible(true);
 	}

@@ -86,8 +86,8 @@ public class ToolMenu
 	{
 		JMenu menu = new JMenu("Image");
 		
-		menu.add(new ImageMenuItem("Clear Image", new Clear(), "B"));
-		menu.add(new ImageMenuItem("Clear Image + Alpha", new Clear2(), "C"));
+		menu.add(new ImageMenuItem("Blank Image", new Clear(), "B"));
+		menu.add(new ImageMenuItem("Clear Image", new Clear2(), "C"));
 		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
 		menu.add(new ImageMenuItem("Resize Canvas", new ResizeCanvas(), null));
 		menu.add(new ImageMenuItem("Shift Canvas", new Shift(), "H"));
