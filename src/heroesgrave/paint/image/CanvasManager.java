@@ -28,6 +28,7 @@ import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.TexturePaint;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -38,6 +39,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 public class CanvasManager
 {
@@ -75,6 +77,10 @@ public class CanvasManager
 	
 	public void incZoom()
 	{
+		float oldScale = scale;
+		
+		JScrollPane pane = Paint.main.gui.scroll;
+		
 		if(scale < 1)
 		{
 			scale = scale + 1 / 10f;
@@ -85,12 +91,28 @@ public class CanvasManager
 		}
 		
 		panel.setScale(scale);
-		panel.repaint();
 		panel.revalidate();
+		
+		float factor = scale / oldScale;
+		
+		Point point = pane.getMousePosition();
+		if(point != null)
+		{
+			Point pos = pane.getViewport().getViewPosition();
+			
+			int newX = (int) (point.x * (factor - 1f) + factor * pos.x);
+			int newY = (int) (point.y * (factor - 1f) + factor * pos.y);
+			pane.getViewport().setViewPosition(new Point(newX, newY));
+		}
+		panel.repaint();
 	}
 	
 	public void decZoom()
 	{
+		float oldScale = scale;
+		
+		JScrollPane pane = Paint.main.gui.scroll;
+		
 		if(scale > 1)
 		{
 			scale = (int) scale - 1;
@@ -101,8 +123,20 @@ public class CanvasManager
 		}
 		
 		panel.setScale(scale);
-		panel.repaint();
 		panel.revalidate();
+		
+		float factor = scale / oldScale;
+		
+		Point point = pane.getMousePosition();
+		if(point != null)
+		{
+			Point pos = pane.getViewport().getViewPosition();
+			
+			int newX = (int) (point.x * (factor - 1f) + factor * pos.x);
+			int newY = (int) (point.y * (factor - 1f) + factor * pos.y);
+			pane.getViewport().setViewPosition(new Point(newX, newY));
+		}
+		panel.repaint();
 	}
 	
 	public Canvas getCanvas()

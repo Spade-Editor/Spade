@@ -25,11 +25,9 @@ import heroesgrave.paint.tools.Tool;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.util.HashMap;
 
-public class Input implements KeyListener, MouseWheelListener
+public class Input implements KeyListener
 {
 	public static boolean CTRL, SHIFT, ALT;
 	
@@ -139,21 +137,6 @@ public class Input implements KeyListener, MouseWheelListener
 	public void keyTyped(KeyEvent e)
 	{
 		
-	}
-	
-	public void mouseWheelMoved(MouseWheelEvent e)
-	{
-		if(e.isControlDown())
-		{
-			if(e.getUnitsToScroll() > 0)
-			{
-				Paint.main.gui.canvas.decZoom();
-			}
-			else if(e.getUnitsToScroll() < 0)
-			{
-				Paint.main.gui.canvas.incZoom();
-			}
-		}
 	}
 	
 	static
