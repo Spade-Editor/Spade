@@ -25,9 +25,12 @@ import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.UserPreferences;
 
+import java.awt.Adjustable;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -53,7 +56,7 @@ public class GUIManager
 	private JPanel panel, menus;
 	private JComponent infoBar;
 	private JMenuBar menuBar;
-	private JScrollPane canvasZone;
+	public JScrollPane scroll;
 	
 	public CanvasManager canvas;
 	public ColourChooser chooser;
@@ -63,8 +66,6 @@ public class GUIManager
 	AboutDialog about;
 	
 	private JPanel toolOptions;
-	
-	private Input input = new Input();
 	
 	public GUIManager()
 	{
@@ -164,11 +165,45 @@ public class GUIManager
 		JPanel panel = new JPanel();
 		panel.add(canvas.getPanel(), BorderLayout.CENTER);
 		
-		canvasZone = new JScrollPane(panel);
-		canvasZone.addMouseWheelListener(input);
-		canvasZone.getVerticalScrollBar().setUnitIncrement(16);
-		canvasZone.getHorizontalScrollBar().setUnitIncrement(16);
-		this.panel.add(canvasZone, BorderLayout.CENTER);
+		scroll = new JScrollPane(panel);
+		scroll.removeMouseWheelListener(scroll.getMouseWheelListeners()[0]);
+		scroll.addMouseWheelListener(new MouseWheelListener()
+		{
+			public void mouseWheelMoved(final MouseWheelEvent e)
+			{
+				if(e.isControlDown())
+				{
+					if(e.getUnitsToScroll() > 0)
+					{
+						Paint.main.gui.canvas.decZoom();
+					}
+					else if(e.getUnitsToScroll() < 0)
+					{
+						Paint.main.gui.canvas.incZoom();
+					}
+				}
+				else
+				{
+					if(e.isShiftDown())
+					{
+						// Horizontal scrolling
+						Adjustable adj = scroll.getHorizontalScrollBar();
+						int scroll = e.getUnitsToScroll() * adj.getBlockIncrement();
+						adj.setValue(adj.getValue() + scroll);
+					}
+					else
+					{
+						// Vertical scrolling
+						Adjustable adj = scroll.getVerticalScrollBar();
+						int scroll = e.getUnitsToScroll() * adj.getBlockIncrement();
+						adj.setValue(adj.getValue() + scroll);
+					}
+				}
+			}
+		});
+		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		scroll.getHorizontalScrollBar().setUnitIncrement(16);
+		this.panel.add(scroll, BorderLayout.CENTER);
 	}
 	
 	public void initMenu()
@@ -297,7 +332,6 @@ public class GUIManager
 		Input in = new Input();
 		
 		frame.addKeyListener(in);
-		frame.addMouseWheelListener(in);
 		chooser.getDialog().addKeyListener(in);
 		layers.getDialog().addKeyListener(in);
 	}
