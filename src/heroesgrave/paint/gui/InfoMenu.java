@@ -83,6 +83,7 @@ public class InfoMenu
 		// reset creation
 		reset.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
 				Paint.main.setLeftColour(0xFF000000);
@@ -113,6 +114,7 @@ public class InfoMenu
 		
 		left.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
 				read(left);
@@ -121,6 +123,7 @@ public class InfoMenu
 		});
 		left.addFocusListener(new FocusAdapter()
 		{
+			@Override
 			public void focusLost(FocusEvent arg0)
 			{
 				read(left);
@@ -130,6 +133,7 @@ public class InfoMenu
 		
 		right.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
 				read(right);
@@ -138,6 +142,7 @@ public class InfoMenu
 		});
 		right.addFocusListener(new FocusAdapter()
 		{
+			@Override
 			public void focusLost(FocusEvent arg0)
 			{
 				read(right);
@@ -164,6 +169,10 @@ public class InfoMenu
 		layout.putConstraint(SpringLayout.WEST, tool, 20, SpringLayout.EAST, saved);
 		layout.putConstraint(SpringLayout.WEST, spacer, 20, SpringLayout.EAST, tool);
 		layout.putConstraint(SpringLayout.EAST, menuBar, 20, SpringLayout.EAST, spacer);
+		
+		// Check if the memory-watcher is not null (eg: Activated or not), then add constraints.
+		if(memoryWatcher != null)
+			layout.putConstraint(SpringLayout.EAST, memoryWatcher, 0, SpringLayout.EAST, menuBar);
 		
 		layout.putConstraint(SpringLayout.NORTH, scale, 7, SpringLayout.NORTH, menuBar);
 		layout.putConstraint(SpringLayout.NORTH, saved, 7, SpringLayout.NORTH, menuBar);
