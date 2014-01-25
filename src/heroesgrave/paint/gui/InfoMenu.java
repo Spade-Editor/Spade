@@ -23,11 +23,10 @@ import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.io.IOException;
 import java.net.URL;
 
@@ -73,6 +72,9 @@ public class InfoMenu
 		saved.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JPanel colourPanel = new JPanel();
+		colourPanel.setMinimumSize(new Dimension(32,32));
+		colourPanel.setPreferredSize(new Dimension(32,32));
+		colourPanel.setSize(new Dimension(32,32));
 		colourPanel.setLayout(new GridLayout(1, 2));
 		colourPanel.setOpaque(false);
 		
@@ -108,6 +110,7 @@ public class InfoMenu
 		
 		reset.setFocusable(false);
 		
+		/*
 		colourPanel.add(reset);
 		colourPanel.add(left);
 		colourPanel.add(right);
@@ -149,6 +152,7 @@ public class InfoMenu
 				Paint.main.gui.frame.requestFocus();
 			}
 		});
+		//*/
 		
 		tool = new JPanel();
 		tool.setOpaque(false);
