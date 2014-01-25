@@ -51,6 +51,7 @@ public class Menu
 	 * Single boolean flag for the visibility toggle of the Pixel-Grid.
 	 **/
 	public static boolean GRID_ENABLED = false;
+	public static boolean DARK_BACKGROUND = false;
 	
 	public static JMenuBar createMenuBar()
 	{
@@ -81,6 +82,7 @@ public class Menu
 		JMenuItem pluginManager = new JMenuItem("Plugin Viewer", GUIManager.getIcon("plugin_viewer"));
 		pluginManager.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				PluginManager.instance.showPluginManager();
@@ -90,6 +92,7 @@ public class Menu
 		JMenuItem about = new JMenuItem("About...", GUIManager.getIcon("about"));
 		about.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.main.gui.about.setVisible(true);
@@ -110,6 +113,7 @@ public class Menu
 		
 		colourChooser.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.main.gui.chooser.toggle();
@@ -120,6 +124,7 @@ public class Menu
 		
 		layerManager.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.main.gui.layers.toggle();
@@ -159,6 +164,7 @@ public class Menu
 		
 		newFile.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				showNewMenu();
@@ -167,6 +173,7 @@ public class Menu
 		
 		load.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				showOpenMenu();
@@ -175,6 +182,7 @@ public class Menu
 		
 		save.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.save();
@@ -183,6 +191,7 @@ public class Menu
 		
 		saveAs.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.saveAs();
@@ -191,6 +200,7 @@ public class Menu
 		
 		exit.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.main.gui.displayCloseDialogue();
@@ -207,6 +217,7 @@ public class Menu
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setFileFilter(new FileFilter()
 		{
+			@Override
 			public boolean accept(File f)
 			{
 				if(f.isDirectory())
@@ -221,6 +232,7 @@ public class Menu
 				return false;
 			}
 			
+			@Override
 			public String getDescription()
 			{
 				return "ImageIO Supported import image formats (.png, .jpg, .bmp)";
@@ -282,6 +294,7 @@ public class Menu
 		
 		create.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				dialog.dispose();
@@ -300,6 +313,7 @@ public class Menu
 		
 		cancel.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				dialog.dispose();
@@ -328,6 +342,7 @@ public class Menu
 		
 		undo.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
 				Paint.main.history.revertChange();
@@ -336,6 +351,7 @@ public class Menu
 		
 		redo.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
 				Paint.main.history.repeatChange();
@@ -344,6 +360,7 @@ public class Menu
 		
 		clear.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
 				Paint.main.history.clearHistory();
@@ -364,9 +381,11 @@ public class Menu
 		JMenuItem zoomIn = new JMenuItem("Zoom In (Ctrl++)", GUIManager.getIcon("zoom_inc"));
 		JMenuItem zoomOut = new JMenuItem("Zoom Out (Ctrl+-)", GUIManager.getIcon("zoom_dec"));
 		JMenuItem grid = new JMenuItem("Toggle Grid (Ctrl+G)", GUIManager.getIcon("toggle_grid"));
+		JMenuItem darkDraw = new JMenuItem("Toggle Dark Background", GUIManager.getIcon("dark_bg"));
 		
 		zoomIn.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.main.gui.canvas.incZoom();
@@ -375,6 +394,7 @@ public class Menu
 		
 		zoomOut.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.main.gui.canvas.decZoom();
@@ -383,6 +403,7 @@ public class Menu
 		
 		grid.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				GRID_ENABLED = !GRID_ENABLED;
@@ -390,9 +411,20 @@ public class Menu
 			}
 		});
 		
+		darkDraw.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				DARK_BACKGROUND = !DARK_BACKGROUND;
+				Paint.main.gui.frame.repaint();
+			}
+		});
+		
 		view.add(zoomIn);
 		view.add(zoomOut);
 		view.add(grid);
+		view.add(darkDraw);
 		
 		return view;
 	}
@@ -406,6 +438,7 @@ public class Menu
 			super(frame, title);
 		}
 		
+		@Override
 		public void setVisible(boolean b)
 		{
 			super.setVisible(b);
