@@ -22,6 +22,10 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -38,7 +42,7 @@ import javax.swing.WindowConstants;
 
 public class MultiColourChooser
 {
-	
+
 	public class SelectedEditColorSelector extends JComponent implements MouseListener {
 		
 		/**
@@ -71,26 +75,28 @@ public class MultiColourChooser
 			if(isEditingLeft)
 			{
 				this.setToolTipText("Click to edit the secondary color!");
+				dialog.setTitle("Colour-Chooser - Editing PRIMARY Color");
 				
 				// BACK
 				g.setColor(new Color(rightColour, true));
-				g.fillRect(0, 0, getWidth(), getHeight());
+				g.fillRect(0, 0, getWidth()/2, getHeight());
 				
 				// FRONT
 				g.setColor(new Color(leftColour, true));
-				g.fillOval(2, 2, getWidth() - 6, getHeight() - 6);
+				g.fillRect(getWidth()/2, 0, getWidth(), getHeight());
 			}
 			else
 			{
 				this.setToolTipText("Click to edit the primary color!");
+				dialog.setTitle("Colour-Chooser - Editing SECONDARY Color");
 				
 				// BACK
 				g.setColor(new Color(leftColour, true));
-				g.fillRect(0, 0, getWidth(), getHeight());
+				g.fillRect(0, 0, getWidth()/2, getHeight());
 				
 				// FRONT
 				g.setColor(new Color(rightColour, true));
-				g.fillOval(2, 2, getWidth() - 6, getHeight() - 6);
+				g.fillRect(getWidth()/2, 0, getWidth(), getHeight());
 			}
 			
 			g.setColor(Color.WHITE);
@@ -98,7 +104,6 @@ public class MultiColourChooser
 			
 			g.setColor(Color.BLACK);
 			g.drawRect(0, 0, getWidth()-1, getHeight()-1);
-			g.drawOval(2, 2, getWidth() - 6, getHeight() - 6);
 			
 			
 		}
@@ -336,6 +341,84 @@ public class MultiColourChooser
 		
 	}
 	
+	public class ColorPalletEntryButton extends JComponent implements MouseListener {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2473933582943592038L;
+		
+		Color color;
+		boolean mouseHover;
+		
+		public ColorPalletEntryButton(Color color)
+		{
+			this.color = color;
+			this.mouseHover = false;
+			
+			this.setSize(16, 16);
+			this.setPreferredSize(new Dimension(16, 16));
+			//this.setMaximumSize(new Dimension(16, 16));
+			this.setMinimumSize(new Dimension(16, 16));
+			this.addMouseListener(this);
+			
+		}
+		
+		@Override
+		public void paint(Graphics $g)
+		{
+			Graphics2D g = (Graphics2D) $g;
+			
+			g.setPaint(new TexturePaint(transparenzyImage, new Rectangle2D.Float(0, 0, getWidth()/2, getHeight()/2)));
+			g.fillRect(0, 0, getWidth(), getHeight());
+			
+			g.setPaint(null);
+			
+			g.setColor(color);
+			g.fillRect(0, 0, getWidth(), getHeight());
+			
+			if(mouseHover)
+			{
+				g.setColor(Color.BLACK);
+				g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+				g.setColor(Color.WHITE);
+				g.drawRect(1, 1, getWidth()-3, getHeight()-3);
+			}
+		}
+
+		@Override public void mouseClicked(MouseEvent e) {}
+
+		@Override public void mousePressed(MouseEvent e) {}
+
+		@Override public void mouseReleased(MouseEvent e) {
+			
+			if(e.getButton() == MouseEvent.BUTTON1)
+				leftColour = color.getRGB();
+			
+			if(e.getButton() == MouseEvent.BUTTON3)
+				rightColour = color.getRGB();
+			
+			if(e.getButton() == MouseEvent.BUTTON2)
+				leftColour = rightColour = color.getRGB();
+			
+			updateAllChooserSubComponents_ColorChanged();
+			updatePaintGUI();
+			
+		}
+		
+		@Override public void mouseEntered(MouseEvent e)
+		{
+			mouseHover = true;
+			repaint();
+		}
+		
+		@Override
+		public void mouseExited(MouseEvent e)
+		{
+			mouseHover = false;
+			repaint();
+		}
+		
+	}
 	
 	
 	
@@ -434,7 +517,7 @@ public class MultiColourChooser
 	{
 		
 		// ----- Create the Dialog
-		dialog = new CentredJDialog(mainFrame, "Colour-Chooser");
+		dialog = new CentredJDialog(mainFrame, "Colour-Chooser - Editing PRIMARY Color");
 		dialogLayout = new SpringLayout();
 		
 		// ----- Do the typical configurations for it.
@@ -473,14 +556,20 @@ public class MultiColourChooser
 		
 		chooserLeftColourSelector.setLayout(new FlowLayout(FlowLayout.LEADING));
 		chooserLeftColourCircle.setLayout(new BorderLayout(1,1));
-		chooserLeftColourPallete.setLayout(new BorderLayout(1,1));
+		chooserLeftColourPallete.setLayout(new GridLayout(0,16,0,0));
 		
 		// borders
 		chooserLeftColourCircle.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "Color Circle"));
 		chooserLeftColourPallete.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "Color Pallet"));
 		
 		chooserLeftColourCircle.add(new JLabel("Not yet implemented!"));
-		chooserLeftColourPallete.add(new JLabel("Not yet implemented!"));
+		
+		Color[] pallet = readColorPalletFromURL(ClassLoader.getSystemResource("heroesgrave/paint/res/defaultColorPallet.txt"));
+		
+		// chooserLeftColourPallete.add(new JLabel("Not yet implemented!"));
+		for(int i = 0; i < pallet.length; i++)
+			chooserLeftColourPallete.add(new ColorPalletEntryButton(pallet[i]));
+		
 		
 		// sub-components
 		chooserLeftColourSelectorEditColourSelector = new SelectedEditColorSelector();
@@ -662,6 +751,50 @@ public class MultiColourChooser
 		
 		
 		
+	}
+	
+	private Color[] readColorPalletFromURL(URL pallet) {
+		if(pallet == null)
+			throw new IllegalArgumentException("Given URL is null!");
+		
+		try {
+			Scanner sc = new Scanner(pallet.openStream());
+			ArrayList<Color> colorList = new ArrayList<Color>();
+			
+			while(sc.hasNextLine())
+			{
+				String line = sc.nextLine().trim();
+				
+				if(line.isEmpty())
+					continue;
+				
+				if(line.startsWith(";"))
+					continue;
+				
+				int COLOR = 0;
+				try
+				{
+					COLOR = (int) Long.parseLong(line.toLowerCase(), 16);
+				}
+				catch(NumberFormatException e)
+				{
+					e.printStackTrace();
+					COLOR = Color.WHITE.getRGB();
+				}
+				
+				colorList.add(new Color(COLOR,line.length() > 6));
+			}
+			
+			sc.close();
+			
+			Color[] colors = new Color[colorList.size()];
+			colorList.toArray(colors);
+			
+			return colors;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new Color[]{Color.BLACK, Color.WHITE};
+		}
 	}
 	
 	
@@ -856,6 +989,19 @@ public class MultiColourChooser
 	
 	public void setSelectedEditColour(int c) {
 		if(isEditingLeft)
+			leftColour = c;
+		else
+			rightColour = c;
+		
+		this.updateAllChooserSubComponents_ColorChanged();
+		
+		this.updatePaintGUI();
+	}
+	
+	public void setSelectedEditColour(int c, boolean invert) {
+		boolean flag = invert ? !isEditingLeft : isEditingLeft;
+		
+		if(flag)
 			leftColour = c;
 		else
 			rightColour = c;
