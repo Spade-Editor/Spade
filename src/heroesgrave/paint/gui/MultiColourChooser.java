@@ -2,13 +2,13 @@ package heroesgrave.paint.gui;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.main.Paint;
+import heroesgrave.utils.io.TxtFileFilter;
 import heroesgrave.utils.math.MathUtils;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -22,7 +22,10 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -32,6 +35,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -902,6 +906,7 @@ public class MultiColourChooser
 	SelectedEditColorSelector chooserLeftColourSelectorEditColourSelector;
 	
 	JPanel chooserLeftColourSelector;
+	SpringLayout chooserLeftColourSelectorLayout;
 	JPanel chooserLeftColourCircle;
 	JPanel chooserLeftColourPallete;
 	
@@ -1008,7 +1013,9 @@ public class MultiColourChooser
 		chooserLeftColourCircle = new JPanel();
 		chooserLeftColourPallete = new JPanel();
 		
-		chooserLeftColourSelector.setLayout(new FlowLayout(FlowLayout.LEADING));
+		chooserLeftColourSelectorLayout = new SpringLayout();
+		
+		chooserLeftColourSelector.setLayout(chooserLeftColourSelectorLayout);
 		chooserLeftColourCircle.setLayout(new BorderLayout(1,1));
 		chooserLeftColourPallete.setLayout(new GridLayout(0,16,0,0));
 		
@@ -1024,19 +1031,84 @@ public class MultiColourChooser
 		for(int i = 0; i < pallet.length; i++)
 			chooserLeftColourPallete.add(new ColorPalletEntryButton(pallet[i]));
 		
-		
 		// sub-components
 		chooserLeftColourSelectorEditColourSelector = new SelectedEditColorSelector();
-		chooserLeftColourSelector.add(chooserLeftColourSelectorEditColourSelector);
 		
-		chooserLeftColourSelector.add(new JButton(new AbstractAction("Reset Colors"){
+		JButton colourResetButton = new JButton(new AbstractAction("Reset Colors"){
 			@Override public void actionPerformed(ActionEvent e)
 			{
 				leftColour = 0xFF000000;
 				rightColour = 0xFFFFFFFF;
 				updateAllChooserSubComponents_EditChanged();
 			}
-		}));
+		});
+		
+		JButton changeColourPalletButton = new JButton(new AbstractAction("Change Pallet"){
+			@Override public void actionPerformed(ActionEvent e)
+			{
+				JFileChooser fileChooser = new JFileChooser();
+				
+				try {
+					fileChooser.setCurrentDirectory(new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()));
+				} catch (URISyntaxException e1) {
+					e1.printStackTrace();
+					fileChooser.setCurrentDirectory(new File("."));
+				}
+				
+				fileChooser.setAcceptAllFileFilterUsed(false);
+				fileChooser.setFileFilter(new TxtFileFilter());
+				fileChooser.setDialogTitle("Open Color-Pallet");
+				fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				int result = fileChooser.showOpenDialog(dialog);
+				
+				if(result != JFileChooser.APPROVE_OPTION)
+					return;
+				
+				Color[] newPallet = null;
+				
+				try {
+					newPallet = readColorPalletFromURL(fileChooser.getSelectedFile().toURI().toURL());
+				} catch (MalformedURLException e1) {
+					e1.printStackTrace();
+					newPallet = null;
+				}
+				
+				if(newPallet == null)
+					return;
+				
+				chooserLeftColourPallete.removeAll();
+				chooserLeftColourPallete.revalidate();
+				chooserLeftColourPallete.setLayout(new GridLayout(0,16,0,0));
+				
+				for(int i = 0; i < newPallet.length; i++)
+					chooserLeftColourPallete.add(new ColorPalletEntryButton(newPallet[i]));
+				
+				chooserLeftColourPallete.revalidate();
+				chooserLeftColourPallete.repaint();
+				
+			}
+		});
+		
+		// layout for ((chooserLeftColourSelector))
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.NORTH, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.WEST, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelectorEditColourSelector, 64, SpringLayout.NORTH, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector, 64, SpringLayout.WEST, chooserLeftColourSelector);
+		
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, colourResetButton, 0, SpringLayout.NORTH, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, colourResetButton, 0, SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, colourResetButton, 32, SpringLayout.NORTH, chooserLeftColourSelector);
+		
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, changeColourPalletButton, 0, SpringLayout.SOUTH, colourResetButton);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, changeColourPalletButton, 0, SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, changeColourPalletButton, 64, SpringLayout.NORTH, chooserLeftColourSelector);
+		
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, changeColourPalletButton, 0, SpringLayout.EAST, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, colourResetButton, 0, SpringLayout.EAST, chooserLeftColourSelector);
+		
+		chooserLeftColourSelector.add(chooserLeftColourSelectorEditColourSelector);
+		chooserLeftColourSelector.add(changeColourPalletButton);
+		chooserLeftColourSelector.add(colourResetButton);
 		
 		// layout
 		
