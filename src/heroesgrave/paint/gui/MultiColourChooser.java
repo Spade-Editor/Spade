@@ -854,8 +854,8 @@ public class MultiColourChooser
 			
 			if(e.getButton() == MouseEvent.BUTTON2)
 				leftColour = rightColour = color.getRGB();
-			
-			updateAllChooserSubComponents_ColorChanged();
+
+			updateAllChooserSubComponents_EditChanged();
 			updatePaintGUI();
 			
 		}
@@ -1293,6 +1293,7 @@ public class MultiColourChooser
 		try {
 			Scanner sc = new Scanner(pallet.openStream());
 			ArrayList<Color> colorList = new ArrayList<Color>();
+			int lineCount = 0;
 			
 			while(sc.hasNextLine())
 			{
@@ -1316,9 +1317,19 @@ public class MultiColourChooser
 				}
 				
 				colorList.add(new Color(COLOR,line.length() > 6));
+				lineCount++;
+				
+				// We never wan't to load more than 96 colors, so we make a stop here.
+				if(lineCount >= 96)
+				{
+					break;
+				}
 			}
 			
 			sc.close();
+			
+			while(colorList.size() < 96)
+				colorList.add(Color.BLACK);
 			
 			Color[] colors = new Color[colorList.size()];
 			colorList.toArray(colors);
