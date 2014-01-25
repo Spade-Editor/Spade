@@ -20,7 +20,7 @@
 package heroesgrave.paint.main;
 
 import heroesgrave.paint.gui.LayerManager;
-import heroesgrave.paint.gui.colourChooser.MultiColourChooser;
+import heroesgrave.paint.gui.MultiColourChooser;
 
 import java.awt.Frame;
 import java.util.prefs.Preferences;

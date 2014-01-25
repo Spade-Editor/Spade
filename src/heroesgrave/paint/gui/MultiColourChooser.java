@@ -1,22 +1,32 @@
-package heroesgrave.paint.gui.colourChooser;
+package heroesgrave.paint.gui;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.main.Paint;
+import heroesgrave.utils.math.MathUtils;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -40,7 +50,8 @@ public class MultiColourChooser
 		{
 			super(Integer.toHexString(leftColour).toUpperCase());
 			this.addActionListener(this);
-			this.setToolTipText("Type in any Hexadecimal Color, then press Enter to apply the change.");
+			this.setToolTipText("Type in (or paste in) any Hexadecimal Color, then press Enter to apply the change.");
+			this.setColumns(6);
 		}
 		
 		private void reset()
@@ -48,12 +59,12 @@ public class MultiColourChooser
 			if(isEditingLeft)
 			{
 				
-				invokeTextChangeLater("FFFFFF");
-				leftColour = (leftColour & 0xFF000000) | 0xFFFFFF;
+				invokeTextChangeLater("000000");
+				leftColour = (leftColour & 0xFF000000) | 0x000000;
 			}
 			else
 			{
-				invokeTextChangeLater("000000");
+				invokeTextChangeLater("FFFFFF");
 				rightColour = (rightColour & 0xFF000000) | 0xFFFFFF;
 			}
 		}
@@ -93,6 +104,7 @@ public class MultiColourChooser
 				reset();
 			}
 			
+			// Update the Paint-GUI with the new colour!
 			updatePaintGUI();
 		}
 		
@@ -100,7 +112,137 @@ public class MultiColourChooser
 	
 	
 	
-	
+	private abstract class ColorChooser_ColorSlider extends JComponent implements MouseListener, MouseMotionListener
+	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 4914193922841062277L;
+
+		float sliderValue;
+		
+		// These are ONLY there for visial stuff!
+		int gradientLeft;
+		int gradientRight;
+		
+		boolean mouseHover;
+		boolean sliderGlow;
+		
+		public ColorChooser_ColorSlider(int LEFT,int RIGHT, float initialValue)
+		{
+			setGradientColors(LEFT, RIGHT);
+			sliderValue = initialValue;
+			mouseHover = false;
+			sliderGlow = false;
+			
+			this.setPreferredSize(new Dimension(48,18));
+			this.setMinimumSize(new Dimension(48,18));
+			
+			this.addMouseMotionListener(this);
+			this.addMouseListener(this);
+		}
+		
+		public void setGradientColors(int LEFT,int RIGHT)
+		{
+			gradientLeft = LEFT;
+			gradientRight = RIGHT;
+		}
+		
+		@Override
+		public void paint(Graphics $g)
+		{
+			Graphics2D g = (Graphics2D) $g;
+			g.setPaint(transparenzyImagePaint);
+			g.fillRect(0, 0, getWidth(), getHeight());
+			
+			g.setPaint(new GradientPaint(0, 0, new Color(gradientLeft, true), getWidth(), 0, new Color(gradientRight, true)));
+			g.fillRect(0, 0, getWidth(), getHeight());
+			
+			g.setPaint(null);
+			
+			if(sliderGlow)
+			{
+				g.setColor(Color.BLUE);
+				g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+			}
+			
+			
+			int posX = (int) (sliderValue * getWidth());
+			
+			g.setColor(Color.WHITE);
+			g.drawRect(posX-1, 0, 3, getHeight()-1);
+			g.setColor(Color.BLACK);
+			g.drawRect(posX-2, 0, 5, getHeight()-1);
+			
+		}
+		
+		public void update(int mouseX, int currentWidth)
+		{
+			// first out-of-bounds check
+			if(mouseX < 0)
+				mouseX = 0;
+			if(mouseX > currentWidth)
+				mouseX = currentWidth;
+			
+			sliderValue = (float)mouseX / (float)currentWidth;;
+			
+			// second out-of-bounds check
+			if(sliderValue < 0)
+				sliderValue = 0;
+			if(sliderValue > 1)
+				sliderValue = 1;
+			
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue*256, 255, 0));
+			
+			this.repaint();
+			
+		}
+		
+		public abstract void onSliderUpdate(float sliderValue, int sliderValueInt);
+		
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			sliderGlow = true;
+			update(e.getX(), this.getWidth()-1);
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			// IGNORE
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			update(e.getX(), this.getWidth()-1);
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// IGNORE
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			if(!mouseHover)
+				sliderGlow = false;
+			this.repaint();
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			mouseHover = true;
+			sliderGlow = true;
+			this.repaint();
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			mouseHover = false;
+			sliderGlow = false;
+			this.repaint();
+		}
+		
+	}
 	
 	
 	
@@ -151,6 +293,12 @@ public class MultiColourChooser
 	 **/
 	private boolean isEditingLeft = true;
 	
+	/**
+	 * A 'transparency' background for usage in teh colour-chooser's components.
+	 **/
+	private static BufferedImage transparenzyImage;
+	private static Rectangle2D transparenzyImageRect;
+	private static TexturePaint transparenzyImagePaint;
 	
 	/**                                              **/
 	/**                                              **/
@@ -160,6 +308,20 @@ public class MultiColourChooser
 	/**                                              **/
 	/**                                              **/
 	
+	static
+	{
+		transparenzyImage = new BufferedImage(2, 2, BufferedImage.TYPE_BYTE_GRAY);
+		transparenzyImage.setRGB(0, 0, 0xDDDDDD);
+		transparenzyImage.setRGB(1, 1, 0xDDDDDD);
+		transparenzyImage.setRGB(1, 0, 0xAAAAAA);
+		transparenzyImage.setRGB(0, 1, 0xAAAAAA);
+		
+		transparenzyImageRect = new Rectangle2D.Float(0,0,8,8);
+		transparenzyImagePaint = new TexturePaint(transparenzyImage, transparenzyImageRect);
+		
+	}
+	
+	@SuppressWarnings("serial")
 	public MultiColourChooser(JFrame mainFrame)
 	{
 		
@@ -226,7 +388,16 @@ public class MultiColourChooser
 		chooserRightRGB.add(new JLabel("RGB"));
 		chooserRightHEX.add(new ColorChooser_HexColor(chooserRightHEX));
 		chooserRightHSV.add(new JLabel("HSV"));
-		chooserRightALPHA.add(new JSpinner(new SpinnerNumberModel(0,0,255,1)));
+		
+		chooserRightALPHA.add(new ColorChooser_ColorSlider(0x00000000, 0xFF000000, 0.5F){
+			@Override
+			public void onSliderUpdate(float sliderValue, int sliderValueInt) {
+				int currentColor = getSelectedEditColor();
+				int withOutAlpha = currentColor & 0xFFFFFF;
+				int withNewAlpha = withOutAlpha | ((sliderValueInt & 0xFF) << 24);
+				setSelectedEditColour(withNewAlpha);
+			}
+		});
 		
 		buildLayoutForChooserRightContent();
 		
@@ -242,7 +413,7 @@ public class MultiColourChooser
 		
 		
 	}
-	
+
 	private void buildLayoutForChooserRoot() {
 		// (only for construction) Fetch the contentPane from the dialog.
 		Container dialogContentPane = dialog.getContentPane();
@@ -264,7 +435,7 @@ public class MultiColourChooser
 	}
 	
 	private void buildLayoutForChooserLeftContent() {
-		Container contentPane = chooserLeft;
+		// Container contentPane = chooserLeft;
 		
 		
 	}
@@ -402,6 +573,19 @@ public class MultiColourChooser
 	public int getRightColour()
 	{
 		return rightColour;
+	}
+	
+	public int getSelectedEditColor() {
+		return isEditingLeft ? leftColour : rightColour;
+	}
+	
+	public void setSelectedEditColour(int c) {
+		if(isEditingLeft)
+			leftColour = c;
+		else
+			rightColour = c;
+		
+		this.updatePaintGUI();
 	}
 	
 	/**

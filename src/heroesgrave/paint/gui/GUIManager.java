@@ -20,7 +20,6 @@
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
-import heroesgrave.paint.gui.colourChooser.MultiColourChooser;
 import heroesgrave.paint.image.CanvasManager;
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
