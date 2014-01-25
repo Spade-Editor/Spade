@@ -188,12 +188,14 @@ public class CanvasManager
 			this.mgr = mgr;
 			this.addMouseListener(new MouseAdapter()
 			{
+				@Override
 				public void mousePressed(MouseEvent e)
 				{
 					lastButton = e.getButton();
 					Paint.main.currentTool.onPressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), e.getButton());
 				}
 				
+				@Override
 				public void mouseReleased(MouseEvent e)
 				{
 					lastButton = e.getButton();
@@ -202,11 +204,13 @@ public class CanvasManager
 			});
 			this.addMouseMotionListener(new MouseMotionListener()
 			{
+				@Override
 				public void mouseDragged(MouseEvent e)
 				{
 					Paint.main.currentTool.whilePressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), lastButton);
 				}
 				
+				@Override
 				public void mouseMoved(MouseEvent e)
 				{
 					Paint.main.currentTool.whileReleased(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), lastButton);
@@ -225,6 +229,7 @@ public class CanvasManager
 			this.scale = scale;
 		}
 		
+		@Override
 		public void paint(Graphics arg0)
 		{
 			super.paint(arg0);
