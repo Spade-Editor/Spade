@@ -94,6 +94,7 @@ public class ColourChooser
 		
 		r.addChangeListener(new ChangeListener()
 		{
+			@Override
 			public void stateChanged(ChangeEvent e)
 			{
 				tr.setText("" + r.getValue());
@@ -102,6 +103,7 @@ public class ColourChooser
 		});
 		g.addChangeListener(new ChangeListener()
 		{
+			@Override
 			public void stateChanged(ChangeEvent e)
 			{
 				tg.setText("" + g.getValue());
@@ -110,6 +112,7 @@ public class ColourChooser
 		});
 		b.addChangeListener(new ChangeListener()
 		{
+			@Override
 			public void stateChanged(ChangeEvent e)
 			{
 				tb.setText("" + b.getValue());
@@ -118,6 +121,7 @@ public class ColourChooser
 		});
 		a.addChangeListener(new ChangeListener()
 		{
+			@Override
 			public void stateChanged(ChangeEvent e)
 			{
 				ta.setText("" + a.getValue());
@@ -127,6 +131,7 @@ public class ColourChooser
 		
 		tr.addFocusListener(new FocusListener()
 		{
+			@Override
 			public void focusLost(FocusEvent e)
 			{
 				r.setValue(MathUtils.clamp(Integer.parseInt(tr.getText()), 255, 0));
@@ -143,6 +148,7 @@ public class ColourChooser
 				}
 			}
 			
+			@Override
 			public void focusGained(FocusEvent e)
 			{
 				
@@ -150,6 +156,7 @@ public class ColourChooser
 		});
 		tg.addFocusListener(new FocusListener()
 		{
+			@Override
 			public void focusLost(FocusEvent e)
 			{
 				g.setValue(MathUtils.clamp(Integer.parseInt(tg.getText()), 255, 0));
@@ -166,6 +173,7 @@ public class ColourChooser
 				}
 			}
 			
+			@Override
 			public void focusGained(FocusEvent e)
 			{
 				
@@ -173,6 +181,7 @@ public class ColourChooser
 		});
 		tb.addFocusListener(new FocusListener()
 		{
+			@Override
 			public void focusLost(FocusEvent e)
 			{
 				b.setValue(MathUtils.clamp(Integer.parseInt(tb.getText()), 255, 0));
@@ -189,6 +198,7 @@ public class ColourChooser
 				}
 			}
 			
+			@Override
 			public void focusGained(FocusEvent e)
 			{
 				
@@ -196,6 +206,7 @@ public class ColourChooser
 		});
 		ta.addFocusListener(new FocusListener()
 		{
+			@Override
 			public void focusLost(FocusEvent e)
 			{
 				a.setValue(MathUtils.clamp(Integer.parseInt(ta.getText()), 255, 0));
@@ -212,6 +223,7 @@ public class ColourChooser
 				}
 			}
 			
+			@Override
 			public void focusGained(FocusEvent e)
 			{
 				
@@ -297,6 +309,7 @@ public class ColourChooser
 		
 		leftRadio.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				int leftColour = colour.getLeftColour();
@@ -312,6 +325,7 @@ public class ColourChooser
 		});
 		rightRadio.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				int rightColour = colour.getRightColour();
@@ -461,6 +475,7 @@ public class ColourChooser
 					.getBlue() & 0xff));
 		}
 		
+		@Override
 		public void paint(Graphics g)
 		{
 			super.paint(g);

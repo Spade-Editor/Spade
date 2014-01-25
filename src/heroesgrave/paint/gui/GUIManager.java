@@ -20,6 +20,7 @@
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
+import heroesgrave.paint.gui.colourChooser.MultiColourChooser;
 import heroesgrave.paint.image.CanvasManager;
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
@@ -59,7 +60,7 @@ public class GUIManager
 	public JScrollPane scroll;
 	
 	public CanvasManager canvas;
-	public ColourChooser chooser;
+	public MultiColourChooser chooser;
 	public LayerManager layers;
 	public InfoMenu info;
 	
@@ -133,7 +134,7 @@ public class GUIManager
 		initMenu();
 		createCanvas();
 		
-		chooser = new ColourChooser();
+		chooser = new MultiColourChooser(frame);
 		layers = new LayerManager(canvas.getRoot());
 		about = new AboutDialog(frame);
 		finish();
@@ -169,6 +170,7 @@ public class GUIManager
 		scroll.removeMouseWheelListener(scroll.getMouseWheelListeners()[0]);
 		scroll.addMouseWheelListener(new MouseWheelListener()
 		{
+			@Override
 			public void mouseWheelMoved(final MouseWheelEvent e)
 			{
 				if(e.isControlDown())
@@ -233,6 +235,7 @@ public class GUIManager
 		frame = new JFrame("Untitled - Paint.JAVA");
 		frame.addWindowListener(new WindowAdapter()
 		{
+			@Override
 			public void windowClosing(WindowEvent e)
 			{
 				displayCloseDialogue();
@@ -279,6 +282,7 @@ public class GUIManager
 		// Init all the actions
 		save.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.save();
@@ -289,6 +293,7 @@ public class GUIManager
 		});
 		dispose.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				UserPreferences.savePrefs(frame, chooser, layers);
@@ -298,6 +303,7 @@ public class GUIManager
 		});
 		cancel.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				close.dispose();

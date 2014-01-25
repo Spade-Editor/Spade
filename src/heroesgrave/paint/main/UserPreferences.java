@@ -19,8 +19,8 @@
 
 package heroesgrave.paint.main;
 
-import heroesgrave.paint.gui.ColourChooser;
 import heroesgrave.paint.gui.LayerManager;
+import heroesgrave.paint.gui.colourChooser.MultiColourChooser;
 
 import java.awt.Frame;
 import java.util.prefs.Preferences;
@@ -55,7 +55,7 @@ public class UserPreferences
 	 * 
 	 * @param frame
 	 */
-	public static void loadPrefs(JFrame frame, ColourChooser chooser, LayerManager layers)
+	public static void loadPrefs(JFrame frame, MultiColourChooser chooser, LayerManager layers)
 	{
 		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);
 		
@@ -92,7 +92,7 @@ public class UserPreferences
 	 * 
 	 * @param frame
 	 */
-	public static void savePrefs(JFrame frame, ColourChooser chooser, LayerManager layers)
+	public static void savePrefs(JFrame frame, MultiColourChooser chooser, LayerManager layers)
 	{
 		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);
 		
