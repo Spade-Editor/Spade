@@ -43,7 +43,8 @@ import javax.swing.JScrollPane;
 
 public class CanvasManager
 {
-	private static BufferedImage transparencyBG;
+	public static BufferedImage transparencyBG;
+	public static BufferedImage transparencyBGDark;
 	
 	private IFrame preview;
 	private Canvas root;
@@ -239,7 +240,7 @@ public class CanvasManager
 			draw.setBackground(TRANSPARENT);
 			draw.clearRect(0, 0, background.getWidth(), background.getHeight());
 			
-			g.setPaint(new TexturePaint(transparencyBG, new Rectangle2D.Float(0, 0, 16, 16)));
+			g.setPaint(new TexturePaint(Menu.DARK_BACKGROUND ? transparencyBGDark : transparencyBG, new Rectangle2D.Float(0, 0, 16, 16)));
 			g.fillRect(0, 0, MathUtils.floor(mgr.getWidth() * scale), MathUtils.floor(mgr.getHeight() * scale));
 			
 			g.setPaint(null);
@@ -289,6 +290,12 @@ public class CanvasManager
 			e.printStackTrace();
 			transparencyBG = null;
 		}
+		
+		transparencyBGDark = new BufferedImage(2,2,BufferedImage.TYPE_BYTE_GRAY);
+		transparencyBGDark.setRGB(0, 0, 0x777777);
+		transparencyBGDark.setRGB(1, 1, 0x777777);
+		transparencyBGDark.setRGB(1, 0, 0x555555);
+		transparencyBGDark.setRGB(0, 1, 0x555555);
 	}
 	
 	public void select(Canvas canvas)
