@@ -8,9 +8,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
+import java.awt.RenderingHints;
 import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +23,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -34,6 +39,88 @@ import javax.swing.WindowConstants;
 public class MultiColourChooser
 {
 	
+	public class SelectedEditColorSelector extends JComponent implements MouseListener {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4059082708126254566L;
+		
+		public SelectedEditColorSelector()
+		{
+			
+			this.setSize(64, 64);
+			this.setMinimumSize(new Dimension(64,64));
+			this.setPreferredSize(new Dimension(64,64));
+			this.addMouseListener(this);
+			this.setToolTipText("Click to edit the secondary color!");
+			
+		}
+		
+		@Override
+		public void paint(Graphics $g)
+		{
+			Graphics2D g = (Graphics2D) $g;
+			
+			g.setPaint(transparenzyImagePaint);
+			g.fillRect(0, 0, getWidth(), getHeight());
+			
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setPaint(null);
+			
+			if(isEditingLeft)
+			{
+				this.setToolTipText("Click to edit the secondary color!");
+				
+				// BACK
+				g.setColor(new Color(rightColour, true));
+				g.fillRect(0, 0, getWidth(), getHeight());
+				
+				// FRONT
+				g.setColor(new Color(leftColour, true));
+				g.fillOval(2, 2, getWidth() - 6, getHeight() - 6);
+			}
+			else
+			{
+				this.setToolTipText("Click to edit the primary color!");
+				
+				// BACK
+				g.setColor(new Color(leftColour, true));
+				g.fillRect(0, 0, getWidth(), getHeight());
+				
+				// FRONT
+				g.setColor(new Color(rightColour, true));
+				g.fillOval(2, 2, getWidth() - 6, getHeight() - 6);
+			}
+			
+			g.setColor(Color.WHITE);
+			g.drawRect(1, 1, getWidth()-3, getHeight()-3);
+			
+			g.setColor(Color.BLACK);
+			g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+			g.drawOval(2, 2, getWidth() - 6, getHeight() - 6);
+			
+			
+		}
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			isEditingLeft = !isEditingLeft;
+			
+			updateAllChooserSubComponents_EditChanged();
+			this.repaint();
+		}
+		
+		@Override public void mousePressed(MouseEvent e) {}
+		
+		@Override public void mouseReleased(MouseEvent e) {}
+		
+		@Override public void mouseEntered(MouseEvent e) {}
+		
+		@Override public void mouseExited(MouseEvent e) {}
+		
+	}
+
 	/**                                              **/
 	/**                                              **/
 	/**                                              **/
@@ -60,12 +147,12 @@ public class MultiColourChooser
 			{
 				
 				invokeTextChangeLater("000000");
-				leftColour = (leftColour & 0xFF000000) | 0x000000;
+				setSelectedEditColour((getSelectedEditColor() & 0xFF000000));
 			}
 			else
 			{
 				invokeTextChangeLater("FFFFFF");
-				rightColour = (rightColour & 0xFF000000) | 0xFFFFFF;
+				setSelectedEditColour((getSelectedEditColor() & 0xFF000000) | 0xFFFFFF);
 			}
 		}
 		
@@ -86,16 +173,7 @@ public class MultiColourChooser
 			try
 			{
 				int newColor = Integer.valueOf(getText().toLowerCase(), 16);
-				
-				if(isEditingLeft)
-				{
-					leftColour = (leftColour & 0xFF000000) | newColor;
-				}
-				else
-				{
-					rightColour = (rightColour & 0xFF000000) | newColor;
-				}
-				
+				setSelectedEditColour((getSelectedEditColor() & 0xFF000000) | newColor);
 			}
 			catch(Exception e)
 			{
@@ -108,11 +186,14 @@ public class MultiColourChooser
 			updatePaintGUI();
 		}
 		
+		public void outerColourUpdate()
+		{
+			invokeTextChangeLater(Integer.toHexString(getSelectedEditColor() & 0xFFFFFF).toUpperCase());
+		}
+		
 	}
 	
-	
-	
-	private abstract class ColorChooser_ColorSlider extends JComponent implements MouseListener, MouseMotionListener
+	private abstract class ColorChooser_ColourSlider extends JComponent implements MouseListener, MouseMotionListener
 	{
 		/**
 		 * 
@@ -128,7 +209,7 @@ public class MultiColourChooser
 		boolean mouseHover;
 		boolean sliderGlow;
 		
-		public ColorChooser_ColorSlider(int LEFT,int RIGHT, float initialValue)
+		public ColorChooser_ColourSlider(int LEFT,int RIGHT, float initialValue)
 		{
 			setGradientColors(LEFT, RIGHT);
 			sliderValue = initialValue;
@@ -146,6 +227,7 @@ public class MultiColourChooser
 		{
 			gradientLeft = LEFT;
 			gradientRight = RIGHT;
+			this.repaint();
 		}
 		
 		@Override
@@ -196,6 +278,16 @@ public class MultiColourChooser
 			
 			this.repaint();
 			
+		}
+
+		public void onSliderUpdate(float sliderValue) {
+			// out-of-bounds check
+			if(sliderValue < 0)
+				sliderValue = 0;
+			if(sliderValue > 1)
+				sliderValue = 1;
+			
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue*256, 255, 0));
 		}
 		
 		public abstract void onSliderUpdate(float sliderValue, int sliderValueInt);
@@ -273,10 +365,24 @@ public class MultiColourChooser
 	JPanel chooserRight;
 	SpringLayout chooserRightLayout;
 	
+	SelectedEditColorSelector chooserLeftColourSelectorEditColourSelector;
+	
+	JPanel chooserLeftColourSelector;
+	JPanel chooserLeftColourCircle;
+	JPanel chooserLeftColourPallete;
+	
 	JPanel chooserRightRGB;
 	JPanel chooserRightHEX;
 	JPanel chooserRightHSV;
 	JPanel chooserRightALPHA;
+	
+	
+	ColorChooser_ColourSlider chooserRightRGBimplR;
+	ColorChooser_ColourSlider chooserRightRGBimplG;
+	ColorChooser_ColourSlider chooserRightRGBimplB;
+	ColorChooser_HexColor chooserRightHEXimpl;
+	ColorChooser_ColourSlider chooserRightALPHAimpl;
+	
 	
 	/**
 	 * The 'left'-colour.
@@ -293,8 +399,10 @@ public class MultiColourChooser
 	 **/
 	private boolean isEditingLeft = true;
 	
+	private boolean initialized = false;
+	
 	/**
-	 * A 'transparency' background for usage in teh colour-chooser's components.
+	 * A 'transparency' background for usage in the colour-chooser's components.
 	 **/
 	private static BufferedImage transparenzyImage;
 	private static Rectangle2D transparenzyImageRect;
@@ -339,16 +447,17 @@ public class MultiColourChooser
 		// build left
 		chooserLeft = new JPanel();
 		chooserLeftLayout = new SpringLayout();
+		chooserLeft.setBorder(BorderFactory.createLoweredBevelBorder());
 		chooserLeft.setLayout(chooserLeftLayout);
 		
 		// build right
 		chooserRight = new JPanel();
 		chooserRightLayout = new SpringLayout();
+		chooserRight.setBorder(BorderFactory.createLoweredBevelBorder());
 		chooserRight.setLayout(chooserRightLayout);
 		
 		// temporary stuff
-		chooserLeft.setBackground(Color.YELLOW);
-		chooserRight.setBackground(Color.GREEN);
+		// ...
 		
 		// build layout
 		buildLayoutForChooserRoot();
@@ -357,11 +466,42 @@ public class MultiColourChooser
 		dialog.add(chooserLeft);
 		dialog.add(chooserRight);
 		
-		chooserLeft.add(new JLabel("LEFT"));
-		
 		// ----- Construction of chooser content LEFT
-		// TODO: implement the left side.
+		chooserLeftColourSelector = new JPanel();
+		chooserLeftColourCircle = new JPanel();
+		chooserLeftColourPallete = new JPanel();
+		
+		chooserLeftColourSelector.setLayout(new FlowLayout(FlowLayout.LEADING));
+		chooserLeftColourCircle.setLayout(new BorderLayout(1,1));
+		chooserLeftColourPallete.setLayout(new BorderLayout(1,1));
+		
+		// borders
+		chooserLeftColourCircle.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "Color Circle"));
+		chooserLeftColourPallete.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "Color Pallet"));
+		
+		chooserLeftColourCircle.add(new JLabel("Not yet implemented!"));
+		chooserLeftColourPallete.add(new JLabel("Not yet implemented!"));
+		
+		// sub-components
+		chooserLeftColourSelectorEditColourSelector = new SelectedEditColorSelector();
+		chooserLeftColourSelector.add(chooserLeftColourSelectorEditColourSelector);
+		
+		chooserLeftColourSelector.add(new JButton(new AbstractAction("Reset Colors"){
+			@Override public void actionPerformed(ActionEvent e)
+			{
+				leftColour = 0xFF000000;
+				rightColour = 0xFFFFFFFF;
+				updateAllChooserSubComponents_EditChanged();
+			}
+		}));
+		
+		// layout
+		
 		buildLayoutForChooserLeftContent();
+		
+		chooserLeft.add(chooserLeftColourSelector);
+		chooserLeft.add(chooserLeftColourCircle);
+		chooserLeft.add(chooserLeftColourPallete);
 		
 		// ----- Construction of chooser content RIGHT
 		// build
@@ -370,6 +510,55 @@ public class MultiColourChooser
 		chooserRightHSV = new JPanel();
 		chooserRightALPHA = new JPanel();
 		
+		chooserRightHEXimpl = new ColorChooser_HexColor(chooserRightHEX);
+		
+		chooserRightALPHAimpl = new ColorChooser_ColourSlider(0x00000000, 0xFF000000, 1F)
+		{
+			@Override public void onSliderUpdate(float sliderValue, int sliderValueInt)
+			{
+				int currentColor = getSelectedEditColor();
+				int withoutAlpha = currentColor & 0xFFFFFF;
+				int withNewAlpha = withoutAlpha | ((sliderValueInt & 0xFF) << 24);
+				setSelectedEditColour(withNewAlpha);
+			}
+		};
+		
+		chooserRightRGBimplR = new ColorChooser_ColourSlider(0xFF000000, 0xFFFF0000, 0F)
+		{
+			@Override public void onSliderUpdate(float sliderValue, int sliderValueInt)
+			{
+				int currentColor = getSelectedEditColor();
+				int withoutCOLOR = currentColor & 0xFF00FFFF;
+				int withNewCOLOR = withoutCOLOR | ((sliderValueInt & 0xFF) << 16);
+				setSelectedEditColour(withNewCOLOR);
+			}
+		};
+		chooserRightRGB.add(chooserRightRGBimplR);
+		
+		chooserRightRGBimplG = new ColorChooser_ColourSlider(0xFF000000, 0xFF00FF00, 0F)
+		{
+			@Override public void onSliderUpdate(float sliderValue, int sliderValueInt)
+			{
+				int currentColor = getSelectedEditColor();
+				int withoutCOLOR = currentColor & 0xFFFF00FF;
+				int withNewCOLOR = withoutCOLOR | ((sliderValueInt & 0xFF) << 8);
+				setSelectedEditColour(withNewCOLOR);
+			}
+		};
+		chooserRightRGB.add(chooserRightRGBimplG);
+		
+		chooserRightRGBimplB = new ColorChooser_ColourSlider(0xFF000000, 0xFF0000FF, 0F)
+		{
+			@Override public void onSliderUpdate(float sliderValue, int sliderValueInt)
+			{
+				int currentColor = getSelectedEditColor();
+				int withoutCOLOR = currentColor & 0xFFFFFF00;
+				int withNewCOLOR = withoutCOLOR | ((sliderValueInt & 0xFF));
+				setSelectedEditColour(withNewCOLOR);
+			}
+		};
+		chooserRightRGB.add(chooserRightRGBimplB);
+		
 		// border
 		chooserRightRGB.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),"RGB"));
 		chooserRightHEX.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),"HEX"));
@@ -377,27 +566,15 @@ public class MultiColourChooser
 		chooserRightALPHA.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),"Alpha"));
 		
 		// inner layout
+		chooserRightRGB.setLayout(new GridLayout(0,1,4,4));
 		chooserRightHEX.setLayout(new BorderLayout());
 		chooserRightALPHA.setLayout(new BorderLayout());
 		
-		// temporary settings and changes to make building easier
-		chooserRightRGB.setBackground(Color.RED);
-		chooserRightHEX.setBackground(Color.LIGHT_GRAY);
-		chooserRightHSV.setBackground(Color.MAGENTA);
-		chooserRightALPHA.setBackground(Color.GRAY);
-		chooserRightRGB.add(new JLabel("RGB"));
-		chooserRightHEX.add(new ColorChooser_HexColor(chooserRightHEX));
-		chooserRightHSV.add(new JLabel("HSV"));
+		// Add implementation components to the color choosers sub's.
+		chooserRightHEX.add(chooserRightHEXimpl);
+		chooserRightHSV.add(new JLabel("Not yet implemented!"));
+		chooserRightALPHA.add(chooserRightALPHAimpl);
 		
-		chooserRightALPHA.add(new ColorChooser_ColorSlider(0x00000000, 0xFF000000, 0.5F){
-			@Override
-			public void onSliderUpdate(float sliderValue, int sliderValueInt) {
-				int currentColor = getSelectedEditColor();
-				int withOutAlpha = currentColor & 0xFFFFFF;
-				int withNewAlpha = withOutAlpha | ((sliderValueInt & 0xFF) << 24);
-				setSelectedEditColour(withNewAlpha);
-			}
-		});
 		
 		buildLayoutForChooserRightContent();
 		
@@ -409,8 +586,13 @@ public class MultiColourChooser
 		
 		
 		// ----- ???
+		chooserRightRGBimplR.onSliderUpdate(chooserRightRGBimplR.sliderValue);
+		chooserRightRGBimplG.onSliderUpdate(chooserRightRGBimplG.sliderValue);
+		chooserRightRGBimplB.onSliderUpdate(chooserRightRGBimplB.sliderValue);
 		
+		updateAllChooserSubComponents_ColorChanged();
 		
+		initialized = true;
 		
 	}
 
@@ -435,7 +617,22 @@ public class MultiColourChooser
 	}
 	
 	private void buildLayoutForChooserLeftContent() {
-		// Container contentPane = chooserLeft;
+		Container contentPane = chooserLeft;
+		// chooserLeftLayout
+		
+		chooserLeftLayout.putConstraint(SpringLayout.WEST, chooserLeftColourSelector, 0, SpringLayout.WEST, contentPane);
+		chooserLeftLayout.putConstraint(SpringLayout.WEST, chooserLeftColourCircle, 0, SpringLayout.WEST, contentPane);
+		chooserLeftLayout.putConstraint(SpringLayout.WEST, chooserLeftColourPallete, 0, SpringLayout.WEST, contentPane);
+		
+		chooserLeftLayout.putConstraint(SpringLayout.EAST, chooserLeftColourSelector, 0, SpringLayout.EAST, contentPane);
+		chooserLeftLayout.putConstraint(SpringLayout.EAST, chooserLeftColourCircle, 0, SpringLayout.EAST, contentPane);
+		chooserLeftLayout.putConstraint(SpringLayout.EAST, chooserLeftColourPallete, 0, SpringLayout.EAST, contentPane);
+		
+		chooserLeftLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourSelector, 0, SpringLayout.NORTH, contentPane);
+		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelector, 0, SpringLayout.NORTH, chooserLeftColourCircle);
+		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourCircle, 0, SpringLayout.NORTH, chooserLeftColourPallete);
+		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourPallete, 0, SpringLayout.SOUTH, contentPane);
+		
 		
 		
 	}
@@ -466,7 +663,29 @@ public class MultiColourChooser
 		
 		
 	}
-
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**                                              **/
 	/**                                              **/
 	/**                                              **/
@@ -512,9 +731,58 @@ public class MultiColourChooser
 	
 	public void updatePaintGUI()
 	{
-		Paint.main.setLeftColour(leftColour);
-		Paint.main.setRightColour(rightColour);
+		if(initialized)
+		{
+			Paint.main.setLeftColour(leftColour);
+			Paint.main.setRightColour(rightColour);
+		}
 	}
+	
+	public void updateAllChooserSubComponents_ColorChanged() {
+		int COLOUR = getSelectedEditColor();
+		
+		chooserLeftColourSelectorEditColourSelector.repaint();
+		
+		chooserRightHEXimpl.outerColourUpdate();
+		
+		chooserRightRGBimplR.setGradientColors((COLOUR & 0x00FFFF) | 0xFF000000, (COLOUR & 0xFF00FFFF) | 0xFFFF0000);
+		chooserRightRGBimplG.setGradientColors((COLOUR & 0xFF00FF) | 0xFF000000, (COLOUR & 0xFFFF00FF) | 0xFF00FF00);
+		chooserRightRGBimplB.setGradientColors((COLOUR & 0xFFFF00) | 0xFF000000, (COLOUR & 0xFFFFFF00) | 0xFF0000FF);
+		
+		chooserRightALPHAimpl.setGradientColors(COLOUR & 0xFFFFFF, (COLOUR & 0xFFFFFF) | 0xFF000000);
+		
+	}
+	
+	public void updateAllChooserSubComponents_EditChanged()
+	{
+		int COLOUR = getSelectedEditColor();
+		
+		int A = (COLOUR >> 24) & 0xFF;
+		int R = (COLOUR >> 16) & 0xFF;
+		int G = (COLOUR >> 8) & 0xFF;
+		int B = (COLOUR) & 0xFF;
+		
+		chooserRightRGBimplR.sliderValue = (float) MathUtils.clamp((float)R / 256F, 1, 0);
+		chooserRightRGBimplG.sliderValue = (float) MathUtils.clamp((float)G / 256F, 1, 0);
+		chooserRightRGBimplB.sliderValue = (float) MathUtils.clamp((float)B / 256F, 1, 0);
+		chooserRightALPHAimpl.sliderValue = (float) MathUtils.clamp((float)A / 256F, 1, 0);
+		
+		updatePaintGUI();
+		updateAllChooserSubComponents_ColorChanged();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -575,6 +843,13 @@ public class MultiColourChooser
 		return rightColour;
 	}
 	
+	public void setSelectedEditColour(boolean isEditingLeft)
+	{
+		this.isEditingLeft = isEditingLeft;
+		
+		updateAllChooserSubComponents_ColorChanged();
+	}
+	
 	public int getSelectedEditColor() {
 		return isEditingLeft ? leftColour : rightColour;
 	}
@@ -585,9 +860,12 @@ public class MultiColourChooser
 		else
 			rightColour = c;
 		
+		this.updateAllChooserSubComponents_ColorChanged();
+		
 		this.updatePaintGUI();
 	}
 	
+
 	/**
 	 * Return's the actual JDialog instance that is the root for the components of the colour-chooser.<br><br>
 	 * The colour-choosers JDialog should <b>never</b> be modified by another class except by itself.<br>
