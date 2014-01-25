@@ -1089,6 +1089,17 @@ public class MultiColourChooser
 			}
 		});
 		
+		JButton colourSwapButton = new JButton(new AbstractAction("SWAP"){
+			@Override public void actionPerformed(ActionEvent e)
+			{
+				int SWAP = leftColour;
+				leftColour = rightColour;
+				rightColour = SWAP;
+				
+				updateAllChooserSubComponents_EditChanged();
+			}
+		});
+		
 		// layout for ((chooserLeftColourSelector))
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.NORTH, chooserLeftColourSelector);
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.WEST, chooserLeftColourSelector);
@@ -1103,12 +1114,19 @@ public class MultiColourChooser
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, changeColourPalletButton, 0, SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector);
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, changeColourPalletButton, 64, SpringLayout.NORTH, chooserLeftColourSelector);
 		
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, changeColourPalletButton, 0, SpringLayout.EAST, chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, colourResetButton, 0, SpringLayout.EAST, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, changeColourPalletButton, 0, SpringLayout.WEST, colourSwapButton);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, colourResetButton, 0, SpringLayout.WEST, colourSwapButton);
+		
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, colourSwapButton, 0, SpringLayout.NORTH, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, colourSwapButton, -64, SpringLayout.EAST, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, colourSwapButton, 64, SpringLayout.NORTH, chooserLeftColourSelector);
+		
+		
 		
 		chooserLeftColourSelector.add(chooserLeftColourSelectorEditColourSelector);
 		chooserLeftColourSelector.add(changeColourPalletButton);
 		chooserLeftColourSelector.add(colourResetButton);
+		chooserLeftColourSelector.add(colourSwapButton);
 		
 		// layout
 		
