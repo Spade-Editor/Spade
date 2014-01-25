@@ -79,11 +79,11 @@ public class MultiColourChooser
 				
 				// BACK
 				g.setColor(new Color(rightColour, true));
-				g.fillRect(0, 0, getWidth()/2, getHeight());
+				g.fillRect(getWidth()/2, 0, getWidth(), getHeight());
 				
 				// FRONT
 				g.setColor(new Color(leftColour, true));
-				g.fillRect(getWidth()/2, 0, getWidth(), getHeight());
+				g.fillRect(0, 0, getWidth()/2, getHeight());
 			}
 			else
 			{
@@ -92,11 +92,11 @@ public class MultiColourChooser
 				
 				// BACK
 				g.setColor(new Color(leftColour, true));
-				g.fillRect(0, 0, getWidth()/2, getHeight());
+				g.fillRect(getWidth()/2, 0, getWidth(), getHeight());
 				
 				// FRONT
 				g.setColor(new Color(rightColour, true));
-				g.fillRect(getWidth()/2, 0, getWidth(), getHeight());
+				g.fillRect(0, 0, getWidth()/2, getHeight());
 			}
 			
 			g.setColor(Color.WHITE);
@@ -221,8 +221,8 @@ public class MultiColourChooser
 			mouseHover = false;
 			sliderGlow = false;
 			
-			this.setPreferredSize(new Dimension(48,18));
-			this.setMinimumSize(new Dimension(48,18));
+			this.setPreferredSize(new Dimension(48,16));
+			this.setMinimumSize(new Dimension(48,16));
 			
 			this.addMouseMotionListener(this);
 			this.addMouseListener(this);
@@ -336,6 +336,457 @@ public class MultiColourChooser
 		public void mouseExited(MouseEvent e) {
 			mouseHover = false;
 			sliderGlow = false;
+			this.repaint();
+		}
+		
+	}
+	
+	private class ColorChooser_ColourSliderHSBimplH extends JComponent implements MouseListener, MouseMotionListener
+	{
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7592259528579628771L;
+		
+		private float sliderValue;
+		
+		boolean mouseHover;
+		boolean sliderGlow;
+		
+		public ColorChooser_ColourSliderHSBimplH()
+		{
+			
+			
+			this.setPreferredSize(new Dimension(48,18));
+			this.setMinimumSize(new Dimension(48,18));
+			
+			this.addMouseMotionListener(this);
+			this.addMouseListener(this);
+			
+		}
+		
+		public void update(int mouseX, int currentWidth)
+		{
+			// first out-of-bounds check
+			if(mouseX < 0)
+				mouseX = 0;
+			if(mouseX > currentWidth)
+				mouseX = currentWidth;
+			
+			sliderValue = (float)mouseX / (float)currentWidth;;
+			
+			// second out-of-bounds check
+			if(sliderValue < 0)
+				sliderValue = 0;
+			if(sliderValue > 1)
+				sliderValue = 1;
+			
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue*256, 255, 0));
+			
+			this.repaint();
+			
+		}
+		
+		public void onSliderUpdate(float sliderValue, int sliderValueInt)
+		{
+			int colorIn = getSelectedEditColor();
+			float[] vals = new float[3];
+			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			
+			float h = sliderValue;
+			float s = vals[1];
+			float b = vals[2];
+			int newColor = Color.HSBtoRGB(h, s, b);
+			
+			newColor &= 0xFFFFFF;
+			newColor |= colorIn & 0xFF000000;
+			
+			setSelectedEditColour(newColor);
+			updateAllChooserSubComponents_EditChanged();
+			
+		}
+		
+		@Override
+		public void paint(Graphics $g)
+		{
+			Graphics2D g = (Graphics2D) $g;
+			
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, getWidth(), getHeight());
+			
+			for(int i = 0; i < getWidth(); i++)
+			{
+				g.setColor(Color.getHSBColor((float)i / (float)getWidth(), 1F, 1F));
+				g.fillRect(i, 0, 2, getHeight());
+			}
+			
+			if(sliderGlow)
+			{
+				g.setColor(Color.BLUE);
+				g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+			}
+			
+			int posX = (int) (sliderValue * getWidth());
+			
+			g.setColor(Color.WHITE);
+			g.drawRect(posX-1, 0, 3, getHeight()-1);
+			g.setColor(Color.BLACK);
+			g.drawRect(posX-2, 0, 5, getHeight()-1);
+			
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			sliderGlow = true;
+			update(e.getX(), this.getWidth()-1);
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			// IGNORE
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			update(e.getX(), this.getWidth()-1);
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// IGNORE
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			if(!mouseHover)
+				sliderGlow = false;
+			this.repaint();
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			mouseHover = true;
+			sliderGlow = true;
+			this.repaint();
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			mouseHover = false;
+			sliderGlow = false;
+			this.repaint();
+		}
+		
+		public void updateColorIntoSlider(int colorIn)
+		{
+			float[] vals = new float[3];
+			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			this.sliderValue = vals[0];
+			this.repaint();
+		}
+		
+	}
+	
+	private class ColorChooser_ColourSliderHSBimplS extends JComponent implements MouseListener, MouseMotionListener
+	{
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7592259528579628771L;
+		
+		private float sliderValue;
+		
+		boolean mouseHover;
+		boolean sliderGlow;
+		
+		public ColorChooser_ColourSliderHSBimplS()
+		{
+			
+			
+			this.setPreferredSize(new Dimension(48,18));
+			this.setMinimumSize(new Dimension(48,18));
+			
+			this.addMouseMotionListener(this);
+			this.addMouseListener(this);
+			
+		}
+		
+		public void update(int mouseX, int currentWidth)
+		{
+			// first out-of-bounds check
+			if(mouseX < 0)
+				mouseX = 0;
+			if(mouseX > currentWidth)
+				mouseX = currentWidth;
+			
+			sliderValue = (float)mouseX / (float)currentWidth;;
+			
+			// second out-of-bounds check
+			if(sliderValue < 0)
+				sliderValue = 0;
+			if(sliderValue > 1)
+				sliderValue = 1;
+			
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue*256, 255, 0));
+			
+			this.repaint();
+			
+		}
+		
+		public void onSliderUpdate(float sliderValue, int sliderValueInt)
+		{
+			int colorIn = getSelectedEditColor();
+			float[] vals = new float[3];
+			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			
+			float h = vals[0];
+			float s = sliderValue;
+			float b = vals[2];
+			int newColor = Color.HSBtoRGB(h, s, b);
+			
+			newColor &= 0xFFFFFF;
+			newColor |= colorIn & 0xFF000000;
+			
+			setSelectedEditColour(newColor);
+			updateAllChooserSubComponents_EditChanged();
+			
+		}
+		
+		@Override
+		public void paint(Graphics $g)
+		{
+			Graphics2D g = (Graphics2D) $g;
+			
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, getWidth(), getHeight());
+			
+			int _r = (getSelectedEditColor() >> 16) & 0xFF;
+			int _g = (getSelectedEditColor() >> 8) & 0xFF;
+			int _b = (getSelectedEditColor()) & 0xFF;
+			float[] vals = Color.RGBtoHSB(_r, _g, _b, null);
+			
+			for(int i = 0; i < getWidth(); i++)
+			{
+				g.setColor(Color.getHSBColor(vals[0], (float)i / (float)getWidth(), 1F));
+				g.fillRect(i, 0, 2, getHeight());
+			}
+			
+			if(sliderGlow)
+			{
+				g.setColor(Color.BLUE);
+				g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+			}
+			
+			int posX = (int) (sliderValue * getWidth());
+			
+			g.setColor(Color.WHITE);
+			g.drawRect(posX-1, 0, 3, getHeight()-1);
+			g.setColor(Color.BLACK);
+			g.drawRect(posX-2, 0, 5, getHeight()-1);
+			
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			sliderGlow = true;
+			update(e.getX(), this.getWidth()-1);
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			// IGNORE
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			update(e.getX(), this.getWidth()-1);
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// IGNORE
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			if(!mouseHover)
+				sliderGlow = false;
+			this.repaint();
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			mouseHover = true;
+			sliderGlow = true;
+			this.repaint();
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			mouseHover = false;
+			sliderGlow = false;
+			this.repaint();
+		}
+		
+		public void updateColorIntoSlider(int colorIn)
+		{
+			float[] vals = new float[3];
+			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			this.sliderValue = vals[1];
+			this.repaint();
+		}
+		
+	}
+	
+	private class ColorChooser_ColourSliderHSBimplB extends JComponent implements MouseListener, MouseMotionListener
+	{
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7592259528579628771L;
+		
+		private float sliderValue;
+		
+		boolean mouseHover;
+		boolean sliderGlow;
+		
+		public ColorChooser_ColourSliderHSBimplB()
+		{
+			
+			
+			this.setPreferredSize(new Dimension(48,18));
+			this.setMinimumSize(new Dimension(48,18));
+			
+			this.addMouseMotionListener(this);
+			this.addMouseListener(this);
+			
+		}
+		
+		public void update(int mouseX, int currentWidth)
+		{
+			// first out-of-bounds check
+			if(mouseX < 0)
+				mouseX = 0;
+			if(mouseX > currentWidth)
+				mouseX = currentWidth;
+			
+			sliderValue = (float)mouseX / (float)currentWidth;;
+			
+			// second out-of-bounds check
+			if(sliderValue < 0)
+				sliderValue = 0;
+			if(sliderValue > 1)
+				sliderValue = 1;
+			
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue*256, 255, 0));
+			
+			this.repaint();
+			
+		}
+		
+		public void onSliderUpdate(float sliderValue, int sliderValueInt)
+		{
+			int colorIn = getSelectedEditColor();
+			float[] vals = new float[3];
+			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			
+			float h = vals[0];
+			float s = vals[1];
+			float b = sliderValue;
+			int newColor = Color.HSBtoRGB(h, s, b);
+			
+			newColor &= 0xFFFFFF;
+			newColor |= colorIn & 0xFF000000;
+			
+			setSelectedEditColour(newColor);
+			updateAllChooserSubComponents_EditChanged();
+			
+		}
+		
+		@Override
+		public void paint(Graphics $g)
+		{
+			Graphics2D g = (Graphics2D) $g;
+			
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, getWidth(), getHeight());
+			
+			int _r = (getSelectedEditColor() >> 16) & 0xFF;
+			int _g = (getSelectedEditColor() >> 8) & 0xFF;
+			int _b = (getSelectedEditColor()) & 0xFF;
+			float[] vals = Color.RGBtoHSB(_r, _g, _b, null);
+			
+			for(int i = 0; i < getWidth(); i++)
+			{
+				g.setColor(Color.getHSBColor(vals[0], vals[1], (float)i / (float)getWidth()));
+				g.fillRect(i, 0, 2, getHeight());
+			}
+			
+			if(sliderGlow)
+			{
+				g.setColor(Color.BLUE);
+				g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+			}
+			
+			int posX = (int) (sliderValue * getWidth());
+			
+			g.setColor(Color.WHITE);
+			g.drawRect(posX-1, 0, 3, getHeight()-1);
+			g.setColor(Color.BLACK);
+			g.drawRect(posX-2, 0, 5, getHeight()-1);
+			
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			sliderGlow = true;
+			update(e.getX(), this.getWidth()-1);
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			// IGNORE
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			update(e.getX(), this.getWidth()-1);
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// IGNORE
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			if(!mouseHover)
+				sliderGlow = false;
+			this.repaint();
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			mouseHover = true;
+			sliderGlow = true;
+			this.repaint();
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			mouseHover = false;
+			sliderGlow = false;
+			this.repaint();
+		}
+		
+		public void updateColorIntoSlider(int colorIn)
+		{
+			float[] vals = new float[3];
+			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			this.sliderValue = vals[2];
 			this.repaint();
 		}
 		
@@ -456,7 +907,7 @@ public class MultiColourChooser
 	
 	JPanel chooserRightRGB;
 	JPanel chooserRightHEX;
-	JPanel chooserRightHSV;
+	JPanel chooserRightHSB;
 	JPanel chooserRightALPHA;
 	
 	
@@ -464,6 +915,9 @@ public class MultiColourChooser
 	ColorChooser_ColourSlider chooserRightRGBimplG;
 	ColorChooser_ColourSlider chooserRightRGBimplB;
 	ColorChooser_HexColor chooserRightHEXimpl;
+	ColorChooser_ColourSliderHSBimplH chooserRightHSBimplH;
+	ColorChooser_ColourSliderHSBimplS chooserRightHSBimplS;
+	ColorChooser_ColourSliderHSBimplB chooserRightHSBimplB;
 	ColorChooser_ColourSlider chooserRightALPHAimpl;
 	
 	
@@ -521,7 +975,7 @@ public class MultiColourChooser
 		dialogLayout = new SpringLayout();
 		
 		// ----- Do the typical configurations for it.
-		dialog.setSize(400, 300);
+		dialog.setSize(430, 290);
 		dialog.setResizable(false);
 		dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		dialog.setLayout(dialogLayout);
@@ -596,7 +1050,7 @@ public class MultiColourChooser
 		// build
 		chooserRightRGB = new JPanel();
 		chooserRightHEX = new JPanel();
-		chooserRightHSV = new JPanel();
+		chooserRightHSB = new JPanel();
 		chooserRightALPHA = new JPanel();
 		
 		chooserRightHEXimpl = new ColorChooser_HexColor(chooserRightHEX);
@@ -648,20 +1102,27 @@ public class MultiColourChooser
 		};
 		chooserRightRGB.add(chooserRightRGBimplB);
 		
+		chooserRightHSBimplH = new ColorChooser_ColourSliderHSBimplH();
+		chooserRightHSBimplS = new ColorChooser_ColourSliderHSBimplS();
+		chooserRightHSBimplB = new ColorChooser_ColourSliderHSBimplB();
+		
 		// border
 		chooserRightRGB.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),"RGB"));
 		chooserRightHEX.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),"HEX"));
-		chooserRightHSV.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),"HSV"));
+		chooserRightHSB.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),"HSB"));
 		chooserRightALPHA.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),"Alpha"));
 		
 		// inner layout
 		chooserRightRGB.setLayout(new GridLayout(0,1,4,4));
 		chooserRightHEX.setLayout(new BorderLayout());
+		chooserRightHSB.setLayout(new GridLayout(0,1,4,4));
 		chooserRightALPHA.setLayout(new BorderLayout());
 		
 		// Add implementation components to the color choosers sub's.
 		chooserRightHEX.add(chooserRightHEXimpl);
-		chooserRightHSV.add(new JLabel("Not yet implemented!"));
+		chooserRightHSB.add(chooserRightHSBimplH);
+		chooserRightHSB.add(chooserRightHSBimplS);
+		chooserRightHSB.add(chooserRightHSBimplB);
 		chooserRightALPHA.add(chooserRightALPHAimpl);
 		
 		
@@ -669,7 +1130,7 @@ public class MultiColourChooser
 		
 		chooserRight.add(chooserRightRGB);
 		chooserRight.add(chooserRightHEX);
-		chooserRight.add(chooserRightHSV);
+		chooserRight.add(chooserRightHSB);
 		chooserRight.add(chooserRightALPHA);
 		
 		
@@ -733,20 +1194,20 @@ public class MultiColourChooser
 		// link left springs
 		chooserRightLayout.putConstraint(SpringLayout.WEST, chooserRightRGB, 0, SpringLayout.WEST, contentPane);
 		chooserRightLayout.putConstraint(SpringLayout.WEST, chooserRightHEX, 0, SpringLayout.WEST, contentPane);
-		chooserRightLayout.putConstraint(SpringLayout.WEST, chooserRightHSV, 0, SpringLayout.WEST, contentPane);
+		chooserRightLayout.putConstraint(SpringLayout.WEST, chooserRightHSB, 0, SpringLayout.WEST, contentPane);
 		chooserRightLayout.putConstraint(SpringLayout.WEST, chooserRightALPHA, 0, SpringLayout.WEST, contentPane);
 		
 		// link right springs
 		chooserRightLayout.putConstraint(SpringLayout.EAST, chooserRightRGB, 0, SpringLayout.EAST, contentPane);
 		chooserRightLayout.putConstraint(SpringLayout.EAST, chooserRightHEX, 0, SpringLayout.EAST, contentPane);
-		chooserRightLayout.putConstraint(SpringLayout.EAST, chooserRightHSV, 0, SpringLayout.EAST, contentPane);
+		chooserRightLayout.putConstraint(SpringLayout.EAST, chooserRightHSB, 0, SpringLayout.EAST, contentPane);
 		chooserRightLayout.putConstraint(SpringLayout.EAST, chooserRightALPHA, 0, SpringLayout.EAST, contentPane);
 		
 		// link top/bottoms together (nightmare)
 		chooserRightLayout.putConstraint(SpringLayout.NORTH, chooserRightRGB, 0, SpringLayout.NORTH, contentPane);
 		chooserRightLayout.putConstraint(SpringLayout.NORTH, chooserRightHEX, 0, SpringLayout.SOUTH, chooserRightRGB);
-		chooserRightLayout.putConstraint(SpringLayout.NORTH, chooserRightHSV, 0, SpringLayout.SOUTH, chooserRightHEX);
-		chooserRightLayout.putConstraint(SpringLayout.SOUTH, chooserRightHSV, 0, SpringLayout.NORTH, chooserRightALPHA);
+		chooserRightLayout.putConstraint(SpringLayout.NORTH, chooserRightHSB, 0, SpringLayout.SOUTH, chooserRightHEX);
+		chooserRightLayout.putConstraint(SpringLayout.SOUTH, chooserRightHSB, 0, SpringLayout.NORTH, chooserRightALPHA);
 		chooserRightLayout.putConstraint(SpringLayout.SOUTH, chooserRightALPHA, 0, SpringLayout.SOUTH, contentPane);
 		
 		
@@ -881,6 +1342,10 @@ public class MultiColourChooser
 		chooserRightRGBimplR.setGradientColors((COLOUR & 0x00FFFF) | 0xFF000000, (COLOUR & 0xFF00FFFF) | 0xFFFF0000);
 		chooserRightRGBimplG.setGradientColors((COLOUR & 0xFF00FF) | 0xFF000000, (COLOUR & 0xFFFF00FF) | 0xFF00FF00);
 		chooserRightRGBimplB.setGradientColors((COLOUR & 0xFFFF00) | 0xFF000000, (COLOUR & 0xFFFFFF00) | 0xFF0000FF);
+		
+		chooserRightHSBimplH.updateColorIntoSlider(COLOUR);
+		chooserRightHSBimplS.updateColorIntoSlider(COLOUR);
+		chooserRightHSBimplB.updateColorIntoSlider(COLOUR);
 		
 		chooserRightALPHAimpl.setGradientColors(COLOUR & 0xFFFFFF, (COLOUR & 0xFFFFFF) | 0xFF000000);
 		
