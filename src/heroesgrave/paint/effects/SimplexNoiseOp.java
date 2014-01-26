@@ -29,29 +29,36 @@ import java.awt.image.BufferedImage;
 
 public class SimplexNoiseOp extends ImageOp
 {
+	@Override
 	public void operation()
 	{
-		BufferedImage newImage = new BufferedImage(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		SimplexNoise noise = new SimplexNoise(System.currentTimeMillis());
-		
 		// TODO: Add dialog with sliders to configure the noise!
-		double scale = 0.125;
+		noise_gen();
+		
+		
+	}
+	
+	public void noise_gen()
+	{
+		BufferedImage newImage = new BufferedImage(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		SimplexNoise noise = new SimplexNoise(123456789L);
+		
+		double scale = 1f / 64f;
 		
 		int OCTAVES = 8;
-		double START_SCALE = 1;
-		double MULTIPLY_SCALE = 0.25;
+		double START_SCALE = 0.5f;
+		double MULTIPLY_SCALE = 2.125f;
+		double REDUCE = 0.3f;
 		
 		for(int i = 0; i < newImage.getWidth(); i++)
 		{
 			for(int j = 0; j < newImage.getHeight(); j++)
 			{
-				int after = 0xFFFFFFFF;
+				int after = 0xFF000000;
 				
-				double valD = noise.noiseO(i * scale, j * scale, OCTAVES, START_SCALE, MULTIPLY_SCALE);
+				double valD = noise.noiseO2(i * scale, j * scale, OCTAVES, START_SCALE, MULTIPLY_SCALE, REDUCE);
 				valD = valD * 0.5D + 0.5D;
 				int valI = MathUtils.clamp((int) (valD * 256), 255, 0) & 0xFF;
-				
-				after &= 0xFF000000;
 				
 				after |= valI << 0;
 				after |= valI << 8;
@@ -62,6 +69,8 @@ public class SimplexNoiseOp extends ImageOp
 		}
 		
 		Paint.addChange(new KeyFrame(newImage));
+		
+		
 	}
 	
 }
