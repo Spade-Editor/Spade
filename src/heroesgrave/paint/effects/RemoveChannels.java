@@ -66,6 +66,7 @@ public class RemoveChannels extends ImageOp
 		// create actions
 		create.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				dialog.close();
@@ -75,6 +76,7 @@ public class RemoveChannels extends ImageOp
 		});
 		cancel.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.main.gui.canvas.preview(null);
@@ -152,6 +154,7 @@ public class RemoveChannels extends ImageOp
 		}
 		
 		Paint.main.gui.canvas.preview(new KeyFrame(newImage));
+		Paint.main.gui.canvas.getPanel().repaint();
 	}
 	
 }
