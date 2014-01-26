@@ -26,15 +26,40 @@ import heroesgrave.paint.main.Paint;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.SpringLayout;
+
 public class Rectangle extends Tool
 {
 	private int sx, sy;
 	private Rectangle2D.Float rect;
 	private ShapeChange change;
+	private JCheckBox fill;
 	
 	public Rectangle(String name)
 	{
 		super(name);
+		
+		fill = new JCheckBox("Fill Shape");
+		
+		JLabel label = (JLabel) menu.getComponent(0);
+		
+		SpringLayout layout = new SpringLayout();
+		menu.setLayout(layout);
+		
+		fill.setFocusable(false);
+		
+		menu.add(label);
+		menu.add(fill);
+		
+		layout.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, menu);
+		layout.putConstraint(SpringLayout.WEST, fill, 20, SpringLayout.EAST, label);
+		layout.putConstraint(SpringLayout.EAST, menu, 20, SpringLayout.EAST, fill);
+		
+		layout.putConstraint(SpringLayout.NORTH, label, 3, SpringLayout.NORTH, menu);
+		
+		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
 	}
 	
 	public void onPressed(int x, int y, int button)
@@ -44,11 +69,11 @@ public class Rectangle extends Tool
 		rect = new Rectangle2D.Float(x, y, 1, 1);
 		if(button == MouseEvent.BUTTON1)
 		{
-			change = new ShapeChange(rect, Paint.main.getLeftColour());
+			change = new ShapeChange(rect, Paint.main.getLeftColour()).setFill(fill.isSelected());
 		}
 		else if(button == MouseEvent.BUTTON3)
 		{
-			change = new ShapeChange(rect, Paint.main.getRightColour());
+			change = new ShapeChange(rect, Paint.main.getRightColour()).setFill(fill.isSelected());
 		}
 		Paint.main.gui.canvas.preview(change);
 	}

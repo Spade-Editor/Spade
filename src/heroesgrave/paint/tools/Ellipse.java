@@ -26,15 +26,48 @@ import heroesgrave.paint.main.Paint;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.SpringLayout;
+
 public class Ellipse extends Tool
 {
 	private int sx, sy;
 	private Ellipse2D.Float ellipse;
 	private ShapeChange change;
+	private JCheckBox fill;
+	private JCheckBox antialias;
 	
 	public Ellipse(String name)
 	{
 		super(name);
+		
+		fill = new JCheckBox("Fill Shape");
+		antialias = new JCheckBox("Antialiasing");
+		
+		fill.setFocusable(false);
+		antialias.setFocusable(false);
+		
+		JLabel label = (JLabel) menu.getComponent(0);
+		
+		SpringLayout layout = new SpringLayout();
+		menu.setLayout(layout);
+		
+		menu.add(label);
+		menu.add(fill);
+		menu.add(antialias);
+		
+		// top/bottom
+		layout.putConstraint(SpringLayout.NORTH, label, 3, SpringLayout.NORTH, menu);
+		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
+		
+		// left/right
+		layout.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, menu);
+		layout.putConstraint(SpringLayout.WEST, fill, 20, SpringLayout.EAST, label);
+		layout.putConstraint(SpringLayout.WEST, antialias, 20, SpringLayout.EAST, fill);
+		layout.putConstraint(SpringLayout.EAST, menu, 20, SpringLayout.EAST, antialias);
+		
+		
 	}
 	
 	public void onPressed(int x, int y, int button)
@@ -44,11 +77,11 @@ public class Ellipse extends Tool
 		ellipse = new Ellipse2D.Float(x, y, 1, 1);
 		if(button == MouseEvent.BUTTON1)
 		{
-			change = new ShapeChange(ellipse, Paint.main.getLeftColour());
+			change = new ShapeChange(ellipse, Paint.main.getLeftColour()).setFill(fill.isSelected()).setAntialiasing(antialias.isSelected());
 		}
 		else if(button == MouseEvent.BUTTON3)
 		{
-			change = new ShapeChange(ellipse, Paint.main.getRightColour());
+			change = new ShapeChange(ellipse, Paint.main.getRightColour()).setFill(fill.isSelected()).setAntialiasing(antialias.isSelected());
 		}
 		Paint.main.gui.canvas.preview(change);
 	}

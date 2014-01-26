@@ -33,6 +33,7 @@ import heroesgrave.utils.io.ImageImporter;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -370,6 +371,18 @@ public class Paint extends Application
 	public int getRightColour()
 	{
 		return Paint.rightColour;
+	}
+	
+	/**
+	 * @param mouseButton The mouse-button to get the color for.
+	 * @return The color assigned to the given MouseButton.
+	 **/
+	public int getColor(int mouseButton)
+	{
+		// BUTTON1 (LEFT): left
+		// BUTTON2 (MIDDLE): Color.BLACK
+		// BUTTON1 (RIGHT): right
+		return mouseButton == MouseEvent.BUTTON1 ? Paint.leftColour : (mouseButton == MouseEvent.BUTTON3 ? Paint.rightColour : 0xFF000000);
 	}
 	
 	public static void main(String[] args)
