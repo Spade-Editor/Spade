@@ -963,8 +963,8 @@ public class MultiColourChooser
 		transparenzyImage = new BufferedImage(2, 2, BufferedImage.TYPE_BYTE_GRAY);
 		transparenzyImage.setRGB(0, 0, 0xDDDDDD);
 		transparenzyImage.setRGB(1, 1, 0xDDDDDD);
-		transparenzyImage.setRGB(1, 0, 0xAAAAAA);
-		transparenzyImage.setRGB(0, 1, 0xAAAAAA);
+		transparenzyImage.setRGB(1, 0, 0xFFFFFF);
+		transparenzyImage.setRGB(0, 1, 0xFFFFFF);
 		
 		transparenzyImageRect = new Rectangle2D.Float(0,0,8,8);
 		transparenzyImagePaint = new TexturePaint(transparenzyImage, transparenzyImageRect);
@@ -984,6 +984,8 @@ public class MultiColourChooser
 		dialog.setResizable(false);
 		dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		dialog.setLayout(dialogLayout);
+		dialog.setFocusable(false);
+		dialog.setAutoRequestFocus(false);
 		
 		// ----- Build the LEFT/RIGHT components and set their layout.
 		// build left
