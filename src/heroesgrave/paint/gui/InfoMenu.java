@@ -23,11 +23,10 @@ import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.io.IOException;
 import java.net.URL;
 
@@ -73,6 +72,9 @@ public class InfoMenu
 		saved.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JPanel colourPanel = new JPanel();
+		colourPanel.setMinimumSize(new Dimension(32,32));
+		colourPanel.setPreferredSize(new Dimension(32,32));
+		colourPanel.setSize(new Dimension(32,32));
 		colourPanel.setLayout(new GridLayout(1, 2));
 		colourPanel.setOpaque(false);
 		
@@ -83,6 +85,7 @@ public class InfoMenu
 		// reset creation
 		reset.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
 				Paint.main.setLeftColour(0xFF000000);
@@ -107,12 +110,14 @@ public class InfoMenu
 		
 		reset.setFocusable(false);
 		
+		/*
 		colourPanel.add(reset);
 		colourPanel.add(left);
 		colourPanel.add(right);
 		
 		left.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
 				read(left);
@@ -121,6 +126,7 @@ public class InfoMenu
 		});
 		left.addFocusListener(new FocusAdapter()
 		{
+			@Override
 			public void focusLost(FocusEvent arg0)
 			{
 				read(left);
@@ -130,6 +136,7 @@ public class InfoMenu
 		
 		right.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
 				read(right);
@@ -138,12 +145,14 @@ public class InfoMenu
 		});
 		right.addFocusListener(new FocusAdapter()
 		{
+			@Override
 			public void focusLost(FocusEvent arg0)
 			{
 				read(right);
 				Paint.main.gui.frame.requestFocus();
 			}
 		});
+		//*/
 		
 		tool = new JPanel();
 		tool.setOpaque(false);
@@ -164,6 +173,10 @@ public class InfoMenu
 		layout.putConstraint(SpringLayout.WEST, tool, 20, SpringLayout.EAST, saved);
 		layout.putConstraint(SpringLayout.WEST, spacer, 20, SpringLayout.EAST, tool);
 		layout.putConstraint(SpringLayout.EAST, menuBar, 20, SpringLayout.EAST, spacer);
+		
+		// Check if the memory-watcher is not null (eg: Activated or not), then add constraints.
+		if(memoryWatcher != null)
+			layout.putConstraint(SpringLayout.EAST, memoryWatcher, 0, SpringLayout.EAST, menuBar);
 		
 		layout.putConstraint(SpringLayout.NORTH, scale, 7, SpringLayout.NORTH, menuBar);
 		layout.putConstraint(SpringLayout.NORTH, saved, 7, SpringLayout.NORTH, menuBar);

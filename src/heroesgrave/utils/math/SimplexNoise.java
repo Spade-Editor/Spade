@@ -62,6 +62,8 @@ public class SimplexNoise
 			239, 107, 49, 192, 214, 31, 181, 199, 106, 157, 184, 84, 204, 176, 115, 121, 50, 45, 127, 4, 150, 254, 138, 236, 205, 93, 222, 114, 67, 29,
 			24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180};
 	
+	private final double[] octaveDepthPositionPermutationTable;
+	
 	// To remove the need for index wrapping, double the permutation table length
 	private final short perm[] = new short[512];
 	private final short permMod12[] = new short[512];
@@ -86,6 +88,12 @@ public class SimplexNoise
 		{
 			this.perm[i] = this.p[i & 255];
 			this.permMod12[i] = (short) (this.perm[i] % 12);
+		}
+		
+		octaveDepthPositionPermutationTable = new double[64];
+		for(int i = 0; i < octaveDepthPositionPermutationTable.length; i++)
+		{
+			octaveDepthPositionPermutationTable[i] = rnd.nextFloat() * (int)(rnd.nextLong() & 0xFFFFFFFF);
 		}
 		
 	}
@@ -130,19 +138,29 @@ public class SimplexNoise
 		return (g.x * x) + (g.y * y) + (g.z * z) + (g.w * w);
 	}
 	
-	// 2D Simplex Simplex Noise
-	// This method COULD be wrong written. Please fix if time is avaible!
-	public final double noiseO(double xin, double yin, int octaves, double d, double r)
+	/**
+	 * Perlin's Simplex-Noise Function in 2D.
+	 * Octaves: Best around 4 to 16. (This number is used in a FOR-loop! Don't put it too high!)
+	 * Amplitude: Best around 0.125 to 1.5
+	 * Lacunarity: Best around 2
+	 * Persistence: Best around 0.2 to 0.6
+	 **/
+	public final double noiseO2(double xin, double yin, int octaves, double amp, double lacunarity, double persistence)
 	{
-		double a = 0;
+		double val = 0;
+		double amplitude = amp; // 1
 		
-		for(int octave = 0; octave < octaves; octave++)
+		for (int n = 0; n < octaves; n++)
 		{
-			a += noise(xin * d, yin * d);
-			d *= r;
+			val += noise(xin, yin) * amplitude;
+			
+			xin *= lacunarity;
+			yin *= lacunarity;
+			
+			amplitude *= persistence;
 		}
 		
-		return a;
+		return val;
 	}
 	
 	// 2D simplex noise

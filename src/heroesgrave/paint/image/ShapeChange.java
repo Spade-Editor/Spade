@@ -23,6 +23,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
@@ -33,6 +34,8 @@ public class ShapeChange extends Frame
 	private int colour;
 	private Stroke stroke;
 	private AlphaComposite trans;
+	private boolean filling = false;
+	private boolean antialiasing = false;
 	
 	public ShapeChange(Shape shape, int colour)
 	{
@@ -55,6 +58,9 @@ public class ShapeChange extends Frame
 	{
 		Graphics2D g2d = image.createGraphics();
 		
+		if(antialiasing)
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
 		Stroke oldStroke = null;
 		Composite oldComp = null;
 		Color oldColor = g2d.getColor();
@@ -71,7 +77,10 @@ public class ShapeChange extends Frame
 		}
 		g2d.setColor(new Color(colour));
 		
-		g2d.draw(changeShape);
+		if(filling)
+			g2d.fill(changeShape);
+		else
+			g2d.draw(changeShape);
 		
 		g2d.setColor(oldColor);
 		if(trans != null)
@@ -84,4 +93,17 @@ public class ShapeChange extends Frame
 	{
 		this.stroke = stroke;
 	}
+	
+	public ShapeChange setFill(boolean fillFlag)
+	{
+		filling = fillFlag;
+		return this;
+	}
+	
+	public ShapeChange setAntialiasing(boolean alias)
+	{
+		antialiasing = alias;
+		return this;
+	}
+	
 }

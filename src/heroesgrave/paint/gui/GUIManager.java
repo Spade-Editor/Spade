@@ -27,12 +27,18 @@ import heroesgrave.paint.main.UserPreferences;
 
 import java.awt.Adjustable;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -59,7 +65,7 @@ public class GUIManager
 	public JScrollPane scroll;
 	
 	public CanvasManager canvas;
-	public ColourChooser chooser;
+	public MultiColourChooser chooser;
 	public LayerManager layers;
 	public InfoMenu info;
 	
@@ -133,7 +139,7 @@ public class GUIManager
 		initMenu();
 		createCanvas();
 		
-		chooser = new ColourChooser();
+		chooser = new MultiColourChooser(frame);
 		layers = new LayerManager(canvas.getRoot());
 		about = new AboutDialog(frame);
 		finish();
@@ -162,13 +168,48 @@ public class GUIManager
 	{
 		canvas = new CanvasManager();
 		
-		JPanel panel = new JPanel();
+		@SuppressWarnings("serial")
+		JPanel panel = new JPanel(){
+			BufferedImage img;
+			Rectangle2D rect;
+			TexturePaint paint;
+			{
+				img = new BufferedImage(2,2, BufferedImage.TYPE_BYTE_GRAY);
+				img.setRGB(0, 0, 0x333333);
+				img.setRGB(1, 1, 0x333333);
+				img.setRGB(1, 0, 0x555555);
+				img.setRGB(0, 1, 0x555555);
+				
+				rect = new Rectangle2D.Float(0, 0, 24, 24);
+				paint = new TexturePaint(img, rect);
+			}
+			
+			@Override public void paint(Graphics $g)
+			{
+				if(Menu.DARK_BACKGROUND)
+				{
+					Graphics2D g = (Graphics2D) $g;
+					g.setPaint(paint);
+					g.fillRect(0, 0, getWidth(), getHeight());
+					g.setPaint(null);
+				}
+				else
+				{
+					$g.setColor(new Color(0xDDEEFF));
+					$g.fillRect(0, 0, getWidth(), getHeight());
+				}
+				
+				super.paint($g);
+			}
+		};
+		panel.setBackground(new java.awt.Color(0,true));
 		panel.add(canvas.getPanel(), BorderLayout.CENTER);
 		
 		scroll = new JScrollPane(panel);
 		scroll.removeMouseWheelListener(scroll.getMouseWheelListeners()[0]);
 		scroll.addMouseWheelListener(new MouseWheelListener()
 		{
+			@Override
 			public void mouseWheelMoved(final MouseWheelEvent e)
 			{
 				if(e.isControlDown())
@@ -233,6 +274,7 @@ public class GUIManager
 		frame = new JFrame("Untitled - Paint.JAVA");
 		frame.addWindowListener(new WindowAdapter()
 		{
+			@Override
 			public void windowClosing(WindowEvent e)
 			{
 				displayCloseDialogue();
@@ -279,6 +321,7 @@ public class GUIManager
 		// Init all the actions
 		save.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.save();
@@ -289,6 +332,7 @@ public class GUIManager
 		});
 		dispose.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				UserPreferences.savePrefs(frame, chooser, layers);
@@ -298,6 +342,7 @@ public class GUIManager
 		});
 		cancel.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				close.dispose();
