@@ -88,6 +88,7 @@ public class Paint extends Application
 	private static HashMap<String, Tool> tools = new HashMap<String, Tool>();
 	private static HashMap<String, ImageOp> imageOps = new HashMap<String, ImageOp>();
 	
+	@Override
 	public void init()
 	{
 		ImageExporter.registerExporters();
@@ -112,6 +113,7 @@ public class Paint extends Application
 		saved = true;
 	}
 	
+	@Override
 	public void update()
 	{
 		gui.info.setSaved(saved);
@@ -119,11 +121,13 @@ public class Paint extends Application
 		gui.setFile(openFile);
 	}
 	
+	@Override
 	public void render()
 	{
 		
 	}
 	
+	@Override
 	public void dispose()
 	{
 		
@@ -154,6 +158,7 @@ public class Paint extends Application
 			
 			save.addActionListener(new ActionListener()
 			{
+				@Override
 				public void actionPerformed(ActionEvent e)
 				{
 					Paint.save();
@@ -163,6 +168,7 @@ public class Paint extends Application
 			});
 			dispose.addActionListener(new ActionListener()
 			{
+				@Override
 				public void actionPerformed(ActionEvent e)
 				{
 					newImage.dispose();
@@ -171,6 +177,7 @@ public class Paint extends Application
 			});
 			cancel.addActionListener(new ActionListener()
 			{
+				@Override
 				public void actionPerformed(ActionEvent e)
 				{
 					newImage.dispose();
