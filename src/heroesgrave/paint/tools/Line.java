@@ -25,14 +25,39 @@ import heroesgrave.paint.main.Paint;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.SpringLayout;
+
 public class Line extends Tool
 {
 	private Line2D.Float line;
 	private ShapeChange change;
+	private JCheckBox antialias;
 	
 	public Line(String name)
 	{
 		super(name);
+		antialias = new JCheckBox("Antialiasing");
+		antialias.setFocusable(false);
+		
+		JLabel label = (JLabel) menu.getComponent(0);
+		
+		SpringLayout layout = new SpringLayout();
+		menu.setLayout(layout);
+		
+		menu.add(label);
+		menu.add(antialias);
+		
+		// top/bottom
+		layout.putConstraint(SpringLayout.NORTH, label, 3, SpringLayout.NORTH, menu);
+		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
+		
+		// left/right
+		layout.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, menu);
+		layout.putConstraint(SpringLayout.WEST, antialias, 20, SpringLayout.EAST, label);
+		layout.putConstraint(SpringLayout.EAST, menu, 20, SpringLayout.EAST, antialias);
+		
 	}
 	
 	public void onPressed(int x, int y, int button)
@@ -40,11 +65,11 @@ public class Line extends Tool
 		line = new Line2D.Float(x, y, x, y);
 		if(button == MouseEvent.BUTTON1)
 		{
-			change = new ShapeChange(line, Paint.main.getLeftColour());
+			change = new ShapeChange(line, Paint.main.getLeftColour()).setAntialiasing(antialias.isSelected());
 		}
 		else if(button == MouseEvent.BUTTON3)
 		{
-			change = new ShapeChange(line, Paint.main.getRightColour());
+			change = new ShapeChange(line, Paint.main.getRightColour()).setAntialiasing(antialias.isSelected());
 		}
 		Paint.main.gui.canvas.preview(change);
 	}
