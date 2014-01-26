@@ -50,7 +50,7 @@ public class Line extends Tool
 		menu.add(antialias);
 		
 		// top/bottom
-		layout.putConstraint(SpringLayout.NORTH, label, 3, SpringLayout.NORTH, menu);
+		layout.putConstraint(SpringLayout.NORTH, antialias, -2, SpringLayout.NORTH, menu);
 		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
 		
 		// left/right

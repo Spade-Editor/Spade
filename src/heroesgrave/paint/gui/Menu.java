@@ -381,7 +381,7 @@ public class Menu
 		JMenuItem zoomIn = new JMenuItem("Zoom In (Ctrl++)", GUIManager.getIcon("zoom_inc"));
 		JMenuItem zoomOut = new JMenuItem("Zoom Out (Ctrl+-)", GUIManager.getIcon("zoom_dec"));
 		JMenuItem grid = new JMenuItem("Toggle Grid (Ctrl+G)", GUIManager.getIcon("toggle_grid"));
-		JMenuItem darkDraw = new JMenuItem("Toggle Dark Background", GUIManager.getIcon("dark_bg"));
+		JMenuItem darkDraw = new JMenuItem("Toggle Dark Background", GUIManager.getIcon("toggle_dark_bg"));
 		
 		zoomIn.addActionListener(new ActionListener()
 		{

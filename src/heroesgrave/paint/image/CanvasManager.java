@@ -291,7 +291,7 @@ public class CanvasManager
 			transparencyBG = null;
 		}
 		
-		transparencyBGDark = new BufferedImage(2,2,BufferedImage.TYPE_BYTE_GRAY);
+		transparencyBGDark = new BufferedImage(2, 2, BufferedImage.TYPE_BYTE_GRAY);
 		transparencyBGDark.setRGB(0, 0, 0x777777);
 		transparencyBGDark.setRGB(1, 1, 0x777777);
 		transparencyBGDark.setRGB(1, 0, 0x555555);

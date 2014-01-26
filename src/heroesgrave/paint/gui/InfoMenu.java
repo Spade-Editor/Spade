@@ -22,9 +22,6 @@ package heroesgrave.paint.gui;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -37,7 +34,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
@@ -50,7 +46,6 @@ public class InfoMenu
 	private JLabel scale, saved;
 	private JButton reset;
 	private MemoryWatcher memoryWatcher;
-	private ColourTextPanel left, right;
 	
 	public JComponent createInfoMenuBar()
 	{
@@ -71,15 +66,6 @@ public class InfoMenu
 		scale.setHorizontalAlignment(SwingConstants.CENTER);
 		saved.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		JPanel colourPanel = new JPanel();
-		colourPanel.setMinimumSize(new Dimension(32,32));
-		colourPanel.setPreferredSize(new Dimension(32,32));
-		colourPanel.setSize(new Dimension(32,32));
-		colourPanel.setLayout(new GridLayout(1, 2));
-		colourPanel.setOpaque(false);
-		
-		left = new ColourTextPanel();
-		right = new ColourTextPanel();
 		reset = new JButton("Reset");
 		
 		// reset creation
@@ -108,80 +94,31 @@ public class InfoMenu
 			System.err.println("Error: 'Reset' is missing an icon!");
 		}
 		
-		reset.setFocusable(false);
-		
-		/*
-		colourPanel.add(reset);
-		colourPanel.add(left);
-		colourPanel.add(right);
-		
-		left.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
-				read(left);
-				Paint.main.gui.frame.requestFocus();
-			}
-		});
-		left.addFocusListener(new FocusAdapter()
-		{
-			@Override
-			public void focusLost(FocusEvent arg0)
-			{
-				read(left);
-				Paint.main.gui.frame.requestFocus();
-			}
-		});
-		
-		right.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
-				read(right);
-				Paint.main.gui.frame.requestFocus();
-			}
-		});
-		right.addFocusListener(new FocusAdapter()
-		{
-			@Override
-			public void focusLost(FocusEvent arg0)
-			{
-				read(right);
-				Paint.main.gui.frame.requestFocus();
-			}
-		});
-		//*/
-		
 		tool = new JPanel();
 		tool.setOpaque(false);
 		
 		JPanel spacer = new JPanel();
 		spacer.setOpaque(false);
 		
-		menuBar.add(colourPanel);
 		menuBar.add(scale);
 		menuBar.add(saved);
 		menuBar.add(tool);
 		menuBar.add(spacer);
 		
-		layout.putConstraint(SpringLayout.WEST, colourPanel, 5, SpringLayout.WEST, menuBar);
-		layout.putConstraint(SpringLayout.EAST, colourPanel, 270, SpringLayout.WEST, menuBar);
-		layout.putConstraint(SpringLayout.WEST, scale, 20, SpringLayout.EAST, colourPanel);
-		layout.putConstraint(SpringLayout.WEST, saved, 20, SpringLayout.EAST, scale);
-		layout.putConstraint(SpringLayout.WEST, tool, 20, SpringLayout.EAST, saved);
-		layout.putConstraint(SpringLayout.WEST, spacer, 20, SpringLayout.EAST, tool);
-		layout.putConstraint(SpringLayout.EAST, menuBar, 20, SpringLayout.EAST, spacer);
+		layout.putConstraint(SpringLayout.WEST, scale, 20, SpringLayout.WEST, menuBar);
+		layout.putConstraint(SpringLayout.WEST, saved, 40, SpringLayout.EAST, scale);
+		layout.putConstraint(SpringLayout.WEST, tool, 40, SpringLayout.EAST, saved);
+		layout.putConstraint(SpringLayout.WEST, spacer, 0, SpringLayout.EAST, tool);
+		layout.putConstraint(SpringLayout.EAST, menuBar, 0, SpringLayout.EAST, spacer);
 		
 		// Check if the memory-watcher is not null (eg: Activated or not), then add constraints.
 		if(memoryWatcher != null)
 			layout.putConstraint(SpringLayout.EAST, memoryWatcher, 0, SpringLayout.EAST, menuBar);
 		
-		layout.putConstraint(SpringLayout.NORTH, scale, 7, SpringLayout.NORTH, menuBar);
-		layout.putConstraint(SpringLayout.NORTH, saved, 7, SpringLayout.NORTH, menuBar);
+		layout.putConstraint(SpringLayout.NORTH, scale, 5, SpringLayout.NORTH, menuBar);
+		layout.putConstraint(SpringLayout.NORTH, saved, 5, SpringLayout.NORTH, menuBar);
 		
-		layout.putConstraint(SpringLayout.SOUTH, menuBar, 0, SpringLayout.SOUTH, colourPanel);
+		layout.putConstraint(SpringLayout.SOUTH, menuBar, 7, SpringLayout.SOUTH, scale);
 		
 		if(memoryWatcher != null)
 		{
@@ -196,41 +133,6 @@ public class InfoMenu
 		return tool;
 	}
 	
-	private void read(ColourTextPanel panel)
-	{
-		String num = panel.getText();
-		
-		num = num.replaceAll("[^0-9a-fA-F]", "").toUpperCase();
-		
-		if(num.length() > 6)
-		{
-			num = num.substring(0, 6);
-		}
-		
-		panel.setText(num);
-		
-		int c;
-		if(num.equals(""))
-		{
-			c = panel.colour.getRGB();
-		}
-		else
-		{
-			c = Integer.decode("0x" + num);
-		}
-		
-		c |= 0xff000000;
-		
-		if(panel == left)
-		{
-			Paint.main.setLeftColour(c);
-		}
-		else if(panel == right)
-		{
-			Paint.main.setRightColour(c);
-		}
-	}
-	
 	public void setScale(float scale)
 	{
 		this.scale.setText("Scale: " + MathUtils.round(scale * 100) + "%");
@@ -239,49 +141,5 @@ public class InfoMenu
 	public void setSaved(boolean saved)
 	{
 		this.saved.setText("Saved: " + (saved ? "Yes" : "No"));
-	}
-	
-	public void setLeftColour(int colour)
-	{
-		this.left.setColour(colour);
-	}
-	
-	public void setRightColour(int colour)
-	{
-		this.right.setColour(colour);
-	}
-	
-	public static class ColourTextPanel extends JTextField
-	{
-		private static final long serialVersionUID = -2244995065320398599L;
-		
-		public Color colour;
-		
-		public ColourTextPanel()
-		{
-			super(6);
-			this.setEditable(true);
-		}
-		
-		public void setColour(int colour)
-		{
-			this.colour = new Color(colour);
-			this.setText(bufferZeros(Integer.toHexString(colour & 0xffffff)));
-			this.setBackground(this.colour);
-			if((colour & 0xFF) + ((colour >> 8) & 0xFF) + ((colour >> 16) & 0xFF) < 0x17E)
-				this.setForeground(Color.WHITE);
-			else
-				this.setForeground(Color.BLACK);
-			this.repaint();
-		}
-	}
-	
-	private static String bufferZeros(String colour)
-	{
-		while(colour.length() < 6)
-		{
-			colour = "0" + colour;
-		}
-		return colour.toUpperCase();
 	}
 }

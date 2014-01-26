@@ -46,8 +46,9 @@ import javax.swing.WindowConstants;
 
 public class MultiColourChooser
 {
-
-	public class SelectedEditColorSelector extends JComponent implements MouseListener {
+	
+	public class SelectedEditColorSelector extends JComponent implements MouseListener
+	{
 		
 		/**
 		 * 
@@ -58,8 +59,8 @@ public class MultiColourChooser
 		{
 			
 			this.setSize(64, 64);
-			this.setMinimumSize(new Dimension(64,64));
-			this.setPreferredSize(new Dimension(64,64));
+			this.setMinimumSize(new Dimension(64, 64));
+			this.setPreferredSize(new Dimension(64, 64));
 			this.addMouseListener(this);
 			this.setToolTipText("Click to edit the secondary color!");
 			
@@ -83,11 +84,11 @@ public class MultiColourChooser
 				
 				// BACK
 				g.setColor(new Color(rightColour, true));
-				g.fillRect(getWidth()/2, 0, getWidth(), getHeight());
+				g.fillRect(getWidth() / 2, 0, getWidth(), getHeight());
 				
 				// FRONT
 				g.setColor(new Color(leftColour, true));
-				g.fillRect(0, 0, getWidth()/2, getHeight());
+				g.fillRect(0, 0, getWidth() / 2, getHeight());
 			}
 			else
 			{
@@ -96,40 +97,52 @@ public class MultiColourChooser
 				
 				// BACK
 				g.setColor(new Color(leftColour, true));
-				g.fillRect(getWidth()/2, 0, getWidth(), getHeight());
+				g.fillRect(getWidth() / 2, 0, getWidth(), getHeight());
 				
 				// FRONT
 				g.setColor(new Color(rightColour, true));
-				g.fillRect(0, 0, getWidth()/2, getHeight());
+				g.fillRect(0, 0, getWidth() / 2, getHeight());
 			}
 			
 			g.setColor(Color.WHITE);
-			g.drawRect(1, 1, getWidth()-3, getHeight()-3);
+			g.drawRect(1, 1, getWidth() - 3, getHeight() - 3);
 			
 			g.setColor(Color.BLACK);
-			g.drawRect(0, 0, getWidth()-1, getHeight()-1);
-			
+			g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 			
 		}
 		
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mouseClicked(MouseEvent e)
+		{
 			isEditingLeft = !isEditingLeft;
 			
 			updateAllChooserSubComponents_EditChanged();
 			this.repaint();
 		}
 		
-		@Override public void mousePressed(MouseEvent e) {}
+		@Override
+		public void mousePressed(MouseEvent e)
+		{
+		}
 		
-		@Override public void mouseReleased(MouseEvent e) {}
+		@Override
+		public void mouseReleased(MouseEvent e)
+		{
+		}
 		
-		@Override public void mouseEntered(MouseEvent e) {}
+		@Override
+		public void mouseEntered(MouseEvent e)
+		{
+		}
 		
-		@Override public void mouseExited(MouseEvent e) {}
+		@Override
+		public void mouseExited(MouseEvent e)
+		{
+		}
 		
 	}
-
+	
 	/**                                              **/
 	/**                                              **/
 	/**                                              **/
@@ -169,14 +182,16 @@ public class MultiColourChooser
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				@Override public void run()
+				@Override
+				public void run()
 				{
 					setText(newText);
 				}
 			});
 		}
 		
-		@Override public void actionPerformed(ActionEvent event)
+		@Override
+		public void actionPerformed(ActionEvent event)
 		{
 			
 			try
@@ -208,7 +223,7 @@ public class MultiColourChooser
 		 * 
 		 */
 		private static final long serialVersionUID = 4914193922841062277L;
-
+		
 		float sliderValue;
 		
 		// These are ONLY there for visial stuff!
@@ -218,21 +233,21 @@ public class MultiColourChooser
 		boolean mouseHover;
 		boolean sliderGlow;
 		
-		public ColorChooser_ColourSlider(int LEFT,int RIGHT, float initialValue)
+		public ColorChooser_ColourSlider(int LEFT, int RIGHT, float initialValue)
 		{
 			setGradientColors(LEFT, RIGHT);
 			sliderValue = initialValue;
 			mouseHover = false;
 			sliderGlow = false;
 			
-			this.setPreferredSize(new Dimension(48,16));
-			this.setMinimumSize(new Dimension(48,16));
+			this.setPreferredSize(new Dimension(48, 16));
+			this.setMinimumSize(new Dimension(48, 16));
 			
 			this.addMouseMotionListener(this);
 			this.addMouseListener(this);
 		}
 		
-		public void setGradientColors(int LEFT,int RIGHT)
+		public void setGradientColors(int LEFT, int RIGHT)
 		{
 			gradientLeft = LEFT;
 			gradientRight = RIGHT;
@@ -254,16 +269,15 @@ public class MultiColourChooser
 			if(sliderGlow)
 			{
 				g.setColor(Color.BLUE);
-				g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+				g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 			}
-			
 			
 			int posX = (int) (sliderValue * getWidth());
 			
 			g.setColor(Color.WHITE);
-			g.drawRect(posX-1, 0, 3, getHeight()-1);
+			g.drawRect(posX - 1, 0, 3, getHeight() - 1);
 			g.setColor(Color.BLACK);
-			g.drawRect(posX-2, 0, 5, getHeight()-1);
+			g.drawRect(posX - 2, 0, 5, getHeight() - 1);
 			
 		}
 		
@@ -275,7 +289,8 @@ public class MultiColourChooser
 			if(mouseX > currentWidth)
 				mouseX = currentWidth;
 			
-			sliderValue = (float)mouseX / (float)currentWidth;;
+			sliderValue = (float) mouseX / (float) currentWidth;
+			;
 			
 			// second out-of-bounds check
 			if(sliderValue < 0)
@@ -283,61 +298,69 @@ public class MultiColourChooser
 			if(sliderValue > 1)
 				sliderValue = 1;
 			
-			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue*256, 255, 0));
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 255, 0));
 			
 			this.repaint();
 			
 		}
-
-		public void onSliderUpdate(float sliderValue) {
+		
+		public void onSliderUpdate(float sliderValue)
+		{
 			// out-of-bounds check
 			if(sliderValue < 0)
 				sliderValue = 0;
 			if(sliderValue > 1)
 				sliderValue = 1;
 			
-			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue*256, 255, 0));
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 255, 0));
 		}
 		
 		public abstract void onSliderUpdate(float sliderValue, int sliderValueInt);
 		
 		@Override
-		public void mouseDragged(MouseEvent e) {
+		public void mouseDragged(MouseEvent e)
+		{
 			sliderGlow = true;
-			update(e.getX(), this.getWidth()-1);
+			update(e.getX(), this.getWidth() - 1);
 		}
-
+		
 		@Override
-		public void mouseMoved(MouseEvent e) {
+		public void mouseMoved(MouseEvent e)
+		{
 			// IGNORE
 		}
-
+		
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			update(e.getX(), this.getWidth()-1);
+		public void mouseClicked(MouseEvent e)
+		{
+			update(e.getX(), this.getWidth() - 1);
 		}
-
+		
 		@Override
-		public void mousePressed(MouseEvent e) {
+		public void mousePressed(MouseEvent e)
+		{
 			// IGNORE
 		}
-
+		
 		@Override
-		public void mouseReleased(MouseEvent e) {
+		public void mouseReleased(MouseEvent e)
+		{
 			if(!mouseHover)
 				sliderGlow = false;
 			this.repaint();
 		}
-
+		
 		@Override
-		public void mouseEntered(MouseEvent e) {
+		public void mouseEntered(MouseEvent e)
+		{
 			mouseHover = true;
 			sliderGlow = true;
 			this.repaint();
 		}
-
+		
 		@Override
-		public void mouseExited(MouseEvent e) {
+		public void mouseExited(MouseEvent e)
+		{
 			mouseHover = false;
 			sliderGlow = false;
 			this.repaint();
@@ -361,9 +384,8 @@ public class MultiColourChooser
 		public ColorChooser_ColourSliderHSBimplH()
 		{
 			
-			
-			this.setPreferredSize(new Dimension(48,18));
-			this.setMinimumSize(new Dimension(48,18));
+			this.setPreferredSize(new Dimension(48, 18));
+			this.setMinimumSize(new Dimension(48, 18));
 			
 			this.addMouseMotionListener(this);
 			this.addMouseListener(this);
@@ -378,7 +400,8 @@ public class MultiColourChooser
 			if(mouseX > currentWidth)
 				mouseX = currentWidth;
 			
-			sliderValue = (float)mouseX / (float)currentWidth;;
+			sliderValue = (float) mouseX / (float) currentWidth;
+			;
 			
 			// second out-of-bounds check
 			if(sliderValue < 0)
@@ -386,7 +409,7 @@ public class MultiColourChooser
 			if(sliderValue > 1)
 				sliderValue = 1;
 			
-			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue*256, 255, 0));
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 255, 0));
 			
 			this.repaint();
 			
@@ -421,62 +444,69 @@ public class MultiColourChooser
 			
 			for(int i = 0; i < getWidth(); i++)
 			{
-				g.setColor(Color.getHSBColor((float)i / (float)getWidth(), 1F, 1F));
+				g.setColor(Color.getHSBColor((float) i / (float) getWidth(), 1F, 1F));
 				g.fillRect(i, 0, 2, getHeight());
 			}
 			
 			if(sliderGlow)
 			{
 				g.setColor(Color.BLUE);
-				g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+				g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 			}
 			
 			int posX = (int) (sliderValue * getWidth());
 			
 			g.setColor(Color.WHITE);
-			g.drawRect(posX-1, 0, 3, getHeight()-1);
+			g.drawRect(posX - 1, 0, 3, getHeight() - 1);
 			g.setColor(Color.BLACK);
-			g.drawRect(posX-2, 0, 5, getHeight()-1);
+			g.drawRect(posX - 2, 0, 5, getHeight() - 1);
 			
 		}
 		
 		@Override
-		public void mouseDragged(MouseEvent e) {
+		public void mouseDragged(MouseEvent e)
+		{
 			sliderGlow = true;
-			update(e.getX(), this.getWidth()-1);
+			update(e.getX(), this.getWidth() - 1);
 		}
-
+		
 		@Override
-		public void mouseMoved(MouseEvent e) {
+		public void mouseMoved(MouseEvent e)
+		{
 			// IGNORE
 		}
-
+		
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			update(e.getX(), this.getWidth()-1);
+		public void mouseClicked(MouseEvent e)
+		{
+			update(e.getX(), this.getWidth() - 1);
 		}
-
+		
 		@Override
-		public void mousePressed(MouseEvent e) {
+		public void mousePressed(MouseEvent e)
+		{
 			// IGNORE
 		}
-
+		
 		@Override
-		public void mouseReleased(MouseEvent e) {
+		public void mouseReleased(MouseEvent e)
+		{
 			if(!mouseHover)
 				sliderGlow = false;
 			this.repaint();
 		}
-
+		
 		@Override
-		public void mouseEntered(MouseEvent e) {
+		public void mouseEntered(MouseEvent e)
+		{
 			mouseHover = true;
 			sliderGlow = true;
 			this.repaint();
 		}
-
+		
 		@Override
-		public void mouseExited(MouseEvent e) {
+		public void mouseExited(MouseEvent e)
+		{
 			mouseHover = false;
 			sliderGlow = false;
 			this.repaint();
@@ -508,9 +538,8 @@ public class MultiColourChooser
 		public ColorChooser_ColourSliderHSBimplS()
 		{
 			
-			
-			this.setPreferredSize(new Dimension(48,18));
-			this.setMinimumSize(new Dimension(48,18));
+			this.setPreferredSize(new Dimension(48, 18));
+			this.setMinimumSize(new Dimension(48, 18));
 			
 			this.addMouseMotionListener(this);
 			this.addMouseListener(this);
@@ -525,7 +554,8 @@ public class MultiColourChooser
 			if(mouseX > currentWidth)
 				mouseX = currentWidth;
 			
-			sliderValue = (float)mouseX / (float)currentWidth;;
+			sliderValue = (float) mouseX / (float) currentWidth;
+			;
 			
 			// second out-of-bounds check
 			if(sliderValue < 0)
@@ -533,7 +563,7 @@ public class MultiColourChooser
 			if(sliderValue > 1)
 				sliderValue = 1;
 			
-			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue*256, 255, 0));
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 255, 0));
 			
 			this.repaint();
 			
@@ -573,62 +603,69 @@ public class MultiColourChooser
 			
 			for(int i = 0; i < getWidth(); i++)
 			{
-				g.setColor(Color.getHSBColor(vals[0], (float)i / (float)getWidth(), 1F));
+				g.setColor(Color.getHSBColor(vals[0], (float) i / (float) getWidth(), 1F));
 				g.fillRect(i, 0, 2, getHeight());
 			}
 			
 			if(sliderGlow)
 			{
 				g.setColor(Color.BLUE);
-				g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+				g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 			}
 			
 			int posX = (int) (sliderValue * getWidth());
 			
 			g.setColor(Color.WHITE);
-			g.drawRect(posX-1, 0, 3, getHeight()-1);
+			g.drawRect(posX - 1, 0, 3, getHeight() - 1);
 			g.setColor(Color.BLACK);
-			g.drawRect(posX-2, 0, 5, getHeight()-1);
+			g.drawRect(posX - 2, 0, 5, getHeight() - 1);
 			
 		}
 		
 		@Override
-		public void mouseDragged(MouseEvent e) {
+		public void mouseDragged(MouseEvent e)
+		{
 			sliderGlow = true;
-			update(e.getX(), this.getWidth()-1);
+			update(e.getX(), this.getWidth() - 1);
 		}
-
+		
 		@Override
-		public void mouseMoved(MouseEvent e) {
+		public void mouseMoved(MouseEvent e)
+		{
 			// IGNORE
 		}
-
+		
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			update(e.getX(), this.getWidth()-1);
+		public void mouseClicked(MouseEvent e)
+		{
+			update(e.getX(), this.getWidth() - 1);
 		}
-
+		
 		@Override
-		public void mousePressed(MouseEvent e) {
+		public void mousePressed(MouseEvent e)
+		{
 			// IGNORE
 		}
-
+		
 		@Override
-		public void mouseReleased(MouseEvent e) {
+		public void mouseReleased(MouseEvent e)
+		{
 			if(!mouseHover)
 				sliderGlow = false;
 			this.repaint();
 		}
-
+		
 		@Override
-		public void mouseEntered(MouseEvent e) {
+		public void mouseEntered(MouseEvent e)
+		{
 			mouseHover = true;
 			sliderGlow = true;
 			this.repaint();
 		}
-
+		
 		@Override
-		public void mouseExited(MouseEvent e) {
+		public void mouseExited(MouseEvent e)
+		{
 			mouseHover = false;
 			sliderGlow = false;
 			this.repaint();
@@ -660,9 +697,8 @@ public class MultiColourChooser
 		public ColorChooser_ColourSliderHSBimplB()
 		{
 			
-			
-			this.setPreferredSize(new Dimension(48,18));
-			this.setMinimumSize(new Dimension(48,18));
+			this.setPreferredSize(new Dimension(48, 18));
+			this.setMinimumSize(new Dimension(48, 18));
 			
 			this.addMouseMotionListener(this);
 			this.addMouseListener(this);
@@ -677,7 +713,8 @@ public class MultiColourChooser
 			if(mouseX > currentWidth)
 				mouseX = currentWidth;
 			
-			sliderValue = (float)mouseX / (float)currentWidth;;
+			sliderValue = (float) mouseX / (float) currentWidth;
+			;
 			
 			// second out-of-bounds check
 			if(sliderValue < 0)
@@ -685,7 +722,7 @@ public class MultiColourChooser
 			if(sliderValue > 1)
 				sliderValue = 1;
 			
-			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue*256, 255, 0));
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 255, 0));
 			
 			this.repaint();
 			
@@ -725,62 +762,69 @@ public class MultiColourChooser
 			
 			for(int i = 0; i < getWidth(); i++)
 			{
-				g.setColor(Color.getHSBColor(vals[0], vals[1], (float)i / (float)getWidth()));
+				g.setColor(Color.getHSBColor(vals[0], vals[1], (float) i / (float) getWidth()));
 				g.fillRect(i, 0, 2, getHeight());
 			}
 			
 			if(sliderGlow)
 			{
 				g.setColor(Color.BLUE);
-				g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+				g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 			}
 			
 			int posX = (int) (sliderValue * getWidth());
 			
 			g.setColor(Color.WHITE);
-			g.drawRect(posX-1, 0, 3, getHeight()-1);
+			g.drawRect(posX - 1, 0, 3, getHeight() - 1);
 			g.setColor(Color.BLACK);
-			g.drawRect(posX-2, 0, 5, getHeight()-1);
+			g.drawRect(posX - 2, 0, 5, getHeight() - 1);
 			
 		}
 		
 		@Override
-		public void mouseDragged(MouseEvent e) {
+		public void mouseDragged(MouseEvent e)
+		{
 			sliderGlow = true;
-			update(e.getX(), this.getWidth()-1);
+			update(e.getX(), this.getWidth() - 1);
 		}
-
+		
 		@Override
-		public void mouseMoved(MouseEvent e) {
+		public void mouseMoved(MouseEvent e)
+		{
 			// IGNORE
 		}
-
+		
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			update(e.getX(), this.getWidth()-1);
+		public void mouseClicked(MouseEvent e)
+		{
+			update(e.getX(), this.getWidth() - 1);
 		}
-
+		
 		@Override
-		public void mousePressed(MouseEvent e) {
+		public void mousePressed(MouseEvent e)
+		{
 			// IGNORE
 		}
-
+		
 		@Override
-		public void mouseReleased(MouseEvent e) {
+		public void mouseReleased(MouseEvent e)
+		{
 			if(!mouseHover)
 				sliderGlow = false;
 			this.repaint();
 		}
-
+		
 		@Override
-		public void mouseEntered(MouseEvent e) {
+		public void mouseEntered(MouseEvent e)
+		{
 			mouseHover = true;
 			sliderGlow = true;
 			this.repaint();
 		}
-
+		
 		@Override
-		public void mouseExited(MouseEvent e) {
+		public void mouseExited(MouseEvent e)
+		{
 			mouseHover = false;
 			sliderGlow = false;
 			this.repaint();
@@ -796,7 +840,8 @@ public class MultiColourChooser
 		
 	}
 	
-	public class ColorPalletEntryButton extends JComponent implements MouseListener {
+	public class ColorPalletEntryButton extends JComponent implements MouseListener
+	{
 		/**
 		 * 
 		 */
@@ -823,7 +868,7 @@ public class MultiColourChooser
 		{
 			Graphics2D g = (Graphics2D) $g;
 			
-			g.setPaint(new TexturePaint(transparenzyImage, new Rectangle2D.Float(0, 0, getWidth()/2, getHeight()/2)));
+			g.setPaint(new TexturePaint(transparenzyImage, new Rectangle2D.Float(0, 0, getWidth() / 2, getHeight() / 2)));
 			g.fillRect(0, 0, getWidth(), getHeight());
 			
 			g.setPaint(null);
@@ -834,17 +879,25 @@ public class MultiColourChooser
 			if(mouseHover)
 			{
 				g.setColor(Color.BLACK);
-				g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+				g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 				g.setColor(Color.WHITE);
-				g.drawRect(1, 1, getWidth()-3, getHeight()-3);
+				g.drawRect(1, 1, getWidth() - 3, getHeight() - 3);
 			}
 		}
-
-		@Override public void mouseClicked(MouseEvent e) {}
-
-		@Override public void mousePressed(MouseEvent e) {}
-
-		@Override public void mouseReleased(MouseEvent e) {
+		
+		@Override
+		public void mouseClicked(MouseEvent e)
+		{
+		}
+		
+		@Override
+		public void mousePressed(MouseEvent e)
+		{
+		}
+		
+		@Override
+		public void mouseReleased(MouseEvent e)
+		{
 			
 			if(e.getButton() == MouseEvent.BUTTON1)
 				leftColour = color.getRGB();
@@ -854,13 +907,14 @@ public class MultiColourChooser
 			
 			if(e.getButton() == MouseEvent.BUTTON2)
 				leftColour = rightColour = color.getRGB();
-
+			
 			updateAllChooserSubComponents_EditChanged();
 			updatePaintGUI();
 			
 		}
 		
-		@Override public void mouseEntered(MouseEvent e)
+		@Override
+		public void mouseEntered(MouseEvent e)
 		{
 			mouseHover = true;
 			repaint();
@@ -874,18 +928,6 @@ public class MultiColourChooser
 		}
 		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**                                              **/
 	/**                                              **/
@@ -915,7 +957,6 @@ public class MultiColourChooser
 	JPanel chooserRightHSB;
 	JPanel chooserRightALPHA;
 	
-	
 	ColorChooser_ColourSlider chooserRightRGBimplR;
 	ColorChooser_ColourSlider chooserRightRGBimplG;
 	ColorChooser_ColourSlider chooserRightRGBimplB;
@@ -924,7 +965,6 @@ public class MultiColourChooser
 	ColorChooser_ColourSliderHSBimplS chooserRightHSBimplS;
 	ColorChooser_ColourSliderHSBimplB chooserRightHSBimplB;
 	ColorChooser_ColourSlider chooserRightALPHAimpl;
-	
 	
 	/**
 	 * The 'left'-colour.
@@ -966,7 +1006,7 @@ public class MultiColourChooser
 		transparenzyImage.setRGB(1, 0, 0xAAAAAA);
 		transparenzyImage.setRGB(0, 1, 0xAAAAAA);
 		
-		transparenzyImageRect = new Rectangle2D.Float(0,0,8,8);
+		transparenzyImageRect = new Rectangle2D.Float(0, 0, 8, 8);
 		transparenzyImagePaint = new TexturePaint(transparenzyImage, transparenzyImageRect);
 		
 	}
@@ -984,6 +1024,8 @@ public class MultiColourChooser
 		dialog.setResizable(false);
 		dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		dialog.setLayout(dialogLayout);
+		dialog.setFocusable(false);
+		dialog.setAutoRequestFocus(false);
 		
 		// ----- Build the LEFT/RIGHT components and set their layout.
 		// build left
@@ -1016,8 +1058,8 @@ public class MultiColourChooser
 		chooserLeftColourSelectorLayout = new SpringLayout();
 		
 		chooserLeftColourSelector.setLayout(chooserLeftColourSelectorLayout);
-		chooserLeftColourCircle.setLayout(new BorderLayout(1,1));
-		chooserLeftColourPallete.setLayout(new GridLayout(0,16,0,0));
+		chooserLeftColourCircle.setLayout(new BorderLayout(1, 1));
+		chooserLeftColourPallete.setLayout(new GridLayout(0, 16, 0, 0));
 		
 		// borders
 		chooserLeftColourCircle.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "Color Circle"));
@@ -1034,8 +1076,10 @@ public class MultiColourChooser
 		// sub-components
 		chooserLeftColourSelectorEditColourSelector = new SelectedEditColorSelector();
 		
-		JButton colourResetButton = new JButton(new AbstractAction("Reset Colors"){
-			@Override public void actionPerformed(ActionEvent e)
+		JButton colourResetButton = new JButton(new AbstractAction("Reset Colors")
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
 			{
 				leftColour = 0xFF000000;
 				rightColour = 0xFFFFFFFF;
@@ -1043,14 +1087,19 @@ public class MultiColourChooser
 			}
 		});
 		
-		JButton changeColourPalletButton = new JButton(new AbstractAction("Change Pallet"){
-			@Override public void actionPerformed(ActionEvent e)
+		JButton changeColourPalletButton = new JButton(new AbstractAction("Change Pallet")
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
 			{
 				JFileChooser fileChooser = new JFileChooser();
 				
-				try {
+				try
+				{
 					fileChooser.setCurrentDirectory(new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()));
-				} catch (URISyntaxException e1) {
+				}
+				catch(URISyntaxException e1)
+				{
 					e1.printStackTrace();
 					fileChooser.setCurrentDirectory(new File("."));
 				}
@@ -1066,9 +1115,12 @@ public class MultiColourChooser
 				
 				Color[] newPallet = null;
 				
-				try {
+				try
+				{
 					newPallet = readColorPalletFromURL(fileChooser.getSelectedFile().toURI().toURL());
-				} catch (MalformedURLException e1) {
+				}
+				catch(MalformedURLException e1)
+				{
 					e1.printStackTrace();
 					newPallet = null;
 				}
@@ -1078,7 +1130,7 @@ public class MultiColourChooser
 				
 				chooserLeftColourPallete.removeAll();
 				chooserLeftColourPallete.revalidate();
-				chooserLeftColourPallete.setLayout(new GridLayout(0,16,0,0));
+				chooserLeftColourPallete.setLayout(new GridLayout(0, 16, 0, 0));
 				
 				for(int i = 0; i < newPallet.length; i++)
 					chooserLeftColourPallete.add(new ColorPalletEntryButton(newPallet[i]));
@@ -1089,8 +1141,10 @@ public class MultiColourChooser
 			}
 		});
 		
-		JButton colourSwapButton = new JButton(new AbstractAction("SWAP"){
-			@Override public void actionPerformed(ActionEvent e)
+		JButton colourSwapButton = new JButton(new AbstractAction("SWAP")
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
 			{
 				int SWAP = leftColour;
 				leftColour = rightColour;
@@ -1101,17 +1155,23 @@ public class MultiColourChooser
 		});
 		
 		// layout for ((chooserLeftColourSelector))
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.NORTH, chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.WEST, chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelectorEditColourSelector, 64, SpringLayout.NORTH, chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector, 64, SpringLayout.WEST, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.NORTH,
+				chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.WEST,
+				chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelectorEditColourSelector, 64, SpringLayout.NORTH,
+				chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector, 64, SpringLayout.WEST,
+				chooserLeftColourSelector);
 		
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, colourResetButton, 0, SpringLayout.NORTH, chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, colourResetButton, 0, SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, colourResetButton, 0, SpringLayout.EAST,
+				chooserLeftColourSelectorEditColourSelector);
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, colourResetButton, 32, SpringLayout.NORTH, chooserLeftColourSelector);
 		
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, changeColourPalletButton, 0, SpringLayout.SOUTH, colourResetButton);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, changeColourPalletButton, 0, SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, changeColourPalletButton, 0, SpringLayout.EAST,
+				chooserLeftColourSelectorEditColourSelector);
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, changeColourPalletButton, 64, SpringLayout.NORTH, chooserLeftColourSelector);
 		
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, changeColourPalletButton, 0, SpringLayout.WEST, colourSwapButton);
@@ -1120,8 +1180,6 @@ public class MultiColourChooser
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, colourSwapButton, 0, SpringLayout.NORTH, chooserLeftColourSelector);
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, colourSwapButton, -64, SpringLayout.EAST, chooserLeftColourSelector);
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, colourSwapButton, 64, SpringLayout.NORTH, chooserLeftColourSelector);
-		
-		
 		
 		chooserLeftColourSelector.add(chooserLeftColourSelectorEditColourSelector);
 		chooserLeftColourSelector.add(changeColourPalletButton);
@@ -1147,7 +1205,8 @@ public class MultiColourChooser
 		
 		chooserRightALPHAimpl = new ColorChooser_ColourSlider(0x00000000, 0xFF000000, 1F)
 		{
-			@Override public void onSliderUpdate(float sliderValue, int sliderValueInt)
+			@Override
+			public void onSliderUpdate(float sliderValue, int sliderValueInt)
 			{
 				int currentColor = getSelectedEditColor();
 				int withoutAlpha = currentColor & 0xFFFFFF;
@@ -1158,7 +1217,8 @@ public class MultiColourChooser
 		
 		chooserRightRGBimplR = new ColorChooser_ColourSlider(0xFF000000, 0xFFFF0000, 0F)
 		{
-			@Override public void onSliderUpdate(float sliderValue, int sliderValueInt)
+			@Override
+			public void onSliderUpdate(float sliderValue, int sliderValueInt)
 			{
 				int currentColor = getSelectedEditColor();
 				int withoutCOLOR = currentColor & 0xFF00FFFF;
@@ -1170,7 +1230,8 @@ public class MultiColourChooser
 		
 		chooserRightRGBimplG = new ColorChooser_ColourSlider(0xFF000000, 0xFF00FF00, 0F)
 		{
-			@Override public void onSliderUpdate(float sliderValue, int sliderValueInt)
+			@Override
+			public void onSliderUpdate(float sliderValue, int sliderValueInt)
 			{
 				int currentColor = getSelectedEditColor();
 				int withoutCOLOR = currentColor & 0xFFFF00FF;
@@ -1182,7 +1243,8 @@ public class MultiColourChooser
 		
 		chooserRightRGBimplB = new ColorChooser_ColourSlider(0xFF000000, 0xFF0000FF, 0F)
 		{
-			@Override public void onSliderUpdate(float sliderValue, int sliderValueInt)
+			@Override
+			public void onSliderUpdate(float sliderValue, int sliderValueInt)
 			{
 				int currentColor = getSelectedEditColor();
 				int withoutCOLOR = currentColor & 0xFFFFFF00;
@@ -1197,15 +1259,15 @@ public class MultiColourChooser
 		chooserRightHSBimplB = new ColorChooser_ColourSliderHSBimplB();
 		
 		// border
-		chooserRightRGB.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),"RGB"));
-		chooserRightHEX.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),"HEX"));
-		chooserRightHSB.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),"HSB"));
-		chooserRightALPHA.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),"Alpha"));
+		chooserRightRGB.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "RGB"));
+		chooserRightHEX.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "HEX"));
+		chooserRightHSB.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "HSB"));
+		chooserRightALPHA.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "Alpha"));
 		
 		// inner layout
-		chooserRightRGB.setLayout(new GridLayout(0,1,4,4));
+		chooserRightRGB.setLayout(new GridLayout(0, 1, 4, 4));
 		chooserRightHEX.setLayout(new BorderLayout());
-		chooserRightHSB.setLayout(new GridLayout(0,1,4,4));
+		chooserRightHSB.setLayout(new GridLayout(0, 1, 4, 4));
 		chooserRightALPHA.setLayout(new BorderLayout());
 		
 		// Add implementation components to the color choosers sub's.
@@ -1215,15 +1277,12 @@ public class MultiColourChooser
 		chooserRightHSB.add(chooserRightHSBimplB);
 		chooserRightALPHA.add(chooserRightALPHAimpl);
 		
-		
 		buildLayoutForChooserRightContent();
 		
 		chooserRight.add(chooserRightRGB);
 		chooserRight.add(chooserRightHEX);
 		chooserRight.add(chooserRightHSB);
 		chooserRight.add(chooserRightALPHA);
-		
-		
 		
 		// ----- ???
 		chooserRightRGBimplR.onSliderUpdate(chooserRightRGBimplR.sliderValue);
@@ -1235,8 +1294,9 @@ public class MultiColourChooser
 		initialized = true;
 		
 	}
-
-	private void buildLayoutForChooserRoot() {
+	
+	private void buildLayoutForChooserRoot()
+	{
 		// (only for construction) Fetch the contentPane from the dialog.
 		Container dialogContentPane = dialog.getContentPane();
 		
@@ -1252,11 +1312,12 @@ public class MultiColourChooser
 		
 		//split-point
 		dialogLayout.putConstraint(SpringLayout.EAST, chooserLeft, 0, SpringLayout.WEST, chooserRight); // MORE LEFT
-		dialogLayout.putConstraint(SpringLayout.WEST, chooserRight, -(128+32), SpringLayout.EAST, dialogContentPane); // MORE RIGHT
+		dialogLayout.putConstraint(SpringLayout.WEST, chooserRight, -(128 + 32), SpringLayout.EAST, dialogContentPane); // MORE RIGHT
 		
 	}
 	
-	private void buildLayoutForChooserLeftContent() {
+	private void buildLayoutForChooserLeftContent()
+	{
 		Container contentPane = chooserLeft;
 		// chooserLeftLayout
 		
@@ -1273,11 +1334,10 @@ public class MultiColourChooser
 		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourCircle, 0, SpringLayout.NORTH, chooserLeftColourPallete);
 		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourPallete, 0, SpringLayout.SOUTH, contentPane);
 		
-		
-		
 	}
 	
-	private void buildLayoutForChooserRightContent() {
+	private void buildLayoutForChooserRightContent()
+	{
 		Container contentPane = chooserRight;
 		// chooserRightLayout
 		
@@ -1300,15 +1360,15 @@ public class MultiColourChooser
 		chooserRightLayout.putConstraint(SpringLayout.SOUTH, chooserRightHSB, 0, SpringLayout.NORTH, chooserRightALPHA);
 		chooserRightLayout.putConstraint(SpringLayout.SOUTH, chooserRightALPHA, 0, SpringLayout.SOUTH, contentPane);
 		
-		
-		
 	}
 	
-	private Color[] readColorPalletFromURL(URL pallet) {
+	private Color[] readColorPalletFromURL(URL pallet)
+	{
 		if(pallet == null)
 			throw new IllegalArgumentException("Given URL is null!");
 		
-		try {
+		try
+		{
 			Scanner sc = new Scanner(pallet.openStream());
 			ArrayList<Color> colorList = new ArrayList<Color>();
 			int lineCount = 0;
@@ -1334,7 +1394,7 @@ public class MultiColourChooser
 					COLOR = Color.WHITE.getRGB();
 				}
 				
-				colorList.add(new Color(COLOR,line.length() > 6));
+				colorList.add(new Color(COLOR, line.length() > 6));
 				lineCount++;
 				
 				// We never wan't to load more than 96 colors, so we make a stop here.
@@ -1353,33 +1413,13 @@ public class MultiColourChooser
 			colorList.toArray(colors);
 			
 			return colors;
-		} catch (IOException e) {
+		}
+		catch(IOException e)
+		{
 			e.printStackTrace();
 			return new Color[]{Color.BLACK, Color.WHITE};
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**                                              **/
 	/**                                              **/
@@ -1388,7 +1428,7 @@ public class MultiColourChooser
 	/**                                              **/
 	/**                                              **/
 	/**                                              **/
-
+	
 	/**
 	 * This method makes the colour-chooser show up.
 	 **/
@@ -1433,7 +1473,8 @@ public class MultiColourChooser
 		}
 	}
 	
-	public void updateAllChooserSubComponents_ColorChanged() {
+	public void updateAllChooserSubComponents_ColorChanged()
+	{
 		int COLOUR = getSelectedEditColor();
 		
 		chooserLeftColourSelectorEditColourSelector.repaint();
@@ -1461,40 +1502,14 @@ public class MultiColourChooser
 		int G = (COLOUR >> 8) & 0xFF;
 		int B = (COLOUR) & 0xFF;
 		
-		chooserRightRGBimplR.sliderValue = (float) MathUtils.clamp((float)R / 256F, 1, 0);
-		chooserRightRGBimplG.sliderValue = (float) MathUtils.clamp((float)G / 256F, 1, 0);
-		chooserRightRGBimplB.sliderValue = (float) MathUtils.clamp((float)B / 256F, 1, 0);
-		chooserRightALPHAimpl.sliderValue = (float) MathUtils.clamp((float)A / 256F, 1, 0);
+		chooserRightRGBimplR.sliderValue = (float) MathUtils.clamp((float) R / 256F, 1, 0);
+		chooserRightRGBimplG.sliderValue = (float) MathUtils.clamp((float) G / 256F, 1, 0);
+		chooserRightRGBimplB.sliderValue = (float) MathUtils.clamp((float) B / 256F, 1, 0);
+		chooserRightALPHAimpl.sliderValue = (float) MathUtils.clamp((float) A / 256F, 1, 0);
 		
 		updatePaintGUI();
 		updateAllChooserSubComponents_ColorChanged();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**                                              **/
 	/**                                              **/
@@ -1549,11 +1564,13 @@ public class MultiColourChooser
 		updateAllChooserSubComponents_ColorChanged();
 	}
 	
-	public int getSelectedEditColor() {
+	public int getSelectedEditColor()
+	{
 		return isEditingLeft ? leftColour : rightColour;
 	}
 	
-	public void setSelectedEditColour(int c) {
+	public void setSelectedEditColour(int c)
+	{
 		if(isEditingLeft)
 			leftColour = c;
 		else
@@ -1564,7 +1581,8 @@ public class MultiColourChooser
 		this.updatePaintGUI();
 	}
 	
-	public void setSelectedEditColour(int c, boolean invert) {
+	public void setSelectedEditColour(int c, boolean invert)
+	{
 		boolean flag = invert ? !isEditingLeft : isEditingLeft;
 		
 		if(flag)
@@ -1577,7 +1595,6 @@ public class MultiColourChooser
 		this.updatePaintGUI();
 	}
 	
-
 	/**
 	 * Return's the actual JDialog instance that is the root for the components of the colour-chooser.<br><br>
 	 * The colour-choosers JDialog should <b>never</b> be modified by another class except by itself.<br>

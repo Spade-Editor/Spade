@@ -59,10 +59,10 @@ public class Paint extends Application
 	// Beta for new completed features.
 	// Development for under-development new features.
 	
-	public static final String VERSION = "0.11-Dev";
+	public static final String VERSION = "0.11";
 	public static final String RELEASED = "22/01/2014";
 	
-	/**/public static final String BUILD_TYPE = "Development";
+	/*/public static final String BUILD_TYPE = "Development";
 	//*/public static final String BUILD_TYPE = "Beta";
 	//*/public static final String BUILD_TYPE = "Stable";
 	
@@ -352,7 +352,6 @@ public class Paint extends Application
 	public void setLeftColour(int c)
 	{
 		gui.chooser.setLeftColour(c);
-		gui.info.setLeftColour(c);
 		Paint.leftColour = c;
 	}
 	
@@ -364,7 +363,6 @@ public class Paint extends Application
 	public void setRightColour(int c)
 	{
 		gui.chooser.setRightColour(c);
-		gui.info.setRightColour(c);
 		Paint.rightColour = c;
 	}
 	

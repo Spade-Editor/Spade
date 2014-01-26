@@ -48,9 +48,9 @@ public class Picker extends Tool
 		
 		layout.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, menu);
 		layout.putConstraint(SpringLayout.WEST, switchPencil, 20, SpringLayout.EAST, label);
-		layout.putConstraint(SpringLayout.EAST, menu, 20, SpringLayout.EAST, switchPencil);
+		layout.putConstraint(SpringLayout.EAST, menu, 0, SpringLayout.EAST, switchPencil);
 		
-		layout.putConstraint(SpringLayout.NORTH, label, 3, SpringLayout.NORTH, menu);
+		layout.putConstraint(SpringLayout.NORTH, switchPencil, -2, SpringLayout.NORTH, menu);
 		
 		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
 	}

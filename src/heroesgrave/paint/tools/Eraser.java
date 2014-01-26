@@ -48,17 +48,28 @@ import java.awt.geom.GeneralPath;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.SpringLayout;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class Eraser extends Tool
 {
 	private GeneralPath path;
 	private ShapeChange change;
 	private JSlider slider;
+	private JLabel size;
 	
 	public Eraser(String name)
 	{
 		super(name);
 		slider = new JSlider(0, 16, 0);
+		slider.addChangeListener(new ChangeListener()
+		{
+			@Override
+			public void stateChanged(ChangeEvent e)
+			{
+				size.setText("Size: " + slider.getValue());
+			}
+		});
 		
 		JLabel label = (JLabel) menu.getComponent(0);
 		
@@ -67,7 +78,7 @@ public class Eraser extends Tool
 		
 		slider.setFocusable(false);
 		
-		JLabel size = new CentredLabel("Size: ");
+		size = new CentredLabel("Size: " + slider.getValue());
 		
 		menu.add(label);
 		menu.add(size);
@@ -78,8 +89,7 @@ public class Eraser extends Tool
 		layout.putConstraint(SpringLayout.WEST, slider, 20, SpringLayout.EAST, size);
 		layout.putConstraint(SpringLayout.EAST, menu, 20, SpringLayout.EAST, slider);
 		
-		layout.putConstraint(SpringLayout.NORTH, label, 3, SpringLayout.NORTH, menu);
-		layout.putConstraint(SpringLayout.NORTH, size, 3, SpringLayout.NORTH, menu);
+		layout.putConstraint(SpringLayout.NORTH, slider, -3, SpringLayout.NORTH, menu);
 		
 		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
 	}

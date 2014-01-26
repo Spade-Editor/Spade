@@ -57,7 +57,7 @@ public class Rectangle extends Tool
 		layout.putConstraint(SpringLayout.WEST, fill, 20, SpringLayout.EAST, label);
 		layout.putConstraint(SpringLayout.EAST, menu, 20, SpringLayout.EAST, fill);
 		
-		layout.putConstraint(SpringLayout.NORTH, label, 3, SpringLayout.NORTH, menu);
+		layout.putConstraint(SpringLayout.NORTH, fill, -2, SpringLayout.NORTH, menu);
 		
 		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
 	}

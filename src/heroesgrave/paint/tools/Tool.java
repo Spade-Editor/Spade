@@ -43,7 +43,7 @@ public abstract class Tool
 		
 		l.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, menu);
 		l.putConstraint(SpringLayout.EAST, menu, 5, SpringLayout.EAST, label);
-		l.putConstraint(SpringLayout.NORTH, label, 3, SpringLayout.NORTH, menu);
+		l.putConstraint(SpringLayout.NORTH, label, 0, SpringLayout.NORTH, menu);
 		l.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
 	}
 	
