@@ -49,17 +49,27 @@ import java.awt.geom.GeneralPath;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.SpringLayout;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class Brush extends Tool
 {
 	private GeneralPath path;
 	private ShapeChange change;
 	private JSlider slider;
+	private JLabel size;
 	
 	public Brush(String name)
 	{
 		super(name);
 		slider = new JSlider(0, 16, 0);
+		slider.addChangeListener(new ChangeListener()
+		{
+			@Override public void stateChanged(ChangeEvent e)
+			{
+				size.setText("Size: " + slider.getValue());
+			}
+		});
 		
 		JLabel label = (JLabel) menu.getComponent(0);
 		
@@ -68,7 +78,7 @@ public class Brush extends Tool
 		
 		slider.setFocusable(false);
 		
-		JLabel size = new CentredLabel("Size: ");
+		size = new CentredLabel("Size: " + slider.getValue());
 		
 		menu.add(label);
 		menu.add(size);
