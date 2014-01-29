@@ -212,9 +212,18 @@ public class MultiColourChooser
 		
 		public void outerColourUpdate()
 		{
-			invokeTextChangeLater(Integer.toHexString(getSelectedEditColor() & 0xFFFFFF).toUpperCase());
+			invokeTextChangeLater(bufferZeros(Integer.toHexString(getSelectedEditColor() & 0xFFFFFF).toUpperCase()));
 		}
 		
+		// Add leading zeros in case there is no red component.
+		private String bufferZeros(String s)
+		{
+			while(s.length() < 6)
+			{
+				s = "0" + s;
+			}
+			return s;
+		}
 	}
 	
 	private abstract class ColorChooser_ColourSlider extends JComponent implements MouseListener, MouseMotionListener
@@ -519,7 +528,6 @@ public class MultiColourChooser
 			this.sliderValue = vals[0];
 			this.repaint();
 		}
-		
 	}
 	
 	private class ColorChooser_ColourSliderHSBimplS extends JComponent implements MouseListener, MouseMotionListener
@@ -678,7 +686,6 @@ public class MultiColourChooser
 			this.sliderValue = vals[1];
 			this.repaint();
 		}
-		
 	}
 	
 	private class ColorChooser_ColourSliderHSBimplB extends JComponent implements MouseListener, MouseMotionListener

@@ -24,6 +24,7 @@ import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.ImageExporter;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -54,7 +55,7 @@ public class ExporterZipBIN extends ImageExporter
 	{
 		BufferedImage image = canvas.getFullImage();
 		
-		DataOutputStream output = new DataOutputStream(new FileOutputStream(destination));
+		DataOutputStream output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(destination)));
 		
 		output.writeInt(canvas.getWidth());
 		output.writeInt(canvas.getHeight());
@@ -110,6 +111,7 @@ public class ExporterZipBIN extends ImageExporter
 		output.write('D');
 		
 		// Done!
+		output.flush();
 		output.close();
 		DIALOG.close();
 	}

@@ -115,6 +115,10 @@ public class Canvas
 	
 	public BufferedImage getImage()
 	{
+		if(hist.wasChanged())
+		{
+			image = hist.getUpdatedImage();
+		}
 		return image;
 	}
 	

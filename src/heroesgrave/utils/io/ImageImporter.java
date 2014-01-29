@@ -19,10 +19,11 @@
 
 package heroesgrave.utils.io;
 
+import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.importers.ImporterBIN;
+import heroesgrave.utils.io.importers.ImporterLBIN;
 import heroesgrave.utils.io.importers.ImporterZipBIN;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public abstract class ImageImporter extends FileFilter
 		// Nothing here yet! Feel free to expand by adding new image-importers!
 		add(new ImporterBIN());
 		add(new ImporterZipBIN());
+		add(new ImporterLBIN());
 	}
 	
 	public static void add(ImageImporter exporter)
@@ -53,7 +55,7 @@ public abstract class ImageImporter extends FileFilter
 		importers.put(exporter.getFormat(), exporter);
 	}
 	
-	public static BufferedImage loadImage(String path)
+	public static Canvas loadImage(String path)
 	{
 		File file = new File(path);
 		
@@ -78,7 +80,7 @@ public abstract class ImageImporter extends FileFilter
 				if(importer != null)
 					return importer.read(file);
 				else
-					return ImageIO.read(file);
+					return new Canvas("Background", ImageIO.read(file));
 			}
 			catch(IOException e)
 			{
@@ -103,7 +105,7 @@ public abstract class ImageImporter extends FileFilter
 	 * Reads an Image.
 	 * @throws IOException 
 	 **/
-	public abstract BufferedImage read(File file) throws IOException;
+	public abstract Canvas read(File file) throws IOException;
 	
 	public abstract String getFormat();
 	

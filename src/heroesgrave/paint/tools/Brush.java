@@ -38,7 +38,6 @@ package heroesgrave.paint.tools;
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-import heroesgrave.paint.gui.ColourChooser.CentredLabel;
 import heroesgrave.paint.image.ShapeChange;
 import heroesgrave.paint.main.Paint;
 
@@ -79,7 +78,7 @@ public class Brush extends Tool
 		
 		slider.setFocusable(false);
 		
-		size = new CentredLabel("Size: " + slider.getValue());
+		size = new JLabel("Size: " + slider.getValue());
 		
 		menu.add(label);
 		menu.add(size);

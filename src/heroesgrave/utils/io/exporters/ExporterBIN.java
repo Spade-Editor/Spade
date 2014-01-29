@@ -24,6 +24,7 @@ import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.ImageExporter;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,7 +53,7 @@ public class ExporterBIN extends ImageExporter
 	{
 		BufferedImage image = canvas.getFullImage();
 		
-		DataOutputStream output = new DataOutputStream(new FileOutputStream(destination));
+		DataOutputStream output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(destination)));
 		
 		// Write width and height as int32 (Signed 32-Bit Integer).
 		output.writeInt(canvas.getWidth());
@@ -66,7 +67,7 @@ public class ExporterBIN extends ImageExporter
 		
 		SimpleModalProgressDialog DIALOG = new SimpleModalProgressDialog("Saving...", "Saving Image...", buf.length + 1);
 		
-		// Go trough ALL the pixels and convert from INT_ARGB to INT_RGBA
+		// Go through ALL the pixels and convert from INT_ARGB to INT_RGBA
 		for(int k = 0; k < buf.length; k++)
 		{
 			int A = (buf[k] >> 24) & 0xff;
@@ -95,6 +96,7 @@ public class ExporterBIN extends ImageExporter
 		output.write('D');
 		
 		// Done!
+		output.flush();
 		output.close();
 		DIALOG.close();
 	}

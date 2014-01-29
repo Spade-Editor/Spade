@@ -256,7 +256,7 @@ public class Menu
 				@Override
 				public void run()
 				{
-					Paint.main.gui.canvas.setImage(ImageImporter.loadImage(chooser.getSelectedFile().getAbsolutePath()));
+					Paint.main.gui.canvas.setRoot(ImageImporter.loadImage(chooser.getSelectedFile().getAbsolutePath()));
 				}
 			}).start();
 		}

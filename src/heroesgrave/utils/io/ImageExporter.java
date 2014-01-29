@@ -24,6 +24,7 @@ import heroesgrave.paint.main.Popup;
 import heroesgrave.utils.io.exporters.ExporterBIN;
 import heroesgrave.utils.io.exporters.ExporterGenericImageIO;
 import heroesgrave.utils.io.exporters.ExporterJPEG;
+import heroesgrave.utils.io.exporters.ExporterLBIN;
 import heroesgrave.utils.io.exporters.ExporterTGA;
 import heroesgrave.utils.io.exporters.ExporterZipBIN;
 
@@ -49,6 +50,7 @@ public abstract class ImageExporter extends FileFilter
 		exporters.add(new ExporterTGA());
 		exporters.add(new ExporterBIN());
 		exporters.add(new ExporterZipBIN());
+		exporters.add(new ExporterLBIN());
 	}
 	
 	/**

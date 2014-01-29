@@ -35,13 +35,12 @@ public class SimplexNoiseOp extends ImageOp
 		// TODO: Add dialog with sliders to configure the noise!
 		noise_gen();
 		
-		
 	}
 	
 	public void noise_gen()
 	{
 		BufferedImage newImage = new BufferedImage(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		SimplexNoise noise = new SimplexNoise(123456789L);
+		SimplexNoise noise = new SimplexNoise(System.nanoTime());
 		
 		double scale = 1f / 64f;
 		
@@ -69,8 +68,5 @@ public class SimplexNoiseOp extends ImageOp
 		}
 		
 		Paint.addChange(new KeyFrame(newImage));
-		
-		
 	}
-	
 }

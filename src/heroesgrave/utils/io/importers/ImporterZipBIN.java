@@ -20,6 +20,7 @@
 package heroesgrave.utils.io.importers;
 
 import heroesgrave.paint.gui.SimpleModalProgressDialog;
+import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.ImageImporter;
 
 import java.awt.image.BufferedImage;
@@ -33,10 +34,11 @@ import java.util.zip.GZIPInputStream;
 /**
  * @author Longor1996
  **/
-public class ImporterZipBIN extends ImageImporter {
+public class ImporterZipBIN extends ImageImporter
+{
 	
 	@Override
-	public BufferedImage read(File file) throws IOException
+	public Canvas read(File file) throws IOException
 	{
 		DataInputStream in = new DataInputStream(new FileInputStream(file));
 		
@@ -59,7 +61,7 @@ public class ImporterZipBIN extends ImageImporter {
 		for(int index = 0, pixel = 0; index < surfaceArea; index++)
 		{
 			// pixel = RGBA
-			pixel = (inImgZipData.read()<<24) | (inImgZipData.read()<<16) | (inImgZipData.read()<<8) | (inImgZipData.read());
+			pixel = (inImgZipData.read() << 24) | (inImgZipData.read() << 16) | (inImgZipData.read() << 8) | (inImgZipData.read());
 			
 			// fastest possible conversion from RGBA to ARGB (?)
 			int RGB = ((pixel & 0xFFFFFFFF) >> 8) & 0xFFFFFF;
@@ -88,7 +90,7 @@ public class ImporterZipBIN extends ImageImporter {
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		image.setRGB(0, 0, width, height, raw, 0, width);
 		
-		return image;
+		return new Canvas("Background", image);
 	}
 	
 	@Override

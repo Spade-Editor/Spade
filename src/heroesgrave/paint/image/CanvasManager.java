@@ -163,6 +163,19 @@ public class CanvasManager
 		panel.revalidate();
 	}
 	
+	public void setRoot(Canvas canvas)
+	{
+		this.selected = this.root = canvas;
+		if(Paint.main.gui.layers != null)
+			Paint.main.gui.layers.setRoot(this.root);
+		this.width = root.getWidth();
+		this.height = root.getHeight();
+		panel.init();
+		panel.setScale(scale);
+		panel.repaint();
+		panel.revalidate();
+	}
+	
 	public CanvasRenderer getPanel()
 	{
 		return panel;

@@ -109,7 +109,7 @@ public class Paint extends Application
 		{
 			Paint.main.openFile = toOpen;
 			Paint.main.openDir = toOpen.getParentFile();
-			Paint.main.gui.canvas.setImage(ImageImporter.loadImage(toOpen.getAbsolutePath()));
+			Paint.main.gui.canvas.setRoot(ImageImporter.loadImage(toOpen.getAbsolutePath()));
 		}
 		saved = true;
 	}

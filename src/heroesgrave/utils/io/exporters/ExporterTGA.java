@@ -23,6 +23,7 @@ import heroesgrave.paint.gui.SimpleModalProgressDialog;
 import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.ImageExporter;
 
+import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,7 +45,7 @@ public class ExporterTGA extends ImageExporter
 	@Override
 	public void export(Canvas canvas, File destination) throws IOException
 	{
-		DataOutputStream out = new DataOutputStream(new FileOutputStream(destination));
+		DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(destination)));
 		
 		// ID Length
 		out.writeByte((byte) 0);
@@ -98,6 +99,7 @@ public class ExporterTGA extends ImageExporter
 			}
 		}
 		
+		out.flush();
 		out.close();
 		DIALOG.close();
 	}

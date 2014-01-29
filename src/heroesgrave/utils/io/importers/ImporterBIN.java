@@ -20,6 +20,7 @@
 package heroesgrave.utils.io.importers;
 
 import heroesgrave.paint.gui.SimpleModalProgressDialog;
+import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.ImageImporter;
 
 import java.awt.image.BufferedImage;
@@ -35,7 +36,7 @@ public class ImporterBIN extends ImageImporter
 {
 	
 	@Override
-	public BufferedImage read(File file) throws IOException
+	public Canvas read(File file) throws IOException
 	{
 		
 		DataInputStream in = new DataInputStream(new FileInputStream(file));
@@ -89,7 +90,7 @@ public class ImporterBIN extends ImageImporter
 		
 		image.setRGB(0, 0, width, height, raw, 0, width);
 		
-		return image;
+		return new Canvas("Background", image);
 	}
 	
 	@Override
