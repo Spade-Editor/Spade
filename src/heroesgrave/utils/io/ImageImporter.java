@@ -23,6 +23,7 @@ import heroesgrave.paint.image.Canvas;
 import heroesgrave.utils.io.importers.ImporterBIN;
 import heroesgrave.utils.io.importers.ImporterLBIN;
 import heroesgrave.utils.io.importers.ImporterZipBIN;
+import heroesgrave.utils.io.importers.ImporterZipLBIN;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +49,7 @@ public abstract class ImageImporter extends FileFilter
 		add(new ImporterBIN());
 		add(new ImporterZipBIN());
 		add(new ImporterLBIN());
+		add(new ImporterZipLBIN());
 	}
 	
 	public static void add(ImageImporter exporter)

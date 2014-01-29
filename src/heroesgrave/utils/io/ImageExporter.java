@@ -27,6 +27,7 @@ import heroesgrave.utils.io.exporters.ExporterJPEG;
 import heroesgrave.utils.io.exporters.ExporterLBIN;
 import heroesgrave.utils.io.exporters.ExporterTGA;
 import heroesgrave.utils.io.exporters.ExporterZipBIN;
+import heroesgrave.utils.io.exporters.ExporterZipLBIN;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -51,6 +52,7 @@ public abstract class ImageExporter extends FileFilter
 		exporters.add(new ExporterBIN());
 		exporters.add(new ExporterZipBIN());
 		exporters.add(new ExporterLBIN());
+		exporters.add(new ExporterZipLBIN());
 	}
 	
 	/**
