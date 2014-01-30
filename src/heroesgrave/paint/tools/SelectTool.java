@@ -1,25 +1,10 @@
-/*
- *	Copyright 2013 HeroesGrave
- *
- *	This file is part of Paint.JAVA
- *
- *	Paint.JAVA is free software: you can redistribute it and/or modify
- *	it under the terms of the GNU General Public License as published by
- *	the Free Software Foundation, either version 3 of the License, or
- *	(at your option) any later version.
- *
- *	This program is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *	GNU General Public License for more details.
- *
- *	You should have received a copy of the GNU General Public License
- *	along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
-
 package heroesgrave.paint.tools;
 
+import heroesgrave.paint.image.MultiChange;
+import heroesgrave.paint.image.ShapeChange;
 import heroesgrave.paint.main.Paint;
+
+import java.awt.geom.Rectangle2D;
 
 public class SelectTool extends Tool
 {
@@ -42,16 +27,22 @@ public class SelectTool extends Tool
 		int minY = Math.min(y, sy);
 		int width = Math.abs(x - sx);
 		int height = Math.abs(y - sy);
-		if(Math.min(width, height) < 1)
+		Paint.main.gui.canvas.preview(null);
+		if(width < 1 || height < 1)
 		{
 			return;
 		}
-		Paint.main.gui.canvas.preview(null);
 		Paint.main.gui.canvas.selection.create(minX, minY, width, height);
 	}
 	
 	public void whilePressed(int x, int y, int button)
 	{
-		
+		int minX = Math.min(x, sx);
+		int minY = Math.min(y, sy);
+		int width = Math.abs(x - sx);
+		int height = Math.abs(y - sy);
+		Paint.main.gui.canvas.preview(new MultiChange( //
+				new ShapeChange(new Rectangle2D.Float(minX, minY, width, height), 0x3f0066ff).setFill(true), //
+				new ShapeChange(new Rectangle2D.Float(minX, minY, width, height), 0x7f001133)));
 	}
 }

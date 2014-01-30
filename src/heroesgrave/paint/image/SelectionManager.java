@@ -63,6 +63,11 @@ public class SelectionManager
 			return;
 		floating = false;
 		Canvas parent = Paint.main.gui.canvas.getParentOf(selection);
+		if(parent == null)
+		{
+			selection = null;
+			return;
+		}
 		parent.mergeLayer(selection);
 		Paint.main.gui.canvas.select(parent);
 		selection = null;
