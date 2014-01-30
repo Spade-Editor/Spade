@@ -28,11 +28,11 @@ import java.util.ArrayList;
 
 public class Canvas
 {
-	private ArrayList<Canvas> layers = new ArrayList<Canvas>();
-	private BufferedImage image;
+	protected ArrayList<Canvas> layers = new ArrayList<Canvas>();
+	protected BufferedImage image;
 	public String name;
 	public BlendMode mode;
-	private History hist;
+	protected History hist;
 	
 	public Canvas(String name, int width, int height)
 	{
@@ -69,7 +69,7 @@ public class Canvas
 	{
 		this.removeLayer(canvas);
 		this.image = hist.getUpdatedImage();
-		canvas.draw(image.createGraphics());
+		canvas.draw(image.createGraphics(), false);
 		hist.addChange(new KeyFrame(this.image));
 	}
 	
@@ -132,13 +132,13 @@ public class Canvas
 		{
 			for(int i = layers.size() - 1; i >= 0; i--)
 			{
-				layers.get(i).draw(g);
+				layers.get(i).draw(g, false);
 			}
 		}
 		return image;
 	}
 	
-	public void draw(Graphics2D g)
+	public void draw(Graphics2D g, boolean render)
 	{
 		if(hist.wasChanged())
 		{
@@ -152,7 +152,7 @@ public class Canvas
 		{
 			for(int i = layers.size() - 1; i >= 0; i--)
 			{
-				layers.get(i).draw(g);
+				layers.get(i).draw(g, render);
 			}
 		}
 	}

@@ -17,44 +17,51 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.imageops;
+package heroesgrave.paint.image;
 
-import heroesgrave.paint.image.Canvas;
-import heroesgrave.paint.image.KeyFrame;
-import heroesgrave.paint.image.doc.ImageOpChange;
-import heroesgrave.paint.main.Paint;
-
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
-public class ResizeCanvasChange extends ImageOpChange
+public class SelectionCanvas extends Canvas
 {
-	private int w, h;
+	public static final Color mask_bg = new Color(32, 32, 32, 128);
 	
-	public ResizeCanvasChange(int w, int h)
+	public SelectionCanvas(String name, int width, int height)
 	{
-		this.w = w;
-		this.h = h;
+		super(name, width, height);
 	}
 	
-	@Override
-	public void apply()
+	public SelectionCanvas(String name, BufferedImage image)
 	{
-		recurse(Paint.main.gui.canvas.getRoot());
+		super(name, image);
 	}
 	
-	public void recurse(Canvas c)
+	public void draw(Graphics2D g, boolean render)
 	{
-		BufferedImage newImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		
-		Graphics2D g2d = (Graphics2D) newImage.getGraphics();
-		g2d.drawImage(c.getImage(), 0, 0, null);
-		
-		c.addChange(new KeyFrame(newImage));
-		
-		ArrayList<Canvas> list = c.getChildren();
-		for(Canvas cn : list)
-			recurse(cn);
+		if(render)
+		{
+			if(hist.wasChanged())
+			{
+				this.image = hist.getUpdatedImage();
+			}
+			
+			g.setComposite(mode);
+			g.setColor(mask_bg);
+			g.fillRect(0, 0, this.getWidth(), this.getHeight());
+			g.drawImage(this.image, 0, 0, null);
+			
+			if(!layers.isEmpty())
+			{
+				for(int i = layers.size() - 1; i >= 0; i--)
+				{
+					layers.get(i).draw(g, render);
+				}
+			}
+		}
+		else
+		{
+			super.draw(g, render);
+		}
 	}
 }

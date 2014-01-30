@@ -1,0 +1,82 @@
+/*
+ *	Copyright 2013 HeroesGrave
+ *
+ *	This file is part of Paint.JAVA
+ *
+ *	Paint.JAVA is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>
+*/
+
+package heroesgrave.paint.image;
+
+import heroesgrave.paint.image.doc.SelectedOp;
+import heroesgrave.paint.main.Paint;
+
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+
+public class SelectionManager
+{
+	private boolean floating;
+	private Canvas selection;
+	
+	/**
+	 * Create the selection layer.
+	 */
+	public void create(int x, int y, int w, int h)
+	{
+		if(floating)
+			drop();
+		
+		BufferedImage subImage = Paint.main.gui.canvas.getCanvas().getImage().getSubimage(x, y, w, h);
+		BufferedImage image = new BufferedImage(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		image.createGraphics().drawImage(subImage, x, y, null);
+		
+		selection = new SelectionCanvas("Selection", image);
+		selection.setBlendMode(Paint.main.gui.canvas.getCanvas().mode);
+		Paint.addChange(new ShapeChange(new Rectangle2D.Float(x, y, w, h), 0x00000000).setFill(true));
+		Paint.main.history.addChange(new SelectedOp(selection, Paint.main.gui.canvas.getCanvas()));
+		Paint.main.gui.canvas.getPanel().repaint();
+	}
+	
+	public void setFloating(boolean floating)
+	{
+		this.floating = floating;
+	}
+	
+	/**
+	 * Deselect and merge down the selection layer.
+	 */
+	public void drop()
+	{
+		if(!floating)
+			return;
+		floating = false;
+		Canvas parent = Paint.main.gui.canvas.getParentOf(selection);
+		parent.mergeLayer(selection);
+		Paint.main.gui.canvas.select(parent);
+		selection = null;
+		Paint.main.gui.canvas.getPanel().repaint();
+	}
+	
+	public void dropNoReselect()
+	{
+		if(!floating)
+			return;
+		floating = false;
+		Canvas parent = Paint.main.gui.canvas.getParentOf(selection);
+		parent.mergeLayer(selection);
+		selection = null;
+		Paint.main.gui.canvas.getPanel().repaint();
+	}
+}

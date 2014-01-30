@@ -17,29 +17,41 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.image.doc;
+package heroesgrave.paint.tools;
 
-import heroesgrave.paint.image.Canvas;
-import heroesgrave.paint.image.IFrame;
-import heroesgrave.paint.image.RevertFrame;
+import heroesgrave.paint.main.Paint;
 
-/**
- * Used for changes to the image document.
- * 
- * Eg: Manipulation of Layers.
- * 
- * @author HeroesGrave
- *
- */
-public abstract class DocumentChange implements IFrame, RevertFrame
+public class SelectTool extends Tool
 {
-	public void setCanvas(Canvas canvas)
+	public int sx, sy;
+	
+	public SelectTool(String name)
 	{
-		
+		super(name);
 	}
 	
-	public Canvas getCanvas()
+	public void onPressed(int x, int y, int button)
 	{
-		return null;
+		sx = x;
+		sy = y;
+	}
+	
+	public void onReleased(int x, int y, int button)
+	{
+		int minX = Math.min(x, sx);
+		int minY = Math.min(y, sy);
+		int width = Math.abs(x - sx);
+		int height = Math.abs(y - sy);
+		if(Math.min(width, height) < 1)
+		{
+			return;
+		}
+		Paint.main.gui.canvas.preview(null);
+		Paint.main.gui.canvas.selection.create(minX, minY, width, height);
+	}
+	
+	public void whilePressed(int x, int y, int button)
+	{
+		
 	}
 }

@@ -51,12 +51,14 @@ public class CanvasManager
 	private CanvasRenderer panel;
 	private Canvas selected;
 	private int width, height;
+	public SelectionManager selection;
 	
 	private float scale = 1;
 	
 	public CanvasManager()
 	{
 		panel = new CanvasRenderer(this);
+		selection = new SelectionManager();
 		
 		setImage(new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB));
 	}
@@ -195,7 +197,7 @@ public class CanvasManager
 		private int lastButton = 0;
 		private BufferedImage background;
 		
-		private static final Color TRANSPARENT = new Color(255, 255, 255, 0);
+		public static final Color TRANSPARENT = new Color(255, 255, 255, 0);
 		
 		public CanvasRenderer(CanvasManager mgr)
 		{
@@ -259,15 +261,14 @@ public class CanvasManager
 			g.setPaint(null);
 			
 			Composite comp = draw.getComposite();
-			mgr.root.draw(draw);
+			mgr.root.draw(draw, true);
 			draw.setComposite(comp);
 			
 			if(mgr.preview != null)
 			{
 				if(mgr.preview instanceof KeyFrame)
 				{
-					g.drawImage(((KeyFrame) mgr.preview).getImage(), 0, 0, MathUtils.floor(background.getWidth() * scale),
-							MathUtils.floor(background.getHeight() * scale), null);
+					draw.drawImage(((KeyFrame) mgr.preview).getImage(), 0, 0, background.getWidth(), background.getHeight(), null);
 				}
 				else if(mgr.preview instanceof Frame)
 				{
@@ -313,6 +314,9 @@ public class CanvasManager
 	
 	public void select(Canvas canvas)
 	{
+		if(canvas == selected)
+			return;
+		this.selection.dropNoReselect();
 		this.selected = canvas;
 	}
 	
@@ -328,6 +332,9 @@ public class CanvasManager
 	
 	public void selectRoot()
 	{
+		if(root == selected)
+			return;
+		this.selection.drop();
 		this.selected = this.root;
 	}
 	

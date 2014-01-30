@@ -33,16 +33,17 @@ import heroesgrave.paint.imageops.FlipVert;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.imageops.Resize;
 import heroesgrave.paint.imageops.ResizeCanvas;
-import heroesgrave.paint.imageops.Shift;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Brush;
 import heroesgrave.paint.tools.Ellipse;
 import heroesgrave.paint.tools.Eraser;
 import heroesgrave.paint.tools.Fill;
 import heroesgrave.paint.tools.Line;
+import heroesgrave.paint.tools.Move;
 import heroesgrave.paint.tools.Picker;
 import heroesgrave.paint.tools.Pixel;
 import heroesgrave.paint.tools.Rectangle;
+import heroesgrave.paint.tools.SelectTool;
 import heroesgrave.paint.tools.Tool;
 
 import java.awt.event.ActionEvent;
@@ -74,6 +75,8 @@ public class ToolMenu
 		menu.add(new ToolMenuItem("Line", new Line("Straight Line"), "L"));
 		menu.add(new ToolMenuItem("Rectangle", new Rectangle("Rectangle"), "R"));
 		menu.add(new ToolMenuItem("Ellipse", new Ellipse("Ellipse"), "C"));
+		menu.add(new ToolMenuItem("Select", new SelectTool("Select"), "S"));
+		menu.add(new ToolMenuItem("Move", new Move("Move"), "M"));
 		// WIP
 		// menu.add(new ToolMenuItem("Layer Copy", new LayerCopy("Layer Copy"), "N"));
 		
@@ -90,7 +93,6 @@ public class ToolMenu
 		menu.add(new ImageMenuItem("Clear Image", new Clear2(), "C"));
 		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
 		menu.add(new ImageMenuItem("Resize Canvas", new ResizeCanvas(), null));
-		menu.add(new ImageMenuItem("Shift Canvas", new Shift(), "H"));
 		menu.add(new ImageMenuItem("Flip Vertically", new FlipVert(), null));
 		menu.add(new ImageMenuItem("Flip Horizontally", new FlipHoriz(), null));
 		

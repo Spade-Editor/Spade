@@ -20,26 +20,30 @@
 package heroesgrave.paint.image.doc;
 
 import heroesgrave.paint.image.Canvas;
-import heroesgrave.paint.image.IFrame;
-import heroesgrave.paint.image.RevertFrame;
+import heroesgrave.paint.main.Paint;
 
-/**
- * Used for changes to the image document.
- * 
- * Eg: Manipulation of Layers.
- * 
- * @author HeroesGrave
- *
- */
-public abstract class DocumentChange implements IFrame, RevertFrame
+public class SelectedOp extends DocumentChange
 {
-	public void setCanvas(Canvas canvas)
+	private Canvas canvas, parent;
+	
+	public SelectedOp(Canvas c, Canvas p)
 	{
-		
+		this.canvas = c;
+		this.parent = p;
 	}
 	
-	public Canvas getCanvas()
+	public void apply()
 	{
-		return null;
+		parent.addLayer(canvas);
+		Paint.main.gui.canvas.select(canvas);
+		Paint.main.gui.canvas.selection.setFloating(true);
+	}
+	
+	public void revert()
+	{
+		parent.removeLayer(canvas);
+		Paint.main.gui.canvas.select(parent);
+		Paint.main.gui.canvas.selection.setFloating(false);
+		Paint.main.history.revertChange();
 	}
 }
