@@ -99,6 +99,7 @@ public class ToolBox
 			setPreferredSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
 			setMargin(new Insets(0, 0, 0, 0));
 			setToolTipText(name);
+			setFocusable(false);
 			
 			this.tool = tool;
 			// TRY to load the icon!
