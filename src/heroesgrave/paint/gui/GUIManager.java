@@ -68,6 +68,7 @@ public class GUIManager
 	public MultiColourChooser chooser;
 	public LayerManager layers;
 	public InfoMenu info;
+	public ToolBox toolBox;
 	
 	AboutDialog about;
 	
@@ -142,6 +143,7 @@ public class GUIManager
 		chooser = new MultiColourChooser(frame);
 		layers = new LayerManager(canvas.getRoot());
 		about = new AboutDialog(frame);
+		toolBox = new ToolBox(frame);
 		finish();
 		
 		initInputs();
