@@ -23,6 +23,7 @@ import heroesgrave.paint.main.Paint;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
 
@@ -49,6 +50,19 @@ public class SelectionCanvas extends Canvas
 		this.ty = fty + y;
 	}
 	
+	public BufferedImage getBoundedSelection()
+	{
+		this.image = getImage();
+		Rectangle bounds = clip.getBounds();
+		BufferedImage image = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = image.createGraphics();
+		g.translate(-bounds.x, -bounds.y);
+		g.setClip(clip);
+		g.drawImage(this.image, 0, 0, null);
+		g.dispose();
+		return image;
+	}
+	
 	public void draw(Graphics2D g, boolean render)
 	{
 		if(render)
@@ -56,6 +70,7 @@ public class SelectionCanvas extends Canvas
 			if(hist.wasChanged())
 			{
 				this.image = hist.getUpdatedImage();
+				this.temp = hist.getUpdatedImage();
 			}
 			
 			g.setComposite(mode);

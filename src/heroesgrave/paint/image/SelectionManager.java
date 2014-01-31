@@ -21,12 +21,14 @@ package heroesgrave.paint.image;
 
 import heroesgrave.paint.image.SelectionCanvas.CombineMode;
 import heroesgrave.paint.image.doc.DeselectedOp;
+import heroesgrave.paint.image.doc.PasteOp;
 import heroesgrave.paint.image.doc.SelectedOp;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class SelectionManager
@@ -73,6 +75,19 @@ public class SelectionManager
 		selection.setBlendMode(Paint.main.gui.canvas.getCanvas().mode);
 		Paint.addChange(new ShapeChange(area, 0x00000000).setFill(true));
 		Paint.main.history.addChange(new SelectedOp(selection, Paint.main.gui.canvas.getCanvas()));
+		Paint.main.gui.canvas.getPanel().repaint();
+	}
+	
+	public void paste(BufferedImage clipboard)
+	{
+		Shape area = new Rectangle2D.Float(0, 0, clipboard.getWidth(), clipboard.getHeight());
+		BufferedImage image = new BufferedImage(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = image.createGraphics();
+		g.setClip(area);
+		g.drawImage(clipboard, 0, 0, null);
+		
+		selection = new SelectionCanvas(image, area);
+		Paint.main.history.addChange(new PasteOp(selection, Paint.main.gui.canvas.getCanvas()));
 		Paint.main.gui.canvas.getPanel().repaint();
 	}
 	

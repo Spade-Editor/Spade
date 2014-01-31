@@ -21,6 +21,8 @@ package heroesgrave.paint.main;
 
 import heroesgrave.paint.gui.Menu;
 import heroesgrave.paint.image.Canvas;
+import heroesgrave.paint.image.ClipboardHandler;
+import heroesgrave.paint.image.SelectionCanvas;
 import heroesgrave.paint.image.SelectionCanvas.CombineMode;
 import heroesgrave.paint.image.doc.DeleteSelectionOp;
 import heroesgrave.paint.imageops.ImageOp;
@@ -33,6 +35,7 @@ import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 public class Input implements KeyListener
@@ -133,14 +136,31 @@ public class Input implements KeyListener
 				{
 					Paint.main.gui.canvas.selection.drop();
 				}
-				else if(e.getKeyCode() == KeyEvent.VK_C)
-				{
-					
-				}
 				else if(e.getKeyCode() == KeyEvent.VK_A)
 				{
 					Paint.main.gui.canvas.selection.create(
 							new Rectangle2D.Float(0, 0, Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight()), CombineMode.REPLACE);
+				}
+				else if(e.getKeyCode() == KeyEvent.VK_C)
+				{
+					SelectionCanvas sel = Paint.main.gui.canvas.selection.getSelection();
+					if(sel != null)
+						ClipboardHandler.copy(sel.getBoundedSelection());
+				}
+				else if(e.getKeyCode() == KeyEvent.VK_X)
+				{
+					SelectionCanvas sel = Paint.main.gui.canvas.selection.getSelection();
+					if(sel != null)
+					{
+						ClipboardHandler.copy(sel.getBoundedSelection());
+						Paint.main.history.addChange(new DeleteSelectionOp(sel, Paint.main.gui.canvas.getParentOf(sel)));
+					}
+				}
+				else if(e.getKeyCode() == KeyEvent.VK_V)
+				{
+					BufferedImage image = ClipboardHandler.paste();
+					if(image != null)
+						Paint.main.gui.canvas.selection.paste(image);
 				}
 			}
 		}
