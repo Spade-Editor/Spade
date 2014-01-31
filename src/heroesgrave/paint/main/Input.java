@@ -20,17 +20,25 @@
 package heroesgrave.paint.main;
 
 import heroesgrave.paint.gui.Menu;
+import heroesgrave.paint.image.Canvas;
+import heroesgrave.paint.image.SelectionCanvas.CombineMode;
+import heroesgrave.paint.image.doc.DeleteSelectionOp;
 import heroesgrave.paint.imageops.ImageOp;
-import heroesgrave.paint.tools.Move;
 import heroesgrave.paint.tools.Tool;
 
+import java.awt.AWTException;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 
 public class Input implements KeyListener
 {
 	public static boolean CTRL, SHIFT, ALT;
+	public static Robot robot;
 	
 	private static HashMap<Integer, String> keyCodeToStr = new HashMap<Integer, String>();
 	
@@ -57,6 +65,12 @@ public class Input implements KeyListener
 		if(e.getKeyCode() == KeyEvent.VK_F6)
 		{
 			Paint.main.gui.layers.toggle();
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_DELETE)
+		{
+			Canvas selection = Paint.main.gui.canvas.selection.getSelection();
+			Paint.main.history.addChange(new DeleteSelectionOp(selection, Paint.main.gui.canvas.getParentOf(selection)));
 		}
 		
 		int MOVE = 1;
@@ -119,6 +133,15 @@ public class Input implements KeyListener
 				{
 					Paint.main.gui.canvas.selection.drop();
 				}
+				else if(e.getKeyCode() == KeyEvent.VK_C)
+				{
+					
+				}
+				else if(e.getKeyCode() == KeyEvent.VK_A)
+				{
+					Paint.main.gui.canvas.selection.create(
+							new Rectangle2D.Float(0, 0, Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight()), CombineMode.REPLACE);
+				}
 			}
 		}
 		else
@@ -132,22 +155,25 @@ public class Input implements KeyListener
 				}
 			}
 		}
+		Point p = MouseInfo.getPointerInfo().getLocation();
+		
+		MOVE = (int) (MOVE * Paint.main.gui.canvas.getScale());
 		
 		if(e.getKeyCode() == KeyEvent.VK_UP)
 		{
-			Move.do_move(0, -MOVE);
+			robot.mouseMove(p.x, p.y - MOVE);
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_DOWN)
 		{
-			Move.do_move(0, MOVE);
+			robot.mouseMove(p.x, p.y + MOVE);
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_LEFT)
 		{
-			Move.do_move(-MOVE, 0);
+			robot.mouseMove(p.x - MOVE, p.y);
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_RIGHT)
 		{
-			Move.do_move(MOVE, 0);
+			robot.mouseMove(p.x + MOVE, p.y);
 		}
 	}
 	
@@ -200,5 +226,14 @@ public class Input implements KeyListener
 		keyCodeToStr.put(KeyEvent.VK_X, "X");
 		keyCodeToStr.put(KeyEvent.VK_Y, "Y");
 		keyCodeToStr.put(KeyEvent.VK_Z, "Z");
+		
+		try
+		{
+			robot = new Robot();
+		}
+		catch(AWTException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

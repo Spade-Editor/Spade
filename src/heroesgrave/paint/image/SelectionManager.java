@@ -19,32 +19,59 @@
 
 package heroesgrave.paint.image;
 
+import heroesgrave.paint.image.SelectionCanvas.CombineMode;
+import heroesgrave.paint.image.doc.DeselectedOp;
 import heroesgrave.paint.image.doc.SelectedOp;
 import heroesgrave.paint.main.Paint;
 
-import java.awt.geom.Rectangle2D;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 
 public class SelectionManager
 {
 	private boolean floating;
-	private Canvas selection;
+	private SelectionCanvas selection;
 	
 	/**
 	 * Create the selection layer.
 	 */
-	public void create(int x, int y, int w, int h)
+	public void create(Shape clip, CombineMode mode)
 	{
+		Area area = new Area(clip);
+		if(selection != null && mode != CombineMode.REPLACE)
+			area = new Area(selection.clip);
+		
 		if(floating)
 			drop();
 		
-		BufferedImage subImage = Paint.main.gui.canvas.getCanvas().getImage().getSubimage(x, y, w, h);
-		BufferedImage image = new BufferedImage(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		image.createGraphics().drawImage(subImage, x, y, null);
+		switch(mode)
+		{
+			case ADD:
+				area.add(new Area(clip));
+				break;
+			case SUBTRACT:
+				area.subtract(new Area(clip));
+				break;
+			case XOR:
+				area.exclusiveOr(new Area(clip));
+				break;
+			case INTERSECT:
+				area.intersect(new Area(clip));
+				break;
+			default:
+				break;
+		}
 		
-		selection = new SelectionCanvas("Selection", image);
+		BufferedImage image = new BufferedImage(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = image.createGraphics();
+		g.setClip(area);
+		g.drawImage(Paint.main.gui.canvas.getCanvas().getImage(), 0, 0, null);
+		
+		selection = new SelectionCanvas(image, area);
 		selection.setBlendMode(Paint.main.gui.canvas.getCanvas().mode);
-		Paint.addChange(new ShapeChange(new Rectangle2D.Float(x, y, w, h), 0x00000000).setFill(true));
+		Paint.addChange(new ShapeChange(area, 0x00000000).setFill(true));
 		Paint.main.history.addChange(new SelectedOp(selection, Paint.main.gui.canvas.getCanvas()));
 		Paint.main.gui.canvas.getPanel().repaint();
 	}
@@ -68,20 +95,16 @@ public class SelectionManager
 			selection = null;
 			return;
 		}
-		parent.mergeLayer(selection);
-		Paint.main.gui.canvas.select(parent);
-		selection = null;
-		Paint.main.gui.canvas.getPanel().repaint();
+		Paint.main.history.addChange(new DeselectedOp(selection, parent));
 	}
 	
-	public void dropNoReselect()
+	public boolean isSelection(Canvas canvas)
 	{
-		if(!floating)
-			return;
-		floating = false;
-		Canvas parent = Paint.main.gui.canvas.getParentOf(selection);
-		parent.mergeLayer(selection);
-		selection = null;
-		Paint.main.gui.canvas.getPanel().repaint();
+		return canvas == selection;
+	}
+	
+	public SelectionCanvas getSelection()
+	{
+		return selection;
 	}
 }

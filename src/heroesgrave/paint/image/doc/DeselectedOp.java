@@ -34,16 +34,17 @@ public class DeselectedOp extends DocumentChange
 	
 	public void apply()
 	{
-		parent.addLayer(canvas);
-		Paint.main.gui.canvas.select(canvas);
-		Paint.main.gui.canvas.selection.setFloating(true);
+		parent.mergeLayer(canvas);
+		Paint.main.gui.canvas.selection.setFloating(false);
+		Paint.main.gui.canvas.select(parent);
+		Paint.main.gui.canvas.getPanel().repaint();
 	}
 	
 	public void revert()
 	{
-		parent.removeLayer(canvas);
-		Paint.main.gui.canvas.select(parent);
-		Paint.main.gui.canvas.selection.setFloating(false);
-		Paint.main.history.revertChange();
+		parent.unmergeLayer(canvas);
+		Paint.main.gui.canvas.selection.setFloating(true);
+		Paint.main.gui.canvas.select(canvas);
+		Paint.main.gui.canvas.getPanel().repaint();
 	}
 }

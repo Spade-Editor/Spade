@@ -21,6 +21,7 @@ package heroesgrave.paint.tools;
 
 import heroesgrave.paint.image.CanvasManager.CanvasRenderer;
 import heroesgrave.paint.image.KeyFrame;
+import heroesgrave.paint.image.SelectionCanvas;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.Graphics2D;
@@ -64,6 +65,11 @@ public class Move extends Tool
 			Paint.main.gui.canvas.applyPreview();
 			image = null;
 			origin = null;
+			SelectionCanvas c = Paint.main.gui.canvas.selection.getSelection();
+			if(c == Paint.main.gui.canvas.getCanvas())
+			{
+				c.finalizeTranslation();
+			}
 		}
 	}
 	
@@ -90,6 +96,11 @@ public class Move extends Tool
 		g.drawImage(origin, x, y, null);
 		
 		Paint.main.gui.canvas.preview(new KeyFrame(image));
+		SelectionCanvas c = Paint.main.gui.canvas.selection.getSelection();
+		if(c == Paint.main.gui.canvas.getCanvas())
+		{
+			c.setTranslation(x, y);
+		}
 	}
 	
 	public static void do_move(int x, int y)

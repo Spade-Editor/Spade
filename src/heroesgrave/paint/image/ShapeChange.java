@@ -33,7 +33,7 @@ public class ShapeChange extends Frame
 	private Shape changeShape;
 	private int colour;
 	private Stroke stroke;
-	private AlphaComposite trans;
+	private Composite composite;
 	private boolean filling = false;
 	private boolean antialiasing = false;
 	
@@ -42,7 +42,7 @@ public class ShapeChange extends Frame
 		this.changeShape = shape;
 		this.colour = colour;
 		if((colour & 0xff000000) != 0xff000000)
-			trans = AlphaComposite.getInstance(AlphaComposite.SRC, ((colour >> 24) & 0xff) / 255f);
+			composite = AlphaComposite.getInstance(AlphaComposite.SRC, ((colour >> 24) & 0xff) / 255f);
 	}
 	
 	public ShapeChange(Shape shape, int colour, Stroke stroke)
@@ -51,7 +51,7 @@ public class ShapeChange extends Frame
 		this.colour = colour;
 		this.stroke = stroke;
 		if((colour & 0xff000000) != 0xff000000)
-			trans = AlphaComposite.getInstance(AlphaComposite.SRC, ((colour >> 24) & 0xff) / 255f);
+			composite = AlphaComposite.getInstance(AlphaComposite.SRC, ((colour >> 24) & 0xff) / 255f);
 	}
 	
 	public void apply(BufferedImage image)
@@ -70,10 +70,10 @@ public class ShapeChange extends Frame
 			oldStroke = g2d.getStroke();
 			g2d.setStroke(stroke);
 		}
-		if(trans != null)
+		if(composite != null)
 		{
 			oldComp = g2d.getComposite();
-			g2d.setComposite(trans);
+			g2d.setComposite(composite);
 		}
 		g2d.setColor(new Color(colour));
 		
@@ -83,7 +83,7 @@ public class ShapeChange extends Frame
 			g2d.draw(changeShape);
 		
 		g2d.setColor(oldColor);
-		if(trans != null)
+		if(composite != null)
 			g2d.setComposite(oldComp);
 		if(stroke != null)
 			g2d.setStroke(oldStroke);
@@ -106,4 +106,9 @@ public class ShapeChange extends Frame
 		return this;
 	}
 	
+	public ShapeChange setComposite(Composite composite)
+	{
+		this.composite = composite;
+		return this;
+	}
 }

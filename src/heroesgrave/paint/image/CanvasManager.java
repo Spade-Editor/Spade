@@ -24,7 +24,6 @@ import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
 
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -52,6 +51,7 @@ public class CanvasManager
 	private Canvas selected;
 	private int width, height;
 	public SelectionManager selection;
+	public MultiChange selector;
 	
 	private float scale = 1;
 	
@@ -260,20 +260,11 @@ public class CanvasManager
 			
 			g.setPaint(null);
 			
-			Composite comp = draw.getComposite();
 			mgr.root.draw(draw, true);
-			draw.setComposite(comp);
 			
-			if(mgr.preview != null)
+			if(mgr.selector != null)
 			{
-				if(mgr.preview instanceof KeyFrame)
-				{
-					draw.drawImage(((KeyFrame) mgr.preview).getImage(), 0, 0, background.getWidth(), background.getHeight(), null);
-				}
-				else if(mgr.preview instanceof Frame)
-				{
-					((Frame) mgr.preview).apply(background);
-				}
+				mgr.selector.apply(background);
 			}
 			
 			g.drawImage(background, 0, 0, MathUtils.floor(background.getWidth() * scale), MathUtils.floor(background.getHeight() * scale), null);
@@ -316,7 +307,8 @@ public class CanvasManager
 	{
 		if(canvas == selected)
 			return;
-		this.selection.dropNoReselect();
+		if(!this.selection.isSelection(canvas))
+			this.selection.drop();
 		this.selected = canvas;
 	}
 	
@@ -354,5 +346,10 @@ public class CanvasManager
 		panel.setScale(scale);
 		panel.repaint();
 		panel.revalidate();
+	}
+	
+	public IFrame getPreview()
+	{
+		return preview;
 	}
 }

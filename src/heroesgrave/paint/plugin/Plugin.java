@@ -48,18 +48,36 @@ public abstract class Plugin
 	 * 
 	 * @param paint
 	 */
-	public abstract void init(Paint paint);
+	public void init(Paint paint)
+	{
+		
+	}
 	
 	/**
 	 * Called after the window is created
 	 */
-	public abstract void onLaunch();
+	public void onLaunch()
+	{
+		
+	}
 	
-	public abstract void registerImageOps(RegisterImageOps register);
+	public void registerImageOps(RegisterImageOps register)
+	{
+		
+	}
 	
-	public abstract void registerEffects(RegisterEffects register);
+	public void registerEffects(RegisterEffects register)
+	{
+		
+	}
 	
-	public abstract void registerTools(RegisterTools register);
+	public void registerTools(RegisterTools register)
+	{
+		
+	}
 	
-	public abstract void registerOther();
+	public void registerOther()
+	{
+		
+	}
 }

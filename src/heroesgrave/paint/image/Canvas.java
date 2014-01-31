@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public class Canvas
 {
 	protected ArrayList<Canvas> layers = new ArrayList<Canvas>();
-	protected BufferedImage image;
+	protected BufferedImage image, temp;
 	public String name;
 	public BlendMode mode;
 	protected History hist;
@@ -68,9 +68,9 @@ public class Canvas
 	public void mergeLayer(Canvas canvas)
 	{
 		this.removeLayer(canvas);
-		this.image = hist.getUpdatedImage();
-		canvas.draw(image.createGraphics(), false);
-		hist.addChange(new KeyFrame(this.image));
+		this.temp = hist.getUpdatedImage();
+		canvas.draw(temp.createGraphics(), false);
+		hist.addChange(new KeyFrame(this.temp));
 	}
 	
 	public void unmergeLayer(Canvas canvas)
@@ -127,7 +127,6 @@ public class Canvas
 		BufferedImage image = hist.getUpdatedImage();
 		Graphics2D g = image.createGraphics();
 		g.setComposite(mode);
-		g.drawImage(this.image, 0, 0, null);
 		if(!layers.isEmpty())
 		{
 			for(int i = layers.size() - 1; i >= 0; i--)
@@ -146,7 +145,26 @@ public class Canvas
 		}
 		
 		g.setComposite(mode);
-		g.drawImage(this.image, 0, 0, null);
+		
+		if(this == Paint.main.gui.canvas.getCanvas() && Paint.main.gui.canvas.getPreview() != null)
+		{
+			IFrame prev = Paint.main.gui.canvas.getPreview();
+			if(prev instanceof KeyFrame)
+			{
+				g.drawImage(this.image, 0, 0, null);
+				g.drawImage(((KeyFrame) prev).getImage(), 0, 0, getWidth(), getHeight(), null);
+			}
+			else if(prev instanceof Frame)
+			{
+				temp = hist.getUpdatedImage();
+				((Frame) prev).apply(this.temp);
+				g.drawImage(this.temp, 0, 0, null);
+			}
+		}
+		else
+		{
+			g.drawImage(this.image, 0, 0, null);
+		}
 		
 		if(!layers.isEmpty())
 		{

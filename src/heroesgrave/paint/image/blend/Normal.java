@@ -43,31 +43,4 @@ public class Normal extends BlendMode
 	{
 		
 	}
-	/*
-	private static final int AI = 3;
-	
-	public void compose(Raster src, Raster dst, WritableRaster out)
-	{
-		int w = out.getWidth();
-		int h = out.getHeight();
-		
-		int n = src.getNumBands();
-		float[] sp = new float[n], dp = new float[n], op = new float[n];
-		
-		for(int i = 0; i < w; i++)
-		{
-			for(int j = 0; j < h; j++)
-			{
-				src.getPixel(i, j, sp);
-				dst.getPixel(i, j, dp);
-				
-				op[AI] = sp[AI] + dp[AI] * (1 - sp[AI]);
-				for(int k = 0; k < 4; k++)
-					if(k != AI)
-						op[k] = (sp[k] * sp[AI] + dp[k] * (1 - sp[AI])) / op[AI];
-				out.setPixel(i, j, op);
-			}
-		}
-	}
-	*/
 }
