@@ -63,7 +63,7 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-public class MultiColourChooser
+public class ColourChooser
 {
 	
 	public class SelectedEditColorSelector extends JComponent implements MouseListener
@@ -1038,7 +1038,7 @@ public class MultiColourChooser
 	}
 	
 	@SuppressWarnings("serial")
-	public MultiColourChooser(JFrame mainFrame)
+	public ColourChooser(JFrame mainFrame)
 	{
 		
 		// ----- Create the Dialog
@@ -1494,8 +1494,8 @@ public class MultiColourChooser
 	{
 		if(initialized)
 		{
-			Paint.main.setLeftColour(leftColour);
-			Paint.main.setRightColour(rightColour);
+			Paint.main.setLeftColour(leftColour, true);
+			Paint.main.setRightColour(rightColour, true);
 		}
 	}
 	
@@ -1516,7 +1516,6 @@ public class MultiColourChooser
 		chooserRightHSBimplB.updateColorIntoSlider(COLOUR);
 		
 		chooserRightALPHAimpl.setGradientColors(COLOUR & 0xFFFFFF, (COLOUR & 0xFFFFFF) | 0xFF000000);
-		
 	}
 	
 	public void updateAllChooserSubComponents_EditChanged()
@@ -1553,8 +1552,7 @@ public class MultiColourChooser
 	public void setLeftColour(int packedColorARGB)
 	{
 		leftColour = packedColorARGB;
-		updateAllChooserSubComponents_ColorChanged();
-		
+		updateAllChooserSubComponents_EditChanged();
 	}
 	
 	/**
@@ -1565,7 +1563,7 @@ public class MultiColourChooser
 	public void setRightColour(int packedColorARGB)
 	{
 		rightColour = packedColorARGB;
-		updateAllChooserSubComponents_ColorChanged();
+		updateAllChooserSubComponents_EditChanged();
 	}
 	
 	/**

@@ -99,8 +99,8 @@ public class Paint extends Application
 		gui.init();
 		
 		history = new GlobalHistory();
-		setRightColour(0xffffffff);
-		setLeftColour(0xff000000);
+		setRightColour(0xffffffff, false);
+		setLeftColour(0xff000000, false);
 		setTool(currentTool);
 		pluginManager.registerOther();
 		pluginManager.onLaunch();
@@ -349,9 +349,10 @@ public class Paint extends Application
 		}
 	}
 	
-	public void setLeftColour(int c)
+	public void setLeftColour(int c, boolean checked)
 	{
-		gui.chooser.setLeftColour(c);
+		if(!checked)
+			gui.chooser.setLeftColour(c);
 		Paint.leftColour = c;
 	}
 	
@@ -360,9 +361,10 @@ public class Paint extends Application
 		return Paint.leftColour;
 	}
 	
-	public void setRightColour(int c)
+	public void setRightColour(int c, boolean checked)
 	{
-		gui.chooser.setRightColour(c);
+		if(!checked)
+			gui.chooser.setRightColour(c);
 		Paint.rightColour = c;
 	}
 	

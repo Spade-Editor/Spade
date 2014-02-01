@@ -62,11 +62,11 @@ public class Picker extends Tool
 		
 		if(button == MouseEvent.BUTTON1)
 		{
-			Paint.main.setLeftColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y));
+			Paint.main.setLeftColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y), false);
 		}
 		else if(button == MouseEvent.BUTTON3)
 		{
-			Paint.main.setRightColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y));
+			Paint.main.setRightColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y), false);
 		}
 	}
 	
@@ -77,11 +77,11 @@ public class Picker extends Tool
 		
 		if(button == MouseEvent.BUTTON1)
 		{
-			Paint.main.setLeftColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y));
+			Paint.main.setLeftColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y), false);
 		}
 		else if(button == MouseEvent.BUTTON3)
 		{
-			Paint.main.setRightColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y));
+			Paint.main.setRightColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y), false);
 		}
 		
 		if(switchPencil.isSelected())
@@ -97,11 +97,11 @@ public class Picker extends Tool
 		
 		if(button == MouseEvent.BUTTON1)
 		{
-			Paint.main.setLeftColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y));
+			Paint.main.setLeftColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y), false);
 		}
 		else if(button == MouseEvent.BUTTON3)
 		{
-			Paint.main.setRightColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y));
+			Paint.main.setRightColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y), false);
 		}
 	}
 }

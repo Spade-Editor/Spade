@@ -65,7 +65,7 @@ public class GUIManager
 	public JScrollPane scroll;
 	
 	public CanvasManager canvas;
-	public MultiColourChooser chooser;
+	public ColourChooser chooser;
 	public LayerManager layers;
 	public InfoMenu info;
 	public ToolBox toolBox;
@@ -140,7 +140,7 @@ public class GUIManager
 		initMenu();
 		createCanvas();
 		
-		chooser = new MultiColourChooser(frame);
+		chooser = new ColourChooser(frame);
 		layers = new LayerManager(canvas.getRoot());
 		about = new AboutDialog(frame);
 		toolBox = new ToolBox(frame);

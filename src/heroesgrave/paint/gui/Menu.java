@@ -131,7 +131,7 @@ public class Menu
 			}
 		});
 		
-		JMenuItem toolBox = new JMenuItem("ToolBox (F7)", GUIManager.getIcon("toolbox"));
+		JMenuItem toolBox = new JMenuItem("ToolBox (F4)", GUIManager.getIcon("toolbox"));
 		toolBox.addActionListener(new ActionListener()
 		{
 			@Override
@@ -141,9 +141,9 @@ public class Menu
 			}
 		});
 		
+		dialogs.add(toolBox);
 		dialogs.add(colourChooser);
 		dialogs.add(layerManager);
-		dialogs.add(toolBox);
 		
 		return dialogs;
 	}

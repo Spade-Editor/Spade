@@ -19,17 +19,8 @@
 
 package heroesgrave.paint.gui;
 
-import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
@@ -44,7 +35,6 @@ public class InfoMenu
 {
 	private JPanel tool;
 	private JLabel scale, saved;
-	private JButton reset;
 	private MemoryWatcher memoryWatcher;
 	
 	public JComponent createInfoMenuBar()
@@ -65,34 +55,6 @@ public class InfoMenu
 		
 		scale.setHorizontalAlignment(SwingConstants.CENTER);
 		saved.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		reset = new JButton("Reset");
-		
-		// reset creation
-		reset.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
-				Paint.main.setLeftColour(0xFF000000);
-				Paint.main.setRightColour(0xFFFFFFFF);
-			}
-		});
-		try
-		{
-			URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/reset.png");
-			
-			if(url != null)
-			{
-				reset.setIcon(new ImageIcon(ImageIO.read(url)));
-			}
-			else
-				throw new IOException();
-		}
-		catch(IOException e1)
-		{
-			System.err.println("Error: 'Reset' is missing an icon!");
-		}
 		
 		tool = new JPanel();
 		tool.setOpaque(false);

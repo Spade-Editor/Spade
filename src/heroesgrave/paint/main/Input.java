@@ -60,6 +60,11 @@ public class Input implements KeyListener
 			ALT = true;
 		}
 		
+		if(e.getKeyCode() == KeyEvent.VK_F4)
+		{
+			Paint.main.gui.toolBox.toggle();
+		}
+		
 		if(e.getKeyCode() == KeyEvent.VK_F5)
 		{
 			Paint.main.gui.chooser.toggle();
@@ -68,11 +73,6 @@ public class Input implements KeyListener
 		if(e.getKeyCode() == KeyEvent.VK_F6)
 		{
 			Paint.main.gui.layers.toggle();
-		}
-		
-		if(e.getKeyCode() == KeyEvent.VK_F7)
-		{
-			Paint.main.gui.toolBox.toggle();
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_DELETE)
