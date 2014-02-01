@@ -109,8 +109,8 @@ public class Rectangle extends Tool
 			x = sx + w;
 			y = sy + h;
 		}
-		rect.width = Math.abs(x - sx);
-		rect.height = Math.abs(y - sy);
+		rect.width = Math.abs(x - sx) + 1;
+		rect.height = Math.abs(y - sy) + 1;
 		rect.x = Math.min(x, sx);
 		rect.y = Math.min(y, sy);
 	}

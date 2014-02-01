@@ -117,8 +117,8 @@ public class Ellipse extends Tool
 			x = sx + w;
 			y = sy + h;
 		}
-		ellipse.width = Math.abs(x - sx);
-		ellipse.height = Math.abs(y - sy);
+		ellipse.width = Math.abs(x - sx) + 1;
+		ellipse.height = Math.abs(y - sy) + 1;
 		ellipse.x = Math.min(x, sx);
 		ellipse.y = Math.min(y, sy);
 	}

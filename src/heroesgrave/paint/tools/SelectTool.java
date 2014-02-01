@@ -86,8 +86,8 @@ public class SelectTool extends Tool
 	{
 		int minX = Math.min(x, sx);
 		int minY = Math.min(y, sy);
-		int width = Math.abs(x - sx);
-		int height = Math.abs(y - sy);
+		int width = Math.abs(x - sx) + 1;
+		int height = Math.abs(y - sy) + 1;
 		Paint.main.gui.canvas.selector = null;
 		shape = null;
 		if(width < 1 || height < 1)
@@ -101,8 +101,8 @@ public class SelectTool extends Tool
 	{
 		int minX = Math.min(x, sx);
 		int minY = Math.min(y, sy);
-		int width = Math.abs(x - sx);
-		int height = Math.abs(y - sy);
+		int width = Math.abs(x - sx) + 1;
+		int height = Math.abs(y - sy) + 1;
 		if(shape instanceof Ellipse2D.Float)
 		{
 			Ellipse2D.Float s1 = (Ellipse2D.Float) shape;
