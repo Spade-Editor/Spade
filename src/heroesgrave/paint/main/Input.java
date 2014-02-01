@@ -70,6 +70,11 @@ public class Input implements KeyListener
 			Paint.main.gui.layers.toggle();
 		}
 		
+		if(e.getKeyCode() == KeyEvent.VK_F7)
+		{
+			Paint.main.gui.toolBox.toggle();
+		}
+		
 		if(e.getKeyCode() == KeyEvent.VK_DELETE)
 		{
 			Canvas selection = Paint.main.gui.canvas.selection.getSelection();

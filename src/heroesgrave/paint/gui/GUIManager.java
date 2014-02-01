@@ -305,7 +305,7 @@ public class GUIManager
 	{
 		if(Paint.main.saved)
 		{
-			UserPreferences.savePrefs(frame, chooser, layers);
+			UserPreferences.savePrefs(frame, chooser, layers, toolBox);
 			Paint.main.terminate = true;
 			return;
 		}
@@ -327,7 +327,7 @@ public class GUIManager
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.save();
-				UserPreferences.savePrefs(frame, chooser, layers);
+				UserPreferences.savePrefs(frame, chooser, layers, toolBox);
 				Paint.main.terminate = true;
 				close.dispose();
 			}
@@ -337,7 +337,7 @@ public class GUIManager
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				UserPreferences.savePrefs(frame, chooser, layers);
+				UserPreferences.savePrefs(frame, chooser, layers, toolBox);
 				Paint.main.terminate = true;
 				close.dispose();
 			}
@@ -367,7 +367,7 @@ public class GUIManager
 	 **/
 	public void finish()
 	{
-		UserPreferences.loadPrefs(frame, chooser, layers);
+		UserPreferences.loadPrefs(frame, chooser, layers, toolBox);
 		frame.pack();
 		frame.setVisible(true);
 		frame.setResizable(true);
@@ -381,6 +381,7 @@ public class GUIManager
 		frame.addKeyListener(in);
 		chooser.getDialog().addKeyListener(in);
 		layers.getDialog().addKeyListener(in);
+		toolBox.getDialog().addKeyListener(in);
 	}
 	
 	public static final ImageIcon getIcon(String name)

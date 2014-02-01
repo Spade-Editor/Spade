@@ -1,5 +1,6 @@
 package heroesgrave.paint.gui;
 
+import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Brush;
 import heroesgrave.paint.tools.Ellipse;
@@ -15,7 +16,8 @@ import heroesgrave.paint.tools.Tool;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,10 +27,10 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
 
 public class ToolBox
 {
@@ -37,18 +39,24 @@ public class ToolBox
 	
 	public static Tool DEF;
 	
-	private JToolBar dialog;
+	private JDialog dialog;
 	private JPanel panel;
 	private ButtonGroup buttonGroup;
 	
-	public ToolBox(JFrame parentFrame)
+	public ToolBox(JFrame mainFrame)
 	{
-		dialog = new JToolBar("Tools", JToolBar.VERTICAL);
-		dialog.setFloatable(false);
+		dialog = new CentredJDialog(mainFrame, "Tools");
+		dialog.setResizable(false);
+		dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+		dialog.setFocusable(false);
+		dialog.setAutoRequestFocus(false);
 		
 		panel = new JPanel();
-		panel.setPreferredSize(new Dimension(BUTTON_SIZE * 2, 500));
-		panel.setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
+		
+		int gridRows = 2;
+		int gridColumns = 5;
+		panel.setLayout(new GridLayout(gridRows, gridColumns));
+		
 		buttonGroup = new ButtonGroup();
 		
 		DEF = new Pixel("Pencil");
@@ -65,13 +73,15 @@ public class ToolBox
 		addButton(new ToolBoxButton("Rectangle", new Rectangle("Rectangle")));
 		addButton(new ToolBoxButton("Ellipse", new Ellipse("Ellipse")));
 		
-		dialog.add(panel);
-		dialog.validate();
+		// backgroundPanel used to avoid button resizing and fit to BUTTON_SIZE
+		JPanel backgroundPanel = new JPanel(new GridBagLayout());
+		backgroundPanel.add(panel);
+		dialog.add(backgroundPanel, BorderLayout.CENTER);
 		
-		parentFrame.add(dialog, BorderLayout.WEST);
+		dialog.pack();
 	}
 	
-	public JToolBar getDialog()
+	public JDialog getDialog()
 	{
 		return dialog;
 	}
@@ -84,6 +94,31 @@ public class ToolBox
 		}
 		buttonGroup.add(button);
 		panel.add(button);
+	}
+	
+	public void show()
+	{
+		dialog.setVisible(true);
+	}
+	
+	public void hide()
+	{
+		dialog.setVisible(false);
+	}
+	
+	public void toggle()
+	{
+		dialog.setVisible(!dialog.isVisible());
+	}
+	
+	public void dispose()
+	{
+		dialog.dispose();
+	}
+	
+	public boolean isVisible()
+	{
+		return dialog.isVisible();
 	}
 	
 	private class ToolBoxButton extends JToggleButton
