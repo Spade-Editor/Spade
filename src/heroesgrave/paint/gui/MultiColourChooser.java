@@ -1553,6 +1553,8 @@ public class MultiColourChooser
 	public void setLeftColour(int packedColorARGB)
 	{
 		leftColour = packedColorARGB;
+		updateAllChooserSubComponents_ColorChanged();
+		
 	}
 	
 	/**
@@ -1563,6 +1565,7 @@ public class MultiColourChooser
 	public void setRightColour(int packedColorARGB)
 	{
 		rightColour = packedColorARGB;
+		updateAllChooserSubComponents_ColorChanged();
 	}
 	
 	/**

@@ -60,6 +60,7 @@ public class AboutDialog extends CentredJDialog
 		buf.append("\n");
 		buf.append("HeroesGrave\n");
 		buf.append("Longor1996\n");
+		buf.append("Gef4k\n");
 		buf.append("MarkBernard\n");
 		buf.append("pwnedary\n");
 		
