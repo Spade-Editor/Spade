@@ -1,5 +1,5 @@
 /*
- *	Copyright 2013 HeroesGrave
+ *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
  *
  *	This file is part of Paint.JAVA
  *
@@ -26,7 +26,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 @SuppressWarnings("serial")
-public class SimpleActionTextField extends JTextField implements DocumentListener {
+public class SimpleActionTextField extends JTextField implements DocumentListener
+{
 	private IFunc<String> call;
 	
 	public SimpleActionTextField(String string, IFunc<String> call)
@@ -38,17 +39,20 @@ public class SimpleActionTextField extends JTextField implements DocumentListene
 	}
 	
 	@Override
-	public void insertUpdate(DocumentEvent e) {
+	public void insertUpdate(DocumentEvent e)
+	{
 		call.action(this.getText());
 	}
 	
 	@Override
-	public void removeUpdate(DocumentEvent e) {
+	public void removeUpdate(DocumentEvent e)
+	{
 		call.action(this.getText());
 	}
 	
 	@Override
-	public void changedUpdate(DocumentEvent e) {
+	public void changedUpdate(DocumentEvent e)
+	{
 		call.action(this.getText());
 	}
 	

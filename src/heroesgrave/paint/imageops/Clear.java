@@ -1,5 +1,5 @@
 /*
- *	Copyright 2013 HeroesGrave
+ *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
  *
  *	This file is part of Paint.JAVA
  *
@@ -20,7 +20,6 @@
 package heroesgrave.paint.imageops;
 
 import heroesgrave.paint.image.KeyFrame;
-import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.Color;

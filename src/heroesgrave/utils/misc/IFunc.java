@@ -1,5 +1,5 @@
 /*
- *	Copyright 2013 HeroesGrave
+ *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
  *
  *	This file is part of Paint.JAVA
  *
@@ -19,7 +19,8 @@
 
 package heroesgrave.utils.misc;
 
-public interface IFunc<PARAM> {
+public interface IFunc<PARAM>
+{
 	
 	public abstract void action(PARAM param);
 	

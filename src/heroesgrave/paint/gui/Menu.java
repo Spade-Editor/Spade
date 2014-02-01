@@ -1,5 +1,5 @@
 /*
- *	Copyright 2013 HeroesGrave
+ *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
  *
  *	This file is part of Paint.JAVA
  *
@@ -164,7 +164,7 @@ public class Menu
 		JMenuItem newFile = new JMenuItem("New (Ctrl+N)", GUIManager.getIcon("new"));
 		JMenuItem load = new JMenuItem("Open (Ctrl+O)", GUIManager.getIcon("open"));
 		JMenuItem save = new JMenuItem("Save (Ctrl+S)", GUIManager.getIcon("save"));
-		final JMenuItem saveAs = new JMenuItem("Save As", GUIManager.getIcon("save"));
+		final JMenuItem saveAs = new JMenuItem("Save As", GUIManager.getIcon("save_as"));
 		JMenuItem exit = new JMenuItem("Exit", GUIManager.getIcon("exit"));
 		
 		file.add(newFile);

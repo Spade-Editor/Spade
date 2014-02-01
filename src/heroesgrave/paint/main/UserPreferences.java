@@ -1,5 +1,5 @@
 /*
- *	Copyright 2013 HeroesGrave & markbernard
+ *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
  *
  *	This file is part of Paint.JAVA
  *
@@ -19,8 +19,8 @@
 
 package heroesgrave.paint.main;
 
-import heroesgrave.paint.gui.LayerManager;
 import heroesgrave.paint.gui.ColourChooser;
+import heroesgrave.paint.gui.LayerManager;
 import heroesgrave.paint.gui.ToolBox;
 
 import java.awt.Frame;

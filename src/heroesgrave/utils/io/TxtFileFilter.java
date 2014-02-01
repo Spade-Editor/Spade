@@ -1,5 +1,5 @@
 /*
- *	Copyright 2013 HeroesGrave
+ *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
  *
  *	This file is part of Paint.JAVA
  *
@@ -23,18 +23,21 @@ import java.io.File;
 
 import javax.swing.filechooser.FileFilter;
 
-public class TxtFileFilter extends FileFilter {
-
+public class TxtFileFilter extends FileFilter
+{
+	
 	@Override
-	public boolean accept(File pathname) {
+	public boolean accept(File pathname)
+	{
 		if(pathname.isDirectory())
 			return true;
 		
 		return pathname.getName().endsWith(".txt");
 	}
-
+	
 	@Override
-	public String getDescription() {
+	public String getDescription()
+	{
 		return "TXT - Color Pallet File";
 	}
 	

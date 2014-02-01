@@ -1,5 +1,5 @@
 /*
- *	Copyright 2013 HeroesGrave & Longor1996
+ *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
  *
  *	This file is part of Paint.JAVA
  *

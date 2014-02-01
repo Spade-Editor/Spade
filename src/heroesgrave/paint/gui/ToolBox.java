@@ -1,3 +1,22 @@
+/*
+ *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
+ *
+ *	This file is part of Paint.JAVA
+ *
+ *	Paint.JAVA is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>
+*/
+
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
@@ -62,14 +81,14 @@ public class ToolBox
 		DEF = new Pixel("Pencil");
 		Paint.main.currentTool = DEF;
 		
+		addButton(new ToolBoxButton("Pencil", DEF), true);
+		addButton(new ToolBoxButton("Colour Picker", new Picker("Colour Picker")));
+		addButton(new ToolBoxButton("Brush", new Brush("Brush")));
+		addButton(new ToolBoxButton("Paint Bucket", new Fill("Paint Bucket")));
+		addButton(new ToolBoxButton("Eraser", new Eraser("Eraser")));
 		addButton(new ToolBoxButton("Select", new SelectTool("Select")));
 		addButton(new ToolBoxButton("Move", new Move("Move")));
-		addButton(new ToolBoxButton("Pencil", DEF), true);
 		addButton(new ToolBoxButton("Line", new Line("Straight Line")));
-		addButton(new ToolBoxButton("Brush", new Brush("Brush")));
-		addButton(new ToolBoxButton("Eraser", new Eraser("Eraser")));
-		addButton(new ToolBoxButton("Paint Bucket", new Fill("Paint Bucket")));
-		addButton(new ToolBoxButton("Colour Picker", new Picker("Colour Picker")));
 		addButton(new ToolBoxButton("Rectangle", new Rectangle("Rectangle")));
 		addButton(new ToolBoxButton("Ellipse", new Ellipse("Ellipse")));
 		

@@ -1,5 +1,5 @@
 /*
- *	Copyright 2013 HeroesGrave
+ *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
  *
  *	This file is part of Paint.JAVA
  *
@@ -171,12 +171,13 @@ public class GUIManager
 		canvas = new CanvasManager();
 		
 		@SuppressWarnings("serial")
-		JPanel panel = new JPanel(){
+		JPanel panel = new JPanel()
+		{
 			BufferedImage img;
 			Rectangle2D rect;
 			TexturePaint paint;
 			{
-				img = new BufferedImage(2,2, BufferedImage.TYPE_BYTE_GRAY);
+				img = new BufferedImage(2, 2, BufferedImage.TYPE_BYTE_GRAY);
 				img.setRGB(0, 0, 0x333333);
 				img.setRGB(1, 1, 0x333333);
 				img.setRGB(1, 0, 0x555555);
@@ -186,7 +187,8 @@ public class GUIManager
 				paint = new TexturePaint(img, rect);
 			}
 			
-			@Override public void paint(Graphics $g)
+			@Override
+			public void paint(Graphics $g)
 			{
 				if(Menu.DARK_BACKGROUND)
 				{
@@ -204,7 +206,7 @@ public class GUIManager
 				super.paint($g);
 			}
 		};
-		panel.setBackground(new java.awt.Color(0,true));
+		panel.setBackground(new java.awt.Color(0, true));
 		panel.add(canvas.getPanel(), BorderLayout.CENTER);
 		
 		scroll = new JScrollPane(panel);
