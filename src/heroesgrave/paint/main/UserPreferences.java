@@ -21,6 +21,7 @@ package heroesgrave.paint.main;
 
 import heroesgrave.paint.gui.LayerManager;
 import heroesgrave.paint.gui.MultiColourChooser;
+import heroesgrave.paint.gui.ToolBox;
 
 import java.awt.Frame;
 import java.util.prefs.Preferences;
@@ -45,17 +46,21 @@ public class UserPreferences
 	private static final String LAYERS_WIDTH = "layers.width";
 	private static final String LAYERS_HEIGHT = "layers.height";
 	private static final String LAYERS_VISIBLE = "layers.visible";
+	private static final String TOOLBOX_VISIBLE = "toolbox.visible";
+	private static final String TOOLBOX_X = "toolbox.x";
+	private static final String TOOLBOX_Y = "toolbox.y";
 	
 	private static int windowWidth, windowHeight;
 	private static int layersX, layersY, layersWidth, layersHeight;
 	private static int colourPickerX, colourPickerY;
+	private static int toolBoxX, toolBoxY;
 	
 	/**
 	 * Setup the provided
 	 * 
 	 * @param frame
 	 */
-	public static void loadPrefs(JFrame frame, MultiColourChooser chooser, LayerManager layers)
+	public static void loadPrefs(JFrame frame, MultiColourChooser chooser, LayerManager layers, ToolBox toolBox)
 	{
 		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);
 		
@@ -85,6 +90,15 @@ public class UserPreferences
 			layers.dialog.setVisible(true);
 			layers.dialog.setBounds(layersX, layersY, layersWidth, layersHeight);
 		}
+		
+		if(prefs.getBoolean(TOOLBOX_VISIBLE, false))
+		{
+			toolBoxX = prefs.getInt(TOOLBOX_X, 0);
+			toolBoxY = prefs.getInt(TOOLBOX_Y, 0);
+			toolBox.getDialog().setVisible(true);
+			toolBox.getDialog().setLocationRelativeTo(null);
+			toolBox.getDialog().setLocation(toolBoxX, toolBoxY);
+		}
 	}
 	
 	/**
@@ -92,7 +106,7 @@ public class UserPreferences
 	 * 
 	 * @param frame
 	 */
-	public static void savePrefs(JFrame frame, MultiColourChooser chooser, LayerManager layers)
+	public static void savePrefs(JFrame frame, MultiColourChooser chooser, LayerManager layers, ToolBox toolBox)
 	{
 		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);
 		
@@ -128,5 +142,12 @@ public class UserPreferences
 		prefs.putBoolean(LAYERS_VISIBLE, layers.isVisible());
 		
 		prefs.putBoolean(COLOUR_PICKER_VISIBLE, chooser.isVisible());
+		
+		toolBoxX = toolBox.getDialog().getX();
+		toolBoxY = toolBox.getDialog().getY();
+		prefs.putInt(TOOLBOX_X, toolBoxX);
+		prefs.putInt(TOOLBOX_Y, toolBoxY);
+		prefs.putBoolean(TOOLBOX_VISIBLE, toolBox.isVisible());
+		
 	}
 }

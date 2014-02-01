@@ -131,8 +131,19 @@ public class Menu
 			}
 		});
 		
+		JMenuItem toolBox = new JMenuItem("ToolBox (F7)", GUIManager.getIcon("toolbox"));
+		toolBox.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				Paint.main.gui.toolBox.toggle();
+			}
+		});
+		
 		dialogs.add(colourChooser);
 		dialogs.add(layerManager);
+		dialogs.add(toolBox);
 		
 		return dialogs;
 	}
