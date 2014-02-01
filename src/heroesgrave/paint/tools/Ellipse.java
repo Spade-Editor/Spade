@@ -74,7 +74,7 @@ public class Ellipse extends Tool
 	{
 		sx = x;
 		sy = y;
-		ellipse = new Ellipse2D.Float(x, y, 1, 1);
+		ellipse = new Ellipse2D.Float(x, y, 0, 0);
 		if(button == MouseEvent.BUTTON1)
 		{
 			change = new ShapeChange(ellipse, Paint.main.getLeftColour()).setFill(fill.isSelected()).setAntialiasing(antialias.isSelected());
@@ -117,8 +117,8 @@ public class Ellipse extends Tool
 			x = sx + w;
 			y = sy + h;
 		}
-		ellipse.width = Math.abs(x - sx) + 1;
-		ellipse.height = Math.abs(y - sy) + 1;
+		ellipse.width = Math.abs(x - sx);
+		ellipse.height = Math.abs(y - sy);
 		ellipse.x = Math.min(x, sx);
 		ellipse.y = Math.min(y, sy);
 	}

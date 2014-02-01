@@ -76,7 +76,7 @@ public class SelectTool extends Tool
 	{
 		sx = x;
 		sy = y;
-		this.shape = getShape((SelectionType) type.getSelectedItem(), x, y, 1, 1);
+		this.shape = getShape((SelectionType) type.getSelectedItem(), x, y, 0, 0);
 		Paint.main.gui.canvas.selector = new MultiChange(new ShapeChange(shape, 0xff0066ff).setFill(true).setComposite(
 				AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0x3f / 255f)), new ShapeChange(shape, 0xff001133).setComposite(AlphaComposite
 				.getInstance(AlphaComposite.SRC_OVER, 0x7f / 255f)));
@@ -86,8 +86,8 @@ public class SelectTool extends Tool
 	{
 		int minX = Math.min(x, sx);
 		int minY = Math.min(y, sy);
-		int width = Math.abs(x - sx) + 1;
-		int height = Math.abs(y - sy) + 1;
+		int width = Math.abs(x - sx);
+		int height = Math.abs(y - sy);
 		Paint.main.gui.canvas.selector = null;
 		shape = null;
 		if(width < 1 || height < 1)
@@ -101,8 +101,8 @@ public class SelectTool extends Tool
 	{
 		int minX = Math.min(x, sx);
 		int minY = Math.min(y, sy);
-		int width = Math.abs(x - sx) + 1;
-		int height = Math.abs(y - sy) + 1;
+		int width = Math.abs(x - sx);
+		int height = Math.abs(y - sy);
 		if(shape instanceof Ellipse2D.Float)
 		{
 			Ellipse2D.Float s1 = (Ellipse2D.Float) shape;

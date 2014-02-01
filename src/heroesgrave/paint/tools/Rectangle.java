@@ -66,7 +66,7 @@ public class Rectangle extends Tool
 	{
 		sx = x;
 		sy = y;
-		rect = new Rectangle2D.Float(x, y, 1, 1);
+		rect = new Rectangle2D.Float(x, y, 0, 0);
 		if(button == MouseEvent.BUTTON1)
 		{
 			change = new ShapeChange(rect, Paint.main.getLeftColour()).setFill(fill.isSelected());
@@ -109,8 +109,8 @@ public class Rectangle extends Tool
 			x = sx + w;
 			y = sy + h;
 		}
-		rect.width = Math.abs(x - sx) + 1;
-		rect.height = Math.abs(y - sy) + 1;
+		rect.width = Math.abs(x - sx);
+		rect.height = Math.abs(y - sy);
 		rect.x = Math.min(x, sx);
 		rect.y = Math.min(y, sy);
 	}
