@@ -26,6 +26,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 
 public class ShapeChange extends Frame
@@ -57,6 +59,8 @@ public class ShapeChange extends Frame
 	public void apply(BufferedImage image)
 	{
 		Graphics2D g2d = image.createGraphics();
+		if(changeShape instanceof Ellipse2D || changeShape instanceof Area)
+			g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 		
 		if(antialiasing)
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

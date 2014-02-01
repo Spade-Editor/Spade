@@ -19,7 +19,6 @@
 
 package heroesgrave.paint.tools;
 
-import heroesgrave.paint.image.MultiChange;
 import heroesgrave.paint.image.SelectionCanvas.CombineMode;
 import heroesgrave.paint.image.ShapeChange;
 import heroesgrave.paint.main.Input;
@@ -77,47 +76,38 @@ public class SelectTool extends Tool
 		sx = x;
 		sy = y;
 		this.shape = getShape((SelectionType) type.getSelectedItem(), x, y, 0, 0);
-		Paint.main.gui.canvas.selector = new MultiChange(new ShapeChange(shape, 0xff0066ff).setFill(true).setComposite(
-				AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0x3f / 255f)), new ShapeChange(shape, 0xff001133).setComposite(AlphaComposite
-				.getInstance(AlphaComposite.SRC_OVER, 0x7f / 255f)));
+		Paint.main.gui.canvas.selector = new ShapeChange(shape, 0x7f0066ff).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0x7f / 255f));
 	}
 	
 	public void onReleased(int x, int y, int button)
 	{
-		int minX = Math.min(x, sx);
-		int minY = Math.min(y, sy);
-		int width = Math.abs(x - sx);
-		int height = Math.abs(y - sy);
 		Paint.main.gui.canvas.selector = null;
-		shape = null;
-		if(width < 1 || height < 1)
+		if(shape instanceof Rectangle2D.Float)
 		{
-			return;
+			((Rectangle2D.Float) shape).width++;
+			((Rectangle2D.Float) shape).height++;
 		}
-		Paint.main.gui.canvas.selection.create(getShape((SelectionType) type.getSelectedItem(), minX, minY, width, height), getMode());
+		Paint.main.gui.canvas.selection.create(shape, getMode());
+		shape = null;
 	}
 	
 	public void whilePressed(int x, int y, int button)
 	{
-		int minX = Math.min(x, sx);
-		int minY = Math.min(y, sy);
-		int width = Math.abs(x - sx);
-		int height = Math.abs(y - sy);
 		if(shape instanceof Ellipse2D.Float)
 		{
-			Ellipse2D.Float s1 = (Ellipse2D.Float) shape;
-			s1.x = minX;
-			s1.y = minY;
-			s1.width = width;
-			s1.height = height;
+			Ellipse2D.Float ellipse = (Ellipse2D.Float) shape;
+			ellipse.width = Math.abs(x - sx);
+			ellipse.height = Math.abs(y - sy);
+			ellipse.x = Math.min(x, sx);
+			ellipse.y = Math.min(y, sy);
 		}
 		else if(shape instanceof Rectangle2D.Float)
 		{
-			Rectangle2D.Float s1 = (Rectangle2D.Float) shape;
-			s1.x = minX;
-			s1.y = minY;
-			s1.width = width;
-			s1.height = height;
+			Rectangle2D.Float rect = (Rectangle2D.Float) shape;
+			rect.width = Math.abs(x - sx);
+			rect.height = Math.abs(y - sy);
+			rect.x = Math.min(x, sx);
+			rect.y = Math.min(y, sy);
 		}
 		Paint.main.gui.canvas.getPanel().repaint();
 	}

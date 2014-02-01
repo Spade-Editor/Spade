@@ -19,13 +19,16 @@
 
 package heroesgrave.paint.image;
 
+import heroesgrave.paint.image.CanvasManager.CanvasRenderer;
 import heroesgrave.paint.image.SelectionCanvas.CombineMode;
 import heroesgrave.paint.image.doc.DeselectedOp;
 import heroesgrave.paint.image.doc.PasteOp;
 import heroesgrave.paint.image.doc.SelectedOp;
 import heroesgrave.paint.main.Paint;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
@@ -68,21 +71,35 @@ public class SelectionManager
 		
 		BufferedImage image = new BufferedImage(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = image.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 		g.setClip(area);
 		g.drawImage(Paint.main.gui.canvas.getCanvas().getImage(), 0, 0, null);
 		
 		selection = new SelectionCanvas(image, area);
 		selection.setBlendMode(Paint.main.gui.canvas.getCanvas().mode);
-		Paint.addChange(new ShapeChange(area, 0x00000000).setFill(true));
+		
+		BufferedImage i2 = Paint.main.gui.canvas.getCanvas().getImage();
+		Graphics2D g2 = i2.createGraphics();
+		g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+		g2.setClip(area);
+		g2.setColor(CanvasRenderer.TRANSPARENT);
+		g2.setComposite(AlphaComposite.Src);
+		g2.fillRect(0, 0, Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight());
+		g2.dispose();
+		Paint.addChange(new KeyFrame(i2));
 		Paint.main.history.addChange(new SelectedOp(selection, Paint.main.gui.canvas.getCanvas()));
 		Paint.main.gui.canvas.getPanel().repaint();
 	}
 	
 	public void paste(BufferedImage clipboard)
 	{
+		if(floating)
+			drop();
+		
 		Shape area = new Rectangle2D.Float(0, 0, clipboard.getWidth(), clipboard.getHeight());
 		BufferedImage image = new BufferedImage(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = image.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 		g.setClip(area);
 		g.drawImage(clipboard, 0, 0, null);
 		
@@ -121,5 +138,10 @@ public class SelectionManager
 	public SelectionCanvas getSelection()
 	{
 		return selection;
+	}
+	
+	public void setSelection(SelectionCanvas canvas)
+	{
+		this.selection = canvas;
 	}
 }

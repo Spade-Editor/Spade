@@ -23,6 +23,7 @@ import heroesgrave.paint.image.blend.BlendMode;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -69,7 +70,10 @@ public class Canvas
 	{
 		this.removeLayer(canvas);
 		this.temp = hist.getUpdatedImage();
-		canvas.draw(temp.createGraphics(), false);
+		Graphics2D g = temp.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+		canvas.draw(g, false);
+		g.dispose();
 		hist.addChange(new KeyFrame(this.temp));
 	}
 	
@@ -126,6 +130,7 @@ public class Canvas
 	{
 		BufferedImage image = hist.getUpdatedImage();
 		Graphics2D g = image.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 		g.setComposite(mode);
 		if(!layers.isEmpty())
 		{

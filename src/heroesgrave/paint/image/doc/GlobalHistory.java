@@ -96,15 +96,10 @@ public class GlobalHistory
 	
 	public void clearHistory()
 	{
-		clearHistRec(Paint.main.gui.canvas.getRoot());
-	}
-	
-	private void clearHistRec(Canvas canvas)
-	{
-		canvas.clearHistory();
-		ArrayList<Canvas> list = canvas.getChildren();
-		for(Canvas c : list)
-			clearHistRec(c);
+		history.clear();
+		reverted.clear();
+		Paint.main.gui.canvas.selection.drop();
+		Paint.main.gui.canvas.getRoot().clearHistory();
 	}
 	
 	private void revertRec(Canvas canvas)

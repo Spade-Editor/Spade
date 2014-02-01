@@ -20,13 +20,15 @@
 package heroesgrave.paint.image.doc;
 
 import heroesgrave.paint.image.Canvas;
+import heroesgrave.paint.image.SelectionCanvas;
 import heroesgrave.paint.main.Paint;
 
 public class DeselectedOp extends DocumentChange
 {
-	private Canvas canvas, parent;
+	private Canvas parent;
+	private SelectionCanvas canvas;
 	
-	public DeselectedOp(Canvas c, Canvas p)
+	public DeselectedOp(SelectionCanvas c, Canvas p)
 	{
 		this.canvas = c;
 		this.parent = p;
@@ -44,6 +46,7 @@ public class DeselectedOp extends DocumentChange
 	{
 		parent.unmergeLayer(canvas);
 		Paint.main.gui.canvas.selection.setFloating(true);
+		Paint.main.gui.canvas.selection.setSelection(canvas);
 		Paint.main.gui.canvas.select(canvas);
 		Paint.main.gui.canvas.getPanel().repaint();
 	}

@@ -32,6 +32,7 @@ import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
@@ -200,6 +201,11 @@ public class Input implements KeyListener
 		{
 			robot.mouseMove(p.x + MOVE, p.y);
 		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_SPACE)
+		{
+			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		}
 	}
 	
 	public void keyReleased(KeyEvent e)
@@ -215,6 +221,10 @@ public class Input implements KeyListener
 		else if(e.getKeyCode() == KeyEvent.VK_ALT)
 		{
 			ALT = false;
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_SPACE)
+		{
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
 		}
 	}
 	

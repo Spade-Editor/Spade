@@ -28,6 +28,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.TexturePaint;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -51,7 +52,7 @@ public class CanvasManager
 	private Canvas selected;
 	private int width, height;
 	public SelectionManager selection;
-	public MultiChange selector;
+	public Frame selector;
 	
 	private float scale = 1;
 	
@@ -234,6 +235,16 @@ public class CanvasManager
 			});
 		}
 		
+		public int getMX()
+		{
+			return (int) (this.getMousePosition().x / scale);
+		}
+		
+		public int getMY()
+		{
+			return (int) (this.getMousePosition().y / scale);
+		}
+		
 		public void init()
 		{
 			background = new BufferedImage(mgr.getWidth(), mgr.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -259,6 +270,7 @@ public class CanvasManager
 			g.fillRect(0, 0, MathUtils.floor(mgr.getWidth() * scale), MathUtils.floor(mgr.getHeight() * scale));
 			
 			g.setPaint(null);
+			draw.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 			
 			mgr.root.draw(draw, true);
 			

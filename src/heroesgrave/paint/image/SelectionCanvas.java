@@ -19,8 +19,10 @@
 
 package heroesgrave.paint.image;
 
+import heroesgrave.paint.image.CanvasManager.CanvasRenderer;
 import heroesgrave.paint.main.Paint;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -33,6 +35,8 @@ public class SelectionCanvas extends Canvas
 	{
 		ADD, SUBTRACT, INTERSECT, XOR, REPLACE
 	}
+	
+	private BufferedImage temp2;
 	
 	public static final Color mask_bg = new Color(32, 32, 32, 128);
 	Shape clip;
@@ -71,11 +75,27 @@ public class SelectionCanvas extends Canvas
 			{
 				this.image = hist.getUpdatedImage();
 				this.temp = hist.getUpdatedImage();
+				if(temp2 == null || temp2.getWidth() != getWidth() || temp2.getHeight() != getHeight())
+				{
+					temp2 = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+				}
 			}
 			
+			Graphics2D g2 = temp2.createGraphics();
+			
+			g2.setComposite(AlphaComposite.Src);
+			g2.setColor(mask_bg);
+			g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+			g2.translate(tx, ty);
+			g2.setClip(clip);
+			g2.translate(-tx, -ty);
+			g2.setColor(CanvasRenderer.TRANSPARENT);
+			g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+			g2.dispose();
+			
 			g.setComposite(mode);
-			g.setColor(mask_bg);
-			g.fillRect(0, 0, this.getWidth(), this.getHeight());
+			g.drawImage(temp2, 0, 0, null);
+			
 			g.translate(tx, ty);
 			g.setClip(clip);
 			g.translate(-tx, -ty);
@@ -89,7 +109,6 @@ public class SelectionCanvas extends Canvas
 				}
 				else if(prev instanceof Frame)
 				{
-					temp = hist.getUpdatedImage();
 					((Frame) prev).apply(this.temp);
 					g.drawImage(this.temp, 0, 0, null);
 				}
