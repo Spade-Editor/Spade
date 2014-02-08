@@ -21,6 +21,7 @@ package heroesgrave.paint.image;
 
 import heroesgrave.paint.gui.Menu;
 import heroesgrave.paint.main.Paint;
+import heroesgrave.paint.tools.SelectTool;
 import heroesgrave.utils.math.MathUtils;
 
 import java.awt.Color;
@@ -30,9 +31,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.TexturePaint;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -189,7 +188,7 @@ public class CanvasManager
 		return scale;
 	}
 	
-	public static class CanvasRenderer extends JPanel
+	public static class CanvasRenderer extends JPanel implements MouseListener, MouseMotionListener
 	{
 		private static final long serialVersionUID = 6250531364061875156L;
 		
@@ -198,41 +197,13 @@ public class CanvasManager
 		private int lastButton = 0;
 		private BufferedImage background;
 		
+		private int lastX = 0, lastY = 0;
+		
 		public static final Color TRANSPARENT = new Color(255, 255, 255, 0);
 		
 		public CanvasRenderer(CanvasManager mgr)
 		{
 			this.mgr = mgr;
-			this.addMouseListener(new MouseAdapter()
-			{
-				@Override
-				public void mousePressed(MouseEvent e)
-				{
-					lastButton = e.getButton();
-					Paint.main.currentTool.onPressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), e.getButton());
-				}
-				
-				@Override
-				public void mouseReleased(MouseEvent e)
-				{
-					lastButton = e.getButton();
-					Paint.main.currentTool.onReleased(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), e.getButton());
-				}
-			});
-			this.addMouseMotionListener(new MouseMotionListener()
-			{
-				@Override
-				public void mouseDragged(MouseEvent e)
-				{
-					Paint.main.currentTool.whilePressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), lastButton);
-				}
-				
-				@Override
-				public void mouseMoved(MouseEvent e)
-				{
-					Paint.main.currentTool.whileReleased(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), lastButton);
-				}
-			});
 		}
 		
 		public int getMX()
@@ -293,6 +264,60 @@ public class CanvasManager
 					g.drawLine(0, MathUtils.floor(j * scale), MathUtils.floor(background.getWidth() * scale), MathUtils.floor(j * scale));
 				}
 			}
+			Paint.main.gui.info.setSize(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight());
+		}
+		
+		@Override
+		public void mousePressed(MouseEvent e)
+		{
+			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
+			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			lastButton = e.getButton();
+			Paint.main.currentTool.onPressed(x, y, e.getButton());
+		}
+		
+		@Override
+		public void mouseReleased(MouseEvent e)
+		{
+			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
+			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			lastButton = e.getButton();
+			Paint.main.currentTool.onReleased(x, y, e.getButton());
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e)
+		{
+			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
+			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			Paint.main.gui.info.setMouseCoords(lastX, lastY, x, y, Paint.main.currentTool instanceof SelectTool);
+			Paint.main.currentTool.whilePressed(x, y, lastButton);
+		}
+		
+		@Override
+		public void mouseMoved(MouseEvent e)
+		{
+			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
+			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			Paint.main.gui.info.setMouseCoords(x, y);
+			lastX = x;
+			lastY = y;
+			Paint.main.currentTool.whileReleased(x, y, lastButton);
+		}
+
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+		}
+
+		
+		@Override
+		public void mouseEntered(MouseEvent e) {
+		}
+
+		
+		@Override
+		public void mouseExited(MouseEvent e) {
 		}
 	}
 	
@@ -309,10 +334,10 @@ public class CanvasManager
 		}
 		
 		transparencyBGDark = new BufferedImage(2, 2, BufferedImage.TYPE_BYTE_GRAY);
-		transparencyBGDark.setRGB(0, 0, 0x777777);
-		transparencyBGDark.setRGB(1, 1, 0x777777);
-		transparencyBGDark.setRGB(1, 0, 0x555555);
-		transparencyBGDark.setRGB(0, 1, 0x555555);
+		transparencyBGDark.setRGB(0, 0, 0x999999);
+		transparencyBGDark.setRGB(1, 1, 0x999999);
+		transparencyBGDark.setRGB(1, 0, 0x777777);
+		transparencyBGDark.setRGB(0, 1, 0x777777);
 	}
 	
 	public void select(Canvas canvas)
