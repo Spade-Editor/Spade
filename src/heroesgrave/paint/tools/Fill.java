@@ -19,14 +19,13 @@
 
 package heroesgrave.paint.tools;
 
-import heroesgrave.paint.image.Canvas;
-import heroesgrave.paint.image.MultiChange;
-import heroesgrave.paint.image.PixelChange;
+import heroesgrave.paint.image.*;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Stack;
@@ -110,7 +109,16 @@ public class Fill extends Tool
 		buffer.toArray(fl);
 		buffer.clear();
 		
-		Paint.addChange(new MultiChange(fl));
+		/* was  Paint.addChange(new MultiChange(fl));
+		 * 
+		 * now uses a keyframe to 'flush' the canvas history.
+		 * Reason: eliminates latent painting lag due to drawing the
+		 * potentially large MultiChange every canvas update for the
+		 * next MAX_FRAMES brush strokes.
+		*/
+		BufferedImage image = Paint.main.gui.canvas.getCanvas().getHistory().getUpdatedImage();
+		new MultiChange(fl).apply(image);
+		Paint.addChange(new KeyFrame(image));
 	}
 	
 	public void onReleased(int x, int y, int button)
