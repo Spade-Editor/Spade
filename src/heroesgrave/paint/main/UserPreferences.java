@@ -21,6 +21,7 @@ package heroesgrave.paint.main;
 
 import heroesgrave.paint.gui.ColourChooser;
 import heroesgrave.paint.gui.LayerManager;
+import heroesgrave.paint.gui.Menu;
 import heroesgrave.paint.gui.ToolBox;
 
 import java.awt.Frame;
@@ -49,6 +50,7 @@ public class UserPreferences
 	private static final String TOOLBOX_VISIBLE = "toolbox.visible";
 	private static final String TOOLBOX_X = "toolbox.x";
 	private static final String TOOLBOX_Y = "toolbox.y";
+	private static final String BACKGROUND_DARK = "background.dark";
 	
 	private static int windowWidth, windowHeight;
 	private static int layersX, layersY, layersWidth, layersHeight;
@@ -99,6 +101,8 @@ public class UserPreferences
 			toolBox.getDialog().setLocationRelativeTo(null);
 			toolBox.getDialog().setLocation(toolBoxX, toolBoxY);
 		}
+		
+		Menu.DARK_BACKGROUND = prefs.getBoolean(BACKGROUND_DARK, false);
 	}
 	
 	/**
@@ -149,5 +153,6 @@ public class UserPreferences
 		prefs.putInt(TOOLBOX_Y, toolBoxY);
 		prefs.putBoolean(TOOLBOX_VISIBLE, toolBox.isVisible());
 		
+		prefs.putBoolean(BACKGROUND_DARK, Menu.DARK_BACKGROUND);
 	}
 }
