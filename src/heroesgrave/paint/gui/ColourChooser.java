@@ -1641,5 +1641,4 @@ public class ColourChooser
 	{
 		return dialog.isVisible();
 	}
-	
 }

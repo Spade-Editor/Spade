@@ -63,6 +63,7 @@ public class AboutDialog extends CentredJDialog
 		buf.append("Gef4k\n");
 		buf.append("MarkBernard\n");
 		buf.append("pwnedary\n");
+		buf.append("BurntPizza\n");
 		
 		area.setText(buf.toString());
 		area.setEditable(false);
