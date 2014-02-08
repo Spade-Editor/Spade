@@ -31,7 +31,9 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.TexturePaint;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -270,8 +272,8 @@ public class CanvasManager
 		@Override
 		public void mousePressed(MouseEvent e)
 		{
-			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
-			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			int x = MathUtils.floor((e.getX() - this.getX()) / scale);
+			int y = MathUtils.floor((e.getY() - this.getY()) / scale);
 			lastButton = e.getButton();
 			Paint.main.currentTool.onPressed(x, y, e.getButton());
 		}
@@ -279,8 +281,8 @@ public class CanvasManager
 		@Override
 		public void mouseReleased(MouseEvent e)
 		{
-			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
-			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			int x = MathUtils.floor((e.getX() - this.getX()) / scale);
+			int y = MathUtils.floor((e.getY() - this.getY()) / scale);
 			lastButton = e.getButton();
 			Paint.main.currentTool.onReleased(x, y, e.getButton());
 		}
@@ -288,8 +290,8 @@ public class CanvasManager
 		@Override
 		public void mouseDragged(MouseEvent e)
 		{
-			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
-			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			int x = MathUtils.floor((e.getX() - this.getX()) / scale);
+			int y = MathUtils.floor((e.getY() - this.getY()) / scale);
 			Paint.main.gui.info.setMouseCoords(lastX, lastY, x, y, Paint.main.currentTool instanceof SelectTool);
 			Paint.main.currentTool.whilePressed(x, y, lastButton);
 		}
@@ -297,27 +299,27 @@ public class CanvasManager
 		@Override
 		public void mouseMoved(MouseEvent e)
 		{
-			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
-			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			int x = MathUtils.floor((e.getX() - this.getX()) / scale);
+			int y = MathUtils.floor((e.getY() - this.getY()) / scale);
 			Paint.main.gui.info.setMouseCoords(x, y);
 			lastX = x;
 			lastY = y;
 			Paint.main.currentTool.whileReleased(x, y, lastButton);
 		}
-
 		
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mouseClicked(MouseEvent e)
+		{
 		}
-
 		
 		@Override
-		public void mouseEntered(MouseEvent e) {
+		public void mouseEntered(MouseEvent e)
+		{
 		}
-
 		
 		@Override
-		public void mouseExited(MouseEvent e) {
+		public void mouseExited(MouseEvent e)
+		{
 		}
 	}
 	

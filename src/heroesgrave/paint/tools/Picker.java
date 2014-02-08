@@ -41,7 +41,7 @@ public class Picker extends Tool
 		SpringLayout layout = new SpringLayout();
 		menu.setLayout(layout);
 		
-		this.switchPencil = new JCheckBox("Switch to Pencil");
+		this.switchPencil = new JCheckBox("Switch to Pencil", true);
 		switchPencil.setFocusable(false);
 		
 		menu.add(switchPencil);

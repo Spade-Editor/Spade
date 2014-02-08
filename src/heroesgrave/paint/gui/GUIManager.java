@@ -34,6 +34,8 @@ import java.awt.GridBagLayout;
 import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
@@ -68,7 +70,7 @@ public class GUIManager
 	public CanvasManager canvas;
 	public ColourChooser chooser;
 	public LayerManager layers;
-	public InfoMenu info;
+	public InfoMenuBar info;
 	public ToolBox toolBox;
 	
 	AboutDialog about;
@@ -257,7 +259,7 @@ public class GUIManager
 	
 	public void initMenu()
 	{
-		info = new InfoMenu();
+		info = new InfoMenuBar();
 		
 		menus = new JPanel();
 		menus.setLayout(new BorderLayout());
@@ -286,6 +288,22 @@ public class GUIManager
 			public void windowClosing(WindowEvent e)
 			{
 				displayCloseDialogue();
+			}
+		});
+		frame.addFocusListener(new FocusListener()
+		{
+			public void focusGained(FocusEvent e)
+			{
+				Input.CTRL = false;
+				Input.ALT = false;
+				Input.SHIFT = false;
+			}
+			
+			public void focusLost(FocusEvent e)
+			{
+				Input.CTRL = false;
+				Input.ALT = false;
+				Input.SHIFT = false;
 			}
 		});
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

@@ -25,14 +25,10 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
-import javax.swing.Spring;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
-/**
- * This should be renamed into "InfoMenuBar". The current name is a -bit- confusing.
- **/
-public class InfoMenu
+public class InfoMenuBar
 {
 	private JPanel tool;
 	private JLabel scale, saved, size, coords;
@@ -76,11 +72,11 @@ public class InfoMenu
 		
 		layout.putConstraint(SpringLayout.WEST, scale, 20, SpringLayout.WEST, menuBar);
 		layout.putConstraint(SpringLayout.WEST, saved, 40, SpringLayout.EAST, scale);
-		layout.putConstraint(SpringLayout.WEST, size, 40, SpringLayout.EAST, saved);
+		layout.putConstraint(SpringLayout.WEST, tool, 40, SpringLayout.EAST, saved);
+		layout.putConstraint(SpringLayout.WEST, size, 40, SpringLayout.EAST, tool);
 		layout.putConstraint(SpringLayout.WEST, coords, 40, SpringLayout.EAST, size);
-		layout.putConstraint(SpringLayout.WEST, tool, 80, SpringLayout.EAST, size);
-		layout.putConstraint(SpringLayout.WEST, spacer, 0, SpringLayout.EAST, tool);
-		layout.putConstraint(SpringLayout.EAST, menuBar, 0, SpringLayout.EAST, spacer);
+		layout.putConstraint(SpringLayout.WEST, spacer, 0, SpringLayout.EAST, coords);
+		layout.putConstraint(SpringLayout.EAST, menuBar, 80, SpringLayout.EAST, spacer);
 		
 		// Check if the memory-watcher is not null (eg: Activated or not), then add constraints.
 		if(memoryWatcher != null)
@@ -118,14 +114,17 @@ public class InfoMenu
 	
 	public void setSize(int w, int h)
 	{
-		size.setText(w  +" x " + h);
+		size.setText(w + " x " + h);
 	}
 	
-	public void setMouseCoords(int x, int y) {
+	public void setMouseCoords(int x, int y)
+	{
 		coords.setText("[" + x + ", " + y + "]");
 	}
 	
-	public void setMouseCoords(int x, int y, int newX, int newY, boolean selecting) {
-		coords.setText("[" + x + ", " + y + "]"+" --> "+"[" + newX + ", " + newY + "]"+(selecting?" ("+Math.abs(newX-x)+" x "+Math.abs(newY-y)+")":""));
+	public void setMouseCoords(int x, int y, int newX, int newY, boolean selecting)
+	{
+		coords.setText("[" + x + ", " + y + "]" + " --> " + "[" + newX + ", " + newY + "]"
+				+ (selecting ? " (" + Math.abs(newX - x) + " x " + Math.abs(newY - y) + ")" : ""));
 	}
 }
