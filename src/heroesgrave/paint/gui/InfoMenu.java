@@ -34,7 +34,7 @@ import javax.swing.SwingConstants;
 public class InfoMenu
 {
 	private JPanel tool;
-	private JLabel scale, saved;
+	private JLabel scale, saved, size;
 	private MemoryWatcher memoryWatcher;
 	
 	public JComponent createInfoMenuBar()
@@ -46,6 +46,7 @@ public class InfoMenu
 		
 		scale = new JLabel("Scale: 100%");
 		saved = new JLabel("Saved: Yes");
+		size = new JLabel("");
 		
 		// Check if the MemoryWatcher should be activated.
 		if(System.getProperty("DmemoryWatcherFlag") != null)
@@ -55,6 +56,7 @@ public class InfoMenu
 		
 		scale.setHorizontalAlignment(SwingConstants.CENTER);
 		saved.setHorizontalAlignment(SwingConstants.CENTER);
+		size.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		tool = new JPanel();
 		tool.setOpaque(false);
@@ -64,12 +66,14 @@ public class InfoMenu
 		
 		menuBar.add(scale);
 		menuBar.add(saved);
+		menuBar.add(size);
 		menuBar.add(tool);
 		menuBar.add(spacer);
 		
 		layout.putConstraint(SpringLayout.WEST, scale, 20, SpringLayout.WEST, menuBar);
 		layout.putConstraint(SpringLayout.WEST, saved, 40, SpringLayout.EAST, scale);
-		layout.putConstraint(SpringLayout.WEST, tool, 40, SpringLayout.EAST, saved);
+		layout.putConstraint(SpringLayout.WEST, size, 40, SpringLayout.EAST, saved);
+		layout.putConstraint(SpringLayout.WEST, tool, 40, SpringLayout.EAST, size);
 		layout.putConstraint(SpringLayout.WEST, spacer, 0, SpringLayout.EAST, tool);
 		layout.putConstraint(SpringLayout.EAST, menuBar, 0, SpringLayout.EAST, spacer);
 		
@@ -79,6 +83,7 @@ public class InfoMenu
 		
 		layout.putConstraint(SpringLayout.NORTH, scale, 5, SpringLayout.NORTH, menuBar);
 		layout.putConstraint(SpringLayout.NORTH, saved, 5, SpringLayout.NORTH, menuBar);
+		layout.putConstraint(SpringLayout.NORTH, size, 5, SpringLayout.NORTH, menuBar);
 		
 		layout.putConstraint(SpringLayout.SOUTH, menuBar, 7, SpringLayout.SOUTH, scale);
 		
@@ -103,5 +108,10 @@ public class InfoMenu
 	public void setSaved(boolean saved)
 	{
 		this.saved.setText("Saved: " + (saved ? "Yes" : "No"));
+	}
+	
+	public void setSize(int w, int h)
+	{
+		size.setText(w  +" x " + h);
 	}
 }

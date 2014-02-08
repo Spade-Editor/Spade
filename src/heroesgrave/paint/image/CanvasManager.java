@@ -261,6 +261,7 @@ public class CanvasManager
 					g.drawLine(0, MathUtils.floor(j * scale), MathUtils.floor(background.getWidth() * scale), MathUtils.floor(j * scale));
 				}
 			}
+			Paint.main.gui.info.setSize(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight());
 		}
 		
 		@Override
