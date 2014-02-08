@@ -30,9 +30,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.TexturePaint;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -189,7 +187,7 @@ public class CanvasManager
 		return scale;
 	}
 	
-	public static class CanvasRenderer extends JPanel
+	public static class CanvasRenderer extends JPanel implements MouseListener, MouseMotionListener
 	{
 		private static final long serialVersionUID = 6250531364061875156L;
 		
@@ -203,7 +201,7 @@ public class CanvasManager
 		public CanvasRenderer(CanvasManager mgr)
 		{
 			this.mgr = mgr;
-			this.addMouseListener(new MouseAdapter()
+			/*this.addMouseListener(new MouseAdapter()
 			{
 				@Override
 				public void mousePressed(MouseEvent e)
@@ -232,7 +230,7 @@ public class CanvasManager
 				{
 					Paint.main.currentTool.whileReleased(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), lastButton);
 				}
-			});
+			});*/
 		}
 		
 		public int getMX()
@@ -293,6 +291,63 @@ public class CanvasManager
 					g.drawLine(0, MathUtils.floor(j * scale), MathUtils.floor(background.getWidth() * scale), MathUtils.floor(j * scale));
 				}
 			}
+		}
+		
+		@Override
+		public void mousePressed(MouseEvent e)
+		{
+			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
+			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			lastButton = e.getButton();
+			Paint.main.currentTool.onPressed(x, y, e.getButton());
+		}
+		
+		@Override
+		public void mouseReleased(MouseEvent e)
+		{
+			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
+			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			lastButton = e.getButton();
+			Paint.main.currentTool.onReleased(x, y, e.getButton());
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e)
+		{
+			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
+			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			lastButton = e.getButton();
+			Paint.main.currentTool.whilePressed(x, y, e.getButton());
+		}
+		
+		@Override
+		public void mouseMoved(MouseEvent e)
+		{
+			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
+			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			lastButton = e.getButton();
+			Paint.main.currentTool.whileReleased(x, y, e.getButton());
+		}
+
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 	

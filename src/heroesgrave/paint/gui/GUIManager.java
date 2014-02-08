@@ -208,6 +208,8 @@ public class GUIManager
 		};
 		panel.setBackground(new java.awt.Color(0, true));
 		panel.add(canvas.getPanel(), BorderLayout.CENTER);
+		panel.addMouseListener(canvas.getPanel());
+		panel.addMouseMotionListener(canvas.getPanel());
 		
 		scroll = new JScrollPane(panel);
 		scroll.removeMouseWheelListener(scroll.getMouseWheelListeners()[0]);
