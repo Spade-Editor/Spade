@@ -54,7 +54,7 @@ public class InfoMenuBar
 		
 		scale.setHorizontalAlignment(SwingConstants.CENTER);
 		saved.setHorizontalAlignment(SwingConstants.CENTER);
-		size.setHorizontalAlignment(SwingConstants.CENTER);
+		size.setHorizontalAlignment(SwingConstants.RIGHT);
 		coords.setHorizontalAlignment(SwingConstants.RIGHT);
 		
 		tool = new JPanel();
@@ -73,10 +73,10 @@ public class InfoMenuBar
 		layout.putConstraint(SpringLayout.WEST, scale, 20, SpringLayout.WEST, menuBar);
 		layout.putConstraint(SpringLayout.WEST, saved, 40, SpringLayout.EAST, scale);
 		layout.putConstraint(SpringLayout.WEST, tool, 40, SpringLayout.EAST, saved);
-		layout.putConstraint(SpringLayout.WEST, size, 40, SpringLayout.EAST, tool);
-		layout.putConstraint(SpringLayout.WEST, coords, 40, SpringLayout.EAST, size);
+		layout.putConstraint(SpringLayout.WEST, coords, 40, SpringLayout.EAST, spacer);
+		layout.putConstraint(SpringLayout.WEST, size, 40, SpringLayout.EAST, coords);
 		//layout.putConstraint(SpringLayout.WEST, spacer, 0, SpringLayout.EAST, coords);
-		layout.putConstraint(SpringLayout.EAST, menuBar, 80, SpringLayout.EAST, spacer);
+		layout.putConstraint(SpringLayout.EAST, menuBar, 20, SpringLayout.EAST, size);
 		
 		// Check if the memory-watcher is not null (eg: Activated or not), then add constraints.
 		if(memoryWatcher != null)
