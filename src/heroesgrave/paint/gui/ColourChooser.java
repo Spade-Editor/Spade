@@ -21,6 +21,7 @@ package heroesgrave.paint.gui;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.main.Paint;
+import heroesgrave.utils.io.IOUtils;
 import heroesgrave.utils.io.TxtFileFilter;
 import heroesgrave.utils.math.MathUtils;
 
@@ -44,7 +45,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -1120,15 +1120,7 @@ public class ColourChooser
 			{
 				JFileChooser fileChooser = new JFileChooser();
 				
-				try
-				{
-					fileChooser.setCurrentDirectory(new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()));
-				}
-				catch(URISyntaxException e1)
-				{
-					e1.printStackTrace();
-					fileChooser.setCurrentDirectory(new File("."));
-				}
+				fileChooser.setCurrentDirectory(new File(IOUtils.assemblePath(System.getProperty("user.home"), ".paint-java", "palettes")));
 				
 				fileChooser.setAcceptAllFileFilterUsed(false);
 				fileChooser.setFileFilter(new TxtFileFilter());
