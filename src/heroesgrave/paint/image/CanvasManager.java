@@ -21,6 +21,7 @@ package heroesgrave.paint.image;
 
 import heroesgrave.paint.gui.Menu;
 import heroesgrave.paint.main.Paint;
+import heroesgrave.paint.tools.SelectTool;
 import heroesgrave.utils.math.MathUtils;
 
 import java.awt.Color;
@@ -196,6 +197,8 @@ public class CanvasManager
 		private int lastButton = 0;
 		private BufferedImage background;
 		
+		private int lastX = 0, lastY = 0;
+		
 		public static final Color TRANSPARENT = new Color(255, 255, 255, 0);
 		
 		public CanvasRenderer(CanvasManager mgr)
@@ -287,6 +290,7 @@ public class CanvasManager
 		{
 			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
 			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			Paint.main.gui.info.setMouseCoords(lastX, lastY, x, y, Paint.main.currentTool instanceof SelectTool);
 			Paint.main.currentTool.whilePressed(x, y, lastButton);
 		}
 		
@@ -295,28 +299,25 @@ public class CanvasManager
 		{
 			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
 			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
+			Paint.main.gui.info.setMouseCoords(x, y);
+			lastX = x;
+			lastY = y;
 			Paint.main.currentTool.whileReleased(x, y, lastButton);
 		}
 
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		
 		@Override
 		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
 		}
 	}
 	

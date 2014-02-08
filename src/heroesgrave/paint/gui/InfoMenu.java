@@ -25,6 +25,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.Spring;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
@@ -34,7 +35,7 @@ import javax.swing.SwingConstants;
 public class InfoMenu
 {
 	private JPanel tool;
-	private JLabel scale, saved, size;
+	private JLabel scale, saved, size, coords;
 	private MemoryWatcher memoryWatcher;
 	
 	public JComponent createInfoMenuBar()
@@ -46,7 +47,8 @@ public class InfoMenu
 		
 		scale = new JLabel("Scale: 100%");
 		saved = new JLabel("Saved: Yes");
-		size = new JLabel("");
+		size = new JLabel();
+		coords = new JLabel();
 		
 		// Check if the MemoryWatcher should be activated.
 		if(System.getProperty("DmemoryWatcherFlag") != null)
@@ -57,6 +59,7 @@ public class InfoMenu
 		scale.setHorizontalAlignment(SwingConstants.CENTER);
 		saved.setHorizontalAlignment(SwingConstants.CENTER);
 		size.setHorizontalAlignment(SwingConstants.CENTER);
+		coords.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		tool = new JPanel();
 		tool.setOpaque(false);
@@ -67,13 +70,15 @@ public class InfoMenu
 		menuBar.add(scale);
 		menuBar.add(saved);
 		menuBar.add(size);
+		menuBar.add(coords);
 		menuBar.add(tool);
 		menuBar.add(spacer);
 		
 		layout.putConstraint(SpringLayout.WEST, scale, 20, SpringLayout.WEST, menuBar);
 		layout.putConstraint(SpringLayout.WEST, saved, 40, SpringLayout.EAST, scale);
 		layout.putConstraint(SpringLayout.WEST, size, 40, SpringLayout.EAST, saved);
-		layout.putConstraint(SpringLayout.WEST, tool, 40, SpringLayout.EAST, size);
+		layout.putConstraint(SpringLayout.WEST, coords, 40, SpringLayout.EAST, size);
+		layout.putConstraint(SpringLayout.WEST, tool, 80, SpringLayout.EAST, size);
 		layout.putConstraint(SpringLayout.WEST, spacer, 0, SpringLayout.EAST, tool);
 		layout.putConstraint(SpringLayout.EAST, menuBar, 0, SpringLayout.EAST, spacer);
 		
@@ -84,6 +89,7 @@ public class InfoMenu
 		layout.putConstraint(SpringLayout.NORTH, scale, 5, SpringLayout.NORTH, menuBar);
 		layout.putConstraint(SpringLayout.NORTH, saved, 5, SpringLayout.NORTH, menuBar);
 		layout.putConstraint(SpringLayout.NORTH, size, 5, SpringLayout.NORTH, menuBar);
+		layout.putConstraint(SpringLayout.NORTH, coords, 5, SpringLayout.NORTH, menuBar);
 		
 		layout.putConstraint(SpringLayout.SOUTH, menuBar, 7, SpringLayout.SOUTH, scale);
 		
@@ -113,5 +119,13 @@ public class InfoMenu
 	public void setSize(int w, int h)
 	{
 		size.setText(w  +" x " + h);
+	}
+	
+	public void setMouseCoords(int x, int y) {
+		coords.setText("[" + x + ", " + y + "]");
+	}
+	
+	public void setMouseCoords(int x, int y, int newX, int newY, boolean selecting) {
+		coords.setText("[" + x + ", " + y + "]"+" --> "+"[" + newX + ", " + newY + "]"+(selecting?" ("+Math.abs(newX-x)+" x "+Math.abs(newY-y)+")":""));
 	}
 }
