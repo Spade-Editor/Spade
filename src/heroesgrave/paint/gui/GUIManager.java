@@ -30,6 +30,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
 import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -207,7 +208,8 @@ public class GUIManager
 			}
 		};
 		panel.setBackground(new java.awt.Color(0, true));
-		panel.add(canvas.getPanel(), BorderLayout.CENTER);
+		panel.setLayout(new GridBagLayout()); //GBL without constraints centers canvas.getPanel() automatically
+		panel.add(canvas.getPanel());
 		panel.addMouseListener(canvas.getPanel());
 		panel.addMouseMotionListener(canvas.getPanel());
 		

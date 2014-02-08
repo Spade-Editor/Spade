@@ -201,36 +201,6 @@ public class CanvasManager
 		public CanvasRenderer(CanvasManager mgr)
 		{
 			this.mgr = mgr;
-			/*this.addMouseListener(new MouseAdapter()
-			{
-				@Override
-				public void mousePressed(MouseEvent e)
-				{
-					lastButton = e.getButton();
-					Paint.main.currentTool.onPressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), e.getButton());
-				}
-				
-				@Override
-				public void mouseReleased(MouseEvent e)
-				{
-					lastButton = e.getButton();
-					Paint.main.currentTool.onReleased(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), e.getButton());
-				}
-			});
-			this.addMouseMotionListener(new MouseMotionListener()
-			{
-				@Override
-				public void mouseDragged(MouseEvent e)
-				{
-					Paint.main.currentTool.whilePressed(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), lastButton);
-				}
-				
-				@Override
-				public void mouseMoved(MouseEvent e)
-				{
-					Paint.main.currentTool.whileReleased(MathUtils.floor(e.getX() / scale), MathUtils.floor(e.getY() / scale), lastButton);
-				}
-			});*/
 		}
 		
 		public int getMX()
@@ -316,8 +286,7 @@ public class CanvasManager
 		{
 			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
 			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
-			lastButton = e.getButton();
-			Paint.main.currentTool.whilePressed(x, y, e.getButton());
+			Paint.main.currentTool.whilePressed(x, y, lastButton);
 		}
 		
 		@Override
@@ -325,8 +294,7 @@ public class CanvasManager
 		{
 			int x = MathUtils.floor((e.getX()-this.getX()) / scale);
 			int y = MathUtils.floor((e.getY()-this.getY()) / scale);
-			lastButton = e.getButton();
-			Paint.main.currentTool.whileReleased(x, y, e.getButton());
+			Paint.main.currentTool.whileReleased(x, y, lastButton);
 		}
 
 		
