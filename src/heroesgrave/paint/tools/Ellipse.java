@@ -19,6 +19,8 @@
 
 package heroesgrave.paint.tools;
 
+import heroesgrave.paint.image.EllipseChange;
+import heroesgrave.paint.image.Frame;
 import heroesgrave.paint.image.ShapeChange;
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
@@ -34,7 +36,7 @@ public class Ellipse extends Tool
 {
 	private int sx, sy;
 	private Ellipse2D.Float ellipse;
-	private ShapeChange change;
+	private Frame change;
 	private JCheckBox fill;
 	private JCheckBox antialias;
 	
@@ -67,34 +69,47 @@ public class Ellipse extends Tool
 		layout.putConstraint(SpringLayout.WEST, fill, 20, SpringLayout.EAST, label);
 		layout.putConstraint(SpringLayout.WEST, antialias, 20, SpringLayout.EAST, fill);
 		layout.putConstraint(SpringLayout.EAST, menu, 20, SpringLayout.EAST, antialias);
-		
 	}
 	
 	public void onPressed(int x, int y, int button)
 	{
 		sx = x;
 		sy = y;
-		ellipse = new Ellipse2D.Float(x, y, 0, 0);
-		if(button == MouseEvent.BUTTON1)
+		if(fill.isSelected())
 		{
-			change = new ShapeChange(ellipse, Paint.main.getLeftColour()).setFill(fill.isSelected()).setAntialiasing(antialias.isSelected());
+			ellipse = new Ellipse2D.Float(x, y, 0, 0);
+			if(button == MouseEvent.BUTTON1)
+			{
+				change = new ShapeChange(ellipse, Paint.main.getLeftColour()).setFill(fill.isSelected()).setAntialiasing(antialias.isSelected());
+			}
+			else if(button == MouseEvent.BUTTON3)
+			{
+				change = new ShapeChange(ellipse, Paint.main.getRightColour()).setFill(fill.isSelected()).setAntialiasing(antialias.isSelected());
+			}
 		}
-		else if(button == MouseEvent.BUTTON3)
+		else
 		{
-			change = new ShapeChange(ellipse, Paint.main.getRightColour()).setFill(fill.isSelected()).setAntialiasing(antialias.isSelected());
+			change = new EllipseChange(x, y, button);
+			((EllipseChange) change).change(x, y);
 		}
 		Paint.main.gui.canvas.preview(change);
 	}
 	
 	public void onReleased(int x, int y, int button)
 	{
-		adjustEllipse(x, y);
+		if(fill.isSelected())
+			adjustEllipse(x, y);
+		else
+			((EllipseChange) change).change(x, y);
 		Paint.main.gui.canvas.applyPreview();
 	}
 	
 	public void whilePressed(int x, int y, int button)
 	{
-		adjustEllipse(x, y);
+		if(fill.isSelected())
+			adjustEllipse(x, y);
+		else
+			((EllipseChange) change).change(x, y);
 		Paint.main.gui.canvas.getPanel().repaint();
 	}
 	
@@ -117,10 +132,10 @@ public class Ellipse extends Tool
 			x = sx + w;
 			y = sy + h;
 		}
-		ellipse.width = Math.abs(x - sx);
-		ellipse.height = Math.abs(y - sy);
-		ellipse.x = Math.min(x, sx);
-		ellipse.y = Math.min(y, sy);
+		ellipse.width = Math.abs(x - sx) * 2;
+		ellipse.height = Math.abs(y - sy) * 2;
+		ellipse.x = sx - ellipse.width / 2;
+		ellipse.y = sy - ellipse.height / 2;
 	}
 	
 	private int sign(int i)
