@@ -232,8 +232,11 @@ public class Paint extends Application
 		Input.CTRL = false;
 		Input.ALT = false;
 		Input.SHIFT = false;
+		main.currentTool.onDeselect();
 		main.currentTool = tool;
+		main.currentTool.onSelect();
 		main.gui.setToolOption(tool.getOptions());
+		main.gui.canvas.getPanel().repaint();
 	}
 	
 	public static void save()

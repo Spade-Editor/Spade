@@ -19,6 +19,8 @@
 
 package heroesgrave.paint.tools;
 
+import heroesgrave.paint.main.Paint;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -61,5 +63,21 @@ public abstract class Tool
 	public void whileReleased(int x, int y, int button)
 	{
 		
+	}
+	
+	/**
+	 * Called when tool is selected for use
+	 */
+	public void onSelect() {
+		//default impl
+		Paint.main.gui.canvas.getPanel().setCursorPreview(null, null);
+	}
+	
+	/**
+	 * Called when tool is un-selected
+	 */
+	public void onDeselect() {
+		//default impl
+		Paint.main.gui.canvas.getPanel().setCursorPreview(null, null);
 	}
 }
