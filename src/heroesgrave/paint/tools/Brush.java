@@ -24,6 +24,7 @@ import heroesgrave.paint.main.Paint;
 
 import java.awt.BasicStroke;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 
 import javax.swing.JLabel;
@@ -39,6 +40,9 @@ public class Brush extends Tool
 	private JSlider slider;
 	private JLabel size;
 	
+	private ShapeChange previewCircle;
+	private Ellipse2D.Float circle;
+	
 	public Brush(String name)
 	{
 		super(name);
@@ -49,6 +53,7 @@ public class Brush extends Tool
 			public void stateChanged(ChangeEvent e)
 			{
 				size.setText("Size: " + slider.getValue());
+				circle.width = circle.height = slider.getValue();
 			}
 		});
 		
@@ -73,6 +78,9 @@ public class Brush extends Tool
 		layout.putConstraint(SpringLayout.NORTH, slider, -3, SpringLayout.NORTH, menu);
 		
 		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
+		
+		circle = new Ellipse2D.Float(0,0,slider.getValue(),slider.getValue());
+		previewCircle = new ShapeChange(circle, 0xFF000000, new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 	}
 	
 	@Override
@@ -110,6 +118,14 @@ public class Brush extends Tool
 		{
 			path.lineTo(x, y);
 		}
+		Paint.main.gui.canvas.getPanel().repaint();
+	}
+	
+	@Override
+	public void whileReleased(int x, int y, int button) {
+		circle.x = x - circle.width / 2;
+		circle.y = y - circle.width / 2;
+		Paint.main.gui.canvas.preview(previewCircle);
 		Paint.main.gui.canvas.getPanel().repaint();
 	}
 }
