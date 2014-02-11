@@ -1001,7 +1001,7 @@ public class ColourChooser
 			
 			for(int y=0;y<getHeight();y++)
 				for(int x=0;x<getHeight();x++) {
-					g.setColor(new Color(Color.HSBtoRGB(chooserRightHSBimplH.sliderValue, 1f * x / getHeight(), 1f * (getHeight()-y)/getHeight())));
+					g.setColor(new Color(Color.HSBtoRGB(chooserRightHSBimplH.sliderValue, 1f * x / (getHeight() - 1), 1f * ((getHeight() - 1)-y)/(getHeight() - 1))));
 					g.drawLine(x, y, x, y);
 				}	
 		}
