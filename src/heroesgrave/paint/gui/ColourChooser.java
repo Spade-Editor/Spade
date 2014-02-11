@@ -547,7 +547,6 @@ public class ColourChooser
 			float[] vals = new float[3];
 			RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
 			this.sliderValue = vals[0];
-			
 			HSBSquare.rebuildSquare();
 			HSBSquare.repaint();
 			this.repaint();
@@ -994,9 +993,6 @@ public class ColourChooser
 			g.drawOval(lastX - CURSOR_RADIUS / 2, lastY - CURSOR_RADIUS  /2, CURSOR_RADIUS, CURSOR_RADIUS);
 			g.setPaintMode();
 			
-			int c = getSelectedEditColor();
-			((TitledBorder)chooserRightHSB.getBorder()).setTitle("HSB ("+(int)(chooserRightHSBimplH.sliderValue*360)+", "+(int)(chooserRightHSBimplS.sliderValue*255)+", "+(int)(chooserRightHSBimplB.sliderValue*255)+")");
-			((TitledBorder)chooserRightRGB.getBorder()).setTitle("RGB ("+((c >> 16) & 0xFF)+", "+((c >> 8) & 0xFF)+", "+(c & 0xFF)+")");
 		}
 		
 		private void rebuildSquare() {
@@ -1622,6 +1618,8 @@ public class ColourChooser
 		
 		chooserRightALPHAimpl.setGradientColors(COLOUR & 0xFFFFFF, (COLOUR & 0xFFFFFF) | 0xFF000000);
 		
+		updateColorLabels();
+		
 		chooserLeftColourSelectorEditColourSelector.repaint();
 		
 		dialog.getContentPane().repaint();
@@ -1788,5 +1786,11 @@ public class ColourChooser
         hsbvals[1] = saturation;
         hsbvals[2] = brightness;
         return hsbvals;
+	}
+	
+	private void updateColorLabels() {
+		int c = getSelectedEditColor();
+		((TitledBorder)chooserRightHSB.getBorder()).setTitle("HSB ("+(int)(chooserRightHSBimplH.sliderValue*360)+", "+(int)(chooserRightHSBimplS.sliderValue*255)+", "+(int)(chooserRightHSBimplB.sliderValue*255)+")");
+		((TitledBorder)chooserRightRGB.getBorder()).setTitle("RGB ("+((c >> 16) & 0xFF)+", "+((c >> 8) & 0xFF)+", "+(c & 0xFF)+")");
 	}
 }
