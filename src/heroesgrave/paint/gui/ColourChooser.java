@@ -29,16 +29,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.TexturePaint;
-import java.awt.color.ColorSpace;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -55,7 +52,6 @@ import java.util.Scanner;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -67,7 +63,6 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.plaf.basic.BasicHTML;
 
 public class ColourChooser
 {
@@ -1601,7 +1596,7 @@ public class ColourChooser
 		
 		chooserLeftColourSelectorEditColourSelector.repaint();
 		
-		dialog.repaint();
+		dialog.getContentPane().repaint();
 	}
 	
 	public void updateAllChooserSubComponents_EditChanged()
