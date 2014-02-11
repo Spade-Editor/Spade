@@ -1792,5 +1792,6 @@ public class ColourChooser
 		int c = getSelectedEditColor();
 		((TitledBorder)chooserRightHSB.getBorder()).setTitle("HSB ("+(int)(chooserRightHSBimplH.sliderValue*360)+", "+(int)(chooserRightHSBimplS.sliderValue*255)+", "+(int)(chooserRightHSBimplB.sliderValue*255)+")");
 		((TitledBorder)chooserRightRGB.getBorder()).setTitle("RGB ("+((c >> 16) & 0xFF)+", "+((c >> 8) & 0xFF)+", "+(c & 0xFF)+")");
+		((TitledBorder)chooserRightALPHA.getBorder()).setTitle("Alpha ("+((c >> 24) & 0xFF)+")");
 	}
 }
