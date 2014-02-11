@@ -448,7 +448,7 @@ public class ColourChooser
 		{
 			int colorIn = getSelectedEditColor();
 			float[] vals = new float[3];
-			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
 			
 			float h = sliderValue;
 			float s = vals[1];
@@ -544,7 +544,7 @@ public class ColourChooser
 		public void updateColorIntoSlider(int colorIn)
 		{
 			float[] vals = new float[3];
-			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
 			this.sliderValue = vals[0];
 			HSBSquare.rebuildSquare();
 			HSBSquare.repaint();
@@ -603,7 +603,7 @@ public class ColourChooser
 		{
 			int colorIn = getSelectedEditColor();
 			float[] vals = new float[3];
-			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
 			
 			float h = vals[0];
 			float s = sliderValue;
@@ -629,7 +629,7 @@ public class ColourChooser
 			int _r = (getSelectedEditColor() >> 16) & 0xFF;
 			int _g = (getSelectedEditColor() >> 8) & 0xFF;
 			int _b = (getSelectedEditColor()) & 0xFF;
-			float[] vals = Color.RGBtoHSB(_r, _g, _b, null);
+			float[] vals = RGBtoHSB(_r, _g, _b, null);
 			
 			for(int i = 0; i < getWidth(); i++)
 			{
@@ -704,7 +704,7 @@ public class ColourChooser
 		public void updateColorIntoSlider(int colorIn)
 		{
 			float[] vals = new float[3];
-			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
 			this.sliderValue = vals[1];
 			this.repaint();
 		}
@@ -761,7 +761,7 @@ public class ColourChooser
 		{
 			int colorIn = getSelectedEditColor();
 			float[] vals = new float[3];
-			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
 			
 			float h = vals[0];
 			float s = vals[1];
@@ -787,7 +787,7 @@ public class ColourChooser
 			int _r = (getSelectedEditColor() >> 16) & 0xFF;
 			int _g = (getSelectedEditColor() >> 8) & 0xFF;
 			int _b = (getSelectedEditColor()) & 0xFF;
-			float[] vals = Color.RGBtoHSB(_r, _g, _b, null);
+			float[] vals = RGBtoHSB(_r, _g, _b, null);
 			
 			for(int i = 0; i < getWidth(); i++)
 			{
@@ -862,7 +862,7 @@ public class ColourChooser
 		public void updateColorIntoSlider(int colorIn)
 		{
 			float[] vals = new float[3];
-			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
 			this.sliderValue = vals[2];
 			this.repaint();
 		}
@@ -966,6 +966,10 @@ public class ColourChooser
 		
 		private int button = -1;
 		
+		private int lastX = 0, lastY = 0;
+		
+		private final int CURSOR_RADIUS = 6;
+		
 		public ColorSquare(int w, int h) {
 			setSize(w, h);
 			//setBorder(BorderFactory.createLineBorder(Color.black, 1, false));
@@ -975,15 +979,24 @@ public class ColourChooser
 		
 		@Override
 		public void paint(Graphics g) {
-			//g.clearRect(0, 0, getWidth(), getHeight());
 			if(square == null || square.getWidth() != getHeight() || square.getHeight() != getHeight())
 				rebuildSquare();
+			
 			g.drawImage(square, 0, 0, getHeight(), getHeight(), null);
+			
+			lastX = (int) (chooserRightHSBimplS.sliderValue * getHeight());
+			lastY = (int) ((getHeight() - chooserRightHSBimplB.sliderValue * getHeight()));
+			
+			g.setColor(Color.black);
+			g.setXORMode(Color.white);
+			g.drawOval(lastX - CURSOR_RADIUS / 2, lastY - CURSOR_RADIUS  /2, CURSOR_RADIUS, CURSOR_RADIUS);
+			g.setPaintMode();
 		}
 		
 		private void rebuildSquare() {
 			square = new BufferedImage(getHeight(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 			Graphics g = square.createGraphics();
+			
 			for(int y=0;y<getHeight();y++)
 				for(int x=0;x<getHeight();x++) {
 					g.setColor(new Color(Color.HSBtoRGB(chooserRightHSBimplH.sliderValue, 1f * x / getHeight(), 1f * (getHeight()-y)/getHeight())));
@@ -999,17 +1012,26 @@ public class ColourChooser
 		@Override
 		public void mouseReleased(MouseEvent e)
 		{
-			if(e.getX() < 0 || e.getX() >= square.getWidth() || e.getY() < 0 || e.getY() >= square.getHeight())
-				return;
+			int x = e.getX();
+			int y = e.getY();
+			
+			if(x < 0) x = 0;
+			else if(x >= square.getWidth()) x = square.getWidth() - 1;
+			
+			if(y < 0) y = 0;
+			else if(y >= square.getHeight()) y = square.getHeight() - 1;
 			
 			if(button == MouseEvent.BUTTON1)
-				leftColour = square.getRGB(e.getX(), e.getY());
+				leftColour = square.getRGB(x, y);
 			
 			if(button == MouseEvent.BUTTON3)
-				rightColour = square.getRGB(e.getX(), e.getY());
+				rightColour = square.getRGB(x, y);
 			
 			if(button == MouseEvent.BUTTON2)
-				leftColour = square.getRGB(e.getX(), e.getY());
+				leftColour = square.getRGB(x, y);
+			
+			lastX = x;
+			lastY = y;
 			
 			updateAllChooserSubComponents_EditChanged();
 			updatePaintGUI();
@@ -1722,4 +1744,40 @@ public class ColourChooser
 	{
 		return dialog.isVisible();
 	}
+	
+	private float[] RGBtoHSB(int r, int g, int b, float[] hsbvals) {
+		float hue, saturation, brightness;
+        if(hsbvals == null)
+        	hsbvals = new float[3];
+        int cmax = (r > g) ? r : g;
+        if (b > cmax) cmax = b;
+        int cmin = (r < g) ? r : g;
+        if (b < cmin) cmin = b;
+
+        brightness = ((float) cmax) / 255.0f;
+        if (cmax != 0)
+            saturation = ((float) (cmax - cmin)) / ((float) cmax);
+        else
+        	saturation = 0;
+        if (saturation == 0)
+            hue = 0;
+        else {
+            float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
+            float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
+            float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
+            if (r == cmax)
+                hue = bluec - greenc;
+            else if (g == cmax)
+                hue = 2.0f + redc - bluec;
+            else
+                hue = 4.0f + greenc - redc;
+            hue = hue / 6.0f;
+            if (hue < 0)
+                hue = hue + 1.0f;
+        }
+        hsbvals[0] = hue;
+        hsbvals[1] = saturation;
+        hsbvals[2] = brightness;
+        return hsbvals;
+	}//RGBtoHSB
 }
