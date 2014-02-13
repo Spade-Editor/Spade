@@ -214,7 +214,7 @@ public class ColourChooser
 		@Override
 		public void actionPerformed(ActionEvent event)
 		{
-			
+			sliderLastChanged = -1;
 			try
 			{
 				int newColor = Integer.valueOf(getText().toLowerCase(), 16);
@@ -313,6 +313,7 @@ public class ColourChooser
 		
 		public void update(int mouseX, int currentWidth)
 		{
+			sliderLastChanged = -1;
 			// first out-of-bounds check
 			if(mouseX < 0)
 				mouseX = 0;
@@ -424,6 +425,7 @@ public class ColourChooser
 		
 		public void update(int mouseX, int currentWidth)
 		{
+			sliderLastChanged = 1;
 			// first out-of-bounds check
 			if(mouseX < 0)
 				mouseX = 0;
@@ -579,6 +581,7 @@ public class ColourChooser
 		
 		public void update(int mouseX, int currentWidth)
 		{
+			sliderLastChanged = 2;
 			// first out-of-bounds check
 			if(mouseX < 0)
 				mouseX = 0;
@@ -737,6 +740,7 @@ public class ColourChooser
 		
 		public void update(int mouseX, int currentWidth)
 		{
+			sliderLastChanged = 2;
 			// first out-of-bounds check
 			if(mouseX < 0)
 				mouseX = 0;
@@ -1014,6 +1018,7 @@ public class ColourChooser
 		@Override
 		public void mouseReleased(MouseEvent e)
 		{
+			sliderLastChanged = 1;
 			int x = e.getX();
 			int y = e.getY();
 			
@@ -1277,6 +1282,7 @@ public class ColourChooser
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				sliderLastChanged = -1;
 				int SWAP = leftColour;
 				leftColour = rightColour;
 				rightColour = SWAP;
@@ -1603,6 +1609,7 @@ public class ColourChooser
 	
 	public void updateAllChooserSubComponents_ColorChanged()
 	{
+		
 		int COLOUR = getSelectedEditColor();
 		
 		
@@ -1749,6 +1756,9 @@ public class ColourChooser
 		return dialog.isVisible();
 	}
 	
+	// 1=S, 2=B
+	private static int sliderLastChanged = -1;
+	
 	/*
 	 * Right now just a copy of Color.RGBtoHSB(), figuring out how to eliminate some oddities
 	 */
@@ -1782,6 +1792,14 @@ public class ColourChooser
             if (hue < 0)
                 hue = hue + 1.0f;
         }
+        
+        if(sliderLastChanged == 1)
+        	hue = chooserRightHSBimplH.sliderValue;
+        if(sliderLastChanged == 2) {
+        	hue = chooserRightHSBimplH.sliderValue;
+        	saturation = chooserRightHSBimplS.sliderValue;
+        }
+        
         hsbvals[0] = hue;
         hsbvals[1] = saturation;
         hsbvals[2] = brightness;
