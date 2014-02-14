@@ -20,11 +20,12 @@
 package heroesgrave.paint.image;
 
 import java.awt.image.BufferedImage;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BufferedChange extends Frame
 {
-	public LinkedList<Frame> changes = new LinkedList<Frame>();
+	protected List<Frame> changes = new ArrayList<Frame>();
 	
 	public void buffer(Frame frame)
 	{

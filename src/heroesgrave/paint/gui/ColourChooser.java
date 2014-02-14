@@ -29,6 +29,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -62,6 +63,7 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.border.TitledBorder;
 
 public class ColourChooser
 {
@@ -212,7 +214,7 @@ public class ColourChooser
 		@Override
 		public void actionPerformed(ActionEvent event)
 		{
-			
+			sliderLastChanged = -1;
 			try
 			{
 				int newColor = Integer.valueOf(getText().toLowerCase(), 16);
@@ -311,6 +313,7 @@ public class ColourChooser
 		
 		public void update(int mouseX, int currentWidth)
 		{
+			sliderLastChanged = -1;
 			// first out-of-bounds check
 			if(mouseX < 0)
 				mouseX = 0;
@@ -422,6 +425,7 @@ public class ColourChooser
 		
 		public void update(int mouseX, int currentWidth)
 		{
+			sliderLastChanged = 1;
 			// first out-of-bounds check
 			if(mouseX < 0)
 				mouseX = 0;
@@ -447,7 +451,7 @@ public class ColourChooser
 		{
 			int colorIn = getSelectedEditColor();
 			float[] vals = new float[3];
-			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
 			
 			float h = sliderValue;
 			float s = vals[1];
@@ -543,8 +547,10 @@ public class ColourChooser
 		public void updateColorIntoSlider(int colorIn)
 		{
 			float[] vals = new float[3];
-			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
 			this.sliderValue = vals[0];
+			HSBSquare.rebuildSquare();
+			HSBSquare.repaint();
 			this.repaint();
 		}
 	}
@@ -575,6 +581,7 @@ public class ColourChooser
 		
 		public void update(int mouseX, int currentWidth)
 		{
+			sliderLastChanged = 2;
 			// first out-of-bounds check
 			if(mouseX < 0)
 				mouseX = 0;
@@ -600,7 +607,7 @@ public class ColourChooser
 		{
 			int colorIn = getSelectedEditColor();
 			float[] vals = new float[3];
-			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
 			
 			float h = vals[0];
 			float s = sliderValue;
@@ -626,7 +633,7 @@ public class ColourChooser
 			int _r = (getSelectedEditColor() >> 16) & 0xFF;
 			int _g = (getSelectedEditColor() >> 8) & 0xFF;
 			int _b = (getSelectedEditColor()) & 0xFF;
-			float[] vals = Color.RGBtoHSB(_r, _g, _b, null);
+			float[] vals = RGBtoHSB(_r, _g, _b, null);
 			
 			for(int i = 0; i < getWidth(); i++)
 			{
@@ -701,7 +708,7 @@ public class ColourChooser
 		public void updateColorIntoSlider(int colorIn)
 		{
 			float[] vals = new float[3];
-			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
 			this.sliderValue = vals[1];
 			this.repaint();
 		}
@@ -733,6 +740,7 @@ public class ColourChooser
 		
 		public void update(int mouseX, int currentWidth)
 		{
+			sliderLastChanged = 2;
 			// first out-of-bounds check
 			if(mouseX < 0)
 				mouseX = 0;
@@ -758,7 +766,7 @@ public class ColourChooser
 		{
 			int colorIn = getSelectedEditColor();
 			float[] vals = new float[3];
-			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
 			
 			float h = vals[0];
 			float s = vals[1];
@@ -784,7 +792,7 @@ public class ColourChooser
 			int _r = (getSelectedEditColor() >> 16) & 0xFF;
 			int _g = (getSelectedEditColor() >> 8) & 0xFF;
 			int _b = (getSelectedEditColor()) & 0xFF;
-			float[] vals = Color.RGBtoHSB(_r, _g, _b, null);
+			float[] vals = RGBtoHSB(_r, _g, _b, null);
 			
 			for(int i = 0; i < getWidth(); i++)
 			{
@@ -859,7 +867,7 @@ public class ColourChooser
 		public void updateColorIntoSlider(int colorIn)
 		{
 			float[] vals = new float[3];
-			Color.RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
+			RGBtoHSB((colorIn >> 16) & 0xFF, (colorIn >> 8) & 0xFF, (colorIn) & 0xFF, vals);
 			this.sliderValue = vals[2];
 			this.repaint();
 		}
@@ -955,6 +963,108 @@ public class ColourChooser
 		
 	}
 	
+	private class ColorSquare extends JPanel implements MouseListener, MouseMotionListener {
+
+		private static final long serialVersionUID = 4402136903377952923L;
+		
+		private BufferedImage square;
+		
+		private int button = -1;
+		
+		private int lastX = 0, lastY = 0;
+		
+		private final int CURSOR_RADIUS = 6;
+		
+		public ColorSquare(int w, int h) {
+			setSize(w, h);
+			//setBorder(BorderFactory.createLineBorder(Color.black, 1, false));
+			addMouseListener(this);
+			addMouseMotionListener(this);
+		}
+		
+		@Override
+		public void paint(Graphics g) {
+			if(square == null || square.getWidth() != getHeight() || square.getHeight() != getHeight())
+				rebuildSquare();
+			
+			g.drawImage(square, 0, 0, getHeight(), getHeight(), null);
+			
+			lastX = (int) (chooserRightHSBimplS.sliderValue * getHeight());
+			lastY = (int) ((getHeight() - chooserRightHSBimplB.sliderValue * getHeight()));
+			
+			g.setColor(Color.black);
+			g.setXORMode(Color.white);
+			g.drawOval(lastX - CURSOR_RADIUS / 2, lastY - CURSOR_RADIUS  /2, CURSOR_RADIUS, CURSOR_RADIUS);
+			g.setPaintMode();
+			
+		}
+		
+		private void rebuildSquare() {
+			square = new BufferedImage(getHeight(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics g = square.createGraphics();
+			
+			for(int y=0;y<getHeight();y++)
+				for(int x=0;x<getHeight();x++) {
+					g.setColor(new Color(Color.HSBtoRGB(chooserRightHSBimplH.sliderValue, 1f * x / (getHeight() - 1), 1f * ((getHeight() - 1)-y)/(getHeight() - 1))));
+					g.drawLine(x, y, x, y);
+				}	
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			mouseReleased(e);
+		}
+		
+		@Override
+		public void mouseReleased(MouseEvent e)
+		{
+			int x = e.getX();
+			int y = e.getY();
+			
+			sliderLastChanged = y >= getHeight() - 1 ? 2 : 1;
+			
+			if(x < 0) x = 0;
+			else if(x >= square.getWidth()) x = square.getWidth() - 1;
+			
+			if(y < 0) y = 0;
+			else if(y >= square.getHeight()) y = square.getHeight() - 1;
+			
+			if(button == MouseEvent.BUTTON1)
+				leftColour = square.getRGB(x, y);
+			
+			if(button == MouseEvent.BUTTON3)
+				rightColour = square.getRGB(x, y);
+			
+			if(button == MouseEvent.BUTTON2)
+				leftColour = square.getRGB(x, y);
+			
+			lastX = x;
+			lastY = y;
+			
+			updateAllChooserSubComponents_EditChanged();
+			updatePaintGUI();
+			
+		}
+		@Override
+		public void mouseMoved(MouseEvent e) {
+		}
+		@Override
+		public void mouseClicked(MouseEvent e) {
+		}
+		@Override
+		public void mousePressed(MouseEvent e) {
+			button = e.getButton();
+			mouseReleased(e);
+		}
+		@Override
+		public void mouseEntered(MouseEvent e) {
+		}
+		@Override
+		public void mouseExited(MouseEvent e) {
+		}
+		
+	}
+	
 	/**                                              **/
 	/**                                              **/
 	/**                                              **/
@@ -991,6 +1101,8 @@ public class ColourChooser
 	ColorChooser_ColourSliderHSBimplS chooserRightHSBimplS;
 	ColorChooser_ColourSliderHSBimplB chooserRightHSBimplB;
 	ColorChooser_ColourSlider chooserRightALPHAimpl;
+	
+	ColorSquare HSBSquare;
 	
 	/**
 	 * The 'left'-colour.
@@ -1084,14 +1196,33 @@ public class ColourChooser
 		chooserLeftColourSelectorLayout = new SpringLayout();
 		
 		chooserLeftColourSelector.setLayout(chooserLeftColourSelectorLayout);
-		chooserLeftColourCircle.setLayout(new BorderLayout(1, 1));
+		
+		SpringLayout colorSquareLayout = new SpringLayout();
+		
+		chooserLeftColourCircle.setLayout(colorSquareLayout);
 		chooserLeftColourPallete.setLayout(new GridLayout(0, 16, 0, 0));
 		
+		HSBSquare = new ColorSquare(256, 256);
+		
 		// borders
-		chooserLeftColourCircle.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "Color Circle"));
+		//chooserLeftColourCircle.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "Color Circle"));
 		chooserLeftColourPallete.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "Color Pallet"));
 		
-		chooserLeftColourCircle.add(new JLabel("Not yet implemented!"));
+		chooserLeftColourCircle.setSize(256, 256);
+		JLabel title = new JLabel("Color Square");
+		title.setFont(title.getFont().deriveFont(Font.BOLD));
+		chooserLeftColourCircle.add(title);
+		chooserLeftColourCircle.add(HSBSquare);
+		
+		colorSquareLayout.putConstraint(SpringLayout.NORTH, title, 6, SpringLayout.NORTH, chooserLeftColourCircle);
+		colorSquareLayout.putConstraint(SpringLayout.WEST, title, 6, SpringLayout.WEST, chooserLeftColourCircle);
+		
+		colorSquareLayout.putConstraint(SpringLayout.NORTH, HSBSquare, 0, SpringLayout.NORTH, chooserLeftColourCircle);
+		colorSquareLayout.putConstraint(SpringLayout.SOUTH, HSBSquare, 0, SpringLayout.SOUTH, chooserLeftColourCircle);
+		colorSquareLayout.putConstraint(SpringLayout.WEST, HSBSquare, -76, SpringLayout.EAST, chooserLeftColourCircle);
+		colorSquareLayout.putConstraint(SpringLayout.EAST, HSBSquare, 0, SpringLayout.EAST, chooserLeftColourCircle);
+		
+		
 		
 		Color[] pallet = readColorPalletFromURL(ClassLoader.getSystemResource("heroesgrave/paint/res/defaultColorPallet.txt"));
 		
@@ -1164,6 +1295,7 @@ public class ColourChooser
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				sliderLastChanged = -1;
 				int SWAP = leftColour;
 				leftColour = rightColour;
 				rightColour = SWAP;
@@ -1173,23 +1305,17 @@ public class ColourChooser
 		});
 		
 		// layout for ((chooserLeftColourSelector))
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.NORTH,
-				chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.WEST,
-				chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelectorEditColourSelector, 64, SpringLayout.NORTH,
-				chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector, 64, SpringLayout.WEST,
-				chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.NORTH, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.WEST, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelectorEditColourSelector, 64, SpringLayout.NORTH, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector, 64, SpringLayout.WEST, chooserLeftColourSelector);
 		
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, colourResetButton, 0, SpringLayout.NORTH, chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, colourResetButton, 0, SpringLayout.EAST,
-				chooserLeftColourSelectorEditColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, colourResetButton, 0, SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector);
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, colourResetButton, 32, SpringLayout.NORTH, chooserLeftColourSelector);
 		
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, changeColourPalletButton, 0, SpringLayout.SOUTH, colourResetButton);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, changeColourPalletButton, 0, SpringLayout.EAST,
-				chooserLeftColourSelectorEditColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, changeColourPalletButton, 0, SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector);
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, changeColourPalletButton, 64, SpringLayout.NORTH, chooserLeftColourSelector);
 		
 		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, changeColourPalletButton, 0, SpringLayout.WEST, colourSwapButton);
@@ -1349,8 +1475,11 @@ public class ColourChooser
 		
 		chooserLeftLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourSelector, 0, SpringLayout.NORTH, contentPane);
 		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelector, 0, SpringLayout.NORTH, chooserLeftColourCircle);
+		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelector, 64, SpringLayout.NORTH, contentPane);
 		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourCircle, 0, SpringLayout.NORTH, chooserLeftColourPallete);
 		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourPallete, 0, SpringLayout.SOUTH, contentPane);
+		
+		chooserLeftLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourCircle, 64, SpringLayout.NORTH, contentPane);
 		
 	}
 	
@@ -1493,9 +1622,9 @@ public class ColourChooser
 	
 	public void updateAllChooserSubComponents_ColorChanged()
 	{
+		
 		int COLOUR = getSelectedEditColor();
 		
-		chooserLeftColourSelectorEditColourSelector.repaint();
 		
 		chooserRightHEXimpl.outerColourUpdate();
 		
@@ -1508,6 +1637,12 @@ public class ColourChooser
 		chooserRightHSBimplB.updateColorIntoSlider(COLOUR);
 		
 		chooserRightALPHAimpl.setGradientColors(COLOUR & 0xFFFFFF, (COLOUR & 0xFFFFFF) | 0xFF000000);
+		
+		updateColorLabels();
+		
+		chooserLeftColourSelectorEditColourSelector.repaint();
+		
+		dialog.getContentPane().repaint();
 	}
 	
 	public void updateAllChooserSubComponents_EditChanged()
@@ -1632,5 +1767,32 @@ public class ColourChooser
 	public boolean isVisible()
 	{
 		return dialog.isVisible();
+	}
+	
+	// 1=S, 2=B
+	private static int sliderLastChanged = -1;
+	
+	/*
+	 * Tweak of Color.RGBtoHSB()
+	 * Doesn't lock hue if saturation or brightness is zero, and doesn't lock saturation if brightness is zero.
+	 */
+	private float[] RGBtoHSB(int r, int g, int b, float[] hsbvals) {
+        hsbvals = Color.RGBtoHSB(r, g, b, hsbvals);
+        
+        if(sliderLastChanged == 1)
+        	hsbvals[0] = chooserRightHSBimplH.sliderValue;
+        if(sliderLastChanged == 2) {
+        	hsbvals[0] = chooserRightHSBimplH.sliderValue;
+        	hsbvals[1] = chooserRightHSBimplS.sliderValue;
+        }
+
+        return hsbvals;
+	}
+	
+	private void updateColorLabels() {
+		int c = getSelectedEditColor();
+		((TitledBorder)chooserRightHSB.getBorder()).setTitle("HSB ("+(int)(chooserRightHSBimplH.sliderValue*360)+", "+(int)(chooserRightHSBimplS.sliderValue*255)+", "+(int)(chooserRightHSBimplB.sliderValue*255)+")");
+		((TitledBorder)chooserRightRGB.getBorder()).setTitle("RGB ("+((c >> 16) & 0xFF)+", "+((c >> 8) & 0xFF)+", "+(c & 0xFF)+")");
+		((TitledBorder)chooserRightALPHA.getBorder()).setTitle("Alpha ("+((c >> 24) & 0xFF)+")");
 	}
 }

@@ -23,6 +23,8 @@ import heroesgrave.paint.image.ShapeChange;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.BasicStroke;
+import java.awt.Stroke;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 
 import javax.swing.JLabel;
@@ -38,6 +40,9 @@ public class Eraser extends Tool
 	private JSlider slider;
 	private JLabel size;
 	
+	private Ellipse2D.Float previewCircle;
+	private Stroke previewStroke = new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+	
 	public Eraser(String name)
 	{
 		super(name);
@@ -48,6 +53,7 @@ public class Eraser extends Tool
 			public void stateChanged(ChangeEvent e)
 			{
 				size.setText("Size: " + slider.getValue());
+				previewCircle.width = previewCircle.height = slider.getValue();
 			}
 		});
 		
@@ -72,6 +78,8 @@ public class Eraser extends Tool
 		layout.putConstraint(SpringLayout.NORTH, slider, -3, SpringLayout.NORTH, menu);
 		
 		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
+		
+		previewCircle = new Ellipse2D.Float(0,0,slider.getValue(),slider.getValue());
 	}
 	
 	@Override
@@ -101,6 +109,19 @@ public class Eraser extends Tool
 		{
 			path.lineTo(x, y);
 		}
+		whileReleased(x, y, button);
 		Paint.main.gui.canvas.getPanel().repaint();
+	}
+	
+	@Override
+	public void whileReleased(int x, int y, int button) {
+		previewCircle.x = x - previewCircle.width / 2;
+		previewCircle.y = y - previewCircle.width / 2;
+		Paint.main.gui.canvas.getPanel().repaint();
+	}
+	
+	@Override
+	public void onSelect() {
+		Paint.main.gui.canvas.getPanel().setCursorPreview(previewCircle, previewStroke);
 	}
 }

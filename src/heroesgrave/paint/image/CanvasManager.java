@@ -30,6 +30,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -199,6 +201,9 @@ public class CanvasManager
 		private int lastButton = 0;
 		private BufferedImage background;
 		
+		private Shape cursorPreviewShape;
+		private Stroke cursorPreviewStroke;
+		
 		private int lastX = 0, lastY = 0;
 		
 		public static final Color TRANSPARENT = new Color(255, 255, 255, 0);
@@ -229,6 +234,11 @@ public class CanvasManager
 			this.scale = scale;
 		}
 		
+		public void setCursorPreview(Shape shape, Stroke stroke) {
+			cursorPreviewShape = shape;
+			cursorPreviewStroke = stroke;
+		}
+		
 		@Override
 		public void paint(Graphics arg0)
 		{
@@ -250,6 +260,14 @@ public class CanvasManager
 			if(mgr.selector != null)
 			{
 				mgr.selector.apply(background);
+			}
+			
+			if(cursorPreviewShape != null)
+			{
+				draw.setColor(Color.black);
+				draw.setXORMode(Color.white);
+				draw.setStroke(cursorPreviewStroke);
+				draw.draw(cursorPreviewShape);
 			}
 			
 			g.drawImage(background, 0, 0, MathUtils.floor(background.getWidth() * scale), MathUtils.floor(background.getHeight() * scale), null);
