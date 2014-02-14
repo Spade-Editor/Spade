@@ -1018,9 +1018,10 @@ public class ColourChooser
 		@Override
 		public void mouseReleased(MouseEvent e)
 		{
-			sliderLastChanged = 1;
 			int x = e.getX();
 			int y = e.getY();
+			
+			sliderLastChanged = y >= getHeight() - 1 ? 2 : 1;
 			
 			if(x < 0) x = 0;
 			else if(x >= square.getWidth()) x = square.getWidth() - 1;
@@ -1195,7 +1196,10 @@ public class ColourChooser
 		chooserLeftColourSelectorLayout = new SpringLayout();
 		
 		chooserLeftColourSelector.setLayout(chooserLeftColourSelectorLayout);
-		chooserLeftColourCircle.setLayout(new BorderLayout(110, 0));
+		
+		SpringLayout colorSquareLayout = new SpringLayout();
+		
+		chooserLeftColourCircle.setLayout(colorSquareLayout);
 		chooserLeftColourPallete.setLayout(new GridLayout(0, 16, 0, 0));
 		
 		HSBSquare = new ColorSquare(256, 256);
@@ -1207,8 +1211,16 @@ public class ColourChooser
 		chooserLeftColourCircle.setSize(256, 256);
 		JLabel title = new JLabel("Color Square");
 		title.setFont(title.getFont().deriveFont(Font.BOLD));
-		chooserLeftColourCircle.add(title, BorderLayout.WEST);
-		chooserLeftColourCircle.add(HSBSquare, BorderLayout.CENTER);
+		chooserLeftColourCircle.add(title);
+		chooserLeftColourCircle.add(HSBSquare);
+		
+		colorSquareLayout.putConstraint(SpringLayout.NORTH, title, 6, SpringLayout.NORTH, chooserLeftColourCircle);
+		colorSquareLayout.putConstraint(SpringLayout.WEST, title, 6, SpringLayout.WEST, chooserLeftColourCircle);
+		
+		colorSquareLayout.putConstraint(SpringLayout.NORTH, HSBSquare, 0, SpringLayout.NORTH, chooserLeftColourCircle);
+		colorSquareLayout.putConstraint(SpringLayout.SOUTH, HSBSquare, 0, SpringLayout.SOUTH, chooserLeftColourCircle);
+		colorSquareLayout.putConstraint(SpringLayout.WEST, HSBSquare, -76, SpringLayout.EAST, chooserLeftColourCircle);
+		colorSquareLayout.putConstraint(SpringLayout.EAST, HSBSquare, 0, SpringLayout.EAST, chooserLeftColourCircle);
 		
 		
 		
