@@ -100,6 +100,7 @@ public class PluginManager
 		
 		for(Plugin plugin : this.loadedPlugins)
 		{
+			System.out.println("[PluginManager] Initialising " + plugin.name);
 			plugin.init(paint);
 		}
 		
@@ -159,6 +160,8 @@ public class PluginManager
 			}
 			
 			// Get Main-Class name!
+			// Temporarily unused due to some bugs.
+			@SuppressWarnings("unused")
 			String mainClassName = props.getProperty("main");
 			
 			// List Entries
@@ -186,10 +189,13 @@ public class PluginManager
 				// If this is not the main-class, skip it! This speeds up the time it takes to load the plugin,
 				// since we don't load all classes at once, but rather by just loading the main-class and then
 				// letting the JVM-SystemClassLoader do its work. (Its faster this way!)
+				
+				/* XXX: The JVM-SystemClassLoader isn't doing it's work, so I removed this bit.
 				if(!className.equals(mainClassName))
 				{
 					continue;
 				}
+				*/
 				
 				// Try to load the class!
 				try
