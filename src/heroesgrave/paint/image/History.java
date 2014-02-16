@@ -167,7 +167,6 @@ public class History
 			f.apply(image);
 			history.push(f);
 		}
-		System.out.println("GetUpdatedImage");
 		return image;
 	}
 }
