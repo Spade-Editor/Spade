@@ -229,6 +229,8 @@ public class PluginManager
 							
 							// Date updated (defined by author)
 							newPluginInstance.info.put("updated", (props.get("updated")));
+							
+							newPluginInstance.info.put("plugin_location", possiblePluginRoot.getAbsolutePath());
 						}
 						catch(ReflectiveOperationException e1)
 						{

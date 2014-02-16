@@ -27,6 +27,7 @@ import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.paint.tools.Tool;
 import heroesgrave.utils.app.Application;
+import heroesgrave.utils.io.IOUtils;
 import heroesgrave.utils.io.ImageExporter;
 import heroesgrave.utils.io.ImageImporter;
 
@@ -393,10 +394,11 @@ public class Paint extends Application
 	
 	public static void main(String[] args)
 	{
+		IOUtils.setMainClass(Paint.class);
+		
 		// Check for a file argument
 		if(args.length >= 1)
 		{
-			System.out.println("The Application will try to open file given over the command-line after startup: " + args[0]);
 			File f = new File(args[0]);
 			
 			if(f.exists() && f.isFile() && !f.isHidden())
@@ -408,6 +410,18 @@ public class Paint extends Application
 		// Go through ALL the arguments and...
 		for(String STR : args)
 		{
+			if(STR.equalsIgnoreCase("-v"))
+			{
+				System.out.println(VERSION);
+				System.exit(0);
+			}
+			
+			if(STR.equalsIgnoreCase("-p"))
+			{
+				System.out.println(IOUtils.jarPath());
+				System.exit(0);
+			}
+			
 			// ...If the arguments contain the DmemoryWatcherFlag flag, set the property to true to enable the MemoryWatcher.
 			if(STR.equalsIgnoreCase("DmemoryWatcherFlag"))
 			{

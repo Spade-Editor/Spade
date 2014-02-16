@@ -53,6 +53,19 @@ public class IOUtils
 		}
 	}
 	
+	public static String jarPath()
+	{
+		try
+		{
+			return MAIN_CLASS.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+		}
+		catch(URISyntaxException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static String assemblePath(String... path)
 	{
 		String fullPath = "";
