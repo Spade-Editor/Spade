@@ -161,9 +161,8 @@ public class Canvas
 			}
 			else if(prev instanceof Frame)
 			{
-				temp = hist.getUpdatedImage();
-				((Frame) prev).apply(this.temp);
-				g.drawImage(this.temp, 0, 0, null);
+				((Frame) prev).apply(this.image);
+				g.drawImage(this.image, 0, 0, null);
 			}
 		}
 		else
