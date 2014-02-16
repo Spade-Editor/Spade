@@ -60,7 +60,7 @@ public class Paint extends Application
 	// Beta for new completed features.
 	// Development for under-development new features.
 	
-	public static final String VERSION = "1.0-Beta.1";
+	public static final String VERSION = "1.0-Beta.2";
 	public static final String RELEASED = "16/02/2014";
 	
 	/*/public static final String BUILD_TYPE = "Development";
@@ -113,22 +113,7 @@ public class Paint extends Application
 		}
 		saved = true;
 		Paint.main.gui.frame.requestFocus();
-		new Thread(new Runnable()
-		{
-			public void run()
-			{
-				try
-				{
-					while(!Paint.main.gui.frame.hasFocus())
-						Thread.sleep(1);
-				}
-				catch(InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-				pluginManager.onLaunch();
-			}
-		}).start();
+		pluginManager.onLaunch();
 	}
 	
 	@Override
