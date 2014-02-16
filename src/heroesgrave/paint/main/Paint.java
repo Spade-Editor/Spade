@@ -104,7 +104,6 @@ public class Paint extends Application
 		setLeftColour(0xff000000, false);
 		setTool(currentTool);
 		pluginManager.registerOther();
-		pluginManager.onLaunch();
 		
 		if(toOpen != null)
 		{
@@ -113,6 +112,23 @@ public class Paint extends Application
 			Paint.main.gui.canvas.setRoot(ImageImporter.loadImage(toOpen.getAbsolutePath()));
 		}
 		saved = true;
+		Paint.main.gui.frame.requestFocus();
+		new Thread(new Runnable()
+		{
+			public void run()
+			{
+				try
+				{
+					while(!Paint.main.gui.frame.hasFocus())
+						Thread.sleep(1);
+				}
+				catch(InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+				pluginManager.onLaunch();
+			}
+		}).start();
 	}
 	
 	@Override
@@ -443,5 +459,10 @@ public class Paint extends Application
 		
 		// Finally Launch Paint.JAVA!
 		Application.launch(main);
+	}
+	
+	public static String getVersionString()
+	{
+		return VERSION;
 	}
 }
