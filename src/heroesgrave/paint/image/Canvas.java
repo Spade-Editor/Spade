@@ -161,6 +161,11 @@ public class Canvas
 			}
 			else if(prev instanceof Frame)
 			{
+				/*
+				 * Think about reverting this somehow:
+				 * (Causes tool preview buildup, bad on the shape drawers)
+				 */
+				
 				//temp = hist.getUpdatedImage();
 				((Frame) prev).apply(this.image); //changed this.temp to this.image
 				g.drawImage(this.image, 0, 0, null); //<-- same here

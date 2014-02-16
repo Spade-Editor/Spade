@@ -248,7 +248,7 @@ public class CanvasManager
 		@Override
 		public void paint(Graphics arg0)
 		{
-			long time = System.nanoTime();
+			//long time = System.nanoTime();
 			super.paint(arg0);
 			Graphics2D g = (Graphics2D) arg0;
 			Graphics2D draw = background.createGraphics();
@@ -304,12 +304,12 @@ public class CanvasManager
 			/*
 			 * Timer for paint() method, prints the time spent in paint() averaged over 100 calls. Prints every 100 calls.
 			 */
-			avg += System.nanoTime() - time;
+			/*avg += System.nanoTime() - time;
 			if(count++ >= 100) {
 				System.out.println(avg/(1000000000*100f));
 				avg = 0;
 				count = 0;
-			}
+			}*/
 			/*
 			 * Findings:
 			 * "Healthy" paint cycle is ~0.005 sec per the 100 avg
