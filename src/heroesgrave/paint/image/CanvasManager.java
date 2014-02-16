@@ -239,9 +239,11 @@ public class CanvasManager
 			cursorPreviewStroke = stroke;
 		}
 		
+		private long avg = 0, count = 0;
 		@Override
 		public void paint(Graphics arg0)
 		{
+			long time = System.nanoTime();
 			super.paint(arg0);
 			
 			Graphics2D g = (Graphics2D) arg0;
@@ -285,6 +287,25 @@ public class CanvasManager
 				}
 			}
 			Paint.main.gui.info.setSize(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight());
+			
+			/*
+			 * Timer for paint() method, prints the time spent in paint() averaged over 100 calls. Prints every 100 calls.
+			 */
+			avg += System.nanoTime() - time;
+			if(count++ >= 100) {
+				System.out.println(avg/(1000000000*100f));
+				avg = 0;
+				count = 0;
+			}
+			/*
+			 * Findings:
+			 * "Healthy" paint cycle is ~0.005 sec per the 100 avg
+			 * "Laggy" paint cycle is   ~0.02
+			 * 
+			 * *Note: specific times are specific to a machine, but you can see the difference. This test was while scribling with the pencil.
+			 * 
+			 * Still not sure of cause, but it's in this method.
+			 */
 		}
 		
 		@Override
