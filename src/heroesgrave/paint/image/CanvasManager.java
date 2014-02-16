@@ -240,23 +240,36 @@ public class CanvasManager
 		}
 		
 		private long avg = 0, count = 0;
+		
+		private TexturePaint bgPaint;
+		private BufferedImage bg;
+		private boolean bgDark;
+		
 		@Override
 		public void paint(Graphics arg0)
 		{
 			long time = System.nanoTime();
 			super.paint(arg0);
-			
 			Graphics2D g = (Graphics2D) arg0;
 			Graphics2D draw = background.createGraphics();
 			draw.setBackground(TRANSPARENT);
 			draw.clearRect(0, 0, background.getWidth(), background.getHeight());
 			
-			g.setPaint(new TexturePaint(Menu.DARK_BACKGROUND ? transparencyBGDark : transparencyBG, new Rectangle2D.Float(0, 0, 16, 16)));
-			g.fillRect(0, 0, MathUtils.floor(mgr.getWidth() * scale), MathUtils.floor(mgr.getHeight() * scale));
+			if(bgPaint == null || bgDark != Menu.DARK_BACKGROUND) {
+				bgDark = Menu.DARK_BACKGROUND;
+				bgPaint = new TexturePaint(Menu.DARK_BACKGROUND ? transparencyBGDark : transparencyBG, new Rectangle2D.Float(0, 0, 16, 16));
+				bg = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+				Graphics2D gg = bg.createGraphics();
+				gg.setPaint(bgPaint);
+				
+				//oddly enough, this was the culprit:
+				gg.fillRect(0, 0, MathUtils.floor(mgr.getWidth() * scale), MathUtils.floor(mgr.getHeight() * scale));
+				//(it was g.fillRect(...); before
+			}
 			
-			g.setPaint(null);
+			g.drawImage(bg, 0, 0, null);
+			
 			draw.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-			
 			mgr.root.draw(draw, true);
 			
 			if(mgr.selector != null)
