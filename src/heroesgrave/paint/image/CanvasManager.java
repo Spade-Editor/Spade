@@ -239,22 +239,37 @@ public class CanvasManager
 			cursorPreviewStroke = stroke;
 		}
 		
+		private long avg = 0, count = 0;
+		
+		private TexturePaint bgPaint;
+		private BufferedImage bg;
+		private boolean bgDark;
+		
 		@Override
 		public void paint(Graphics arg0)
 		{
+			//long time = System.nanoTime();
 			super.paint(arg0);
-			
 			Graphics2D g = (Graphics2D) arg0;
 			Graphics2D draw = background.createGraphics();
 			draw.setBackground(TRANSPARENT);
 			draw.clearRect(0, 0, background.getWidth(), background.getHeight());
 			
-			g.setPaint(new TexturePaint(Menu.DARK_BACKGROUND ? transparencyBGDark : transparencyBG, new Rectangle2D.Float(0, 0, 16, 16)));
-			g.fillRect(0, 0, MathUtils.floor(mgr.getWidth() * scale), MathUtils.floor(mgr.getHeight() * scale));
+			if(bgPaint == null || bgDark != Menu.DARK_BACKGROUND) {
+				bgDark = Menu.DARK_BACKGROUND;
+				bgPaint = new TexturePaint(Menu.DARK_BACKGROUND ? transparencyBGDark : transparencyBG, new Rectangle2D.Float(0, 0, 16, 16));
+				bg = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+				Graphics2D gg = bg.createGraphics();
+				gg.setPaint(bgPaint);
+				
+				//oddly enough, this was the culprit:
+				gg.fillRect(0, 0, MathUtils.floor(mgr.getWidth() * scale), MathUtils.floor(mgr.getHeight() * scale));
+				//(it was g.fillRect(...); before
+			}
 			
-			g.setPaint(null);
+			g.drawImage(bg, 0, 0, null);
+			
 			draw.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-			
 			mgr.root.draw(draw, true);
 			
 			if(mgr.selector != null)
@@ -285,6 +300,25 @@ public class CanvasManager
 				}
 			}
 			Paint.main.gui.info.setSize(Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight());
+			
+			/*
+			 * Timer for paint() method, prints the time spent in paint() averaged over 100 calls. Prints every 100 calls.
+			 */
+			/*avg += System.nanoTime() - time;
+			if(count++ >= 100) {
+				System.out.println(avg/(1000000000*100f));
+				avg = 0;
+				count = 0;
+			}*/
+			/*
+			 * Findings:
+			 * "Healthy" paint cycle is ~0.005 sec per the 100 avg
+			 * "Laggy" paint cycle is   ~0.02
+			 * 
+			 * *Note: specific times are specific to a machine, but you can see the difference. This test was while scribling with the pencil.
+			 * 
+			 * Still not sure of cause, but it's in this method.
+			 */
 		}
 		
 		@Override
