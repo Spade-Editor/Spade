@@ -234,12 +234,13 @@ public class CanvasManager
 			this.scale = scale;
 		}
 		
-		public void setCursorPreview(Shape shape, Stroke stroke) {
+		public void setCursorPreview(Shape shape, Stroke stroke)
+		{
 			cursorPreviewShape = shape;
 			cursorPreviewStroke = stroke;
 		}
 		
-		private long avg = 0, count = 0;
+		//private long avg = 0, count = 0;
 		
 		private TexturePaint bgPaint;
 		private BufferedImage bg;
@@ -255,7 +256,8 @@ public class CanvasManager
 			draw.setBackground(TRANSPARENT);
 			draw.clearRect(0, 0, background.getWidth(), background.getHeight());
 			
-			if(bgPaint == null || bgDark != Menu.DARK_BACKGROUND) {
+			if(bgPaint == null || bgDark != Menu.DARK_BACKGROUND)
+			{
 				bgDark = Menu.DARK_BACKGROUND;
 				bgPaint = new TexturePaint(Menu.DARK_BACKGROUND ? transparencyBGDark : transparencyBG, new Rectangle2D.Float(0, 0, 16, 16));
 				bg = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);

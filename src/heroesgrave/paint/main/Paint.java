@@ -60,7 +60,7 @@ public class Paint extends Application
 	// Beta for new completed features.
 	// Development for under-development new features.
 	
-	public static final String VERSION = "1.0-Beta.2";
+	public static final String VERSION = "1.0-Beta.3";
 	public static final String RELEASED = "16/02/2014";
 	
 	/*/public static final String BUILD_TYPE = "Development";
