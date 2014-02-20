@@ -101,7 +101,6 @@ public class GUIManager
 		}
 		else
 		{
-			System.out.println("[GUIManager] Trying to apply LAF '" + LAF_TO_USE + "'!");
 			
 			try
 			{
@@ -112,7 +111,6 @@ public class GUIManager
 					if(info.getName().equals(LAF_TO_USE))
 					{
 						UIManager.setLookAndFeel(info.getClassName());
-						System.out.println("[GUIManager] Successfully applied LAF '" + LAF_TO_USE + "'!");
 						success = true;
 						break;
 					}
@@ -125,10 +123,10 @@ public class GUIManager
 			{
 				e.printStackTrace();
 				
-				System.out.println("Applying LAF failed. Printing all LAF names for correction:");
+				System.err.println("Applying LAF failed. Printing all LAF names for correction:");
 				for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
 				{
-					System.out.println("LAF: " + info.getName() + " / " + info.getClassName());
+					System.err.println("LAF: " + info.getName() + " / " + info.getClassName());
 				}
 				
 			}

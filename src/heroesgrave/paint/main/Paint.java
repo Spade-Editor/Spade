@@ -411,12 +411,23 @@ public class Paint extends Application
 		// Go through ALL the arguments and...
 		for(String STR : args)
 		{
+			// Print version string and exit.
 			if(STR.equalsIgnoreCase("-v"))
 			{
 				System.out.println(VERSION);
 				System.exit(0);
 			}
 			
+			// Print detailed version info and exit.
+			if(STR.equalsIgnoreCase("-vv"))
+			{
+				System.out.println("Paint.JAVA v" + VERSION);
+				System.out.println("Version Released: " + RELEASED);
+				System.out.println("Built Type: " + BUILD_TYPE);
+				System.exit(0);
+			}
+			
+			// Print the absolute path of the jar and exit.
 			if(STR.equalsIgnoreCase("-p"))
 			{
 				System.out.println(IOUtils.jarPath());

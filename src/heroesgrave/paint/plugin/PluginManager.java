@@ -84,8 +84,6 @@ public class PluginManager
 		// Get a list of all files and directories in the folder using a filter that filters for directories and jar-files.
 		File[] possiblePluginRoots = pluginRootDirectory.listFiles(new PluginFileFilter());
 		
-		System.out.println("[PluginManager] Searching for Plugins...");
-		
 		for(File possiblePluginRoot : possiblePluginRoots)
 		{
 			if(possiblePluginRoot.isFile() && possiblePluginRoot.getName().endsWith(".jar"))
@@ -94,17 +92,10 @@ public class PluginManager
 			}
 		}
 		
-		System.out.println("[PluginManager] Done searching. Found " + loadedPlugins.size() + " plugins.");
-		
-		System.out.println("[PluginManager] Loading Plugins...");
-		
 		for(Plugin plugin : this.loadedPlugins)
 		{
-			System.out.println("[PluginManager] Initialising " + plugin.name);
 			plugin.init(paint);
 		}
-		
-		System.out.println("[PluginManager] All plugins loaded.");
 	}
 	
 	private void handlePossibleJarBasedPlugin(File possiblePluginRoot)
@@ -216,7 +207,7 @@ public class PluginManager
 							Plugin newPluginInstance = pluginClass.newInstance();
 							this.loadedPlugins.add(newPluginInstance);
 							
-							System.out.println("[PluginManager] Plugin " + newPluginInstance.name + " found and loaded.");
+							System.out.println("[PluginManager] Loaded Plugin: " + newPluginInstance.name);
 							
 							// Create info object.
 							newPluginInstance.info = new Properties();
