@@ -942,9 +942,9 @@ public class ColourChooser
 			if(e.getButton() == MouseEvent.BUTTON2)
 				leftColour = rightColour = color.getRGB();
 			
-			updateAllChooserSubComponents_EditChanged();
-			updatePaintGUI();
+			sliderLastChanged = -1;
 			
+			updateAllChooserSubComponents_EditChanged();
 		}
 		
 		@Override
