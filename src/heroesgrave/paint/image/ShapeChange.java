@@ -26,8 +26,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
 
 public class ShapeChange extends GraphicsFrame
 {
@@ -57,9 +55,6 @@ public class ShapeChange extends GraphicsFrame
 	
 	public void apply(Graphics2D g2d)
 	{
-		if(changeShape instanceof Ellipse2D || changeShape instanceof Area)
-			g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-		
 		if(antialiasing)
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		

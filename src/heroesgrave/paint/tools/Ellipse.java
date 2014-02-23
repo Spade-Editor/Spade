@@ -19,9 +19,9 @@
 
 package heroesgrave.paint.tools;
 
-import heroesgrave.paint.image.EllipseChange;
 import heroesgrave.paint.image.Frame;
 import heroesgrave.paint.image.ShapeChange;
+import heroesgrave.paint.image.accurate.EllipseChange;
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
 

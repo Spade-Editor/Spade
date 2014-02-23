@@ -19,7 +19,9 @@
 
 package heroesgrave.paint.tools;
 
+import heroesgrave.paint.image.Frame;
 import heroesgrave.paint.image.ShapeChange;
+import heroesgrave.paint.image.accurate.LineChange;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.event.MouseEvent;
@@ -32,7 +34,7 @@ import javax.swing.SpringLayout;
 public class Line extends Tool
 {
 	private Line2D.Float line;
-	private ShapeChange change;
+	private Frame change;
 	private JCheckBox antialias;
 	
 	public Line(String name)
@@ -62,29 +64,52 @@ public class Line extends Tool
 	
 	public void onPressed(int x, int y, int button)
 	{
-		line = new Line2D.Float(x, y, x, y);
-		if(button == MouseEvent.BUTTON1)
+		if(antialias.isSelected())
 		{
-			change = new ShapeChange(line, Paint.main.getLeftColour()).setAntialiasing(antialias.isSelected());
+			line = new Line2D.Float(x, y, x, y);
+			if(button == MouseEvent.BUTTON1)
+			{
+				change = new ShapeChange(line, Paint.main.getLeftColour()).setAntialiasing(true);
+			}
+			else if(button == MouseEvent.BUTTON3)
+			{
+				change = new ShapeChange(line, Paint.main.getRightColour()).setAntialiasing(true);
+			}
 		}
-		else if(button == MouseEvent.BUTTON3)
+		else
 		{
-			change = new ShapeChange(line, Paint.main.getRightColour()).setAntialiasing(antialias.isSelected());
+			change = new LineChange(x, y, button);
 		}
 		Paint.main.gui.canvas.preview(change);
 	}
 	
 	public void onReleased(int x, int y, int button)
 	{
-		line.x2 = x;
-		line.y2 = y;
+		if(antialias.isSelected())
+		{
+			line.x2 = x;
+			line.y2 = y;
+		}
+		else
+		{
+			((LineChange) change).change(x, y);
+		}
 		Paint.main.gui.canvas.applyPreview();
+		line = null;
+		change = null;
 	}
 	
 	public void whilePressed(int x, int y, int button)
 	{
-		line.x2 = x;
-		line.y2 = y;
+		if(antialias.isSelected())
+		{
+			line.x2 = x;
+			line.y2 = y;
+		}
+		else
+		{
+			((LineChange) change).change(x, y);
+		}
 		Paint.main.gui.canvas.getPanel().repaint();
 	}
 }

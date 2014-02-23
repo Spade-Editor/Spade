@@ -19,16 +19,12 @@
 
 package heroesgrave.paint.tools;
 
-import heroesgrave.paint.image.ShapeChange;
+import heroesgrave.paint.image.accurate.BrushChange;
 import heroesgrave.paint.main.Paint;
-
-import java.awt.event.MouseEvent;
-import java.awt.geom.GeneralPath;
 
 public class Pixel extends Tool
 {
-	private GeneralPath path;
-	private ShapeChange change;
+	private BrushChange change;
 	
 	public Pixel(String name)
 	{
@@ -37,36 +33,20 @@ public class Pixel extends Tool
 	
 	public void onPressed(int x, int y, int button)
 	{
-		path = new GeneralPath();
-		path.moveTo(x, y);
-		if(button == MouseEvent.BUTTON1)
-		{
-			change = new ShapeChange(path, Paint.main.getLeftColour());
-		}
-		else if(button == MouseEvent.BUTTON3)
-		{
-			change = new ShapeChange(path, Paint.main.getRightColour());
-		}
+		change = new BrushChange(x, y, button);
 		Paint.main.gui.canvas.preview(change);
 	}
 	
 	public void onReleased(int x, int y, int button)
 	{
-		if(path != null)
-		{
-			path.lineTo(x, y);
-		}
+		change.change(x, y);
 		Paint.main.gui.canvas.applyPreview();
-		path = null;
 		change = null;
 	}
 	
 	public void whilePressed(int x, int y, int button)
 	{
-		if(path != null)
-		{
-			path.lineTo(x, y);
-		}
+		change.change(x, y);
 		Paint.main.gui.canvas.getPanel().repaint();
 	}
 }

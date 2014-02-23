@@ -1,5 +1,7 @@
-package heroesgrave.paint.image;
+package heroesgrave.paint.image.accurate;
 
+import heroesgrave.paint.image.BufferedChange;
+import heroesgrave.paint.image.PixelChange;
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
