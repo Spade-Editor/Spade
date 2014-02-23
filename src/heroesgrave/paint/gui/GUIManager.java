@@ -144,7 +144,7 @@ public class GUIManager
 		chooser = new ColourChooser(frame);
 		layers = new LayerManager(canvas.getRoot());
 		about = new AboutDialog(frame);
-		toolBox = new ToolBox(frame);
+		Paint.main.tools.toolbox = toolBox = new ToolBox(frame);
 		finish();
 		
 		initInputs();

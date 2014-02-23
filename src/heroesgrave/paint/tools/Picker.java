@@ -19,7 +19,7 @@
 
 package heroesgrave.paint.tools;
 
-import heroesgrave.paint.gui.ToolMenu;
+import heroesgrave.paint.gui.Tools;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.event.MouseEvent;
@@ -86,7 +86,7 @@ public class Picker extends Tool
 		
 		if(switchPencil.isSelected())
 		{
-			Paint.setTool(ToolMenu.DEF);
+			Paint.setTool(Tools.DEF);
 		}
 	}
 	

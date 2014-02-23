@@ -19,6 +19,7 @@
 
 package heroesgrave.paint.plugin;
 
+import heroesgrave.paint.gui.Tools;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.Popup;
 import heroesgrave.utils.io.IOUtils;
@@ -267,10 +268,10 @@ public class PluginManager
 		return instance;
 	}
 	
-	public void registerTools(JMenu menu)
+	public void registerTools(Tools tools)
 	{
 		//System.out.println("[Event] Tool-Menu creation.");
-		RegisterTools register = new RegisterTools(menu);
+		RegisterTools register = new RegisterTools(tools);
 		
 		for(Plugin plugin : loadedPlugins)
 		{

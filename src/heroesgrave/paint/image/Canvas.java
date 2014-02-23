@@ -161,14 +161,22 @@ public class Canvas
 			}
 			else if(prev instanceof Frame)
 			{
-				/*
-				 * Think about reverting this somehow:
-				 * (Causes tool preview buildup, bad on the shape drawers)
-				 */
-				
-				//temp = hist.getUpdatedImage();
-				((Frame) prev).apply(this.image); //changed this.temp to this.image
-				g.drawImage(this.image, 0, 0, null); //<-- same here
+				if(prev instanceof GraphicsFrame)
+				{
+					g.drawImage(this.image, 0, 0, null);
+					((GraphicsFrame) prev).apply(g);
+				}
+				else if(prev instanceof BufferedChange && ((BufferedChange) prev).refresh)
+				{
+					temp = hist.getUpdatedImage();
+					((Frame) prev).apply(this.temp);
+					g.drawImage(this.temp, 0, 0, null);
+				}
+				else
+				{
+					((Frame) prev).apply(this.image);
+					g.drawImage(this.image, 0, 0, null);
+				}
 			}
 		}
 		else

@@ -21,16 +21,6 @@ package heroesgrave.paint.gui;
 
 import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.tools.Brush;
-import heroesgrave.paint.tools.Ellipse;
-import heroesgrave.paint.tools.Eraser;
-import heroesgrave.paint.tools.Fill;
-import heroesgrave.paint.tools.Line;
-import heroesgrave.paint.tools.Move;
-import heroesgrave.paint.tools.Picker;
-import heroesgrave.paint.tools.Pixel;
-import heroesgrave.paint.tools.Rectangle;
-import heroesgrave.paint.tools.SelectTool;
 import heroesgrave.paint.tools.Tool;
 
 import java.awt.BorderLayout;
@@ -42,8 +32,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Enumeration;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -53,10 +45,7 @@ import javax.swing.JToggleButton;
 
 public class ToolBox
 {
-	
-	private final int BUTTON_SIZE = 32;
-	
-	public static Tool DEF;
+	private final static int BUTTON_SIZE = 32;
 	
 	private JDialog dialog;
 	private JPanel panel;
@@ -78,20 +67,6 @@ public class ToolBox
 		
 		buttonGroup = new ButtonGroup();
 		
-		DEF = new Pixel("Pencil");
-		Paint.main.currentTool = DEF;
-		
-		addButton(new ToolBoxButton("Pencil", DEF), true);
-		addButton(new ToolBoxButton("Colour Picker", new Picker("Colour Picker")));
-		addButton(new ToolBoxButton("Brush", new Brush("Brush")));
-		addButton(new ToolBoxButton("Paint Bucket", new Fill("Paint Bucket")));
-		addButton(new ToolBoxButton("Eraser", new Eraser("Eraser")));
-		addButton(new ToolBoxButton("Select", new SelectTool("Select")));
-		addButton(new ToolBoxButton("Move", new Move("Move")));
-		addButton(new ToolBoxButton("Line", new Line("Straight Line")));
-		addButton(new ToolBoxButton("Rectangle", new Rectangle("Rectangle")));
-		addButton(new ToolBoxButton("Ellipse", new Ellipse("Ellipse")));
-		
 		// backgroundPanel used to avoid button resizing and fit to BUTTON_SIZE
 		JPanel backgroundPanel = new JPanel(new GridBagLayout());
 		backgroundPanel.add(panel);
@@ -105,7 +80,7 @@ public class ToolBox
 		return dialog;
 	}
 	
-	private void addButton(ToolBoxButton button, boolean... selected)
+	public void addButton(ToolBoxButton button, boolean... selected)
 	{
 		if(selected != null && selected.length > 0)
 		{
@@ -113,6 +88,7 @@ public class ToolBox
 		}
 		buttonGroup.add(button);
 		panel.add(button);
+		dialog.pack();
 	}
 	
 	public void show()
@@ -140,9 +116,8 @@ public class ToolBox
 		return dialog.isVisible();
 	}
 	
-	private class ToolBoxButton extends JToggleButton
+	public static class ToolBoxButton extends JToggleButton
 	{
-		
 		private static final long serialVersionUID = -7985116966168623216L;
 		private Tool tool;
 		
@@ -188,6 +163,21 @@ public class ToolBox
 		public Tool getTool()
 		{
 			return tool;
+		}
+	}
+	
+	public void setSelected(Tool tool)
+	{
+		Enumeration<AbstractButton> e = buttonGroup.getElements();
+		
+		while(e.hasMoreElements())
+		{
+			ToolBoxButton b = (ToolBoxButton) e.nextElement();
+			if(b.tool == tool)
+			{
+				b.setSelected(true);
+				return;
+			}
 		}
 	}
 }

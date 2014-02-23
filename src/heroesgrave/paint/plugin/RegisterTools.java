@@ -19,22 +19,20 @@
 
 package heroesgrave.paint.plugin;
 
-import heroesgrave.paint.gui.ToolMenu.ToolMenuItem;
+import heroesgrave.paint.gui.Tools;
 import heroesgrave.paint.tools.Tool;
-
-import javax.swing.JMenu;
 
 public class RegisterTools
 {
-	private JMenu menu;
+	private Tools tools;
 	
-	public RegisterTools(JMenu menu)
+	public RegisterTools(Tools tools)
 	{
-		this.menu = menu;
+		this.tools = tools;
 	}
 	
 	public void register(String name, Tool tool, String key)
 	{
-		menu.add(new ToolMenuItem(name, tool, key));
+		tools.addTool(tool, name, key);
 	}
 }

@@ -109,8 +109,22 @@ public class SelectionCanvas extends Canvas
 				}
 				else if(prev instanceof Frame)
 				{
-					((Frame) prev).apply(this.temp);
-					g.drawImage(this.temp, 0, 0, null);
+					if(prev instanceof GraphicsFrame)
+					{
+						g.drawImage(this.image, 0, 0, null);
+						((GraphicsFrame) prev).apply(g);
+					}
+					else if(prev instanceof BufferedChange && ((BufferedChange) prev).refresh)
+					{
+						temp = hist.getUpdatedImage();
+						((Frame) prev).apply(this.temp);
+						g.drawImage(this.temp, 0, 0, null);
+					}
+					else
+					{
+						((Frame) prev).apply(this.image);
+						g.drawImage(this.image, 0, 0, null);
+					}
 				}
 			}
 			else
@@ -139,9 +153,22 @@ public class SelectionCanvas extends Canvas
 				}
 				else if(prev instanceof Frame)
 				{
-					temp = hist.getUpdatedImage();
-					((Frame) prev).apply(this.temp);
-					g.drawImage(this.temp, 0, 0, null);
+					if(prev instanceof GraphicsFrame)
+					{
+						g.drawImage(this.image, 0, 0, null);
+						((GraphicsFrame) prev).apply(g);
+					}
+					else if(prev instanceof BufferedChange && ((BufferedChange) prev).refresh)
+					{
+						temp = hist.getUpdatedImage();
+						((Frame) prev).apply(this.temp);
+						g.drawImage(this.temp, 0, 0, null);
+					}
+					else
+					{
+						((Frame) prev).apply(this.image);
+						g.drawImage(this.image, 0, 0, null);
+					}
 				}
 			}
 			else

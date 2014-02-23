@@ -21,6 +21,7 @@ package heroesgrave.paint.main;
 
 import heroesgrave.paint.gui.GUIManager;
 import heroesgrave.paint.gui.Menu.CentredJDialog;
+import heroesgrave.paint.gui.Tools;
 import heroesgrave.paint.image.IFrame;
 import heroesgrave.paint.image.doc.GlobalHistory;
 import heroesgrave.paint.imageops.ImageOp;
@@ -60,7 +61,7 @@ public class Paint extends Application
 	// Beta for new completed features.
 	// Development for under-development new features.
 	
-	public static final String VERSION = "1.0-Beta.5";
+	public static final String VERSION = "1.0-Beta.6";
 	public static final String RELEASED = "23/02/2014";
 	
 	/*/public static final String BUILD_TYPE = "Development";
@@ -82,12 +83,14 @@ public class Paint extends Application
 	
 	public Tool currentTool;
 	
+	public Tools tools;
+	
 	public static int leftColour = 0xff000000;
 	public static int rightColour = 0xffffffff;
 	
 	public boolean saved = false;
 	
-	private static HashMap<String, Tool> tools = new HashMap<String, Tool>();
+	private static HashMap<String, Tool> toolMap = new HashMap<String, Tool>();
 	private static HashMap<String, ImageOp> imageOps = new HashMap<String, ImageOp>();
 	
 	@Override
@@ -96,12 +99,17 @@ public class Paint extends Application
 		ImageExporter.registerExporters();
 		
 		pluginManager = PluginManager.instance(this);
+		
+		tools = new Tools();
+		
 		gui = new GUIManager();
 		gui.init();
 		
 		history = new GlobalHistory();
 		setRightColour(0xffffffff, false);
 		setLeftColour(0xff000000, false);
+		
+		tools.registerTools();
 		setTool(currentTool);
 		pluginManager.registerOther();
 		
@@ -203,7 +211,7 @@ public class Paint extends Application
 	
 	public static void addTool(String key, Tool tool)
 	{
-		tools.put(key.toLowerCase(), tool);
+		toolMap.put(key.toLowerCase(), tool);
 	}
 	
 	public static void addImageOp(String key, ImageOp op)
@@ -213,7 +221,7 @@ public class Paint extends Application
 	
 	public static Tool getTool(String key)
 	{
-		return tools.get(key.toLowerCase());
+		return toolMap.get(key.toLowerCase());
 	}
 	
 	public static ImageOp getImageOp(String key)
@@ -239,6 +247,7 @@ public class Paint extends Application
 		main.currentTool.onSelect();
 		main.gui.setToolOption(tool.getOptions());
 		main.gui.canvas.getPanel().repaint();
+		main.tools.toolbox.setSelected(tool);
 	}
 	
 	public static void save()

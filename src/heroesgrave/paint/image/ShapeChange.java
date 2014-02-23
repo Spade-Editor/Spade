@@ -28,9 +28,8 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
-import java.awt.image.BufferedImage;
 
-public class ShapeChange extends Frame
+public class ShapeChange extends GraphicsFrame
 {
 	private Shape changeShape;
 	private int colour;
@@ -56,9 +55,8 @@ public class ShapeChange extends Frame
 			composite = AlphaComposite.getInstance(AlphaComposite.SRC, ((colour >> 24) & 0xff) / 255f);
 	}
 	
-	public void apply(BufferedImage image)
+	public void apply(Graphics2D g2d)
 	{
-		Graphics2D g2d = image.createGraphics();
 		if(changeShape instanceof Ellipse2D || changeShape instanceof Area)
 			g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 		

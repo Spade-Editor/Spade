@@ -65,7 +65,7 @@ public class Menu
 		
 		// Editing Menu's
 		menuBar.add(ToolMenu.createImageMenu());
-		menuBar.add(ToolMenu.createToolMenu());
+		menuBar.add((Paint.main.tools.toolsMenu = new JMenu("Tools")));
 		menuBar.add(ToolMenu.createEffectMenu());
 		
 		// Info Menu's

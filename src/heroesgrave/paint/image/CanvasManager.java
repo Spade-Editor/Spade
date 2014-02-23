@@ -256,18 +256,24 @@ public class CanvasManager
 			draw.setBackground(TRANSPARENT);
 			draw.clearRect(0, 0, background.getWidth(), background.getHeight());
 			
+			// FIXME: Caused Rendering issues. When I tried fixing them, it caused horrible lag.
+			// This solution may cause some lag, but it draws everything properly.
+			
 			if(bgPaint == null || bgDark != Menu.DARK_BACKGROUND)
 			{
 				bgDark = Menu.DARK_BACKGROUND;
 				bgPaint = new TexturePaint(Menu.DARK_BACKGROUND ? transparencyBGDark : transparencyBG, new Rectangle2D.Float(0, 0, 16, 16));
+				/*
 				bg = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 				Graphics2D gg = bg.createGraphics();
-				gg.setPaint(bgPaint);
 				
 				//oddly enough, this was the culprit:
-				gg.fillRect(0, 0, MathUtils.floor(mgr.getWidth() * scale), MathUtils.floor(mgr.getHeight() * scale));
 				//(it was g.fillRect(...); before
+				*/
 			}
+			g.setPaint(bgPaint);
+			g.fillRect(0, 0, MathUtils.floor(mgr.getWidth() * scale), MathUtils.floor(mgr.getHeight() * scale));
+			g.setPaint(null);
 			
 			g.drawImage(bg, 0, 0, null);
 			

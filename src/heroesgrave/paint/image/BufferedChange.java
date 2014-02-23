@@ -26,6 +26,7 @@ import java.util.List;
 public class BufferedChange extends Frame
 {
 	protected List<Frame> changes = new ArrayList<Frame>();
+	public boolean refresh;
 	
 	public void buffer(Frame frame)
 	{
