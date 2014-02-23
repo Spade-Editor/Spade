@@ -45,6 +45,8 @@ public class History
 	 */
 	public static final int MAX_FRAMES = 32;
 	
+	public static final int MAX_CHANGES = 2048;
+	
 	private Stack<IFrame> history = new Stack<IFrame>();
 	private Stack<IFrame> reverted = new Stack<IFrame>();
 	private int lastKeyFrame = 0;
@@ -126,6 +128,10 @@ public class History
 	public void clean()
 	{
 		reverted.clear();
+	}
+	
+	public void slice()
+	{
 	}
 	
 	private void createKeyFrame(Frame frame)
