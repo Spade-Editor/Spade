@@ -90,7 +90,6 @@ public class Ellipse extends Tool
 		else
 		{
 			change = new EllipseChange(x, y, button);
-			((EllipseChange) change).change(x, y);
 		}
 		Paint.main.gui.canvas.preview(change);
 	}

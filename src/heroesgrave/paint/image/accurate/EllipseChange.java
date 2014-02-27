@@ -18,6 +18,7 @@ public class EllipseChange extends BufferedChange
 		this.sy = y;
 		this.button = button;
 		this.refresh = true;
+		change(x, y);
 	}
 	
 	public void change(int x, int y)

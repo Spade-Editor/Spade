@@ -17,6 +17,7 @@ public class BrushChange extends BufferedChange
 		this.ly = y;
 		this.button = button;
 		this.refresh = true;
+		change(x, y);
 	}
 	
 	public void change(int x, int y)
