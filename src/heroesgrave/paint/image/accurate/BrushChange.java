@@ -22,6 +22,11 @@ public class BrushChange extends BufferedChange
 	
 	public void change(int x, int y)
 	{
+		if(x == lx && y == ly)
+		{
+			brush(x, y);
+			return;
+		}
 		stroke(lx, ly, x, y);
 		lx = x;
 		ly = y;

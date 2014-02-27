@@ -23,6 +23,11 @@ public class LineChange extends BufferedChange
 	public void change(int x, int y)
 	{
 		this.changes.clear();
+		if(x == sx && y == sy)
+		{
+			brush(x, y);
+			return;
+		}
 		stroke(sx, sy, x, y);
 	}
 	
