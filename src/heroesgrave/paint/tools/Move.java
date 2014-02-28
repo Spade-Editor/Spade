@@ -38,10 +38,28 @@ public class Move extends Tool
 		super(name);
 	}
 	
+	public void onDeselect()
+	{
+		Paint.main.gui.canvas.preview(null);
+		image = null;
+		origin = null;
+		hovering = false;
+	}
+	
 	public void onPressed(int x, int y, int button)
 	{
 		if(hovering)
 		{
+			Paint.main.gui.canvas.getCanvas().getHistory().revertChange();
+			move(x - sx, y - sy, image, origin);
+			Paint.main.gui.canvas.applyPreview();
+			image = null;
+			origin = null;
+			SelectionCanvas c = Paint.main.gui.canvas.selection.getSelection();
+			if(c == Paint.main.gui.canvas.getCanvas())
+			{
+				c.finalizeTranslation();
+			}
 			hovering = false;
 		}
 		else
@@ -58,19 +76,7 @@ public class Move extends Tool
 	
 	public void onReleased(int x, int y, int button)
 	{
-		if(!hovering)
-		{
-			Paint.main.gui.canvas.getCanvas().getHistory().revertChange();
-			move(x - sx, y - sy, image, origin);
-			Paint.main.gui.canvas.applyPreview();
-			image = null;
-			origin = null;
-			SelectionCanvas c = Paint.main.gui.canvas.selection.getSelection();
-			if(c == Paint.main.gui.canvas.getCanvas())
-			{
-				c.finalizeTranslation();
-			}
-		}
+		
 	}
 	
 	public void whilePressed(int x, int y, int button)
