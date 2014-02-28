@@ -75,7 +75,7 @@ public class Ellipse extends Tool
 	{
 		sx = x;
 		sy = y;
-		if(fill.isSelected())
+		if(fill.isSelected() || antialias.isSelected())
 		{
 			ellipse = new Ellipse2D.Float(x, y, 0, 0);
 			if(button == MouseEvent.BUTTON1)
@@ -96,7 +96,7 @@ public class Ellipse extends Tool
 	
 	public void onReleased(int x, int y, int button)
 	{
-		if(fill.isSelected())
+		if(fill.isSelected() || antialias.isSelected())
 			adjustEllipse(x, y);
 		else
 			((EllipseChange) change).change(x, y);
@@ -105,7 +105,7 @@ public class Ellipse extends Tool
 	
 	public void whilePressed(int x, int y, int button)
 	{
-		if(fill.isSelected())
+		if(fill.isSelected() || antialias.isSelected())
 			adjustEllipse(x, y);
 		else
 			((EllipseChange) change).change(x, y);
