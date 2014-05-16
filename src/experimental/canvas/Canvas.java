@@ -18,10 +18,20 @@
 */
 package experimental.canvas;
 
+import static experimental.canvas.Layer.Type.*;
+
+import java.awt.BufferCapabilities;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 import javax.swing.JScrollPane;
+
+import experimental.canvas.Layer.Type;
+import experimental.canvas.context.RenderContext;
 
 /**
  * NOTE: This class is in PROPOSAL stage
@@ -52,6 +62,7 @@ import javax.swing.JScrollPane;
 public class Canvas extends JScrollPane {
 
 	private Panel panel;
+	private double zoom;
 	
 	private Scene scene;
 	
@@ -92,7 +103,7 @@ public class Canvas extends JScrollPane {
 		// check if selectionPreview has been created
 		// dispose temp buffer
 		// make selection out of selctionPreview
-		// add the selctino to the stack
+		// add the selection to the stack
 	}
 	
 	/**
@@ -110,10 +121,32 @@ public class Canvas extends JScrollPane {
 	public static class Scene {
 		
 		List<Layer> layers; // still not sure on what these are to be exactly
-		// more stuff, like tool previews, etc.
 		
-		public void render(Graphics2D g) {
-			
+		private boolean freezeActive;
+		private BufferedImage freezeBuffer;
+
+		/**
+		 * 
+		 * @param context
+		 */
+		public void render(RenderContext context) {
+			if(freezeActive)
+				renderFreezeBuffer(context);
+			else
+				renderLayers(FROZEN, context);
+			renderLayers(UNFROZEN, context);
+		}
+
+		
+		private void renderLayers(Type type, RenderContext context) {
+			for(Layer layer : layers)
+				if(type == BOTH || type == layer.getType())
+					layer.draw(context);
+		}
+
+
+		private void renderFreezeBuffer(RenderContext context) {
+			context.drawImage(freezeBuffer);
 		}
 	}
 	
@@ -125,6 +158,47 @@ public class Canvas extends JScrollPane {
 	 * @author BurntPizza
 	 */
 	private static class Panel extends java.awt.Canvas {
+		
+		private AffineTransform zoomTransform = AffineTransform.getScaleInstance(1, 1);
+		private BufferStrategy buffer;
+		
+		private void render(Graphics2D g) {
+			
+		}
+		
+		
+		@Override
+		public void paint(Graphics g) {
+			if(buffer == null)
+				initBufferStrategy();
+			
+			Graphics2D bufferGraphics = null;
+			
+			do {
+			    try{
+			    	bufferGraphics = (Graphics2D) buffer.getDrawGraphics();
+			    	bufferGraphics.setTransform(zoomTransform);
+			        render(bufferGraphics);
+			    } finally {
+			    	if (bufferGraphics != null)
+			    		bufferGraphics.dispose();
+			    }
+			    buffer.show();
+			} while (buffer.contentsLost());
+		}
+		
+		public void initBufferStrategy() {
+			createBufferStrategy(2);
+			buffer = getBufferStrategy();
+		}
+		
+		public void dispose() {
+			buffer.dispose();
+		}
+		
+		public void setZoom(double z) {
+			zoomTransform.setToScale(z, z);
+		}
 		
 	}
 }

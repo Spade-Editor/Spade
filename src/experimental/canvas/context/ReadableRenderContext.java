@@ -16,30 +16,21 @@
  *	You should have received a copy of the GNU General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
-package experimental.canvas;
-
-import experimental.canvas.context.RenderContext;
+package experimental.canvas.context;
 
 /**
+ * Interface representing the graphical context of the Canvas.
+ * 
+ * This interface in particular represents a context that is read-only.
+ * 
  * @author BurntPizza
  *
  */
-public class Layer {
+public interface ReadableRenderContext {
 	
-	public static enum Type {
-		FROZEN,
-		UNFROZEN,
-		BOTH;
-	}
-	
-	private Type type;
-	
-	public Type getType() {
-		return type;
-	}
-	
-	public void draw(RenderContext context) {
-		
-	}
+	public byte getR(int x, int y);
+	public byte getG(int x, int y);
+	public byte getB(int x, int y);
+	public byte getA(int x, int y);
 	
 }

@@ -18,28 +18,20 @@
 */
 package experimental.canvas;
 
-import experimental.canvas.context.RenderContext;
+import experimental.canvas.context.*;
+
 
 /**
+ * 
+ * 
+ * 
  * @author BurntPizza
  *
  */
-public class Layer {
+public interface Change {
 	
-	public static enum Type {
-		FROZEN,
-		UNFROZEN,
-		BOTH;
-	}
-	
-	private Type type;
-	
-	public Type getType() {
-		return type;
-	}
-	
-	public void draw(RenderContext context) {
-		
-	}
-	
+	/**
+	 * Renders this Change to context.
+	 */
+	public void draw(WritableRenderContext context);
 }
