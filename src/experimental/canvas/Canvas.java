@@ -20,7 +20,6 @@ package experimental.canvas;
 
 import static experimental.canvas.Layer.Type.*;
 
-import java.awt.BufferCapabilities;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -161,9 +160,12 @@ public class Canvas extends JScrollPane {
 		
 		private AffineTransform zoomTransform = AffineTransform.getScaleInstance(1, 1);
 		private BufferStrategy buffer;
+		private Scene scene;
 		
 		private void render(Graphics2D g) {
-			
+			//RenderContext context = genContext(g); // figure this out
+			//scene.render(context);
+			//context.flush();
 		}
 		
 		

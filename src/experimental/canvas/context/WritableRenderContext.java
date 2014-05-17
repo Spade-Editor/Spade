@@ -71,4 +71,9 @@ public interface WritableRenderContext {
 	 * @param y
 	 */
 	public void drawImage(BufferedImage img);
+	
+	/**
+	 * 
+	 */
+	public void flush();
 }
