@@ -19,12 +19,14 @@
 package experimental.colorchooser;
 
 import java.awt.Color;
+
 import static experimental.colorchooser.ColorUtils.*;
 
 /**
  * @author BurntPizza
  * 
  */
+@SuppressWarnings("serial")
 public class MutableColor extends Color {
 	
 	private int value;
@@ -46,12 +48,14 @@ public class MutableColor extends Color {
 		setColor(r, g, b, 255);
 	}
 	
-	public void setColor(int r, int g, int b, int a) {
+	public MutableColor setColor(int r, int g, int b, int a) {
 		value = pack(r, g, b, a);
+		return this;
 	}
 	
-	public void setColor(int argb) {
+	public MutableColor setColor(int argb) {
 		value = argb;
+		return this;
 	}
 	
 	public int getRed() {

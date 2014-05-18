@@ -141,25 +141,4 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 	@Override
 	public void mousePressed(MouseEvent e) {
 	}
-	
-	
-	/**
-	 * Completely for testing
-	 */
-	public static void main(String[] a) {
-		JFrame j = new JFrame();
-		j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		JPanel panel = new JPanel();
-		panel.setLayout(new FlowLayout());
-		j.add(panel);
-		
-		panel.add(new PalletPanel(Pallet.defaultPallet()));
-		panel.add(new ColorWheel());
-		panel.add(new ColorSlider(ColorSlider.Channel.Red));
-		
-		j.pack();
-		j.setLocationRelativeTo(null);
-		j.setVisible(true);
-	}
 }

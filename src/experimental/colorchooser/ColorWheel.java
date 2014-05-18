@@ -18,7 +18,8 @@
  */
 package experimental.colorchooser;
 
-import static experimental.colorchooser.ColorUtils.toARGB;
+import static experimental.colorchooser.ColorUtils.*;
+import heroesgrave.utils.math.MathUtils;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -31,24 +32,28 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
+import experimental.colorchooser.event.ColorEvent;
+import experimental.colorchooser.event.ColorListener;
+
 /**
  * @author BurntPizza
  * 
  */
 @SuppressWarnings("serial")
-public class ColorWheel extends JComponent implements MouseMotionListener, MouseListener {
+public class ColorWheel extends JComponent implements MouseMotionListener, MouseListener, ColorListener {
 	
 	public static final int RADIUS = 64;
 	
 	private BufferedImage buffer;
 	
 	private int mx, my; // mouse coords
-			
+	private double h, s;
+	
 	public ColorWheel() {
 		super();
 		setDoubleBuffered(true);
 		setBackground(new Color(0, true)); // transparent
-		setSize(2*RADIUS+1, 2*RADIUS+1);
+		setSize(2 * RADIUS + 1, 2 * RADIUS + 1);
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -68,7 +73,7 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.drawImage(buffer, 0, 0, null);
 		g.setColor(Color.gray);
-		g.drawOval(0, 0, 2*RADIUS, 2*RADIUS);
+		g.drawOval(0, 0, 2 * RADIUS, 2 * RADIUS);
 		g.setColor(Color.black);
 		g.drawOval(mx - 3, my - 3, 6, 6);
 	}
@@ -89,6 +94,12 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 			mx = RADIUS + (int) Math.round(RADIUS * Math.cos(a));
 			my = RADIUS + (int) Math.round(RADIUS * Math.sin(a));
 		}
+		dx = mx - RADIUS;
+		dy = my - RADIUS;
+		double a = Math.atan2(dy, dx);
+		h = (a + Math.PI) / Math.PI / 2;
+		s = MathUtils.clamp(Math.sqrt(dx * dx + dy * dy) / Math.sin(Math.PI / 4) / Math.sqrt(RADIUS * RADIUS * 2), 1, 0);
+		System.out.println(s);
 		repaint();
 	}
 	
@@ -106,15 +117,38 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 				if (dist <= RADIUS) {
 					double a = Math.atan2(dy, dx);
 					double h = (a + Math.PI) / (2 * Math.PI);
-					double s = dist / Math.sqrt(RADIUS*RADIUS*2);
+					double s = dist / Math.sqrt(RADIUS * RADIUS * 2);
 					double v = 1;
-					g.setColor(new Color(toARGB(h,s,v,1)));
+					g.setColor(new Color(toARGB(h, s, v, 1)));
 					g.drawLine(x, y, x, y);
 				}
 			}
 		
 		g.dispose();
 		return img;
+	}
+	
+	@Override
+	public void colorChanged(ColorEvent e) {
+		long hsva = toHSVA(e.r / 255., e.g / 255., e.b / 255., 1);
+		
+		switch (e.changedChannel) {
+			case Hue:
+				h = ((hsva >> 32) & 0xFFF) / 1024.;
+				break;
+			case Saturation:
+				s = ((hsva >> 16) & 0xFF) / 255.;
+				break;
+			default:
+				break;
+		}
+		
+		double a = h * 2 * Math.PI - Math.PI;
+		
+		mx = RADIUS + (int) Math.round(RADIUS * s * Math.cos(a));
+		my = RADIUS + (int) Math.round(RADIUS * s * Math.sin(a));
+		
+		repaint();
 	}
 	
 	@Override
@@ -125,19 +159,19 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 	@Override
 	public void mouseMoved(MouseEvent e) {
 	}
-
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
-
+	
 	@Override
 	public void mouseReleased(MouseEvent e) {
 	}
-
+	
 	@Override
 	public void mouseEntered(MouseEvent e) {
 	}
-
+	
 	@Override
 	public void mouseExited(MouseEvent e) {
 	}

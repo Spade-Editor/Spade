@@ -18,51 +18,14 @@
 */
 package experimental.colorchooser;
 
-import java.awt.FlowLayout;
-
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 /**
  * @author BurntPizza
  *
  */
-public class ColorChooser extends JDialog {
+public enum Channel {
+	Red, Green, Blue,
 	
-	PalletPanel palletPanel;
-	ColorWheel colorWheel;
+	Hue, Saturation, Value;
 	
-	
-	public ColorChooser() {
-		super();
-		
-	}
-	
-	
-	/**
-	 * Completely for testing
-	 */
-	public static void main(String[] a) {
-		JFrame j = new JFrame();
-		j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		JPanel panel = new JPanel();
-		panel.setLayout(new FlowLayout());
-		j.add(panel);
-		
-		PalletPanel pp = new PalletPanel(Pallet.defaultPallet());
-		ColorWheel wheel = new ColorWheel();
-		ColorSlider slider = new ColorSlider(Channel.Hue);
-		
-		slider.addColorListener(wheel);
-		
-		panel.add(pp);
-		panel.add(wheel);
-		panel.add(slider);
-		
-		j.pack();
-		j.setLocationRelativeTo(null);
-		j.setVisible(true);
-	}
+	public static final Channel[] values = values();
 }

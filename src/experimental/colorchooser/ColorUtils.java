@@ -96,16 +96,15 @@ public enum ColorUtils {
 		
 		double hue;
 		if (r == M)
-			hue = (g - b) / (delta + 1e-20);
+			hue = ((g - b) / (delta + 1e-20)) % 6.;
 		else if (g == M)
 			hue = 2 + (b - r) / (delta + 1e-20);
 		else
 			hue = 4 + (r - g) / (delta + 1e-20);
-		if (hue < 0)
-			hue += 6;
-		h = hue * (1. / 6);
 		
-		long l = (((int) (h * 360)) << 24) | (((int) (s * 255)) << 16) | (((int) (v * 255)) << 8) | ((int) (a * 255));
+		h = hue / 6.;
+		
+		long l = (((long) (h * 1024)) << 32) | (((int) (s * 255)) << 16) | (((int) (v * 255)) << 8) | ((int) (a * 255));
 		
 		return l;
 	}
