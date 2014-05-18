@@ -20,6 +20,7 @@ package experimental.colorchooser;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
@@ -27,6 +28,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -34,7 +36,8 @@ import javax.swing.JPanel;
  * @author BurntPizza
  * 
  */
-public class PalletPanel extends JPanel implements MouseListener, MouseMotionListener {
+@SuppressWarnings("serial")
+public class PalletPanel extends JComponent implements MouseListener, MouseMotionListener {
 	
 	public static final int SWATCH_SIZE = 16;
 	
@@ -47,6 +50,7 @@ public class PalletPanel extends JPanel implements MouseListener, MouseMotionLis
 	
 	public PalletPanel(Pallet p) {
 		super();
+		setDoubleBuffered(true);
 		setPallet(p);
 		setSize(16 * SWATCH_SIZE, 6 * SWATCH_SIZE);
 		setPreferredSize(getSize());
@@ -111,7 +115,6 @@ public class PalletPanel extends JPanel implements MouseListener, MouseMotionLis
 	
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		mouseMoved(e);
 	}
 	
 	@Override
@@ -146,9 +149,14 @@ public class PalletPanel extends JPanel implements MouseListener, MouseMotionLis
 	public static void main(String[] a) {
 		JFrame j = new JFrame();
 		j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Pallet p = Pallet.defaultPallet();
-		PalletPanel pp = new PalletPanel(p);
-		j.add(pp);
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout());
+		j.add(panel);
+		
+		panel.add(new PalletPanel(Pallet.defaultPallet()));
+		panel.add(new ColorWheel());
+		
 		j.pack();
 		j.setLocationRelativeTo(null);
 		j.setVisible(true);
