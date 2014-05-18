@@ -166,7 +166,8 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 			}
 		}
 		
-		if (!(mode == 1 && channel == 0) || (c == Channel.Saturation && e.changedChannels.contains(Channel.Value))) {
+		// if this isn't hue
+		if (!(mode == 1 && channel == 0)) {
 			colors[0] = e.r;
 			colors[1] = e.g;
 			colors[2] = e.b;
@@ -205,8 +206,11 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 				}
 				parent.broadcastEvent(new ColorEvent(this, r, g, b, c));
 			}
-			else
-				parent.broadcastEvent(new ColorEvent(this, r, g, b, Channel.values[channel + mode * 3]));
+			else if(channel==2) { // value
+				parent.broadcastEvent(new ColorEvent(this, r, g, b, Channel.Red, Channel.Green, Channel.Blue, Channel.Value));
+			}
+			else // hue
+				parent.broadcastEvent(new ColorEvent(this, r, g, b, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue));
 		}
 		
 		repaint();
