@@ -156,6 +156,7 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 		
 		panel.add(new PalletPanel(Pallet.defaultPallet()));
 		panel.add(new ColorWheel());
+		panel.add(new ColorSlider(ColorSlider.Channel.Red));
 		
 		j.pack();
 		j.setLocationRelativeTo(null);

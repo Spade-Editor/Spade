@@ -25,6 +25,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
@@ -35,7 +36,7 @@ import javax.swing.JComponent;
  * 
  */
 @SuppressWarnings("serial")
-public class ColorWheel extends JComponent implements MouseMotionListener {
+public class ColorWheel extends JComponent implements MouseMotionListener, MouseListener {
 	
 	public static final int RADIUS = 64;
 	
@@ -52,6 +53,7 @@ public class ColorWheel extends JComponent implements MouseMotionListener {
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
 		addMouseMotionListener(this);
+		addMouseListener(this);
 		buffer = genWheel();
 		mx = my = RADIUS;
 	}
@@ -116,6 +118,27 @@ public class ColorWheel extends JComponent implements MouseMotionListener {
 	}
 	
 	@Override
+	public void mousePressed(MouseEvent e) {
+		mouseDragged(e);
+	}
+	
+	@Override
 	public void mouseMoved(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
 	}
 }
