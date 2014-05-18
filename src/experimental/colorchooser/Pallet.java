@@ -18,6 +18,8 @@
  */
 package experimental.colorchooser;
 
+import java.awt.Color;
+
 /**
  * Class representing a color pallet.
  * 
@@ -32,17 +34,20 @@ public class Pallet {
 	/**
 	 * Creates default pallet
 	 */
-	public Pallet() {
-		colors = new int[6 * 16]; // 6 rows of 16
+	public static Pallet defaultPallet() {
 		
-		colors[0 + 0 * 16] = packf(0, 0, 0, 1);
-		colors[1 + 0 * 16] = packf(.125, .125, .125, 1);
+		Pallet p = new Pallet();
 		
-		colors[0 + 1 * 16] = packf(1, 1, 1, 1);
-		colors[1 + 1 * 16] = packf(.25, .25, .25, 1);
+		p.colors = new int[6 * 16]; // 6 rows of 16
 		
-		colors[0 + 2 * 16] = packf(.5, .5, .5, 1);
-		colors[1 + 2 * 16] = packf(.75, .75, .75, 1);
+		p.colors[0 + 0 * 16] = packf(0, 0, 0, 1);
+		p.colors[1 + 0 * 16] = packf(.125, .125, .125, 1);
+		
+		p.colors[0 + 1 * 16] = packf(1, 1, 1, 1);
+		p.colors[1 + 1 * 16] = packf(.25, .25, .25, 1);
+		
+		p.colors[0 + 2 * 16] = packf(.5, .5, .5, 1);
+		p.colors[1 + 2 * 16] = packf(.75, .75, .75, 1);
 		
 		// gen other colors
 		for (int y = 0; y < 3; y++)
@@ -50,14 +55,33 @@ public class Pallet {
 				double h = (x - 2) / 14.;
 				double s = y == 2 ? .5 : 1;
 				double v = y == 1 ? .5 : 1;
-				colors[x + y * 16] = toARGB(h, s, v, 1);
+				p.colors[x + y * 16] = toARGB(h, s, v, 1);
 			}
 		
 		// copy to bottom 3 rows, changing alpha
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 16; x++)
-				colors[x + y * 16 + 3 * 16] = (colors[x + y * 16] & 0x00FFFFFF) | ((192 - y * 48) << 24);
+				p.colors[x + y * 16 + 3 * 16] = (p.colors[x + y * 16] & 0x00FFFFFF) | ((192 - y * 48) << 24);
 		
+		return p;
+		
+	}
+	
+	public Color[] toColorArray() {
+		Color[] c = new Color[colors.length];
+		
+		for(int i=0;i<c.length;i++) {
+			int color = colors[i];
+			
+			int a = (color >> 24) & 0xFF;
+			int r = (color >> 16) & 0xFF;
+			int g = (color >> 8) & 0xFF;
+			int b = (color >> 0) & 0xFF;
+			
+			c[i] = new Color(r,g,b,a);
+		}
+		
+		return c;
 	}
 	
 	private static int pack(int r, int g, int b, int a) {
