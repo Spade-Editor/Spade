@@ -32,6 +32,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
+import experimental.colorchooser.event.ColorEventBroadcaster;
 import experimental.colorchooser.event.ColorEvent;
 import experimental.colorchooser.event.ColorListener;
 
@@ -49,7 +50,9 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 	private int mx, my; // mouse coords
 	private double h, s;
 	
-	public ColorWheel() {
+	private ColorEventBroadcaster parent;
+	
+	public ColorWheel(ColorEventBroadcaster parent) {
 		super();
 		setDoubleBuffered(true);
 		setBackground(new Color(0, true)); // transparent
@@ -59,12 +62,14 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 		setMaximumSize(getSize());
 		addMouseMotionListener(this);
 		addMouseListener(this);
+		this.parent = parent;
+		parent.addColorListener(this);
 		buffer = genWheel();
 		mx = my = RADIUS;
 	}
 	
 	public int getSelectedColor() {
-		return buffer.getRGB(mx, mx);
+		return toARGB(h, s, 1, 1);
 	}
 	
 	@Override
@@ -94,12 +99,23 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 			mx = RADIUS + (int) Math.round(RADIUS * Math.cos(a));
 			my = RADIUS + (int) Math.round(RADIUS * Math.sin(a));
 		}
+		
 		dx = mx - RADIUS;
 		dy = my - RADIUS;
 		double a = Math.atan2(dy, dx);
+		
 		h = (a + Math.PI) / Math.PI / 2;
 		s = MathUtils.clamp(Math.sqrt(dx * dx + dy * dy) / Math.sin(Math.PI / 4) / Math.sqrt(RADIUS * RADIUS * 2), 1, 0);
-		System.out.println(s);
+		
+		int rgb = getSelectedColor();
+		int r = (rgb >> 16) & 0xFF;
+		int g = (rgb >> 8) & 0xFF;
+		int b = (rgb >> 0) & 0xFF;
+		
+		ColorEvent ev = new ColorEvent(this, r, g, b, Channel.values);
+		
+		parent.broadcastEvent(ev);
+		
 		repaint();
 	}
 	
@@ -130,25 +146,23 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 	
 	@Override
 	public void colorChanged(ColorEvent e) {
-		long hsva = toHSVA(e.r / 255., e.g / 255., e.b / 255., 1);
 		
-		switch (e.changedChannel) {
-			case Hue:
+		if (!e.changedChannels.contains(Channel.Value) || (e.changedChannels.contains(Channel.Red) && e.changedChannels.contains(Channel.Green) && e.changedChannels.contains(Channel.Blue))) {
+			long hsva = toHSVA(e.r / 255., e.g / 255., e.b / 255., 1);
+			if (e.changedChannels.contains(Channel.Hue)) {
 				h = ((hsva >> 32) & 0xFFF) / 1024.;
-				break;
-			case Saturation:
+			}
+			if (e.changedChannels.contains(Channel.Saturation)) {
 				s = ((hsva >> 16) & 0xFF) / 255.;
-				break;
-			default:
-				break;
+			}
+			
+			double a = h * 2 * Math.PI - Math.PI;
+			
+			mx = RADIUS + (int) Math.round(RADIUS * s * Math.cos(a));
+			my = RADIUS + (int) Math.round(RADIUS * s * Math.sin(a));
+			
+			repaint();
 		}
-		
-		double a = h * 2 * Math.PI - Math.PI;
-		
-		mx = RADIUS + (int) Math.round(RADIUS * s * Math.cos(a));
-		my = RADIUS + (int) Math.round(RADIUS * s * Math.sin(a));
-		
-		repaint();
 	}
 	
 	@Override

@@ -29,12 +29,10 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JComponent;
 
-import experimental.colorchooser.event.ColorComponenet;
+import experimental.colorchooser.event.ColorEventBroadcaster;
 import experimental.colorchooser.event.ColorEvent;
 import experimental.colorchooser.event.ColorListener;
 import static experimental.colorchooser.ColorUtils.*;
@@ -46,7 +44,7 @@ import static experimental.colorchooser.ColorUtils.*;
  * 
  */
 @SuppressWarnings("serial")
-public class ColorSlider extends JComponent implements MouseMotionListener, MouseListener, ColorListener, ColorComponenet {
+public class ColorSlider extends JComponent implements MouseMotionListener, MouseListener, ColorListener {
 	
 	private double value;
 	private boolean hover;
@@ -59,9 +57,9 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 	private int channel;
 	private MutableColor c[]; // dumb thing in SunGraphics2D requires non-identical objects for setColor() to actually work, so I use 2
 	
-	private List<ColorListener> listeners;
+	private ColorEventBroadcaster parent;
 	
-	public ColorSlider(Channel channel) {
+	public ColorSlider(Channel channel, ColorEventBroadcaster parent) {
 		setSize(73, 15);
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
@@ -73,7 +71,8 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 		addMouseMotionListener(this);
 		addMouseListener(this);
 		
-		listeners = new ArrayList<>();
+		this.parent = parent;
+		parent.addColorListener(this);
 		
 		buffer = new BufferedImage(67, 11, BufferedImage.TYPE_INT_RGB);
 		
@@ -101,6 +100,9 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 		
 		g.drawImage(buffer, 3, 0, null);
 		
+		g.setColor(Color.darkGray);
+		g.drawRect(3, 0, buffer.getWidth(), buffer.getHeight());
+		
 		g.translate(value * buffer.getWidth(), 8);
 		g.setColor(Color.black);
 		g.fill(cursor);
@@ -127,7 +129,7 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 			}
 		} else { // hsv mode
 			long hsva = toHSVA(colors[0] / 255., colors[1] / 255., colors[2] / 255., 1);
-			double h = ((hsva >> 24) & 0x1FF) / 360.;
+			double h = ((hsva >> 32) & 0xFFF) / 1024.;
 			double s = ((hsva >> 16) & 0xFF) / 255.;
 			double v = ((hsva >> 8) & 0xFF) / 255.;
 			
@@ -135,7 +137,7 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 				h = channel == 0 ? (x / (double) w) : h;
 				s = channel == 1 ? (x / (double) w) : channel == 0 ? 1 : s;
 				v = channel == 2 ? (x / (double) w) : channel == 0 ? 1 : v;
-				gg.setColor(c[x & 1].setColor(toARGB((x / (double) w), s, v, 1)));
+				gg.setColor(c[x & 1].setColor(toARGB(h, s, v, 1)));
 				gg.drawLine(x, 0, x, bh);
 			}
 		}
@@ -144,19 +146,34 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 	
 	@Override
 	public void colorChanged(ColorEvent e) {
-		colors[0] = e.r;
-		colors[1] = e.g;
-		colors[2] = e.b;
-	}
-	
-	@Override
-	public void addColorListener(ColorListener c) {
-		listeners.add(c);
-	}
-	
-	@Override
-	public void removeColorListener(ColorListener c) {
-		listeners.remove(c);
+		Channel c = Channel.values[channel + mode * 3]; // this channel
+		
+		if (e.changedChannels.contains(c)) {
+			colors[0] = e.r;
+			colors[1] = e.g;
+			colors[2] = e.b;
+			if (mode == 0) {
+				value = MathUtils.clamp(colors[channel] / 255., 1, 0);
+			} else {
+				long hsva = toHSVA(colors[0] / 255., colors[1] / 255., colors[2] / 255., 1);
+				int h = (int) ((hsva >> 32) & 0xFFF);
+				int s = (int) ((hsva >> 16) & 0xFF);
+				int v = (int) ((hsva >> 8) & 0xFF);
+				
+				double cc = channel == 0 ? h / 1024. : channel == 1 ? s / 255. : v / 255.;
+				
+				value = MathUtils.clamp(cc, 1, 0);
+			}
+		}
+		
+		if (!(mode == 1 && channel == 0) || (c == Channel.Saturation && e.changedChannels.contains(Channel.Value))) {
+			colors[0] = e.r;
+			colors[1] = e.g;
+			colors[2] = e.b;
+			genGradient();
+		}
+		
+		repaint();
 	}
 	
 	@Override
@@ -168,10 +185,11 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 		int r = (rgb >> 16) & 0xFF;
 		int g = (rgb >> 8) & 0xFF;
 		int b = (rgb >> 0) & 0xFF;
-		ColorEvent ev = new ColorEvent(this, r, g, b, Channel.values[channel + mode * 3]);
 		
-		for (ColorListener c : listeners)
-			c.colorChanged(ev);
+		if (mode == 0)
+			parent.broadcastEvent(new ColorEvent(this, r, g, b, Channel.values));
+		else
+			parent.broadcastEvent(new ColorEvent(this, r, g, b, Channel.values[channel + mode * 3]));
 		
 		repaint();
 	}

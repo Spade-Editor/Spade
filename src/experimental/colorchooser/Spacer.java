@@ -16,14 +16,21 @@
  *	You should have received a copy of the GNU General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
-package experimental.colorchooser.event;
+package experimental.colorchooser;
+
+import javax.swing.JComponent;
 
 /**
  * @author BurntPizza
  *
  */
-public interface ColorComponenet {
+public class Spacer extends JComponent {
 	
-	public void addColorListener(ColorListener c);
-	public void removeColorListener(ColorListener c);
+	public Spacer(int w, int h) {
+		super();
+		setSize(w,h);
+		setPreferredSize(getSize());
+		setMinimumSize(getSize());
+		setMaximumSize(getSize());
+	}
 }

@@ -18,27 +18,14 @@
 */
 package experimental.colorchooser.event;
 
-import java.util.Arrays;
-import java.util.EventObject;
-import java.util.List;
-
-import experimental.colorchooser.Channel;
-
 /**
  * @author BurntPizza
  *
  */
-@SuppressWarnings("serial")
-public class ColorEvent extends EventObject {
-
-	public final int r,g,b;
-	public final List<Channel> changedChannels;
+public interface ColorEventBroadcaster {
 	
-	public ColorEvent(Object source, int r, int g, int b, Channel... changedChannels) {
-		super(source);
-		this.r = r;
-		this.g = g;
-		this.b = b;
-		this.changedChannels = Arrays.asList(changedChannels);
-	}
+	public void addColorListener(ColorListener c);
+	public void removeColorListener(ColorListener c);
+	
+	public void broadcastEvent(ColorEvent e);
 }
