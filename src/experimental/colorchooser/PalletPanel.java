@@ -32,6 +32,9 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import experimental.colorchooser.event.ColorEvent;
+import experimental.colorchooser.event.ColorEventBroadcaster;
+
 /**
  * @author BurntPizza
  * 
@@ -48,7 +51,9 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 	private int mi; // hover index
 	private Stroke stroke1,stroke2;
 	
-	public PalletPanel(Pallet p) {
+	private ColorEventBroadcaster parent;
+	
+	public PalletPanel(ColorEventBroadcaster parent, Pallet p) {
 		super();
 		setDoubleBuffered(true);
 		setPallet(p);
@@ -58,6 +63,8 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 		setMaximumSize(getSize());
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		
+		this.parent = parent;
 		
 		bg1 = Color.gray;
 		bg2 = Color.white;
@@ -110,6 +117,9 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		si = (e.getX() / SWATCH_SIZE) + (e.getY() / SWATCH_SIZE) * 16;
+		
+		parent.broadcastEvent(new ColorEvent(this, colors[si].getRed(), colors[si].getGreen(), colors[si].getBlue(), colors[si].getAlpha(), Channel.values));
+		
 		repaint();
 	}
 	

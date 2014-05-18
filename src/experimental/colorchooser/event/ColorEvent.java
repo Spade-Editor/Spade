@@ -31,14 +31,15 @@ import experimental.colorchooser.Channel;
 @SuppressWarnings("serial")
 public class ColorEvent extends EventObject {
 
-	public final int r,g,b;
+	public final int r,g,b,a;
 	public final List<Channel> changedChannels;
 	
-	public ColorEvent(Object source, int r, int g, int b, Channel... changedChannels) {
+	public ColorEvent(Object source, int r, int g, int b, int a, Channel... changedChannels) {
 		super(source);
 		this.r = r;
 		this.g = g;
 		this.b = b;
+		this.a = a;
 		this.changedChannels = Arrays.asList(changedChannels);
 	}
 }

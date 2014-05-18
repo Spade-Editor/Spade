@@ -112,7 +112,7 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 		int g = (rgb >> 8) & 0xFF;
 		int b = (rgb >> 0) & 0xFF;
 		
-		ColorEvent ev = new ColorEvent(this, r, g, b, Channel.values);
+		ColorEvent ev = new ColorEvent(this, r, g, b, 1, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue, Channel.Saturation, Channel.Value);
 		
 		parent.broadcastEvent(ev);
 		

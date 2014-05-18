@@ -188,7 +188,7 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 		int b = (rgb >> 0) & 0xFF;
 		
 		if (mode == 0)
-			parent.broadcastEvent(new ColorEvent(this, r, g, b, Channel.values));
+			parent.broadcastEvent(new ColorEvent(this, r, g, b, 1, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue, Channel.Saturation, Channel.Value));
 		else {
 			if(channel==1) { // saturation
 				Channel[] c = new Channel[3];
@@ -204,13 +204,13 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 					c[1] = Channel.Red;
 					c[2] = Channel.Green;
 				}
-				parent.broadcastEvent(new ColorEvent(this, r, g, b, c));
+				parent.broadcastEvent(new ColorEvent(this, r, g, b, 1, c));
 			}
 			else if(channel==2) { // value
-				parent.broadcastEvent(new ColorEvent(this, r, g, b, Channel.Red, Channel.Green, Channel.Blue, Channel.Value));
+				parent.broadcastEvent(new ColorEvent(this, r, g, b, 1, Channel.Red, Channel.Green, Channel.Blue, Channel.Value));
 			}
 			else // hue
-				parent.broadcastEvent(new ColorEvent(this, r, g, b, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue));
+				parent.broadcastEvent(new ColorEvent(this, r, g, b, 1, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue));
 		}
 		
 		repaint();

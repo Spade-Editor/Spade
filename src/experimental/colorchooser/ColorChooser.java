@@ -48,7 +48,7 @@ public class ColorChooser extends JDialog implements ColorEventBroadcaster {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		listeners = new ArrayList<>();
 		
-		PalletPanel pp = new PalletPanel(Pallet.defaultPallet());
+		PalletPanel pp = new PalletPanel(this, Pallet.defaultPallet());
 		ColorWheel wheel = new ColorWheel(this);
 		
 		JPanel sliderPanel = new JPanel();

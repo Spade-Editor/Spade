@@ -25,7 +25,9 @@ package experimental.colorchooser;
 public enum Channel {
 	Red, Green, Blue,
 	
-	Hue, Saturation, Value;
+	Hue, Saturation, Value,
+	
+	Alpha;
 	
 	public static final Channel[] values = values();
 }
