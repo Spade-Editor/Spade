@@ -44,8 +44,9 @@ public class MutableColor extends Color {
 		setColor(r, g, b, a);
 	}
 	
-	public void setColor(int r, int g, int b) {
+	public MutableColor setColor(int r, int g, int b) {
 		setColor(r, g, b, 255);
+		return this;
 	}
 	
 	public MutableColor setColor(int r, int g, int b, int a) {

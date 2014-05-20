@@ -44,6 +44,7 @@ import experimental.colorchooser.event.ColorListener;
 public class ColorWheel extends JComponent implements MouseMotionListener, MouseListener, ColorListener {
 	
 	public static final int RADIUS = 64;
+	public static final int OFFSET = 3;
 	
 	private BufferedImage buffer;
 	
@@ -56,7 +57,7 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 		super();
 		setDoubleBuffered(true);
 		setBackground(new Color(0, true)); // transparent
-		setSize(2 * RADIUS + 1, 2 * RADIUS + 1);
+		setSize(2 * RADIUS + 1 + 2* OFFSET, 2 * RADIUS + 1 + 2 * OFFSET);
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -76,6 +77,7 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 	public void paint(Graphics gg) {
 		Graphics2D g = (Graphics2D) gg;
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.translate(OFFSET, OFFSET);
 		g.drawImage(buffer, 0, 0, null);
 		g.setColor(Color.gray);
 		g.drawOval(0, 0, 2 * RADIUS, 2 * RADIUS);
@@ -112,7 +114,7 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 		int g = (rgb >> 8) & 0xFF;
 		int b = (rgb >> 0) & 0xFF;
 		
-		ColorEvent ev = new ColorEvent(this, r, g, b, 1, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue, Channel.Saturation, Channel.Value);
+		ColorEvent ev = new ColorEvent(this, r, g, b, 255, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue, Channel.Saturation, Channel.Value);
 		
 		parent.broadcastEvent(ev);
 		

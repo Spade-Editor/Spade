@@ -72,7 +72,7 @@ public class Pallet {
 	public Color[] toColorArray() {
 		Color[] c = new Color[colors.length];
 		
-		for(int i=0;i<c.length;i++) {
+		for (int i = 0; i < c.length; i++) {
 			int color = colors[i];
 			
 			int a = (color >> 24) & 0xFF;
@@ -80,7 +80,7 @@ public class Pallet {
 			int g = (color >> 8) & 0xFF;
 			int b = (color >> 0) & 0xFF;
 			
-			c[i] = new Color(r,g,b,a);
+			c[i] = new Color(r, g, b, a);
 		}
 		
 		return c;

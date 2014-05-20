@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -49,7 +50,7 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 	private Color bg1, bg2;
 	private int si; // selected index
 	private int mi; // hover index
-	private Stroke stroke1,stroke2;
+	private Stroke stroke1, stroke2;
 	
 	private ColorEventBroadcaster parent;
 	
@@ -57,7 +58,7 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 		super();
 		setDoubleBuffered(true);
 		setPallet(p);
-		setSize(16 * SWATCH_SIZE, 6 * SWATCH_SIZE);
+		setSize(16 * SWATCH_SIZE + 2, 6 * SWATCH_SIZE + 2);
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -68,8 +69,8 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 		
 		bg1 = Color.gray;
 		bg2 = Color.white;
-		stroke1 = new BasicStroke(1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { SWATCH_SIZE/4 }, 0f);
-		stroke2 = new BasicStroke(1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { SWATCH_SIZE/4 }, SWATCH_SIZE/4);
+		stroke1 = new BasicStroke(1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { SWATCH_SIZE / 4 }, 0f);
+		stroke2 = new BasicStroke(1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { SWATCH_SIZE / 4 }, SWATCH_SIZE / 4);
 	}
 	
 	public void setPallet(Pallet p) {
@@ -79,6 +80,12 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 	
 	@Override
 	public void paint(Graphics g) {
+		
+		g.setColor(Color.darkGray);
+		g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+		
+		g.translate(1, 1);
+		
 		for (int y = 0; y < 6; y++)
 			for (int x = 0; x < 16; x++) {
 				

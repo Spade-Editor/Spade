@@ -18,7 +18,7 @@
  */
 package experimental.colorchooser;
 
-import java.awt.FlowLayout;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,24 +48,37 @@ public class ColorChooser extends JDialog implements ColorEventBroadcaster {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		listeners = new ArrayList<>();
 		
-		PalletPanel pp = new PalletPanel(this, Pallet.defaultPallet());
+		PalletPanel palletPanel = new PalletPanel(this, Pallet.defaultPallet());
 		ColorWheel wheel = new ColorWheel(this);
+		ColorIndicator indicator = new ColorIndicator(this);
 		
 		JPanel sliderPanel = new JPanel();
 		sliderPanel.setLayout(new BoxLayout(sliderPanel, BoxLayout.Y_AXIS));
 		
-		for(int i=0;i<Channel.values.length;i++) {
+		for (int i = 0; i < 6; i++) {
 			sliderPanel.add(new ColorSlider(Channel.values[i], this));
-			sliderPanel.add(new Spacer(0,i==2?16:4));
+			sliderPanel.add(new Spacer(0, i == 2 ? 16 : 4));
 		}
 		
-		JPanel pan = new JPanel();
+		JPanel top = new JPanel();
+		top.setLayout(new BoxLayout(top, BoxLayout.X_AXIS));
+		top.add(indicator);
+		top.add(wheel);
 		
-		pan.add(pp);
-		pan.add(wheel);
-		pan.add(sliderPanel);
+		JPanel bottom = new JPanel();
+		bottom.setLayout(new BoxLayout(bottom, BoxLayout.Y_AXIS));
+		bottom.add(top);
+		bottom.add(palletPanel);
 		
-		add(pan);
+		JPanel all = new JPanel();
+		
+		all.add(bottom);
+		all.add(sliderPanel);
+		
+		add(all);
+		
+		indicator.setAlignmentX(LEFT_ALIGNMENT);
+		indicator.setAlignmentY(TOP_ALIGNMENT);
 		
 		pack();
 		setLocationRelativeTo(null);

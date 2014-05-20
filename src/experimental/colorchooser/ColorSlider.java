@@ -101,6 +101,7 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 		g.drawImage(buffer, 3, 0, null);
 		
 		g.setColor(Color.darkGray);
+		g.setColor(c[0].setColor(20, 20, 20));
 		g.drawRect(2, 0, buffer.getWidth() + 1, buffer.getHeight());
 		
 		g.translate(value * buffer.getWidth(), 8);
@@ -166,7 +167,7 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 			}
 		}
 		
-		// if this isn't hue
+		// if this isn't hue, re-make the gradient
 		if (!(mode == 1 && channel == 0)) {
 			colors[0] = e.r;
 			colors[1] = e.g;
@@ -180,7 +181,7 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		hover = true;
-		value = MathUtils.clamp(e.getX() / (double) (buffer.getWidth() - 1), 1, 0);
+		value = MathUtils.clamp((e.getX()) / (double) (buffer.getWidth() - 1), 1, 0);
 		
 		int rgb = buffer.getRGB(MathUtils.clamp(e.getX(), buffer.getWidth() - 1, 0), 1);
 		int r = (rgb >> 16) & 0xFF;
@@ -188,29 +189,29 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 		int b = (rgb >> 0) & 0xFF;
 		
 		if (mode == 0)
-			parent.broadcastEvent(new ColorEvent(this, r, g, b, 1, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue, Channel.Saturation, Channel.Value));
+			parent.broadcastEvent(new ColorEvent(this, r, g, b, 255, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue, Channel.Saturation, Channel.Value));
 		else {
-			if(channel==1) { // saturation
+			if (channel == 1) { // saturation
+				// if this is saturation, we change it and the 2 lowest RGB channels
 				Channel[] c = new Channel[3];
 				c[0] = Channel.Saturation;
-				int max = Math.max(colors[0], Math.max(colors[1],colors[2]));
-				if(max==colors[0]) {
+				int max = Math.max(colors[0], Math.max(colors[1], colors[2]));
+				if (max == colors[0]) {
 					c[1] = Channel.Green;
 					c[2] = Channel.Blue;
-				} else if(max==colors[1]) {
+				} else if (max == colors[1]) {
 					c[1] = Channel.Red;
 					c[2] = Channel.Blue;
-				} else if(max==colors[2]) {
+				} else if (max == colors[2]) {
 					c[1] = Channel.Red;
 					c[2] = Channel.Green;
 				}
-				parent.broadcastEvent(new ColorEvent(this, r, g, b, 1, c));
-			}
-			else if(channel==2) { // value
-				parent.broadcastEvent(new ColorEvent(this, r, g, b, 1, Channel.Red, Channel.Green, Channel.Blue, Channel.Value));
-			}
-			else // hue
-				parent.broadcastEvent(new ColorEvent(this, r, g, b, 1, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue));
+				parent.broadcastEvent(new ColorEvent(this, r, g, b, 255, c));
+			} else if (channel == 2) { // value
+				parent.broadcastEvent(new ColorEvent(this, r, g, b, 255, Channel.Red, Channel.Green, Channel.Blue, Channel.Value));
+			} else
+				// hue
+				parent.broadcastEvent(new ColorEvent(this, r, g, b, 255, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue, Channel.Saturation));
 		}
 		
 		repaint();
