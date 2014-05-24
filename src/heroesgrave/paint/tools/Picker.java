@@ -17,7 +17,7 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.tools;
+package heroesgrave.paint.tools.old;
 
 import heroesgrave.paint.gui.Tools;
 import heroesgrave.paint.main.Paint;

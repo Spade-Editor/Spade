@@ -19,7 +19,7 @@
 
 package heroesgrave.paint.effects;
 
-import heroesgrave.paint.image.KeyFrame;
+import heroesgrave.paint.image.old.change.KeyFrame;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;

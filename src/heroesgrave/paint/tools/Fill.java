@@ -17,12 +17,12 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.tools;
+package heroesgrave.paint.tools.old;
 
-import heroesgrave.paint.image.Canvas;
-import heroesgrave.paint.image.KeyFrame;
-import heroesgrave.paint.image.MultiChange;
-import heroesgrave.paint.image.PixelChange;
+import heroesgrave.paint.image.old.Canvas;
+import heroesgrave.paint.image.old.change.KeyFrame;
+import heroesgrave.paint.image.old.change.MultiChange;
+import heroesgrave.paint.image.old.change.PixelChange;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.Point;

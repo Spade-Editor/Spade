@@ -22,7 +22,7 @@ package heroesgrave.paint.effects;
 import heroesgrave.paint.gui.Menu.CentredJLabel;
 import heroesgrave.paint.gui.Menu.NumberTextField;
 import heroesgrave.paint.gui.SimpleImageOpDialog;
-import heroesgrave.paint.image.KeyFrame;
+import heroesgrave.paint.image.old.change.KeyFrame;
 import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.main.Paint;
 

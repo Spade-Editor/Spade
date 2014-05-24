@@ -19,9 +19,9 @@
 
 package heroesgrave.paint.imageops;
 
-import heroesgrave.paint.image.Canvas;
-import heroesgrave.paint.image.KeyFrame;
-import heroesgrave.paint.image.doc.ImageOpChange;
+import heroesgrave.paint.image.old.Canvas;
+import heroesgrave.paint.image.old.change.KeyFrame;
+import heroesgrave.paint.image.old.doc.ImageOpChange;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.Graphics2D;

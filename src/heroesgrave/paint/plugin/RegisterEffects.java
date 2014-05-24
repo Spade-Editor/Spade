@@ -17,10 +17,7 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.plugin;
-
-import heroesgrave.paint.gui.ToolMenu.ImageMenuItem;
-import heroesgrave.paint.imageops.ImageOp;
+package heroesgrave.paint.old;
 
 import javax.swing.JMenu;
 
@@ -35,6 +32,6 @@ public class RegisterEffects
 	
 	public void register(String name, ImageOp op, String key)
 	{
-		menu.add(new ImageMenuItem(name, op, key));
+		//menu.add(new ImageMenuItem(name, op, key));
 	}
 }

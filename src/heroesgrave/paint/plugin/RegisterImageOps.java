@@ -17,7 +17,7 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.plugin;
+package heroesgrave.paint.old;
 
 import heroesgrave.paint.gui.ToolMenu.ImageMenuItem;
 import heroesgrave.paint.imageops.ImageOp;

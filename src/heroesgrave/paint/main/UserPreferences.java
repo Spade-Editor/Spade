@@ -29,11 +29,8 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JFrame;
 
-/**
- * 
- * @author markbernard
- *
- */
+import com.alee.laf.rootpane.WebFrame;
+
 public class UserPreferences
 {
 	private static final String WINDOW_WIDTH = "window.width";
@@ -47,24 +44,22 @@ public class UserPreferences
 	private static final String LAYERS_WIDTH = "layers.width";
 	private static final String LAYERS_HEIGHT = "layers.height";
 	private static final String LAYERS_VISIBLE = "layers.visible";
-	private static final String TOOLBOX_VISIBLE = "toolbox.visible";
-	private static final String TOOLBOX_X = "toolbox.x";
-	private static final String TOOLBOX_Y = "toolbox.y";
 	private static final String BACKGROUND_DARK = "background.dark";
 	
 	private static int windowWidth, windowHeight;
 	private static int layersX, layersY, layersWidth, layersHeight;
 	private static int colourPickerX, colourPickerY;
-	private static int toolBoxX, toolBoxY;
 	
 	/**
 	 * Setup the provided
 	 * 
 	 * @param frame
 	 */
-	public static void loadPrefs(JFrame frame, ColourChooser chooser, LayerManager layers, ToolBox toolBox)
+	public static void loadPrefs(WebFrame frame, ColourChooser chooser,
+			LayerManager layers)
 	{
-		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);
+		Preferences prefs =
+				Preferences.userNodeForPackage(UserPreferences.class);
 		
 		if(prefs.getBoolean(WINDOW_MAXIMIZED, false))
 		{
@@ -90,16 +85,8 @@ public class UserPreferences
 		if(prefs.getBoolean(LAYERS_VISIBLE, false))
 		{
 			layers.dialog.setVisible(true);
-			layers.dialog.setBounds(layersX, layersY, layersWidth, layersHeight);
-		}
-		
-		if(prefs.getBoolean(TOOLBOX_VISIBLE, false))
-		{
-			toolBoxX = prefs.getInt(TOOLBOX_X, 0);
-			toolBoxY = prefs.getInt(TOOLBOX_Y, 0);
-			toolBox.getDialog().setVisible(true);
-			toolBox.getDialog().setLocationRelativeTo(null);
-			toolBox.getDialog().setLocation(toolBoxX, toolBoxY);
+			layers.dialog
+					.setBounds(layersX, layersY, layersWidth, layersHeight);
 		}
 		
 		Menu.DARK_BACKGROUND = prefs.getBoolean(BACKGROUND_DARK, false);
@@ -110,9 +97,11 @@ public class UserPreferences
 	 * 
 	 * @param frame
 	 */
-	public static void savePrefs(JFrame frame, ColourChooser chooser, LayerManager layers, ToolBox toolBox)
+	public static void savePrefs(JFrame frame, ColourChooser chooser,
+			LayerManager layers, ToolBox toolBox)
 	{
-		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);
+		Preferences prefs =
+				Preferences.userNodeForPackage(UserPreferences.class);
 		
 		if((frame.getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH)
 		{
@@ -133,25 +122,19 @@ public class UserPreferences
 			prefs.putInt(COLOUR_PICKER_X, colourPickerX);
 			prefs.putInt(COLOUR_PICKER_Y, colourPickerY);
 		}
-		
+		/*
 		layersX = layers.dialog.getX();
 		layersY = layers.dialog.getY();
 		layersWidth = layers.dialog.getWidth();
 		layersHeight = layers.dialog.getHeight();
-		
 		prefs.putInt(LAYERS_X, layersX);
 		prefs.putInt(LAYERS_Y, layersY);
 		prefs.putInt(LAYERS_WIDTH, layersWidth);
 		prefs.putInt(LAYERS_HEIGHT, layersHeight);
 		prefs.putBoolean(LAYERS_VISIBLE, layers.isVisible());
+		*/
 		
 		prefs.putBoolean(COLOUR_PICKER_VISIBLE, chooser.isVisible());
-		
-		toolBoxX = toolBox.getDialog().getX();
-		toolBoxY = toolBox.getDialog().getY();
-		prefs.putInt(TOOLBOX_X, toolBoxX);
-		prefs.putInt(TOOLBOX_Y, toolBoxY);
-		prefs.putBoolean(TOOLBOX_VISIBLE, toolBox.isVisible());
 		
 		prefs.putBoolean(BACKGROUND_DARK, Menu.DARK_BACKGROUND);
 	}

@@ -19,108 +19,33 @@
 
 package heroesgrave.paint.tools;
 
-import heroesgrave.paint.image.ShapeChange;
-import heroesgrave.paint.main.Input;
+import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.change.RectChange;
 import heroesgrave.paint.main.Paint;
-
-import java.awt.event.MouseEvent;
-import java.awt.geom.Rectangle2D;
-
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.SpringLayout;
 
 public class Rectangle extends Tool
 {
-	private int sx, sy;
-	private Rectangle2D.Float rect;
-	private ShapeChange change;
-	private JCheckBox fill;
+	private RectChange rect;
 	
 	public Rectangle(String name)
 	{
 		super(name);
-		
-		fill = new JCheckBox("Fill Shape");
-		
-		JLabel label = (JLabel) menu.getComponent(0);
-		
-		SpringLayout layout = new SpringLayout();
-		menu.setLayout(layout);
-		
-		fill.setFocusable(false);
-		
-		menu.add(label);
-		menu.add(fill);
-		
-		layout.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, menu);
-		layout.putConstraint(SpringLayout.WEST, fill, 20, SpringLayout.EAST, label);
-		layout.putConstraint(SpringLayout.EAST, menu, 20, SpringLayout.EAST, fill);
-		
-		layout.putConstraint(SpringLayout.NORTH, fill, -2, SpringLayout.NORTH, menu);
-		
-		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
 	}
 	
-	public void onPressed(int x, int y, int button)
+	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		sx = x;
-		sy = y;
-		rect = new Rectangle2D.Float(x, y, 0, 0);
-		if(button == MouseEvent.BUTTON1)
-		{
-			change = new ShapeChange(rect, Paint.main.getLeftColour()).setFill(fill.isSelected());
-		}
-		else if(button == MouseEvent.BUTTON3)
-		{
-			change = new ShapeChange(rect, Paint.main.getRightColour()).setFill(fill.isSelected());
-		}
-		Paint.main.gui.canvas.preview(change);
+		rect = new RectChange(x, y, x, y, Paint.main.getColor(button));
 	}
 	
-	public void onReleased(int x, int y, int button)
+	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		adjustRectangle(x, y);
-		Paint.main.gui.canvas.applyPreview();
+		layer.addChange(rect);
+		Paint.main.gui.repaint();
+		rect = null;
 	}
 	
-	public void whilePressed(int x, int y, int button)
+	public void whilePressed(Layer layer, short x, short y, int button)
 	{
-		adjustRectangle(x, y);
-		Paint.main.gui.canvas.getPanel().repaint();
-	}
-	
-	private void adjustRectangle(int x, int y)
-	{
-		if(Input.CTRL)
-		{
-			int w = x - sx;
-			int h = y - sy;
-			if(Math.abs(w) > Math.abs(h))
-			{
-				int r = Math.abs(w);
-				h = sign(h) * r;
-			}
-			else
-			{
-				int r = Math.abs(h);
-				w = sign(w) * r;
-			}
-			x = sx + w;
-			y = sy + h;
-		}
-		rect.width = Math.abs(x - sx);
-		rect.height = Math.abs(y - sy);
-		rect.x = Math.min(x, sx);
-		rect.y = Math.min(y, sy);
-	}
-	
-	private int sign(int i)
-	{
-		if(i < 0)
-			return -1;
-		else if(i > 0)
-			return 1;
-		return 0;
+		rect.moveTo(x, y);
 	}
 }

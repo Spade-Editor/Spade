@@ -20,12 +20,6 @@
 package heroesgrave.paint.main;
 
 import heroesgrave.paint.gui.Menu;
-import heroesgrave.paint.image.Canvas;
-import heroesgrave.paint.image.ClipboardHandler;
-import heroesgrave.paint.image.SelectionCanvas;
-import heroesgrave.paint.image.SelectionCanvas.CombineMode;
-import heroesgrave.paint.image.doc.DeleteSelectionOp;
-import heroesgrave.paint.imageops.ImageOp;
 import heroesgrave.paint.tools.Tool;
 
 import java.awt.AWTException;
@@ -35,8 +29,6 @@ import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 public class Input implements KeyListener
@@ -44,7 +36,8 @@ public class Input implements KeyListener
 	public static boolean CTRL, SHIFT, ALT;
 	public static Robot robot;
 	
-	private static HashMap<Integer, String> keyCodeToStr = new HashMap<Integer, String>();
+	private static HashMap<Integer, String> keyCodeToStr =
+			new HashMap<Integer, String>();
 	
 	public void keyPressed(KeyEvent e)
 	{
@@ -61,11 +54,6 @@ public class Input implements KeyListener
 			ALT = true;
 		}
 		
-		if(e.getKeyCode() == KeyEvent.VK_F4)
-		{
-			Paint.main.gui.toolBox.toggle();
-		}
-		
 		if(e.getKeyCode() == KeyEvent.VK_F5)
 		{
 			Paint.main.gui.chooser.toggle();
@@ -78,8 +66,8 @@ public class Input implements KeyListener
 		
 		if(e.getKeyCode() == KeyEvent.VK_DELETE)
 		{
-			Canvas selection = Paint.main.gui.canvas.selection.getSelection();
-			Paint.main.history.addChange(new DeleteSelectionOp(selection, Paint.main.gui.canvas.getParentOf(selection)));
+			//Canvas selection = Paint.main.gui.canvas.selection.getSelection();
+			//Paint.main.history.addChange(new DeleteSelectionOp(selection, Paint.main.gui.canvas.getParentOf(selection)));
 		}
 		
 		int MOVE = 1;
@@ -91,30 +79,34 @@ public class Input implements KeyListener
 			{
 				if(keyCodeToStr.containsKey(e.getKeyCode()))
 				{
+					/*
 					ImageOp op = Paint.getImageOp(keyCodeToStr.get(e.getKeyCode()).toLowerCase());
 					if(op != null)
 					{
 						op.operation();
 					}
+					*/
 				}
 			}
 			else
 			{
 				if(e.getKeyCode() == KeyEvent.VK_Z)
 				{
-					Paint.main.history.revertChange();
+					Paint.getDocument().getHistory().revertChange();
+					Paint.main.gui.repaint();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_Y)
 				{
-					Paint.main.history.repeatChange();
+					Paint.getDocument().getHistory().repeatChange();
+					Paint.main.gui.repaint();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_EQUALS)
 				{
-					Paint.main.gui.canvas.incZoom();
+					Paint.main.gui.canvasPanel.incZoom();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_MINUS)
 				{
-					Paint.main.gui.canvas.decZoom();
+					Paint.main.gui.canvasPanel.decZoom();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_S)
 				{
@@ -131,42 +123,56 @@ public class Input implements KeyListener
 				else if(e.getKeyCode() == KeyEvent.VK_G)
 				{
 					Menu.GRID_ENABLED = !Menu.GRID_ENABLED;
-					Paint.main.gui.canvas.getPanel().repaint();
+					Paint.main.gui.repaint();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_B)
 				{
 					Menu.DARK_BACKGROUND = !Menu.DARK_BACKGROUND;
 					Paint.main.gui.frame.repaint();
+					Paint.main.gui.revalidateBG();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_D)
 				{
-					Paint.main.gui.canvas.selection.drop();
+					//Paint.main.gui.canvas.selection.drop();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_A)
 				{
+					/*
 					Paint.main.gui.canvas.selection.create(
-							new Rectangle2D.Float(0, 0, Paint.main.gui.canvas.getWidth(), Paint.main.gui.canvas.getHeight()), CombineMode.REPLACE);
+							new Rectangle2D.Float(0, 0, Paint.main.gui.canvas
+									.getWidth(), Paint.main.gui.canvas
+									.getHeight()), CombineMode.REPLACE);
+					*/
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_C)
 				{
-					SelectionCanvas sel = Paint.main.gui.canvas.selection.getSelection();
+					/*
+					SelectionCanvas sel =
+							Paint.main.gui.canvas.selection.getSelection();
 					if(sel != null)
 						ClipboardHandler.copy(sel.getBoundedSelection());
+					*/
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_X)
 				{
-					SelectionCanvas sel = Paint.main.gui.canvas.selection.getSelection();
+					/*
+					SelectionCanvas sel =
+							Paint.main.gui.canvas.selection.getSelection();
 					if(sel != null)
 					{
 						ClipboardHandler.copy(sel.getBoundedSelection());
-						Paint.main.history.addChange(new DeleteSelectionOp(sel, Paint.main.gui.canvas.getParentOf(sel)));
+						Paint.main.history.addChange(new DeleteSelectionOp(sel,
+								Paint.main.gui.canvas.getParentOf(sel)));
 					}
+					*/
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_V)
 				{
+					/*
 					BufferedImage image = ClipboardHandler.paste();
 					if(image != null)
 						Paint.main.gui.canvas.selection.paste(image);
+					*/
 				}
 			}
 		}
@@ -174,7 +180,9 @@ public class Input implements KeyListener
 		{
 			if(keyCodeToStr.containsKey(e.getKeyCode()))
 			{
-				Tool tool = Paint.getTool(keyCodeToStr.get(e.getKeyCode()).toLowerCase());
+				Tool tool =
+						Paint.getTool(keyCodeToStr.get(e.getKeyCode())
+								.toLowerCase());
 				if(tool != null)
 				{
 					Paint.setTool(tool);
@@ -183,7 +191,7 @@ public class Input implements KeyListener
 		}
 		Point p = MouseInfo.getPointerInfo().getLocation();
 		
-		MOVE = (int) (MOVE * Paint.main.gui.canvas.getScale());
+		//MOVE = (int) (MOVE * Paint.main.gui.canvas.getScale());
 		
 		if(e.getKeyCode() == KeyEvent.VK_UP)
 		{

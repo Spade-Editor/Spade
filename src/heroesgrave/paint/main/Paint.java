@@ -21,31 +21,28 @@ package heroesgrave.paint.main;
 
 import heroesgrave.paint.gui.GUIManager;
 import heroesgrave.paint.gui.Menu.CentredJDialog;
+import heroesgrave.paint.gui.Renderer;
 import heroesgrave.paint.gui.Tools;
-import heroesgrave.paint.image.IFrame;
-import heroesgrave.paint.image.doc.GlobalHistory;
-import heroesgrave.paint.imageops.ImageOp;
+import heroesgrave.paint.image.Document;
+import heroesgrave.paint.io.ImageExporter;
 import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.paint.tools.Tool;
 import heroesgrave.utils.app.Application;
 import heroesgrave.utils.io.IOUtils;
-import heroesgrave.utils.io.ImageExporter;
-import heroesgrave.utils.io.ImageImporter;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
+import com.alee.laf.rootpane.WebDialog;
 
 //
 // "Ninety-nine little bugs in the code, ninety-nine little bugs! Take one down, patch it around, one-hundred and seventeen bugs in the code!"
@@ -53,7 +50,7 @@ import javax.swing.JOptionPane;
 
 public class Paint extends Application
 {
-	// Major.Minor + letter for releases. The letter is for tiny revisions, such as fixing bugs that slipped through.
+	// Major.Minor + optional letter for releases. The letter is for tiny revisions, such as fixing bugs that slipped through.
 	// Major.Minor-Dev for development builds.
 	// Eg: 1.3b is the 2nd revision of verion 1.3
 	
@@ -61,23 +58,22 @@ public class Paint extends Application
 	// Beta for new completed features.
 	// Development for under-development new features.
 	
-	public static final String VERSION = "1.0-Beta.6";
-	public static final String RELEASED = "28/02/2014";
+	public static final String VERSION = "0.14-Dev";
+	public static final String RELEASED = "17/05/2014";
 	
-	/*/public static final String BUILD_TYPE = "Development";
+	/**/public static final String BUILD_TYPE = "Development";
 	//*/public static final String BUILD_TYPE = "Beta";
 	//*/public static final String BUILD_TYPE = "Stable";
 	
 	public static boolean debug;
 	public static Paint main = new Paint();
-	public static URL questionMarkURL = Paint.class.getResource("/heroesgrave/paint/res/icons/questionmark.png");
+	public static URL questionMarkURL = Paint.class
+			.getResource("/heroesgrave/paint/res/icons/questionmark.png");
 	
 	public GUIManager gui;
-	public heroesgrave.paint.plugin.PluginManager pluginManager;
-	public GlobalHistory history;
+	public PluginManager pluginManager;
 	
-	public File openFile;
-	public File openDir;
+	public Document document;
 	
 	private File toOpen;
 	
@@ -88,10 +84,9 @@ public class Paint extends Application
 	public static int leftColour = 0xff000000;
 	public static int rightColour = 0xffffffff;
 	
-	public boolean saved = false;
-	
 	private static HashMap<String, Tool> toolMap = new HashMap<String, Tool>();
-	private static HashMap<String, ImageOp> imageOps = new HashMap<String, ImageOp>();
+	
+	//private static HashMap<String, ImageOp> imageOps = new HashMap<String, ImageOp>();
 	
 	@Override
 	public void init()
@@ -102,34 +97,46 @@ public class Paint extends Application
 		
 		tools = new Tools();
 		
-		gui = new GUIManager();
-		gui.init();
-		
-		history = new GlobalHistory();
-		setRightColour(0xffffffff, false);
-		setLeftColour(0xff000000, false);
-		
-		tools.registerTools();
-		setTool(currentTool);
-		pluginManager.registerOther();
+		Document doc;
 		
 		if(toOpen != null)
 		{
-			Paint.main.openFile = toOpen;
-			Paint.main.openDir = toOpen.getParentFile();
-			Paint.main.gui.canvas.setRoot(ImageImporter.loadImage(toOpen.getAbsolutePath()));
+			document = new Document(toOpen);
+			toOpen = null;
 		}
-		saved = true;
-		Paint.main.gui.frame.requestFocus();
-		pluginManager.onLaunch();
+		else
+		{
+			document = new Document(512, 512);
+		}
+		
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				gui = new GUIManager();
+				gui.init();
+				
+				setRightColour(0xffffffff, false);
+				setLeftColour(0xff000000, false);
+				
+				tools.registerTools();
+				setTool(currentTool);
+				pluginManager.registerOther();
+				gui.setRenderer(new Renderer(document));
+				gui.layers.setDocument(document);
+				gui.canvasPanel.activate();
+				
+				Paint.main.gui.frame.requestFocus();
+				pluginManager.onLaunch();
+			}
+		});
 	}
 	
 	@Override
 	public void update()
 	{
-		gui.info.setSaved(saved);
-		gui.info.setScale(gui.canvas.getScale());
-		gui.setFile(openFile);
+		//gui.info.setSaved(saved);
+		//gui.setFile(openFile);
 	}
 	
 	@Override
@@ -146,10 +153,10 @@ public class Paint extends Application
 	
 	public void newImage(final int width, final int height)
 	{
-		if(!saved)
+		if(!document.saved)
 		{
-			final JDialog newImage = new JDialog();
-			newImage.setTitle("Save current image?");
+			final WebDialog newImage =
+					new WebDialog(gui.frame, "Save current image?");
 			newImage.setAlwaysOnTop(true);
 			newImage.setAutoRequestFocus(true);
 			newImage.setLayout(new BorderLayout());
@@ -203,10 +210,8 @@ public class Paint extends Application
 	
 	private void createImage(int width, int height)
 	{
-		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		gui.canvas.setImage(image);
-		this.openFile = null;
-		saved = true;
+		this.document = new Document(width, height);
+		gui.setRenderer(new Renderer(document));
 	}
 	
 	public static void addTool(String key, Tool tool)
@@ -214,27 +219,28 @@ public class Paint extends Application
 		toolMap.put(key.toLowerCase(), tool);
 	}
 	
-	public static void addImageOp(String key, ImageOp op)
-	{
-		imageOps.put(key.toLowerCase(), op);
-	}
-	
 	public static Tool getTool(String key)
 	{
 		return toolMap.get(key.toLowerCase());
 	}
 	
+	/*
+	public static void addImageOp(String key, ImageOp op)
+	{
+		imageOps.put(key.toLowerCase(), op);
+	}
+	*/
+	
+	/*
 	public static ImageOp getImageOp(String key)
 	{
 		return imageOps.get(key.toLowerCase());
 	}
+	*/
 	
-	public static void addChange(IFrame frame)
+	public static Document getDocument()
 	{
-		frame.setCanvas(main.gui.canvas.getCanvas());
-		main.gui.canvas.getCanvas().addChange(frame);
-		main.gui.canvas.getPanel().repaint();
-		main.history.addChange(frame);
+		return main.document;
 	}
 	
 	public static void setTool(Tool tool)
@@ -246,83 +252,21 @@ public class Paint extends Application
 		main.currentTool = tool;
 		main.currentTool.onSelect();
 		main.gui.setToolOption(tool.getOptions());
-		main.gui.canvas.getPanel().repaint();
+		//main.gui.canvas.getPanel().repaint();
 		main.tools.toolbox.setSelected(tool);
 	}
 	
 	public static void save()
 	{
-		if(Paint.main.openFile != null)
-		{
-			String fileName = Paint.main.openFile.getAbsolutePath();
-			
-			String extension = "";
-			
-			int i = fileName.lastIndexOf('.');
-			
-			if(i > 0)
-			{
-				extension = fileName.substring(i + 1);
-			}
-			
-			ImageExporter exporter = ImageExporter.get(extension);
-			
-			if(!fileName.endsWith("." + exporter.getFileExtension()))
-				fileName += "." + exporter.getFileExtension();
-			
-			if(fileName.endsWith("." + exporter.getFileExtension()))
-			{
-				try
-				{
-					exporter.export(Paint.main.gui.canvas.getRoot(), new File(fileName));
-				}
-				catch(IOException e)
-				{
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-			}
-			
-			main.saved = true;
-		}
+		if(getDocument().getFile() != null)
+			getDocument().save();
 		else
-		{
-			saveAs();
-		}
+			main.saveAs();
 	}
 	
-	public static void saveAs()
+	public void saveAs()
 	{
-		
-		/**
-		 * How the new system works:
-		 *
-		JFileChooser fileChooser = new JFileChooser();  
-		
-		// Add ALL the FileFilter's!
-		fileChooser.addChoosableFileFilter(...);  
-		fileChooser.addChoosableFileFilter(...);  
-		fileChooser.addChoosableFileFilter(...);  
-		fileChooser.addChoosableFileFilter(...);  
-		
-		...  
-		
-		int result = fileChooser.showSaveDialog(parentComponent);  
-		if (result == JFileChooser.APPROVE_OPTION)  
-		{  
-		// the user pressed OK  
-		File file = fileChooser.getSelectedFile();  
-		FileFilter fileFilter = fileChooser.getFileFilter();  
-		
-		...  
-		}  
-		
-		 * 
-		 **/
-		
-		JFileChooser chooser = new JFileChooser(Paint.main.openDir);
+		JFileChooser chooser = new JFileChooser(document.getDir());
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
 		
@@ -331,45 +275,38 @@ public class Paint extends Application
 			chooser.addChoosableFileFilter(exporter);
 		}
 		
-		int returned = chooser.showSaveDialog(new CentredJDialog(main.gui.frame, "Save Image"));
-		ImageExporter formatToSaveIn = (ImageExporter) chooser.getFileFilter();
+		int returned =
+				chooser.showSaveDialog(new CentredJDialog(main.gui.frame,
+						"Save Image"));
+		ImageExporter format = (ImageExporter) chooser.getFileFilter();
 		
 		if(returned == JFileChooser.APPROVE_OPTION)
 		{
-			Paint.main.openFile = chooser.getSelectedFile();
+			document.setFile(chooser.getSelectedFile());
 			
-			if(Paint.main.openFile.getAbsolutePath().endsWith("." + formatToSaveIn.getFileExtension()))
+			String fileName = document.getFile().getAbsolutePath();
+			
+			if(fileName.endsWith("." + format.getFileExtension()))
 			{
 				// Do nothing.
 			}
 			else
 			{
 				// Put the format at the end of the File-Name!
-				Paint.main.openFile = new File(Paint.main.openFile.getAbsolutePath() + "." + formatToSaveIn.getFileExtension());
+				fileName += "." + format.getFileExtension();
+				document.setFile(new File(fileName));
 			}
 			
-			Paint.main.openDir = Paint.main.openFile.getParentFile();
-			
-			try
-			{
-				formatToSaveIn.export(Paint.main.gui.canvas.getRoot(), Paint.main.openFile);
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error",
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			
-			main.saved = true;
+			document.save();
 		}
 	}
 	
 	public void setLeftColour(int c, boolean checked)
 	{
 		if(!checked)
+		{
 			gui.chooser.setLeftColour(c);
+		}
 		Paint.leftColour = c;
 	}
 	
@@ -381,7 +318,9 @@ public class Paint extends Application
 	public void setRightColour(int c, boolean checked)
 	{
 		if(!checked)
+		{
 			gui.chooser.setRightColour(c);
+		}
 		Paint.rightColour = c;
 	}
 	
@@ -393,13 +332,15 @@ public class Paint extends Application
 	/**
 	 * @param mouseButton The mouse-button to get the color for.
 	 * @return The color assigned to the given MouseButton.
-	 **/
+	 */
 	public int getColor(int mouseButton)
 	{
 		// BUTTON1 (LEFT): left
 		// BUTTON2 (MIDDLE): Color.BLACK
 		// BUTTON1 (RIGHT): right
-		return mouseButton == MouseEvent.BUTTON1 ? Paint.leftColour : (mouseButton == MouseEvent.BUTTON3 ? Paint.rightColour : 0xFF000000);
+		return mouseButton == MouseEvent.BUTTON1 ? Paint.leftColour
+												: (mouseButton == MouseEvent.BUTTON3 ? Paint.rightColour
+																					: 0xFF000000);
 	}
 	
 	public static void main(String[] args)
@@ -416,6 +357,8 @@ public class Paint extends Application
 				main.toOpen = f;
 			}
 		}
+		
+		System.setProperty("DlafClassName", "");
 		
 		// Go through ALL the arguments and...
 		for(String STR : args)
@@ -469,5 +412,12 @@ public class Paint extends Application
 	public static String getVersionString()
 	{
 		return VERSION;
+	}
+	
+	public static void setDocument(File file)
+	{
+		main.document = new Document(file);
+		main.gui.layers.setDocument(main.document);
+		main.gui.setRenderer(new Renderer(main.document));
 	}
 }

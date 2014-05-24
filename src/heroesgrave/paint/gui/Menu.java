@@ -19,10 +19,10 @@
 
 package heroesgrave.paint.gui;
 
+import heroesgrave.paint.io.ImageImporter;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.main.Popup;
 import heroesgrave.paint.plugin.PluginManager;
-import heroesgrave.utils.io.ImageImporter;
 import heroesgrave.utils.misc.NumberFilter;
 
 import java.awt.GridLayout;
@@ -35,9 +35,6 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -45,41 +42,48 @@ import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.AbstractDocument;
 
+import com.alee.laf.menu.MenuBarStyle;
+import com.alee.laf.menu.WebMenu;
+import com.alee.laf.menu.WebMenuBar;
+import com.alee.laf.menu.WebMenuItem;
+
 public class Menu
 {
-	/**
-	 * Single boolean flag for the visibility toggle of the Pixel-Grid.
-	 **/
+	// Pixel-Grid toggle
 	public static boolean GRID_ENABLED = false;
+	// Dark/Light Background toggle
 	public static boolean DARK_BACKGROUND = false;
 	
-	public static JMenuBar createMenuBar()
+	public static WebMenuBar createMenuBar()
 	{
 		// M.E.I. MenuBar
-		JMenuBar menuBar = new JMenuBar();
+		WebMenuBar menuBar = new WebMenuBar();
+		menuBar.setMenuBarStyle(MenuBarStyle.standalone);
 		
-		// Main Menu's
+		// Main Menus
 		menuBar.add(createFileMenu());
 		menuBar.add(createEditMenu());
 		menuBar.add(createViewMenu());
 		
-		// Editing Menu's
+		// Editing Menus
 		menuBar.add(ToolMenu.createImageMenu());
-		menuBar.add((Paint.main.tools.toolsMenu = new JMenu("Tools")));
+		menuBar.add((Paint.main.tools.toolsMenu = new WebMenu("Tools")));
 		menuBar.add(ToolMenu.createEffectMenu());
 		
-		// Info Menu's
+		// Info Menus
 		menuBar.add(createWindowMenu());
 		menuBar.add(createHelpMenu());
 		
 		return menuBar;
 	}
 	
-	private static JMenu createHelpMenu()
+	private static WebMenu createHelpMenu()
 	{
-		JMenu help = new JMenu("Help/Info");
+		WebMenu help = new WebMenu("Help/Info");
 		
-		JMenuItem pluginManager = new JMenuItem("Plugin Viewer", GUIManager.getIcon("plugin_viewer"));
+		WebMenuItem pluginManager =
+				new WebMenuItem("Plugin Viewer",
+						GUIManager.getIcon("plugin_viewer"));
 		pluginManager.addActionListener(new ActionListener()
 		{
 			@Override
@@ -89,7 +93,8 @@ public class Menu
 			}
 		});
 		
-		JMenuItem about = new JMenuItem("About...", GUIManager.getIcon("about"));
+		WebMenuItem about =
+				new WebMenuItem("About...", GUIManager.getIcon("about"));
 		about.addActionListener(new ActionListener()
 		{
 			@Override
@@ -105,11 +110,13 @@ public class Menu
 		return help;
 	}
 	
-	private static JMenu createDialogsMenu()
+	private static WebMenu createDialogsMenu()
 	{
-		JMenu dialogs = new JMenu("Manage Dialogs");
+		WebMenu dialogs = new WebMenu("Manage Dialogs");
 		
-		JMenuItem colourChooser = new JMenuItem("Colour Chooser (F5)", GUIManager.getIcon("colour_chooser"));
+		WebMenuItem colourChooser =
+				new WebMenuItem("Colour Chooser (F5)",
+						GUIManager.getIcon("colour_chooser"));
 		
 		colourChooser.addActionListener(new ActionListener()
 		{
@@ -120,7 +127,9 @@ public class Menu
 			}
 		});
 		
-		JMenuItem layerManager = new JMenuItem("Layer Manager (F6)", GUIManager.getIcon("layer_manager"));
+		WebMenuItem layerManager =
+				new WebMenuItem("Layer Manager (F6)",
+						GUIManager.getIcon("layer_manager"));
 		
 		layerManager.addActionListener(new ActionListener()
 		{
@@ -131,41 +140,34 @@ public class Menu
 			}
 		});
 		
-		JMenuItem toolBox = new JMenuItem("ToolBox (F4)", GUIManager.getIcon("toolbox"));
-		toolBox.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				Paint.main.gui.toolBox.toggle();
-			}
-		});
-		
-		dialogs.add(toolBox);
 		dialogs.add(colourChooser);
 		dialogs.add(layerManager);
 		
 		return dialogs;
 	}
 	
-	private static JMenu createWindowMenu()
+	private static WebMenu createWindowMenu()
 	{
-		JMenu window = new JMenu("Window");
+		WebMenu window = new WebMenu("Window");
 		
 		window.add(createDialogsMenu());
 		
 		return window;
 	}
 	
-	private static JMenu createFileMenu()
+	private static WebMenu createFileMenu()
 	{
-		JMenu file = new JMenu("File");
+		WebMenu file = new WebMenu("File");
 		
-		JMenuItem newFile = new JMenuItem("New (Ctrl+N)", GUIManager.getIcon("new"));
-		JMenuItem load = new JMenuItem("Open (Ctrl+O)", GUIManager.getIcon("open"));
-		JMenuItem save = new JMenuItem("Save (Ctrl+S)", GUIManager.getIcon("save"));
-		final JMenuItem saveAs = new JMenuItem("Save As", GUIManager.getIcon("save_as"));
-		JMenuItem exit = new JMenuItem("Exit", GUIManager.getIcon("exit"));
+		WebMenuItem newFile =
+				new WebMenuItem("New (Ctrl+N)", GUIManager.getIcon("new"));
+		WebMenuItem load =
+				new WebMenuItem("Open (Ctrl+O)", GUIManager.getIcon("open"));
+		WebMenuItem save =
+				new WebMenuItem("Save (Ctrl+S)", GUIManager.getIcon("save"));
+		final WebMenuItem saveAs =
+				new WebMenuItem("Save As", GUIManager.getIcon("save_as"));
+		WebMenuItem exit = new WebMenuItem("Exit", GUIManager.getIcon("exit"));
 		
 		file.add(newFile);
 		file.add(load);
@@ -205,7 +207,7 @@ public class Menu
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				Paint.saveAs();
+				Paint.main.saveAs();
 			}
 		});
 		
@@ -223,7 +225,8 @@ public class Menu
 	
 	public static void showOpenMenu()
 	{
-		final JFileChooser chooser = new JFileChooser(Paint.main.openDir);
+		final JFileChooser chooser =
+				new JFileChooser(Paint.getDocument().getDir());
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setFileFilter(new FileFilter()
@@ -253,13 +256,12 @@ public class Menu
 		// Add ALL the custom image-importers!
 		ImageImporter.addAllImporters(chooser);
 		
-		int returned = chooser.showOpenDialog(new CentredJDialog(Paint.main.gui.frame, "Load Image"));
+		int returned =
+				chooser.showOpenDialog(new CentredJDialog(Paint.main.gui.frame,
+						"Load Image"));
 		
 		if(returned == JFileChooser.APPROVE_OPTION)
 		{
-			Paint.main.openFile = chooser.getSelectedFile();
-			Paint.main.openDir = Paint.main.openFile.getParentFile();
-			
 			// If a Image takes too long, the application might crash.
 			// By running the actual loading process in another thread, the AWT-Event Thread can continue working while the image is being loaded.
 			new Thread(new Runnable()
@@ -267,7 +269,7 @@ public class Menu
 				@Override
 				public void run()
 				{
-					Paint.main.gui.canvas.setRoot(ImageImporter.loadImage(chooser.getSelectedFile().getAbsolutePath()));
+					Paint.setDocument(chooser.getSelectedFile());
 				}
 			}).start();
 		}
@@ -275,7 +277,8 @@ public class Menu
 	
 	public static void showNewMenu()
 	{
-		final JDialog dialog = new CentredJDialog(Paint.main.gui.frame, "New Image");
+		final JDialog dialog =
+				new CentredJDialog(Paint.main.gui.frame, "New Image");
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
@@ -290,8 +293,10 @@ public class Menu
 		
 		final JTextField width = new JTextField("800");
 		final JTextField height = new JTextField("600");
-		((AbstractDocument) width.getDocument()).setDocumentFilter(new NumberFilter());
-		((AbstractDocument) height.getDocument()).setDocumentFilter(new NumberFilter());
+		((AbstractDocument) width.getDocument())
+				.setDocumentFilter(new NumberFilter());
+		((AbstractDocument) height.getDocument())
+				.setDocumentFilter(new NumberFilter());
 		width.setColumns(8);
 		height.setColumns(8);
 		
@@ -313,7 +318,8 @@ public class Menu
 				int h = Integer.parseInt(height.getText());
 				if(w > 8192 || h > 8192 || w == 0 || h == 0)
 				{
-					Popup.show("Invalid Image Size", "The image dimensions must be more than 0 and less than 8192");
+					Popup.show("Invalid Image Size",
+							"The image dimensions must be more than 0 and less than 8192");
 				}
 				else
 				{
@@ -343,20 +349,24 @@ public class Menu
 		dialog.setVisible(true);
 	}
 	
-	private static JMenu createEditMenu()
+	private static WebMenu createEditMenu()
 	{
-		JMenu edit = new JMenu("Edit");
+		WebMenu edit = new WebMenu("Edit");
 		
-		JMenuItem undo = new JMenuItem("Undo (Ctrl+Z)", GUIManager.getIcon("undo"));
-		JMenuItem redo = new JMenuItem("Redo (Ctrl+Y)", GUIManager.getIcon("redo"));
-		JMenuItem clear = new JMenuItem("Clear History", GUIManager.getIcon("clear_history"));
+		WebMenuItem undo =
+				new WebMenuItem("Undo (Ctrl+Z)", GUIManager.getIcon("undo"));
+		WebMenuItem redo =
+				new WebMenuItem("Redo (Ctrl+Y)", GUIManager.getIcon("redo"));
+		WebMenuItem clear =
+				new WebMenuItem("Clear History",
+						GUIManager.getIcon("clear_history"));
 		
 		undo.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Paint.main.history.revertChange();
+				//Paint.main.history.revertChange();
 			}
 		});
 		
@@ -365,7 +375,7 @@ public class Menu
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Paint.main.history.repeatChange();
+				//Paint.main.history.repeatChange();
 			}
 		});
 		
@@ -374,7 +384,7 @@ public class Menu
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Paint.main.history.clearHistory();
+				//Paint.main.history.clearHistory();
 			}
 		});
 		
@@ -385,21 +395,29 @@ public class Menu
 		return edit;
 	}
 	
-	private static JMenu createViewMenu()
+	private static WebMenu createViewMenu()
 	{
-		JMenu view = new JMenu("View");
+		WebMenu view = new WebMenu("View");
 		
-		JMenuItem zoomIn = new JMenuItem("Zoom In (Ctrl++)", GUIManager.getIcon("zoom_inc"));
-		JMenuItem zoomOut = new JMenuItem("Zoom Out (Ctrl+-)", GUIManager.getIcon("zoom_dec"));
-		JMenuItem grid = new JMenuItem("Toggle Grid (Ctrl+G)", GUIManager.getIcon("toggle_grid"));
-		JMenuItem darkDraw = new JMenuItem("Toggle Dark Background", GUIManager.getIcon("toggle_dark_bg"));
+		WebMenuItem zoomIn =
+				new WebMenuItem("Zoom In (Ctrl++)",
+						GUIManager.getIcon("zoom_inc"));
+		WebMenuItem zoomOut =
+				new WebMenuItem("Zoom Out (Ctrl+-)",
+						GUIManager.getIcon("zoom_dec"));
+		WebMenuItem grid =
+				new WebMenuItem("Toggle Grid (Ctrl+G)",
+						GUIManager.getIcon("toggle_grid"));
+		WebMenuItem darkDraw =
+				new WebMenuItem("Toggle Dark Background",
+						GUIManager.getIcon("toggle_dark_bg"));
 		
 		zoomIn.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				Paint.main.gui.canvas.incZoom();
+				//Paint.main.gui.canvas.incZoom();
 			}
 		});
 		
@@ -408,7 +426,7 @@ public class Menu
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				Paint.main.gui.canvas.decZoom();
+				//Paint.main.gui.canvas.decZoom();
 			}
 		});
 		
@@ -418,7 +436,7 @@ public class Menu
 			public void actionPerformed(ActionEvent e)
 			{
 				GRID_ENABLED = !GRID_ENABLED;
-				Paint.main.gui.canvas.getPanel().repaint();
+				//Paint.main.gui.canvas.getPanel().repaint();
 			}
 		});
 		
@@ -483,7 +501,8 @@ public class Menu
 			super(text);
 			
 			setColumns(8);
-			((AbstractDocument) getDocument()).setDocumentFilter(new NumberFilter());
+			((AbstractDocument) getDocument())
+					.setDocumentFilter(new NumberFilter());
 		}
 		
 		public int get()

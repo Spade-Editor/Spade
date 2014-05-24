@@ -19,7 +19,7 @@
 
 package heroesgrave.paint.imageops;
 
-import heroesgrave.paint.image.KeyFrame;
+import heroesgrave.paint.image.old.change.KeyFrame;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.image.BufferedImage;

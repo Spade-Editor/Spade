@@ -17,11 +17,11 @@
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package heroesgrave.paint.tools;
+package heroesgrave.paint.tools.old;
 
-import heroesgrave.paint.image.Frame;
-import heroesgrave.paint.image.ShapeChange;
-import heroesgrave.paint.image.accurate.LineChange;
+import heroesgrave.paint.image.old.accurate.LineChange;
+import heroesgrave.paint.image.old.change.Frame;
+import heroesgrave.paint.image.old.change.ShapeChange;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.event.MouseEvent;

@@ -10,12 +10,10 @@
 .project
 .settings/*
 /bin
-/etc
 
 # Other #
+/etc
+/doc
 *.sh
 *.directory
 license.txt
-build/Paint
-build/plugins/*
-plugins/*

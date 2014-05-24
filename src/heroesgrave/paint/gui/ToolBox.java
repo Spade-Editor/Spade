@@ -19,14 +19,10 @@
 
 package heroesgrave.paint.gui;
 
-import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Tool;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,46 +34,29 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
+
+import com.alee.laf.button.WebToggleButton;
+import com.alee.laf.toolbar.ToolbarStyle;
+import com.alee.laf.toolbar.WebToolBar;
 
 public class ToolBox
 {
 	private final static int BUTTON_SIZE = 32;
 	
-	private JDialog dialog;
-	private JPanel panel;
+	//private JDialog dialog;
+	private WebToolBar toolbar;
 	private ButtonGroup buttonGroup;
 	
-	public ToolBox(JFrame mainFrame)
+	public ToolBox()
 	{
-		dialog = new CentredJDialog(mainFrame, "Tools");
-		dialog.setResizable(false);
-		dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-		dialog.setFocusable(false);
-		dialog.setAutoRequestFocus(false);
-		
-		panel = new JPanel();
-		
-		int gridRows = 2;
-		int gridColumns = 5;
-		panel.setLayout(new GridLayout(gridRows, gridColumns));
+		toolbar = new WebToolBar("Toolbox");
+		toolbar.setRollover(true);
+		toolbar.setOrientation(WebToolBar.VERTICAL);
+		toolbar.setFloatable(true);
+		toolbar.setFocusable(false);
+		toolbar.setToolbarStyle(ToolbarStyle.standalone);
 		
 		buttonGroup = new ButtonGroup();
-		
-		// backgroundPanel used to avoid button resizing and fit to BUTTON_SIZE
-		JPanel backgroundPanel = new JPanel(new GridBagLayout());
-		backgroundPanel.add(panel);
-		dialog.add(backgroundPanel, BorderLayout.CENTER);
-		
-		dialog.pack();
-	}
-	
-	public JDialog getDialog()
-	{
-		return dialog;
 	}
 	
 	public void addButton(ToolBoxButton button, boolean... selected)
@@ -87,36 +66,15 @@ public class ToolBox
 			button.setSelected(selected[0]);
 		}
 		buttonGroup.add(button);
-		panel.add(button);
-		dialog.pack();
+		toolbar.add(button);
 	}
 	
-	public void show()
+	public WebToolBar getToolbar()
 	{
-		dialog.setVisible(true);
+		return toolbar;
 	}
 	
-	public void hide()
-	{
-		dialog.setVisible(false);
-	}
-	
-	public void toggle()
-	{
-		dialog.setVisible(!dialog.isVisible());
-	}
-	
-	public void dispose()
-	{
-		dialog.dispose();
-	}
-	
-	public boolean isVisible()
-	{
-		return dialog.isVisible();
-	}
-	
-	public static class ToolBoxButton extends JToggleButton
+	public static class ToolBoxButton extends WebToggleButton
 	{
 		private static final long serialVersionUID = -7985116966168623216L;
 		private Tool tool;
@@ -134,7 +92,10 @@ public class ToolBox
 			// TRY to load the icon!
 			try
 			{
-				URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/tools/" + name + ".png");
+				URL url =
+						this.getClass().getResource(
+								"/heroesgrave/paint/res/icons/tools/" + name
+										+ ".png");
 				
 				if(url != null)
 				{
@@ -142,13 +103,15 @@ public class ToolBox
 				}
 				else
 				{
-					this.setIcon(new ImageIcon(ImageIO.read(Paint.questionMarkURL)));
+					this.setIcon(new ImageIcon(ImageIO
+							.read(Paint.questionMarkURL)));
 				}
 				
 			}
 			catch(IOException e1)
 			{
-				System.err.println("Error: Tool '" + name + "' is missing an icon!");
+				System.err.println("Error: Tool '" + name
+						+ "' is missing an icon!");
 			}
 			
 			this.addActionListener(new ActionListener()

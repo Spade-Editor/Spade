@@ -61,6 +61,7 @@ public abstract class Plugin
 		
 	}
 	
+	/*
 	public void registerImageOps(RegisterImageOps register)
 	{
 		
@@ -70,6 +71,7 @@ public abstract class Plugin
 	{
 		
 	}
+	*/
 	
 	public void registerTools(RegisterTools register)
 	{

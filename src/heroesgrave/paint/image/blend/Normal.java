@@ -33,7 +33,8 @@ public class Normal extends BlendMode
 		super("Normal");
 	}
 	
-	public CompositeContext createContext(ColorModel arg0, ColorModel arg1, RenderingHints arg2)
+	public CompositeContext createContext(ColorModel arg0, ColorModel arg1,
+			RenderingHints arg2)
 	{
 		return AlphaComposite.SrcOver.createContext(arg0, arg1, arg2);
 	}

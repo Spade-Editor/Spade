@@ -53,7 +53,8 @@ public abstract class BlendMode implements Composite, CompositeContext
 		
 	}
 	
-	public CompositeContext createContext(ColorModel arg0, ColorModel arg1, RenderingHints arg2)
+	public CompositeContext createContext(ColorModel arg0, ColorModel arg1,
+			RenderingHints arg2)
 	{
 		return this;
 	}
