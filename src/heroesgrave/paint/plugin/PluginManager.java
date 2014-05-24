@@ -1,21 +1,22 @@
+// {LICENSE}
 /*
- *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
- *
- *	This file is part of Paint.JAVA
- *
- *	Paint.JAVA is free software: you can redistribute it and/or modify
- *	it under the terms of the GNU General Public License as published by
- *	the Free Software Foundation, either version 3 of the License, or
- *	(at your option) any later version.
- *
- *	This program is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *	GNU General Public License for more details.
- *
- *	You should have received a copy of the GNU General Public License
- *	along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
+ * Copyright 2013-2014 HeroesGrave and other Paint.JAVA developers.
+ * 
+ * This file is part of Paint.JAVA
+ * 
+ * Paint.JAVA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
 package heroesgrave.paint.plugin;
 
@@ -36,7 +37,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 
 /**
  * PluginManager class.<hr>
@@ -50,7 +50,7 @@ import javax.swing.JMenu;
 public class PluginManager
 {
 	/**
-	 * The instance of the PluginManager. There should ALWAYS only be ONE PluginManagaer in existance!
+	 * The instance of the PluginManager. There should ALWAYS only be ONE PluginManager in existance!
 	 **/
 	public static PluginManager instance = null;
 	
@@ -69,7 +69,7 @@ public class PluginManager
 	 **/
 	private PluginManagerViewer pluginViewer;
 	
-	public PluginManager(Paint paint)
+	private PluginManager(Paint paint)
 	{
 		// Make sure the plugin folder exists and is accessible!
 		pluginRootDirectory = new File(IOUtils.assemblePath(System.getProperty("user.home"), ".paint-java", "plugins"));
@@ -137,7 +137,8 @@ public class PluginManager
 			catch(Exception e3)
 			{
 				e3.printStackTrace();
-				Popup.show("Plugin Load Error", "[PluginManager] Cannot READ 'plugin.info' file!\nThe Plugin may be corrupt, or is not a plugin at all");
+				Popup.show("Plugin Load Error",
+						"[PluginManager] Cannot READ 'plugin.info' file!\nThe Plugin may be corrupt, or is not a plugin at all");
 				jarFile.close();
 				return;
 			}
@@ -152,8 +153,6 @@ public class PluginManager
 			}
 			
 			// Get Main-Class name!
-			// Temporarily unused due to some bugs.
-			@SuppressWarnings("unused")
 			String mainClassName = props.getProperty("main");
 			
 			// List Entries
@@ -163,7 +162,9 @@ public class PluginManager
 			URL[] urls = {new URL("jar:file:" + possiblePluginRoot.getAbsolutePath() + "!/")};
 			
 			// This should not be closed (or should it?)
-			URLClassLoader cl = new URLClassLoader(urls);
+			URLClassLoader cl = URLClassLoader.newInstance(urls);
+			
+			Class<?> mainClass = null;
 			
 			while(e.hasMoreElements())
 			{
@@ -182,12 +183,12 @@ public class PluginManager
 				// since we don't load all classes at once, but rather by just loading the main-class and then
 				// letting the JVM-SystemClassLoader do its work. (Its faster this way!)
 				
-				/* XXX: The JVM-SystemClassLoader isn't doing it's work, so I removed this bit.
+				/* FIXME: The JVM-SystemClassLoader isn't doing it's work, so I removed this bit.
 				if(!className.equals(mainClassName))
 				{
 					continue;
 				}
-				*/
+				/**/
 				
 				// Try to load the class!
 				try
@@ -195,48 +196,54 @@ public class PluginManager
 					//Load
 					Class<?> c = cl.loadClass(className);
 					
-					// Check if the class is assignable from PluginBase (Is it a plugin?)
-					if(Plugin.class.isAssignableFrom(c))
+					if(className.equals(mainClassName))
 					{
-						// The class is a Plugin main-class!
-						// Cast it into the right type now...
-						Class<? extends Plugin> pluginClass = c.asSubclass(Plugin.class);
-						
-						// Then try to instantiate it...
-						try
-						{
-							Plugin newPluginInstance = pluginClass.newInstance();
-							this.loadedPlugins.add(newPluginInstance);
-							
-							System.out.println("[PluginManager] Loaded Plugin: " + newPluginInstance.name);
-							
-							// Create info object.
-							newPluginInstance.info = new Properties();
-							
-							// Format 'Size'
-							newPluginInstance.info.put("size", StringUtil.humanReadableByteCount(possiblePluginRoot.length(), true));
-							
-							// Format 'Description'
-							newPluginInstance.info.put("description", ((String) props.get("description")).replace("\\n", "\n"));
-							
-							// Author
-							newPluginInstance.info.put("author", (props.get("author")));
-							
-							// Version (defined by author)
-							newPluginInstance.info.put("version", (props.get("version")));
-							
-							// Date updated (defined by author)
-							newPluginInstance.info.put("updated", (props.get("updated")));
-							
-							newPluginInstance.info.put("plugin_location", possiblePluginRoot.getAbsolutePath());
-						}
-						catch(ReflectiveOperationException e1)
-						{
-							e1.printStackTrace();
-						}
+						mainClass = c;
 					}
 				}
 				catch(ClassNotFoundException e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+			
+			// Check if the main class is assignable from PluginBase (Is it a plugin?)
+			if(Plugin.class.isAssignableFrom(mainClass))
+			{
+				// The class is a Plugin main-class!
+				// Cast it into the right type now...
+				Class<? extends Plugin> pluginClass = mainClass.asSubclass(Plugin.class);
+				
+				// Then try to instantiate it...
+				try
+				{
+					Plugin newPluginInstance = pluginClass.newInstance();
+					this.loadedPlugins.add(newPluginInstance);
+					
+					System.out.println("[PluginManager] Loaded Plugin: " + newPluginInstance.name);
+					
+					// Create info object.
+					newPluginInstance.info = new Properties();
+					
+					// Format 'Size'
+					newPluginInstance.info.put("size",
+							StringUtil.humanReadableByteCount(possiblePluginRoot.length(), true));
+					
+					// Format 'Description'
+					newPluginInstance.info.put("description", ((String) props.get("description")).replace("\\n", "\n"));
+					
+					// Author
+					newPluginInstance.info.put("author", (props.get("author")));
+					
+					// Version (defined by author)
+					newPluginInstance.info.put("version", (props.get("version")));
+					
+					// Date updated (defined by author)
+					newPluginInstance.info.put("updated", (props.get("updated")));
+					
+					newPluginInstance.info.put("plugin_location", possiblePluginRoot.getAbsolutePath());
+				}
+				catch(ReflectiveOperationException e1)
 				{
 					e1.printStackTrace();
 				}
@@ -249,7 +256,8 @@ public class PluginManager
 		}
 		catch(IOException e)
 		{
-			System.out.println("[PluginManager] The JAR-file '" + possiblePluginRoot.getAbsolutePath() + "' could not be read!");
+			System.out.println("[PluginManager] The JAR-file '" + possiblePluginRoot.getAbsolutePath()
+					+ "' could not be read!");
 			e.printStackTrace();
 			return;
 		}
@@ -279,6 +287,7 @@ public class PluginManager
 		}
 	}
 	
+	/*
 	public void registerImageOps(JMenu menu)
 	{
 		//System.out.println("[Event] ImageOP-Menu creation.");
@@ -299,6 +308,7 @@ public class PluginManager
 			plugin.registerEffects(register);
 		}
 	}
+	*/
 	
 	public void registerOther()
 	{

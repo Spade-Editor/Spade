@@ -1,21 +1,22 @@
+// {LICENSE}
 /*
- *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
- *
- *	This file is part of Paint.JAVA
- *
- *	Paint.JAVA is free software: you can redistribute it and/or modify
- *	it under the terms of the GNU General Public License as published by
- *	the Free Software Foundation, either version 3 of the License, or
- *	(at your option) any later version.
- *
- *	This program is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *	GNU General Public License for more details.
- *
- *	You should have received a copy of the GNU General Public License
- *	along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
+ * Copyright 2013-2014 HeroesGrave and other Paint.JAVA developers.
+ * 
+ * This file is part of Paint.JAVA
+ * 
+ * Paint.JAVA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
 package heroesgrave.paint.main;
 
@@ -29,11 +30,8 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JFrame;
 
-/**
- * 
- * @author markbernard
- *
- */
+import com.alee.laf.rootpane.WebFrame;
+
 public class UserPreferences
 {
 	private static final String WINDOW_WIDTH = "window.width";
@@ -47,22 +45,18 @@ public class UserPreferences
 	private static final String LAYERS_WIDTH = "layers.width";
 	private static final String LAYERS_HEIGHT = "layers.height";
 	private static final String LAYERS_VISIBLE = "layers.visible";
-	private static final String TOOLBOX_VISIBLE = "toolbox.visible";
-	private static final String TOOLBOX_X = "toolbox.x";
-	private static final String TOOLBOX_Y = "toolbox.y";
 	private static final String BACKGROUND_DARK = "background.dark";
 	
 	private static int windowWidth, windowHeight;
 	private static int layersX, layersY, layersWidth, layersHeight;
 	private static int colourPickerX, colourPickerY;
-	private static int toolBoxX, toolBoxY;
 	
 	/**
 	 * Setup the provided
 	 * 
 	 * @param frame
 	 */
-	public static void loadPrefs(JFrame frame, ColourChooser chooser, LayerManager layers, ToolBox toolBox)
+	public static void loadPrefs(WebFrame frame, ColourChooser chooser, LayerManager layers)
 	{
 		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);
 		
@@ -91,15 +85,6 @@ public class UserPreferences
 		{
 			layers.dialog.setVisible(true);
 			layers.dialog.setBounds(layersX, layersY, layersWidth, layersHeight);
-		}
-		
-		if(prefs.getBoolean(TOOLBOX_VISIBLE, false))
-		{
-			toolBoxX = prefs.getInt(TOOLBOX_X, 0);
-			toolBoxY = prefs.getInt(TOOLBOX_Y, 0);
-			toolBox.getDialog().setVisible(true);
-			toolBox.getDialog().setLocationRelativeTo(null);
-			toolBox.getDialog().setLocation(toolBoxX, toolBoxY);
 		}
 		
 		Menu.DARK_BACKGROUND = prefs.getBoolean(BACKGROUND_DARK, false);
@@ -133,25 +118,19 @@ public class UserPreferences
 			prefs.putInt(COLOUR_PICKER_X, colourPickerX);
 			prefs.putInt(COLOUR_PICKER_Y, colourPickerY);
 		}
-		
+		/*
 		layersX = layers.dialog.getX();
 		layersY = layers.dialog.getY();
 		layersWidth = layers.dialog.getWidth();
 		layersHeight = layers.dialog.getHeight();
-		
 		prefs.putInt(LAYERS_X, layersX);
 		prefs.putInt(LAYERS_Y, layersY);
 		prefs.putInt(LAYERS_WIDTH, layersWidth);
 		prefs.putInt(LAYERS_HEIGHT, layersHeight);
 		prefs.putBoolean(LAYERS_VISIBLE, layers.isVisible());
+		*/
 		
 		prefs.putBoolean(COLOUR_PICKER_VISIBLE, chooser.isVisible());
-		
-		toolBoxX = toolBox.getDialog().getX();
-		toolBoxY = toolBox.getDialog().getY();
-		prefs.putInt(TOOLBOX_X, toolBoxX);
-		prefs.putInt(TOOLBOX_Y, toolBoxY);
-		prefs.putBoolean(TOOLBOX_VISIBLE, toolBox.isVisible());
 		
 		prefs.putBoolean(BACKGROUND_DARK, Menu.DARK_BACKGROUND);
 	}

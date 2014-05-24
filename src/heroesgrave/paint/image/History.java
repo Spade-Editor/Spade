@@ -1,179 +1,92 @@
+// {LICENSE}
 /*
- *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
- *
- *	This file is part of Paint.JAVA
- *
- *	Paint.JAVA is free software: you can redistribute it and/or modify
- *	it under the terms of the GNU General Public License as published by
- *	the Free Software Foundation, either version 3 of the License, or
- *	(at your option) any later version.
- *
- *	This program is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *	GNU General Public License for more details.
- *
- *	You should have received a copy of the GNU General Public License
- *	along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
+ * Copyright 2013-2014 HeroesGrave and other Paint.JAVA developers.
+ * 
+ * This file is part of Paint.JAVA
+ * 
+ * Paint.JAVA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
 package heroesgrave.paint.image;
 
-import heroesgrave.paint.main.Paint;
+import heroesgrave.paint.image.change.IChange;
+import heroesgrave.paint.image.change.IEditChange;
+import heroesgrave.paint.io.Serialised;
 
-import java.awt.image.BufferedImage;
+import java.util.LinkedList;
 import java.util.Stack;
 
-/**
- * Uses a system similar to keyframes in animations/videos to store the history.
- * 
- * All changes are stored in a type of frame.
- * Big changes like image operations are stored in keyframes.
- * 
- * When the image is changed, the image is taken from a keyframe and changed through each normal frame to get the final result
- * 
- * @author HeroesGrave
- *
- */
 public class History
 {
-	/**
-	 * Maximum frames between keyframes.
-	 * 
-	 * Higher = Less keyframes, so less RAM but more CPU.
-	 * Lower = More keyframes, so more RAM but less CPU.
-	 */
-	public static final int MAX_FRAMES = 32;
+	public static final int MNN = 2;
+	public static final int MDN = 2 * MNN;
+	public static final int MXN = 2 * MDN;
 	
-	public static final int MAX_CHANGES = 2048;
+	private LinkedList<IChange> changes = new LinkedList<IChange>();
+	private LinkedList<Serialised> oldChanges = new LinkedList<Serialised>();
 	
-	private Stack<IFrame> history = new Stack<IFrame>();
-	private Stack<IFrame> reverted = new Stack<IFrame>();
-	private int lastKeyFrame = 0;
-	private boolean changed;
+	private Stack<IChange> reverted = new Stack<IChange>();
 	
-	public History(BufferedImage image)
+	private Document doc;
+	
+	public History(Document doc)
 	{
-		addChange(new KeyFrame(image));
+		this.doc = doc;
 	}
 	
-	public void clear()
+	public void addChange(IChange change)
 	{
-		KeyFrame first = (KeyFrame) history.get(0);
-		KeyFrame last = new KeyFrame(getUpdatedImage());
-		history.clear();
 		reverted.clear();
-		history.push(first);
-		history.push(last);
-		changed = true;
-		lastKeyFrame = 0;
-	}
-	
-	public void addChange(IFrame frame)
-	{
-		Paint.main.saved = false;
-		if(frame instanceof KeyFrame)
+		changes.addLast(change);
+		
+		if(changes.size() > MXN)
 		{
-			history.add(frame);
-			lastKeyFrame = 0;
-			changed = true;
-			reverted.clear();
-		}
-		else if(lastKeyFrame++ > MAX_FRAMES)
-		{
-			createKeyFrame((Frame) frame);
-		}
-		else
-		{
-			history.add(frame);
-			changed = true;
-			reverted.clear();
+			while(changes.size() >= MDN)
+			{
+				oldChanges.addLast(changes.removeFirst().encode());
+			}
 		}
 	}
 	
 	public void revertChange()
 	{
-		if(history.size() == 1)
+		if(changes.isEmpty())
 			return;
-		Paint.main.saved = false;
-		reverted.push(history.pop());
-		lastKeyFrame--;
-		if(lastKeyFrame == 0)
+		IChange change = changes.pollLast();
+		if(change instanceof IEditChange)
 		{
-			lastKeyFrame = MAX_FRAMES;
+			doc.getFlatMap().get(((IEditChange) change).layerID).revertChange();
 		}
-		changed = true;
+		reverted.push(change);
+		if(changes.size() < MNN)
+		{
+			while(changes.size() < MDN && oldChanges.size() > 0)
+			{
+				changes.addFirst(oldChanges.removeLast().decode());
+			}
+		}
 	}
 	
 	public void repeatChange()
 	{
 		if(reverted.isEmpty())
 			return;
-		Paint.main.saved = false;
-		IFrame frame = reverted.pop();
-		if(frame instanceof KeyFrame)
+		IChange change = reverted.pop();
+		if(change instanceof IEditChange)
 		{
-			history.push(frame);
-			lastKeyFrame = 0;
-			changed = true;
+			doc.getFlatMap().get(((IEditChange) change).layerID).repeatChange((IEditChange) change);
 		}
-		else
-		{
-			lastKeyFrame++;
-			history.push(frame);
-			changed = true;
-		}
-	}
-	
-	public void clean()
-	{
-		reverted.clear();
-	}
-	
-	public void slice()
-	{
-		
-	}
-	
-	private void createKeyFrame(Frame frame)
-	{
-		BufferedImage image = getUpdatedImage();
-		frame.apply(image);
-		addChange(new KeyFrame(image));
-	}
-	
-	public boolean wasChanged()
-	{
-		if(changed)
-		{
-			changed = false;
-			return true;
-		}
-		return false;
-	}
-	
-	public BufferedImage getUpdatedImage()
-	{
-		Stack<IFrame> rev = new Stack<IFrame>();
-		while(!history.empty())
-		{
-			if(history.peek() instanceof KeyFrame)
-			{
-				break;
-			}
-			else
-			{
-				rev.push(history.pop());
-			}
-		}
-		KeyFrame key = (KeyFrame) history.peek();
-		BufferedImage image = key.takeImage();
-		while(!rev.isEmpty())
-		{
-			Frame f = (Frame) rev.pop();
-			f.apply(image);
-			history.push(f);
-		}
-		return image;
+		changes.addLast(change);
 	}
 }

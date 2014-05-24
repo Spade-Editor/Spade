@@ -1,38 +1,25 @@
+// {LICENSE}
 /*
- *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
- *
- *	This file is part of Paint.JAVA
- *
- *	Paint.JAVA is free software: you can redistribute it and/or modify
- *	it under the terms of the GNU General Public License as published by
- *	the Free Software Foundation, either version 3 of the License, or
- *	(at your option) any later version.
- *
- *	This program is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *	GNU General Public License for more details.
- *
- *	You should have received a copy of the GNU General Public License
- *	along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
+ * Copyright 2013-2014 HeroesGrave and other Paint.JAVA developers.
+ * 
+ * This file is part of Paint.JAVA
+ * 
+ * Paint.JAVA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
 package heroesgrave.paint.gui;
 
-import heroesgrave.paint.effects.Invert;
-import heroesgrave.paint.effects.MakeGrid;
-import heroesgrave.paint.effects.RemoveChannels;
-import heroesgrave.paint.effects.SimpleBlur;
-import heroesgrave.paint.effects.SimpleSharpen;
-import heroesgrave.paint.effects.SimplexNoiseOp;
-import heroesgrave.paint.effects.WhiteNoise;
-import heroesgrave.paint.imageops.Clear;
-import heroesgrave.paint.imageops.Clear2;
-import heroesgrave.paint.imageops.FlipHoriz;
-import heroesgrave.paint.imageops.FlipVert;
-import heroesgrave.paint.imageops.ImageOp;
-import heroesgrave.paint.imageops.Resize;
-import heroesgrave.paint.imageops.ResizeCanvas;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Tool;
 
@@ -44,22 +31,23 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
+
+import com.alee.laf.menu.WebMenuItem;
 
 public class ToolMenu
 {
 	public static JMenu createImageMenu()
 	{
 		JMenu menu = new JMenu("Image");
-		
+		/*
 		menu.add(new ImageMenuItem("Blank Image", new Clear(), "B"));
 		menu.add(new ImageMenuItem("Clear Image", new Clear2(), "C"));
 		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
 		menu.add(new ImageMenuItem("Resize Canvas", new ResizeCanvas(), null));
 		menu.add(new ImageMenuItem("Flip Vertically", new FlipVert(), null));
 		menu.add(new ImageMenuItem("Flip Horizontally", new FlipHoriz(), null));
-		
-		heroesgrave.paint.plugin.PluginManager.instance.registerImageOps(menu);
+		*/
+		//heroesgrave.paint.plugin.PluginManager.instance.registerImageOps(menu);
 		
 		return menu;
 	}
@@ -68,6 +56,7 @@ public class ToolMenu
 	{
 		JMenu menu = new JMenu("Effects");
 		
+		/*
 		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
 		menu.add(new ImageMenuItem("Grid-Maker", new MakeGrid(), "G"));
 		menu.add(new ImageMenuItem("Channel Filter", new RemoveChannels(), "F"));
@@ -75,18 +64,18 @@ public class ToolMenu
 		menu.add(new ImageMenuItem("Simplex Noise", new SimplexNoiseOp(), null));
 		menu.add(new ImageMenuItem("Simple Blur", new SimpleBlur(), null));
 		menu.add(new ImageMenuItem("Simple Sharpen", new SimpleSharpen(), null));
+		*/
 		// BUGGED -> menu.add(new ImageMenuItem("Simple Edge Detect", new SimpleEdgeDetect(), null));
 		// BUGGED -> menu.add(new ImageMenuItem("Perlin Noise", new PerlinNoiseOp(), null));
 		
-		heroesgrave.paint.plugin.PluginManager.instance.registerEffects(menu);
+		//heroesgrave.paint.plugin.PluginManager.instance.registerEffects(menu);
 		
 		return menu;
 	}
 	
-	public static class ToolMenuItem extends JMenuItem
+	@SuppressWarnings("serial")
+	public static class ToolMenuItem extends WebMenuItem
 	{
-		private static final long serialVersionUID = 5766656521451633454L;
-		
 		private Tool tool;
 		
 		public ToolMenuItem(String name, Tool t, String key)
@@ -131,6 +120,7 @@ public class ToolMenu
 		}
 	}
 	
+	/*
 	public static class ImageMenuItem extends JMenuItem
 	{
 		private static final long serialVersionUID = 7018700148731008154L;
@@ -164,7 +154,10 @@ public class ToolMenu
 			// TRY to load the icon!
 			try
 			{
-				URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/imageops/" + name + ".png");
+				URL url =
+						this.getClass().getResource(
+								"/heroesgrave/paint/res/icons/imageops/" + name
+										+ ".png");
 				
 				if(url != null)
 				{
@@ -172,12 +165,14 @@ public class ToolMenu
 				}
 				else
 				{
-					this.setIcon(new ImageIcon(ImageIO.read(Paint.questionMarkURL)));
+					this.setIcon(new ImageIcon(ImageIO
+							.read(Paint.questionMarkURL)));
 				}
 			}
 			catch(IOException e1)
 			{
-				System.err.println("Error: ImageOp '" + name + "' is missing an icon!");
+				System.err.println("Error: ImageOp '" + name
+						+ "' is missing an icon!");
 			}
 			
 			this.addActionListener(new ActionListener()
@@ -189,4 +184,5 @@ public class ToolMenu
 			});
 		}
 	}
+	*/
 }

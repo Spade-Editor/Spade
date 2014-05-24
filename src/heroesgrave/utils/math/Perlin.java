@@ -1,21 +1,22 @@
+// {LICENSE}
 /*
- *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
- *
- *	This file is part of Paint.JAVA
- *
- *	Paint.JAVA is free software: you can redistribute it and/or modify
- *	it under the terms of the GNU General Public License as published by
- *	the Free Software Foundation, either version 3 of the License, or
- *	(at your option) any later version.
- *
- *	This program is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *	GNU General Public License for more details.
- *
- *	You should have received a copy of the GNU General Public License
- *	along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
+ * Copyright 2013-2014 HeroesGrave and other Paint.JAVA developers.
+ * 
+ * This file is part of Paint.JAVA
+ * 
+ * Paint.JAVA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
 package heroesgrave.utils.math;
 
@@ -88,7 +89,8 @@ public class Perlin
 	
 	public final double noise3d(int x, int y, int z, long l)
 	{
-		int n = (int) (((this.NOISE_MAGIC_X * x) + (this.NOISE_MAGIC_Y * y) + (this.NOISE_MAGIC_Z * z) + (this.NOISE_MAGIC_SEED * l)) & 0x7fffffff);
+		int n =
+				(int) (((this.NOISE_MAGIC_X * x) + (this.NOISE_MAGIC_Y * y) + (this.NOISE_MAGIC_Z * z) + (this.NOISE_MAGIC_SEED * l)) & 0x7fffffff);
 		
 		//n = (int) Math.pow(n<<13,n);
 		n = (n << 13) ^ n;
@@ -97,8 +99,9 @@ public class Perlin
 		return 1.0 - ((double) n / 1073741824);
 	}
 	
-	private final double triLinearInterpolation(final double v000, final double v100, final double v010, final double v110, final double v001,
-			final double v101, final double v011, final double v111, final double x, final double y, final double z)
+	private final double triLinearInterpolation(final double v000, final double v100, final double v010,
+			final double v110, final double v001, final double v101, final double v011, final double v111,
+			final double x, final double y, final double z)
 	{
 		/*double tx = easeCurve(x);
 		double ty = easeCurve(y);
@@ -106,9 +109,9 @@ public class Perlin
 		final double tx = x;
 		final double ty = y;
 		final double tz = z;
-		return ((v000 * (1 - tx) * (1 - ty) * (1 - tz)) + (v100 * tx * (1 - ty) * (1 - tz)) + (v010 * (1 - tx) * ty * (1 - tz))
-				+ (v110 * tx * ty * (1 - tz)) + (v001 * (1 - tx) * (1 - ty) * tz) + (v101 * tx * (1 - ty) * tz) + (v011 * (1 - tx) * ty * tz) + (v111 * tx
-				* ty * tz));
+		return ((v000 * (1 - tx) * (1 - ty) * (1 - tz)) + (v100 * tx * (1 - ty) * (1 - tz))
+				+ (v010 * (1 - tx) * ty * (1 - tz)) + (v110 * tx * ty * (1 - tz)) + (v001 * (1 - tx) * (1 - ty) * tz)
+				+ (v101 * tx * (1 - ty) * tz) + (v011 * (1 - tx) * ty * tz) + (v111 * tx * ty * tz));
 	}
 	
 	private final double noise3d_gradient(final double x, final double y, final double z, final long l)

@@ -1,53 +1,37 @@
+// {LICENSE}
 /*
- *	Copyright 2013 HeroesGrave and other Paint.JAVA developers.
- *
- *	This file is part of Paint.JAVA
- *
- *	Paint.JAVA is free software: you can redistribute it and/or modify
- *	it under the terms of the GNU General Public License as published by
- *	the Free Software Foundation, either version 3 of the License, or
- *	(at your option) any later version.
- *
- *	This program is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *	GNU General Public License for more details.
- *
- *	You should have received a copy of the GNU General Public License
- *	along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
+ * Copyright 2013-2014 HeroesGrave and other Paint.JAVA developers.
+ * 
+ * This file is part of Paint.JAVA
+ * 
+ * Paint.JAVA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
 package heroesgrave.paint.gui;
 
-import heroesgrave.paint.gui.Menu.CentredJDialog;
-import heroesgrave.paint.gui.Menu.CentredJLabel;
-import heroesgrave.paint.image.Canvas;
-import heroesgrave.paint.image.blend.BlendMode;
-import heroesgrave.paint.image.doc.LayerBlendChange;
-import heroesgrave.paint.image.doc.LayerNameChange;
-import heroesgrave.paint.main.Paint;
-
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashSet;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-
 public class LayerSettings
 {
+	/* FIXME
 	private JDialog dialog;
-	private Canvas canvas;
+	private Layer layer;
 	private JTextField label;
 	private JComboBox<BlendMode> blendMode;
 	
 	public LayerSettings()
 	{
-		this.dialog = new CentredJDialog(Paint.main.gui.frame, "Layer Settings");
+		this.dialog =
+				new CentredJDialog(Paint.main.gui.frame, "Layer Settings");
 		dialog.setSize(200, 120);
 		dialog.setVisible(false);
 		dialog.setResizable(false);
@@ -68,7 +52,8 @@ public class LayerSettings
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Paint.main.history.addChange(new LayerNameChange(canvas, label.getText()));
+				Paint.main.history.addChange(new LayerNameChange(canvas, label
+						.getText()));
 				dialog.setVisible(false);
 			}
 		});
@@ -84,9 +69,11 @@ public class LayerSettings
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				if(blendMode.getSelectedItem() != Paint.main.gui.canvas.getCanvas().mode)
+				if(blendMode.getSelectedItem() != Paint.main.gui.canvas
+						.getCanvas().mode)
 				{
-					Paint.main.history.addChange(new LayerBlendChange(canvas, (BlendMode) blendMode.getSelectedItem()));
+					Paint.main.history.addChange(new LayerBlendChange(canvas,
+							(BlendMode) blendMode.getSelectedItem()));
 					Paint.main.gui.canvas.getPanel().repaint();
 				}
 			}
@@ -117,4 +104,5 @@ public class LayerSettings
 	{
 		dialog.dispose();
 	}
+	*/
 }
