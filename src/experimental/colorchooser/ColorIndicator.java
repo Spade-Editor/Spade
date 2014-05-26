@@ -18,6 +18,11 @@
  */
 package experimental.colorchooser;
 
+import static experimental.colorchooser.Channel.Alpha;
+import static experimental.colorchooser.Channel.Blue;
+import static experimental.colorchooser.Channel.Green;
+import static experimental.colorchooser.Channel.Red;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -25,7 +30,6 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JComponent;
 
-import experimental.colorchooser.event.ColorEvent;
 import experimental.colorchooser.event.ColorEventBroadcaster;
 import experimental.colorchooser.event.ColorListener;
 
@@ -59,6 +63,14 @@ public class ColorIndicator extends JComponent implements MouseListener, ColorLi
 		
 	}
 	
+	public MutableColor getPrimary() {
+		return primary;
+	}
+	
+	public MutableColor getSecondary() {
+		return secondary;
+	}
+	
 	public void setPrimary(int r, int g, int b, int a) {
 		primary.setColor(r, g, b, a);
 	}
@@ -81,26 +93,24 @@ public class ColorIndicator extends JComponent implements MouseListener, ColorLi
 		g.setColor(Color.black);
 		g.drawRect(SIZE / 4, SIZE / 4, SIZE / 2 + 3, SIZE / 2 + 3);
 		
-		g.translate(2, 2);
+		final int off = 2;
 		
 		for (int y = 0; y < SIZE / 2; y += 16)
 			for (int x = 0; x < SIZE / 2; x += 16) {
 				g.setColor(Color.gray);
-				g.fillRect(x, y, 8, 8);
-				g.fillRect(x + 8, y + 8, 8, 8);
+				g.fillRect(off + x, off + y, 8, 8);
+				g.fillRect(off + x + 8, off + y + 8, 8, 8);
 				
-				g.fillRect(x + SIZE / 4, y + SIZE / 4, 8, 8);
-				g.fillRect(x + 8 + SIZE / 4, y + 8 + SIZE / 4, 8, 8);
+				g.fillRect(off + x + SIZE / 4, off + y + SIZE / 4, 8, 8);
+				g.fillRect(off + x + 8 + SIZE / 4, off + y + 8 + SIZE / 4, 8, 8);
 				
 				g.setColor(Color.white);
-				g.fillRect(x + 8, y, 8, 8);
-				g.fillRect(x, y + 8, 8, 8);
+				g.fillRect(off + x + 8, off + y, 8, 8);
+				g.fillRect(off + x, off + y + 8, 8, 8);
 				
-				g.fillRect(x + 8 + SIZE / 4, y + SIZE / 4, 8, 8);
-				g.fillRect(x + SIZE / 4, y + 8 + SIZE / 4, 8, 8);
+				g.fillRect(off + x + 8 + SIZE / 4, off + y + SIZE / 4, 8, 8);
+				g.fillRect(off + x + SIZE / 4, off + y + 8 + SIZE / 4, 8, 8);
 			}
-		
-		g.translate(-2, -2);
 		
 		g.setColor(secondary);
 		g.fillRect(18, 36, SIZE / 2, 14);
@@ -116,9 +126,8 @@ public class ColorIndicator extends JComponent implements MouseListener, ColorLi
 	}
 	
 	@Override
-	public void colorChanged(ColorEvent e) {
-		primary.setColor(e.r, e.g, e.b, e.a);
-		repaint();
+	public void changeColor(int r, int g, int b, int a) {
+		primary.setColor(r, g, b, a);
 	}
 	
 	@Override
@@ -130,11 +139,20 @@ public class ColorIndicator extends JComponent implements MouseListener, ColorLi
 		int x = e.getX();
 		int y = e.getY();
 		
+		Color c = null;
+		
 		if (x >= 2 && y >= 2 && x < 34 && y < 34) {
-			parent.broadcastEvent(new ColorEvent(this, primary.getRed(), primary.getGreen(), primary.getBlue(), primary.getAlpha(), Channel.values));
+			c = primary;
+		} else if (((x >= 36 && y >= 18) || (x >= 18 && y >= 36)) && x < 50 && y < 50) {
+			c = secondary;
 		}
-		else if (((x >= 36 && y >= 18) || (x >= 18 && y >= 36)) && x < 50 && y < 50) {
-			parent.broadcastEvent(new ColorEvent(this, secondary.getRed(), secondary.getGreen(), secondary.getBlue(), secondary.getAlpha(), Channel.values));
+		if (c != null) {
+			parent.makeChange(Red, c.getRed());
+			parent.makeChange(Green, c.getGreen());
+			parent.makeChange(Blue, c.getBlue());
+			parent.makeChange(Alpha, c.getAlpha());
+			
+			parent.broadcastChanges(this);
 		}
 	}
 	

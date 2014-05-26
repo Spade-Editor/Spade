@@ -18,6 +18,8 @@
 */
 package experimental.colorchooser.event;
 
+import experimental.colorchooser.Channel;
+
 /**
  * @author BurntPizza
  *
@@ -27,5 +29,6 @@ public interface ColorEventBroadcaster {
 	public void addColorListener(ColorListener c);
 	public void removeColorListener(ColorListener c);
 	
-	public void broadcastEvent(ColorEvent e);
+	public void broadcastChanges(ColorListener source);
+	public void makeChange(Channel channel, int val);
 }

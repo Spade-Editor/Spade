@@ -18,12 +18,15 @@
  */
 package experimental.colorchooser;
 
-import static experimental.colorchooser.ColorUtils.*;
+import static experimental.colorchooser.Channel.*;
+import static experimental.colorchooser.ColorUtils.toARGB;
+import static experimental.colorchooser.ColorUtils.toHSVA;
 import heroesgrave.utils.math.MathUtils;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -33,7 +36,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 
 import experimental.colorchooser.event.ColorEventBroadcaster;
-import experimental.colorchooser.event.ColorEvent;
 import experimental.colorchooser.event.ColorListener;
 
 /**
@@ -46,7 +48,7 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 	public static final int RADIUS = 64;
 	public static final int OFFSET = 3;
 	
-	private BufferedImage buffer;
+	private Image buffer;
 	
 	private int mx, my; // mouse coords
 	private double h, s;
@@ -57,7 +59,7 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 		super();
 		setDoubleBuffered(true);
 		setBackground(new Color(0, true)); // transparent
-		setSize(2 * RADIUS + 1 + 2* OFFSET, 2 * RADIUS + 1 + 2 * OFFSET);
+		setSize(2 * RADIUS + 1 + 2 * OFFSET, 2 * RADIUS + 1 + 2 * OFFSET);
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -77,18 +79,17 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 	public void paint(Graphics gg) {
 		Graphics2D g = (Graphics2D) gg;
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.translate(OFFSET, OFFSET);
-		g.drawImage(buffer, 0, 0, null);
+		g.drawImage(buffer, OFFSET, OFFSET, null);
 		g.setColor(Color.gray);
-		g.drawOval(0, 0, 2 * RADIUS, 2 * RADIUS);
+		g.drawOval(OFFSET, OFFSET, 2 * RADIUS, 2 * RADIUS);
 		g.setColor(Color.black);
-		g.drawOval(mx - 3, my - 3, 6, 6);
+		g.drawOval(OFFSET + mx - 3, OFFSET + my - 3, 6, 6);
 	}
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		int x = e.getX();
-		int y = e.getY();
+		int x = e.getX() - OFFSET;
+		int y = e.getY() - OFFSET;
 		
 		mx = x;
 		my = y;
@@ -109,24 +110,19 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 		h = (a + Math.PI) / Math.PI / 2;
 		s = MathUtils.clamp(Math.sqrt(dx * dx + dy * dy) / Math.sin(Math.PI / 4) / Math.sqrt(RADIUS * RADIUS * 2), 1, 0);
 		
-		int rgb = getSelectedColor();
-		int r = (rgb >> 16) & 0xFF;
-		int g = (rgb >> 8) & 0xFF;
-		int b = (rgb >> 0) & 0xFF;
+		parent.makeChange(Alpha, 255);
+		parent.makeChange(Hue, (int) (h * 1024));
+		parent.makeChange(Saturation, (int) (s * 255));
+		parent.makeChange(Value, 255);
 		
-		ColorEvent ev = new ColorEvent(this, r, g, b, 255, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue, Channel.Saturation, Channel.Value);
-		
-		parent.broadcastEvent(ev);
-		
-		repaint();
+		parent.broadcastChanges(this);
 	}
 	
 	private BufferedImage genWheel() {
-		BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = img.createGraphics();
+		BufferedImage img = new BufferedImage(2 * RADIUS, 2 * RADIUS, BufferedImage.TYPE_INT_ARGB);
 		
-		for (int y = 0; y < getHeight(); y++)
-			for (int x = 0; x < getWidth(); x++) {
+		for (int y = 0; y < img.getHeight(); y++)
+			for (int x = 0; x < img.getWidth(); x++) {
 				
 				int dx = x - RADIUS;
 				int dy = y - RADIUS;
@@ -137,34 +133,22 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 					double h = (a + Math.PI) / (2 * Math.PI);
 					double s = dist / Math.sqrt(RADIUS * RADIUS * 2);
 					double v = 1;
-					g.setColor(new Color(toARGB(h, s, v, 1)));
-					g.drawLine(x, y, x, y);
+					img.setRGB(x, y, toARGB(h, s, v, 1));
 				}
 			}
-		
-		g.dispose();
 		return img;
 	}
 	
 	@Override
-	public void colorChanged(ColorEvent e) {
+	public void changeColor(int r, int g, int b, int a) {
+		long hsva = toHSVA(r / 255., g / 255., b / 255., 1);
+		h = ((hsva >> 32) & 0xFFF) / 1024.;
+		s = ((hsva >> 16) & 0xFF) / 255.;
 		
-		if (!e.changedChannels.contains(Channel.Value) || (e.changedChannels.contains(Channel.Red) && e.changedChannels.contains(Channel.Green) && e.changedChannels.contains(Channel.Blue))) {
-			long hsva = toHSVA(e.r / 255., e.g / 255., e.b / 255., 1);
-			if (e.changedChannels.contains(Channel.Hue)) {
-				h = ((hsva >> 32) & 0xFFF) / 1024.;
-			}
-			if (e.changedChannels.contains(Channel.Saturation)) {
-				s = ((hsva >> 16) & 0xFF) / 255.;
-			}
-			
-			double a = h * 2 * Math.PI - Math.PI;
-			
-			mx = RADIUS + (int) Math.round(RADIUS * s * Math.cos(a));
-			my = RADIUS + (int) Math.round(RADIUS * s * Math.sin(a));
-			
-			repaint();
-		}
+		double angle = h * 2 * Math.PI - Math.PI;
+		
+		mx = RADIUS + (int) Math.round(RADIUS * s * Math.cos(angle));
+		my = RADIUS + (int) Math.round(RADIUS * s * Math.sin(angle));
 	}
 	
 	@Override

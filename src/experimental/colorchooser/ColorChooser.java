@@ -18,7 +18,9 @@
  */
 package experimental.colorchooser;
 
-import java.awt.Color;
+import static experimental.colorchooser.ColorUtils.toARGB;
+import static experimental.colorchooser.ColorUtils.toHSVA;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +30,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import experimental.colorchooser.event.ColorEventBroadcaster;
-import experimental.colorchooser.event.ColorEvent;
 import experimental.colorchooser.event.ColorListener;
 
 /**
@@ -38,14 +39,14 @@ import experimental.colorchooser.event.ColorListener;
 @SuppressWarnings("serial")
 public class ColorChooser extends JDialog implements ColorEventBroadcaster {
 	
-	PalletPanel palletPanel;
-	ColorWheel colorWheel;
+	private int r, g, b, a = 255;
 	
 	private List<ColorListener> listeners;
 	
 	public ColorChooser() {
 		super();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
 		listeners = new ArrayList<>();
 		
 		PalletPanel palletPanel = new PalletPanel(this, Pallet.defaultPallet());
@@ -55,7 +56,7 @@ public class ColorChooser extends JDialog implements ColorEventBroadcaster {
 		JPanel sliderPanel = new JPanel();
 		sliderPanel.setLayout(new BoxLayout(sliderPanel, BoxLayout.Y_AXIS));
 		
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 7; i++) {
 			sliderPanel.add(new ColorSlider(Channel.values[i], this));
 			sliderPanel.add(new Spacer(0, i == 2 ? 16 : 4));
 		}
@@ -80,6 +81,8 @@ public class ColorChooser extends JDialog implements ColorEventBroadcaster {
 		indicator.setAlignmentX(LEFT_ALIGNMENT);
 		indicator.setAlignmentY(TOP_ALIGNMENT);
 		
+		broadcastChanges(null);
+		
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
@@ -103,9 +106,56 @@ public class ColorChooser extends JDialog implements ColorEventBroadcaster {
 	}
 	
 	@Override
-	public void broadcastEvent(ColorEvent e) {
+	public void broadcastChanges(ColorListener source) {
+		
 		for (ColorListener l : listeners)
-			if (l != e.getSource())
-				l.colorChanged(e);
+			if(l!=source)
+				l.changeColor(r, g, b, a);
+		
+		getContentPane().repaint();
+	}
+	
+	@Override
+	public void makeChange(Channel channel, int val) {
+		switch (channel) {
+			case Alpha:
+				a = val;
+				break;
+			case Blue:
+				b = val;
+				break;
+			case Green:
+				g = val;
+				break;
+			case Red:
+				r = val;
+				break;
+			default:
+				long hsva = toHSVA(r / 255., g / 255., b / 255., 1);
+				int h = (int) ((hsva >> 32) & 0xFFF);
+				int s = (int) ((hsva >> 16) & 0xFF);
+				int v = (int) ((hsva >> 8) & 0xFF);
+				
+				switch (channel) {
+					case Hue:
+						h = val;
+						break;
+					case Saturation:
+						s = val;
+						break;
+					case Value:
+						v = val;
+						break;
+					default:
+						break;
+				}
+				
+				int rgba = toARGB(h / 1024., s / 255., v / 255., 1);
+				r = (rgba >> 16) & 0xFF;
+				g = (rgba >> 8) & 0xFF;
+				b = (rgba >> 0) & 0xFF;
+				
+				break;
+		}
 	}
 }

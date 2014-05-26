@@ -24,6 +24,7 @@ import javax.swing.JComponent;
  * @author BurntPizza
  *
  */
+@SuppressWarnings("serial")
 public class Spacer extends JComponent {
 	
 	public Spacer(int w, int h) {

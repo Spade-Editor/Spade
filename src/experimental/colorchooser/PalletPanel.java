@@ -20,7 +20,6 @@ package experimental.colorchooser;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
@@ -28,13 +27,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
-import experimental.colorchooser.event.ColorEvent;
 import experimental.colorchooser.event.ColorEventBroadcaster;
+import static experimental.colorchooser.Channel.*;
 
 /**
  * @author BurntPizza
@@ -69,6 +65,9 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 		
 		bg1 = Color.gray;
 		bg2 = Color.white;
+		
+		setBackground(bg2);
+		
 		stroke1 = new BasicStroke(1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { SWATCH_SIZE / 4 }, 0f);
 		stroke2 = new BasicStroke(1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { SWATCH_SIZE / 4 }, SWATCH_SIZE / 4);
 	}
@@ -80,11 +79,12 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 	
 	@Override
 	public void paint(Graphics g) {
+		g.clearRect(1, 1, getWidth() - 1, getHeight() - 1);
 		
 		g.setColor(Color.darkGray);
-		g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+		g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 		
-		g.translate(1, 1);
+		final int off = 1;
 		
 		for (int y = 0; y < 6; y++)
 			for (int x = 0; x < 16; x++) {
@@ -93,25 +93,21 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 				int yc = y * SWATCH_SIZE;
 				
 				g.setColor(bg1);
-				g.fillRect(xc, yc, SWATCH_SIZE / 2, SWATCH_SIZE / 2);
-				g.fillRect(xc + SWATCH_SIZE / 2, yc + SWATCH_SIZE / 2, SWATCH_SIZE / 2, SWATCH_SIZE / 2);
-				
-				g.setColor(bg2);
-				g.fillRect(xc, yc + SWATCH_SIZE / 2, SWATCH_SIZE / 2, SWATCH_SIZE / 2);
-				g.fillRect(xc + SWATCH_SIZE / 2, yc, SWATCH_SIZE / 2, SWATCH_SIZE / 2);
+				g.fillRect(off + xc, off + yc, SWATCH_SIZE / 2, SWATCH_SIZE / 2);
+				g.fillRect(off + xc + SWATCH_SIZE / 2, off + yc + SWATCH_SIZE / 2, SWATCH_SIZE / 2, SWATCH_SIZE / 2);
 				
 				g.setColor(colors[x + y * 16]);
-				g.fillRect(xc, yc, SWATCH_SIZE, SWATCH_SIZE);
+				g.fillRect(off + xc, off + yc, SWATCH_SIZE, SWATCH_SIZE);
 				
 				if (mi == x + y * 16 || si == x + y * 16) {
 					Graphics2D gg = (Graphics2D) g;
 					Stroke s = gg.getStroke();
 					gg.setStroke(stroke1);
 					gg.setColor(Color.black);
-					gg.drawRect(xc, yc, SWATCH_SIZE - 1, SWATCH_SIZE - 1);
+					gg.drawRect(off + xc, off + yc, SWATCH_SIZE - 1, SWATCH_SIZE - 1);
 					gg.setStroke(stroke2);
 					gg.setColor(Color.white);
-					gg.drawRect(xc, yc, SWATCH_SIZE - 1, SWATCH_SIZE - 1);
+					gg.drawRect(off + xc, off + yc, SWATCH_SIZE - 1, SWATCH_SIZE - 1);
 					gg.setStroke(s);
 				}
 			}
@@ -125,9 +121,12 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 	public void mouseReleased(MouseEvent e) {
 		si = (e.getX() / SWATCH_SIZE) + (e.getY() / SWATCH_SIZE) * 16;
 		
-		parent.broadcastEvent(new ColorEvent(this, colors[si].getRed(), colors[si].getGreen(), colors[si].getBlue(), colors[si].getAlpha(), Channel.values));
+		parent.makeChange(Red, colors[si].getRed());
+		parent.makeChange(Green, colors[si].getGreen());
+		parent.makeChange(Blue, colors[si].getBlue());
+		parent.makeChange(Alpha, colors[si].getAlpha());
 		
-		repaint();
+		parent.broadcastChanges(null);
 	}
 	
 	@Override

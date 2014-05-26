@@ -94,7 +94,7 @@ public enum ColorUtils {
 		s = delta / (M + 1e-20);
 		v = M;
 		
-		double hue;
+		double hue = 6;
 		if (r == M)
 			hue = ((g - b) / (delta + 1e-20)) % 6.;
 		else if (g == M)
@@ -102,7 +102,7 @@ public enum ColorUtils {
 		else
 			hue = 4 + (r - g) / (delta + 1e-20);
 		
-		h = hue / 6.;
+		h = hue / 6;
 		
 		long l = (((long) (h * 1024)) << 32) | (((int) (s * 255)) << 16) | (((int) (v * 255)) << 8) | ((int) (a * 255));
 		

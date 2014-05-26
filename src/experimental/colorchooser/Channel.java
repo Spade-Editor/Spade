@@ -19,6 +19,8 @@
 package experimental.colorchooser;
 
 /**
+ * NOTE: DO NOT change the order of the channels
+ * 
  * @author BurntPizza
  *
  */

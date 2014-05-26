@@ -18,6 +18,8 @@
  */
 package experimental.colorchooser;
 
+import static experimental.colorchooser.ColorUtils.toARGB;
+import static experimental.colorchooser.ColorUtils.toHSVA;
 import heroesgrave.utils.math.MathUtils;
 
 import java.awt.Color;
@@ -33,9 +35,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 
 import experimental.colorchooser.event.ColorEventBroadcaster;
-import experimental.colorchooser.event.ColorEvent;
 import experimental.colorchooser.event.ColorListener;
-import static experimental.colorchooser.ColorUtils.*;
 
 /**
  * Horizontal slider UI component for ColorChooser
@@ -50,17 +50,16 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 	private boolean hover;
 	private BufferedImage buffer;
 	private Color selectedColor = new Color(200, 200, 255);
-	private GeneralPath cursor;
+	private BufferedImage cursorImage, cursorSelected;
 	
 	private int[] colors;
 	private int mode;
 	private int channel;
-	private MutableColor c[]; // dumb thing in SunGraphics2D requires non-identical objects for setColor() to actually work, so I use 2
 	
 	private ColorEventBroadcaster parent;
 	
 	public ColorSlider(Channel channel, ColorEventBroadcaster parent) {
-		setSize(73, 15);
+		setSize(73, 16);
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -74,21 +73,13 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 		this.parent = parent;
 		parent.addColorListener(this);
 		
-		buffer = new BufferedImage(67, 11, BufferedImage.TYPE_INT_RGB);
+		buffer = new BufferedImage(66, 12, BufferedImage.TYPE_INT_RGB);
 		
 		colors = new int[3];
 		mode = channel.ordinal() / 3;
 		this.channel = channel.ordinal() - mode * 3;
 		
-		c = new MutableColor[2];
-		c[0] = new MutableColor();
-		c[1] = new MutableColor();
-		
-		cursor = new GeneralPath();
-		cursor.moveTo(0, 6);
-		cursor.lineTo(6, 6);
-		cursor.lineTo(3, 0);
-		cursor.closePath();
+		prepareCursor();
 		
 		genGradient();
 	}
@@ -98,47 +89,63 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 		Graphics2D g = (Graphics2D) gg;
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		g.drawImage(buffer, 3, 0, null);
+		g.drawImage(buffer, 3, 1, null);
 		
 		g.setColor(Color.darkGray);
-		g.setColor(c[0].setColor(20, 20, 20));
-		g.drawRect(2, 0, buffer.getWidth() + 1, buffer.getHeight());
+		g.setColor(MutableColor.getColor(20, 20, 20));
+		g.drawRect(2, 0, buffer.getWidth() + 1, buffer.getHeight() + 1);
 		
-		g.translate(value * buffer.getWidth(), 8);
-		g.setColor(Color.black);
-		g.fill(cursor);
-		g.setColor(hover ? selectedColor : Color.darkGray);
-		g.draw(cursor);
+		g.drawImage(hover ? cursorSelected : cursorImage, (int) (value * buffer.getWidth()), 10, null);
 	}
 	
 	private void genGradient() {
-		Graphics gg = buffer.createGraphics();
-		int w = buffer.getWidth();
+		int bw = buffer.getWidth();
 		int bh = buffer.getHeight();
+		Graphics gg = buffer.createGraphics();
 		
 		if (mode == 0) { // rgb mode
 			int r = colors[0];
 			int g = colors[1];
 			int b = colors[2];
 			
-			for (int x = 0; x < w; x++) {
-				r = channel == 0 ? (int) (x / (double) w * 255) : r;
-				g = channel == 1 ? (int) (x / (double) w * 255) : g;
-				b = channel == 2 ? (int) (x / (double) w * 255) : b;
-				gg.setColor(c[x & 1].setColor(r, g, b, 255));
+			for (int x = 0; x < bw; x++) {
+				r = channel == 0 ? (int) (x / (double) bw * 255) : r;
+				g = channel == 1 ? (int) (x / (double) bw * 255) : g;
+				b = channel == 2 ? (int) (x / (double) bw * 255) : b;
+				gg.setColor(MutableColor.getColor(r, g, b));
 				gg.drawLine(x, 0, x, bh);
 			}
-		} else { // hsv mode
+		} else if (mode == 1) { // hsv mode
 			long hsva = toHSVA(colors[0] / 255., colors[1] / 255., colors[2] / 255., 1);
 			double h = ((hsva >> 32) & 0xFFF) / 1024.;
 			double s = ((hsva >> 16) & 0xFF) / 255.;
 			double v = ((hsva >> 8) & 0xFF) / 255.;
 			
-			for (int x = 0; x < w; x++) {
-				h = channel == 0 ? (x / (double) w) : h;
-				s = channel == 1 ? (x / (double) w) : channel == 0 ? 1 : s;
-				v = channel == 2 ? (x / (double) w) : channel == 0 ? 1 : v;
-				gg.setColor(c[x & 1].setColor(toARGB(h, s, v, 1)));
+			for (int x = 0; x < bw; x++) {
+				h = channel == 0 ? (x / (double) bw) : h;
+				s = channel == 1 ? (x / (double) bw) : channel == 0 ? 1 : s;
+				v = channel == 2 ? (x / (double) bw) : channel == 0 ? 1 : v;
+				gg.setColor(MutableColor.getColor(toARGB(h, s, v, 1)));
+				gg.drawLine(x, 0, x, bh);
+			}
+		} else { //alpha mode
+			final int size = 8;
+			
+			gg.setColor(Color.gray);
+			gg.fillRect(0, 0, bw, bh);
+			
+			gg.setColor(Color.white);
+			for (int x = 0; x < bw; x += size * 2) {
+				gg.fillRect(x, 0, size, size);
+				gg.fillRect(x + size, size, size, size);
+			}
+			
+			int r = colors[0];
+			int g = colors[1];
+			int b = colors[2];
+			
+			for (int x = 0; x < bw; x++) {
+				gg.setColor(MutableColor.getColor(r, g, b, (int) ((x / (double) bw) * 255)));
 				gg.drawLine(x, 0, x, bh);
 			}
 		}
@@ -146,75 +153,72 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 	}
 	
 	@Override
-	public void colorChanged(ColorEvent e) {
-		Channel c = Channel.values[channel + mode * 3]; // this channel
+	public void changeColor(int r, int g, int b, int a) {
 		
-		if (e.changedChannels.contains(c)) {
-			colors[0] = e.r;
-			colors[1] = e.g;
-			colors[2] = e.b;
-			if (mode == 0) {
-				value = MathUtils.clamp(colors[channel] / 255., 1, 0);
-			} else {
-				long hsva = toHSVA(colors[0] / 255., colors[1] / 255., colors[2] / 255., 1);
-				int h = (int) ((hsva >> 32) & 0xFFF);
-				int s = (int) ((hsva >> 16) & 0xFF);
-				int v = (int) ((hsva >> 8) & 0xFF);
-				
-				double cc = channel == 0 ? h / 1024. : channel == 1 ? s / 255. : v / 255.;
-				
-				value = MathUtils.clamp(cc, 1, 0);
-			}
+		colors[0] = r;
+		colors[1] = g;
+		colors[2] = b;
+		
+		if (mode == 0) {
+			value = MathUtils.clamp(colors[channel] / 255., 1, 0);
+		} else if (mode == 1) {
+			long hsva = toHSVA(colors[0] / 255., colors[1] / 255., colors[2] / 255., 1);
+			int h = (int) ((hsva >> 32) & 0xFFF);
+			int s = (int) ((hsva >> 16) & 0xFF);
+			int v = (int) ((hsva >> 8) & 0xFF);
+			
+			double cc = channel == 0 ? h / 1024. : channel == 1 ? s / 255. : v / 255.;
+			
+			value = MathUtils.clamp(cc, 1, 0);
+		} else {
+			value = MathUtils.clamp(a / 255., 1, 0);
 		}
 		
 		// if this isn't hue, re-make the gradient
 		if (!(mode == 1 && channel == 0)) {
-			colors[0] = e.r;
-			colors[1] = e.g;
-			colors[2] = e.b;
 			genGradient();
 		}
-		
-		repaint();
 	}
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		hover = true;
-		value = MathUtils.clamp((e.getX()) / (double) (buffer.getWidth() - 1), 1, 0);
+		value = MathUtils.clamp((e.getX() - 3) / (double) (buffer.getWidth()), 1, 0);
 		
-		int rgb = buffer.getRGB(MathUtils.clamp(e.getX(), buffer.getWidth() - 1, 0), 1);
-		int r = (rgb >> 16) & 0xFF;
-		int g = (rgb >> 8) & 0xFF;
-		int b = (rgb >> 0) & 0xFF;
+		int range = 255;
 		
-		if (mode == 0)
-			parent.broadcastEvent(new ColorEvent(this, r, g, b, 255, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue, Channel.Saturation, Channel.Value));
-		else {
-			if (channel == 1) { // saturation
-				// if this is saturation, we change it and the 2 lowest RGB channels
-				Channel[] c = new Channel[3];
-				c[0] = Channel.Saturation;
-				int max = Math.max(colors[0], Math.max(colors[1], colors[2]));
-				if (max == colors[0]) {
-					c[1] = Channel.Green;
-					c[2] = Channel.Blue;
-				} else if (max == colors[1]) {
-					c[1] = Channel.Red;
-					c[2] = Channel.Blue;
-				} else if (max == colors[2]) {
-					c[1] = Channel.Red;
-					c[2] = Channel.Green;
-				}
-				parent.broadcastEvent(new ColorEvent(this, r, g, b, 255, c));
-			} else if (channel == 2) { // value
-				parent.broadcastEvent(new ColorEvent(this, r, g, b, 255, Channel.Red, Channel.Green, Channel.Blue, Channel.Value));
-			} else
-				// hue
-				parent.broadcastEvent(new ColorEvent(this, r, g, b, 255, Channel.Red, Channel.Green, Channel.Blue, Channel.Hue, Channel.Saturation));
+		if (mode == 1 && channel == 0) { // if this is hue
+			range = 1024;
 		}
 		
-		repaint();
+		parent.makeChange(Channel.values[channel + mode * 3], (int) (value * range));
+		parent.broadcastChanges(this);
+	}
+	
+	private void prepareCursor() {
+		GeneralPath cursor = new GeneralPath();
+		cursor.moveTo(0, 6);
+		cursor.lineTo(6, 6);
+		cursor.lineTo(3, 0);
+		cursor.closePath();
+		
+		cursorImage = new BufferedImage(9, 8, BufferedImage.TYPE_INT_ARGB);
+		cursorSelected = new BufferedImage(9, 8, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = cursorImage.createGraphics();
+		Graphics2D gs = cursorSelected.createGraphics();
+		
+		g.setColor(Color.black);
+		g.fill(cursor);
+		g.setColor(Color.darkGray);
+		g.draw(cursor);
+		
+		gs.setColor(Color.black);
+		gs.fill(cursor);
+		gs.setColor(selectedColor);
+		gs.draw(cursor);
+		
+		g.dispose();
+		gs.dispose();
 	}
 	
 	@Override

@@ -18,9 +18,7 @@
  */
 package experimental.colorchooser.event;
 
-import java.util.Arrays;
 import java.util.EventObject;
-import java.util.List;
 
 import experimental.colorchooser.Channel;
 
@@ -31,15 +29,12 @@ import experimental.colorchooser.Channel;
 @SuppressWarnings("serial")
 public class ColorEvent extends EventObject {
 	
-	public final int r, g, b, a;
-	public final List<Channel> changedChannels;
+	public final int val;
+	public final Channel channel;
 	
-	public ColorEvent(Object source, int r, int g, int b, int a, Channel... changedChannels) {
+	public ColorEvent(Object source, Channel channel, int val) {
 		super(source);
-		this.r = r;
-		this.g = g;
-		this.b = b;
-		this.a = a;
-		this.changedChannels = Arrays.asList(changedChannels);
+		this.channel = channel;
+		this.val = val;
 	}
 }

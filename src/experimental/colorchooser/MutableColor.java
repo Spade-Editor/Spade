@@ -29,6 +29,29 @@ import static experimental.colorchooser.ColorUtils.*;
 @SuppressWarnings("serial")
 public class MutableColor extends Color {
 	
+	private static final MutableColor[] swap;
+	private static int index;
+	
+	static {
+		swap = new MutableColor[2];
+		swap[0] = new MutableColor();
+		swap[1] = new MutableColor();
+		index = 0;
+	}
+	
+	public static MutableColor getColor(int r, int g, int b, int a) {
+		return swap[index++&1].setColor(r, g, b, a);
+	}
+	
+	public static MutableColor getColor(int argb) {
+		return swap[index++&1].setColor(argb);
+	}
+	
+	public static MutableColor getColor(int r, int g, int b) {
+		return swap[index++&1].setColor(r, g, b, 255);
+	}
+	
+	
 	private int value;
 	
 	public MutableColor() {
