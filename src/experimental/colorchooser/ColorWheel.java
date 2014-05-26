@@ -110,10 +110,10 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 		h = (a + Math.PI) / Math.PI / 2;
 		s = MathUtils.clamp(Math.sqrt(dx * dx + dy * dy) / Math.sin(Math.PI / 4) / Math.sqrt(RADIUS * RADIUS * 2), 1, 0);
 		
-		parent.makeChange(Alpha, 255);
-		parent.makeChange(Hue, (int) (h * 1024));
-		parent.makeChange(Saturation, (int) (s * 255));
-		parent.makeChange(Value, 255);
+		parent.makeChange(this, Alpha, 255);
+		parent.makeChange(this, Hue, (int) (h * 1024));
+		parent.makeChange(this, Saturation, (int) (s * 255));
+		parent.makeChange(this, Value, 255);
 		
 		parent.broadcastChanges(this);
 	}
@@ -140,11 +140,15 @@ public class ColorWheel extends JComponent implements MouseMotionListener, Mouse
 	}
 	
 	@Override
-	public void changeColor(int r, int g, int b, int a) {
-		long hsva = toHSVA(r / 255., g / 255., b / 255., 1);
-		h = ((hsva >> 32) & 0xFFF) / 1024.;
-		s = ((hsva >> 16) & 0xFF) / 255.;
-		
+	public void changeColor(int r, int g, int b, int hh, int ss, int v, int a) {
+		if (v != 0) {
+			long hsva = toHSVA(r / 255., g / 255., b / 255., 1);
+			h = ((hsva >> 32) & 0xFFF) / 1024.;
+			s = ((hsva >> 16) & 0xFF) / 255.;
+		} else {
+			h = hh/1024.;
+			s = ss/255.;
+		}
 		double angle = h * 2 * Math.PI - Math.PI;
 		
 		mx = RADIUS + (int) Math.round(RADIUS * s * Math.cos(angle));

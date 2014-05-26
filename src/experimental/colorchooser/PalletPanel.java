@@ -30,22 +30,25 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JComponent;
 
 import experimental.colorchooser.event.ColorEventBroadcaster;
+import experimental.colorchooser.event.ColorListener;
 import static experimental.colorchooser.Channel.*;
+import static experimental.colorchooser.ColorUtils.toARGB;
 
 /**
  * @author BurntPizza
  * 
  */
 @SuppressWarnings("serial")
-public class PalletPanel extends JComponent implements MouseListener, MouseMotionListener {
+public class PalletPanel extends JComponent implements MouseListener, MouseMotionListener, ColorListener {
 	
 	public static final int SWATCH_SIZE = 16;
 	
 	private Pallet pallet;
 	private Color[] colors; // pallet cache
 	private Color bg1, bg2;
-	private int si; // selected index
-	private int mi; // hover index
+	private int si = 0; // selected index
+	private int lsi;
+	private int mi = -1; // hover index
 	private Stroke stroke1, stroke2;
 	
 	private ColorEventBroadcaster parent;
@@ -62,6 +65,7 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 		addMouseMotionListener(this);
 		
 		this.parent = parent;
+		parent.addColorListener(this);
 		
 		bg1 = Color.gray;
 		bg2 = Color.white;
@@ -113,18 +117,44 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 			}
 	}
 	
+	public void unselect() {
+		si = -1;
+	}
+	
 	public int getSelectedColor() {
 		return pallet.colors[si];
 	}
 	
 	@Override
+	public void changeColor(int r, int g, int b, int h, int s, int v, int a) {
+		si = -1;
+		
+		
+		int argb = toARGB(h / 1024., s / 255., v / 255., 1);
+		int ri = (argb >> 16) & 0xFF;
+		int gi = (argb >> 8) & 0xFF;
+		int bi = (argb >> 0) & 0xFF;
+		
+		if(ri!=r||gi!=g||bi!=b)
+			si = lsi;
+		
+		for (int i = 0; i < colors.length; i++) {
+			if (colors[i].getRed() == r && colors[i].getGreen() == g && colors[i].getBlue() == b && colors[i].getAlpha() == a) {
+				si = i;
+				break;
+			}
+		}
+	}
+	
+	@Override
 	public void mouseReleased(MouseEvent e) {
 		si = (e.getX() / SWATCH_SIZE) + (e.getY() / SWATCH_SIZE) * 16;
+		lsi = si;
 		
-		parent.makeChange(Red, colors[si].getRed());
-		parent.makeChange(Green, colors[si].getGreen());
-		parent.makeChange(Blue, colors[si].getBlue());
-		parent.makeChange(Alpha, colors[si].getAlpha());
+		parent.makeChange(this, Red, colors[si].getRed());
+		parent.makeChange(this, Green, colors[si].getGreen());
+		parent.makeChange(this, Blue, colors[si].getBlue());
+		parent.makeChange(this, Alpha, colors[si].getAlpha());
 		
 		parent.broadcastChanges(null);
 	}

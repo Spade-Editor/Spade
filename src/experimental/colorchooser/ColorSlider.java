@@ -116,10 +116,10 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 				gg.drawLine(x, 0, x, bh);
 			}
 		} else if (mode == 1) { // hsv mode
-			long hsva = toHSVA(colors[0] / 255., colors[1] / 255., colors[2] / 255., 1);
-			double h = ((hsva >> 32) & 0xFFF) / 1024.;
-			double s = ((hsva >> 16) & 0xFF) / 255.;
-			double v = ((hsva >> 8) & 0xFF) / 255.;
+			//long hsva = toHSVA(colors[0] / 255., colors[1] / 255., colors[2] / 255., 1);
+			double h = colors[0] / 1024.;
+			double s = colors[1] / 255.;
+			double v = colors[2] / 255.;
 			
 			for (int x = 0; x < bw; x++) {
 				h = channel == 0 ? (x / (double) bw) : h;
@@ -153,19 +153,21 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 	}
 	
 	@Override
-	public void changeColor(int r, int g, int b, int a) {
-		
-		colors[0] = r;
-		colors[1] = g;
-		colors[2] = b;
+	public void changeColor(int r, int g, int b, int h, int s, int v, int a) {
 		
 		if (mode == 0) {
+			colors[0] = r;
+			colors[1] = g;
+			colors[2] = b;
 			value = MathUtils.clamp(colors[channel] / 255., 1, 0);
 		} else if (mode == 1) {
-			long hsva = toHSVA(colors[0] / 255., colors[1] / 255., colors[2] / 255., 1);
-			int h = (int) ((hsva >> 32) & 0xFFF);
-			int s = (int) ((hsva >> 16) & 0xFF);
-			int v = (int) ((hsva >> 8) & 0xFF);
+			colors[0] = h;
+			colors[1] = s;
+			colors[2] = v;
+			//long hsva = toHSVA(colors[0] / 255., colors[1] / 255., colors[2] / 255., 1);
+			//int h = (int) ((hsva >> 32) & 0xFFF);
+			//int s = (int) ((hsva >> 16) & 0xFF);
+			//int v = (int) ((hsva >> 8) & 0xFF);
 			
 			double cc = channel == 0 ? h / 1024. : channel == 1 ? s / 255. : v / 255.;
 			
@@ -191,7 +193,7 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 			range = 1024;
 		}
 		
-		parent.makeChange(Channel.values[channel + mode * 3], (int) (value * range));
+		parent.makeChange(this, Channel.values[channel + mode * 3], (int) (value * range));
 		parent.broadcastChanges(this);
 	}
 	
@@ -250,5 +252,4 @@ public class ColorSlider extends JComponent implements MouseMotionListener, Mous
 	public void mouseReleased(MouseEvent e) {
 		mouseMoved(e);
 	}
-	
 }

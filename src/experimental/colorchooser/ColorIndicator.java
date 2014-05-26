@@ -126,7 +126,7 @@ public class ColorIndicator extends JComponent implements MouseListener, ColorLi
 	}
 	
 	@Override
-	public void changeColor(int r, int g, int b, int a) {
+	public void changeColor(int r, int g, int b, int h, int s, int v, int a) {
 		primary.setColor(r, g, b, a);
 	}
 	
@@ -147,10 +147,10 @@ public class ColorIndicator extends JComponent implements MouseListener, ColorLi
 			c = secondary;
 		}
 		if (c != null) {
-			parent.makeChange(Red, c.getRed());
-			parent.makeChange(Green, c.getGreen());
-			parent.makeChange(Blue, c.getBlue());
-			parent.makeChange(Alpha, c.getAlpha());
+			parent.makeChange(this, Red, c.getRed());
+			parent.makeChange(this, Green, c.getGreen());
+			parent.makeChange(this, Blue, c.getBlue());
+			parent.makeChange(this, Alpha, c.getAlpha());
 			
 			parent.broadcastChanges(this);
 		}

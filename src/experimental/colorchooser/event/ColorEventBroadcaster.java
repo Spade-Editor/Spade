@@ -30,5 +30,5 @@ public interface ColorEventBroadcaster {
 	public void removeColorListener(ColorListener c);
 	
 	public void broadcastChanges(ColorListener source);
-	public void makeChange(Channel channel, int val);
+	public void makeChange(Object source, Channel channel, int val);
 }
