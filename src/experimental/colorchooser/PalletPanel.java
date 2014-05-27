@@ -129,15 +129,6 @@ public class PalletPanel extends JComponent implements MouseListener, MouseMotio
 	public void changeColor(int r, int g, int b, int h, int s, int v, int a) {
 		si = -1;
 		
-		
-		int argb = toARGB(h / 1024., s / 255., v / 255., 1);
-		int ri = (argb >> 16) & 0xFF;
-		int gi = (argb >> 8) & 0xFF;
-		int bi = (argb >> 0) & 0xFF;
-		
-		if(ri!=r||gi!=g||bi!=b)
-			si = lsi;
-		
 		for (int i = 0; i < colors.length; i++) {
 			if (colors[i].getRed() == r && colors[i].getGreen() == g && colors[i].getBlue() == b && colors[i].getAlpha() == a) {
 				si = i;

@@ -18,6 +18,10 @@
  */
 package experimental.colorchooser;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,8 +96,9 @@ public class ColorChooser extends JDialog implements ColorEventBroadcaster {
 	
 	/**
 	 * Completely for testing
+	 * @throws IOException 
 	 */
-	public static void main(String[] a) {
+	public static void main(String[] a) throws IOException {
 		new ColorChooser();
 	}
 	
