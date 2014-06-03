@@ -27,6 +27,9 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
+/**
+ * @author Longor1996
+ **/
 public class AffineTransformEffect extends ImageOp
 {
 	
