@@ -46,4 +46,15 @@ public class Metadata
 		String ret = metadata.get(key);
 		return ret != null ? ret : def;
 	}
+	
+	public String getOrSet(String key, String def)
+	{
+		String ret = metadata.get(key);
+		if(ret == null)
+		{
+			this.put(key, def);
+			return def;
+		}
+		return ret;
+	}
 }

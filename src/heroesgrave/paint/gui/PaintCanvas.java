@@ -215,7 +215,6 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 				cg.setBackground(TRANSPARENT);
 				cg.clearRect(0, 0, image.getWidth(), image.getHeight());
 				layer.render(cg);
-				System.out.println("Rendered");
 			}
 		}
 		
@@ -406,7 +405,6 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			short x = (short) p.getX();
 			short y = (short) p.getY();
 			Paint.main.currentTool.whilePressed(document.getLayer(), x, y, lastButton);
-			System.out.println("Dragged to: " + x + ", " + y);
 		}
 		
 		this.mouseLastDragPosX = e.getX();

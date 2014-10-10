@@ -331,7 +331,7 @@ public class Paint extends Application
 	{
 		// BUTTON1 (LEFT): left
 		// BUTTON2 (MIDDLE): Color.BLACK
-		// BUTTON1 (RIGHT): right
+		// BUTTON3 (RIGHT): right
 		return mouseButton == MouseEvent.BUTTON1 ? Paint.leftColour
 												: (mouseButton == MouseEvent.BUTTON3 ? Paint.rightColour : 0xFF000000);
 	}

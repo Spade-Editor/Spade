@@ -23,6 +23,7 @@ package heroesgrave.paint.image;
 import heroesgrave.paint.io.ImageExporter;
 import heroesgrave.paint.io.ImageImporter;
 import heroesgrave.utils.misc.Metadata;
+import heroesgrave.utils.misc.RandomUtils;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -52,7 +53,7 @@ public class Document
 		this.history = new History(this);
 		
 		RawImage image = new RawImage(width, height);
-		/* Fill the image with gradient + noise.
+		//* Fill the image with gradient + noise.
 		for(int i = 0; i < 512; i++)
 		{
 			for(int j = 0; j < 512; j++)

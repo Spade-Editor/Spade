@@ -23,7 +23,7 @@ package heroesgrave.paint.image.change;
 import java.awt.image.BufferedImage;
 
 /**
- * Changes that are easily revertable should use this interface instead of IChange.
+ * Changes that are easily revertable should use this interface instead of IEditChange.
  * 
  * @author HeroesGrave
  *

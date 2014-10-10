@@ -50,7 +50,7 @@ public class Layer extends DefaultMutableTreeNode
 	
 	public Layer(Document doc, BufferedImage image, Metadata info)
 	{
-		super(info.getOr("name", "New Layer"));
+		super(info.getOrSet("name", "New Layer"));
 		this.doc = doc;
 		this.buffer = new FreezeBuffer(this, image);
 		this.frozen = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -147,8 +147,7 @@ public class Layer extends DefaultMutableTreeNode
 	
 	public void addChange(IEditChange change)
 	{
-		change.setLayer(doc.getFlatMap().indexOf(this));
-		doc.getHistory().addChange(change);
+		doc.getHistory().addChange(doc.getFlatMap().indexOf(this));
 		buffer.addChange(change);
 		this.changed = true;
 	}
@@ -164,9 +163,9 @@ public class Layer extends DefaultMutableTreeNode
 		this.changed = true;
 	}
 	
-	public void repeatChange(IEditChange change)
+	public void repeatChange()
 	{
-		buffer.addChange(change);
+		buffer.repeatChange();
 		this.changed = true;
 	}
 }

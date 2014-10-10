@@ -25,30 +25,19 @@ import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.BorderLayout;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -59,42 +48,11 @@ import com.alee.laf.tree.WebTree;
 
 public class LayerManager
 {
-	public class LayerManagerTreeCellRenderer implements TreeCellRenderer
-	{
-		JLabel label = new JLabel("Node");
-		Icon nodeIcon;
-		
-		LayerManagerTreeCellRenderer()
-		{
-			BufferedImage img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-			Graphics g = img.getGraphics();
-			g.setColor(Color.BLACK);
-			g.fillOval(0, 0, 16, 16);
-			nodeIcon = new ImageIcon(img);
-			label.setMinimumSize(new Dimension(128, 16));
-		}
-		
-		@Override
-		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
-				boolean leaf, int row, boolean hasFocus)
-		{
-			if(value instanceof LayerNode)
-			{
-				LayerNode node = (LayerNode) value;
-				//label.setText(node.canvas.name);
-				label.setIcon(nodeIcon);
-				label.revalidate();
-			}
-			
-			return label;
-		}
-	}
-	
 	public WebDialog dialog;
 	
 	protected LayerSettings lsettings;
 	
-	protected LayerNode rootNode;
+	protected Layer rootNode;
 	protected DefaultTreeModel model;
 	protected WebTree<Layer> tree;
 	protected WebPanel controls;
@@ -113,8 +71,6 @@ public class LayerManager
 		tree.getSelectionModel().addTreeSelectionListener(new SelectionListener());
 		tree.setVisibleRowCount(8);
 		tree.setExpandsSelectedPaths(true);
-		// XXX HeroesGrave: I like the default renderer better.
-		// tree.setCellRenderer(new LayerManagerTreeCellRenderer());
 		
 		JScrollPane scroll = new JScrollPane(tree);
 		
@@ -135,12 +91,12 @@ public class LayerManager
 			public void actionPerformed(ActionEvent e)
 			{
 				TreePath path = tree.getSelectionModel().getSelectionPath();
-				LayerNode n;
+				Layer n;
 				if(path == null)
 					n = rootNode;
 				else
-					n = (LayerNode) path.getLastPathComponent();
-				n.createLayer();
+					n = (Layer) path.getLastPathComponent();
+				//FIXME n.createLayer();
 			}
 		});
 		
@@ -149,14 +105,14 @@ public class LayerManager
 			public void actionPerformed(ActionEvent e)
 			{
 				TreePath path = tree.getSelectionModel().getSelectionPath();
-				LayerNode n;
+				Layer n;
 				if(path == null)
 					return;
 				else
-					n = (LayerNode) path.getLastPathComponent();
+					n = (Layer) path.getLastPathComponent();
 				if(n.equals(rootNode))
 					return;
-				n.delete();
+				//FIXME n.delete();
 			}
 		});
 		
@@ -165,11 +121,11 @@ public class LayerManager
 			public void actionPerformed(ActionEvent e)
 			{
 				TreePath path = tree.getSelectionModel().getSelectionPath();
-				LayerNode n;
+				Layer n;
 				if(path == null)
 					return;
 				else
-					n = (LayerNode) path.getLastPathComponent();
+					n = (Layer) path.getLastPathComponent();
 				if(n.equals(rootNode))
 					return;
 				//Paint.main.history.addChange(new LayerMoveOp(n, LayerMoveOp.MOVE_UP));
@@ -184,11 +140,11 @@ public class LayerManager
 			public void actionPerformed(ActionEvent e)
 			{
 				TreePath path = tree.getSelectionModel().getSelectionPath();
-				LayerNode n;
+				Layer n;
 				if(path == null)
 					return;
 				else
-					n = (LayerNode) path.getLastPathComponent();
+					n = (Layer) path.getLastPathComponent();
 				if(n.equals(rootNode))
 					return;
 				//Paint.main.history.addChange(new LayerMoveOp(n, LayerMoveOp.MOVE_DOWN));
@@ -203,11 +159,11 @@ public class LayerManager
 			public void actionPerformed(ActionEvent e)
 			{
 				TreePath path = tree.getSelectionModel().getSelectionPath();
-				LayerNode n;
+				Layer n;
 				if(path == null)
 					return;
 				else
-					n = (LayerNode) path.getLastPathComponent();
+					n = (Layer) path.getLastPathComponent();
 				if(n.equals(rootNode))
 					return;
 				//Paint.main.history.addChange(new LayerMoveOp(n, LayerMoveOp.MOVE_IN));
@@ -222,11 +178,11 @@ public class LayerManager
 			public void actionPerformed(ActionEvent e)
 			{
 				TreePath path = tree.getSelectionModel().getSelectionPath();
-				LayerNode n;
+				Layer n;
 				if(path == null)
 					return;
 				else
-					n = (LayerNode) path.getLastPathComponent();
+					n = (Layer) path.getLastPathComponent();
 				if(n.equals(rootNode))
 					return;
 				//Paint.main.history.addChange(new LayerMoveOp(n, LayerMoveOp.MOVE_OUT));
@@ -241,15 +197,15 @@ public class LayerManager
 			public void actionPerformed(ActionEvent e)
 			{
 				TreePath path = tree.getSelectionModel().getSelectionPath();
-				LayerNode n;
+				Layer n;
 				if(path == null)
 					return;
 				else
-					n = (LayerNode) path.getLastPathComponent();
+					n = (Layer) path.getLastPathComponent();
 				if(n.isRoot())
 					return;
-				LayerNode parent = (LayerNode) n.getParent();
-				parent.merge(n);
+				Layer parent = (Layer) n.getParent();
+				// FIXME parent.merge(n);
 				redrawTree();
 				tree.setSelectionPath(new TreePath(parent.getPath()));
 			}
@@ -260,11 +216,11 @@ public class LayerManager
 			public void actionPerformed(ActionEvent e)
 			{
 				TreePath path = tree.getSelectionModel().getSelectionPath();
-				LayerNode n;
+				Layer n;
 				if(path == null)
 					return;
 				else
-					n = (LayerNode) path.getLastPathComponent();
+					n = (Layer) path.getLastPathComponent();
 				//lsettings.showFor(n.canvas);
 			}
 		});
@@ -296,9 +252,9 @@ public class LayerManager
 		tree.setModel(model);
 	}
 	
-	public void setRoot(Canvas root)
+	public void setRoot(Layer root)
 	{
-		rootNode = new LayerNode(root);
+		rootNode = root;
 		model.setRoot(rootNode);
 		tree.setEditable(false);
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -335,7 +291,7 @@ public class LayerManager
 		Vector<TreePath> paths = new Vector<TreePath>();
 		
 		Enumeration<TreePath> e = tree.getExpandedDescendants(new TreePath(rootNode));
-		LayerNode selpath = (LayerNode) tree.getSelectionPath().getLastPathComponent();
+		Layer selpath = (Layer) tree.getSelectionPath().getLastPathComponent();
 		
 		if(e != null)
 			while(e.hasMoreElements())
@@ -360,106 +316,6 @@ public class LayerManager
 	public boolean isVisible()
 	{
 		return dialog.isVisible();
-	}
-	
-	public class LayerNode extends DefaultMutableTreeNode
-	{
-		private static final long serialVersionUID = -9016111201661580573L;
-		
-		public Canvas canvas;
-		
-		public LayerNode(Canvas canvas)
-		{
-			super(canvas);
-			this.canvas = canvas;
-			/*
-			if(canvas.hasChildren())
-			{
-				for(Canvas c : canvas.getChildren())
-				{
-					this.add(new LayerNode(c));
-				}
-			}
-			*/
-		}
-		
-		public void createLayer()
-		{
-			//Paint.main.history.addChange(new NewLayerOp(this));
-		}
-		
-		public LayerNode createNoChange()
-		{
-			/*
-			Canvas canvas =
-					new Canvas("New Layer", this.canvas.getWidth(),
-							this.canvas.getHeight());
-			LayerNode node = new LayerNode(canvas);
-			this.add(node);
-			this.canvas.addLayer(canvas);
-			model.reload();
-			tree.setSelectionPath(new TreePath(node.getPath()));
-			Paint.main.gui.canvas.getPanel().repaint();
-			return node;
-			*/
-			return null;
-		}
-		
-		public LayerNode createNoAdd()
-		{
-			//return new LayerNode(new Canvas("New Layer", this.canvas.getWidth(), this.canvas.getHeight()));
-			return null;
-		}
-		
-		public void merge(LayerNode node)
-		{
-			//Paint.main.history.addChange(new MergeLayerOp(node, this));
-		}
-		
-		public void mergeNoChange(LayerNode node)
-		{
-			//this.canvas.mergeLayer(node.canvas);
-			this.remove(node);
-			model.reload();
-			tree.setSelectionPath(new TreePath(node.getPath()));
-			//Paint.main.gui.canvas.getPanel().repaint();
-		}
-		
-		public void revertMerge(LayerNode node)
-		{
-			//this.canvas.unmergeLayer(node.canvas);
-			this.add(node);
-			model.reload();
-			tree.setSelectionPath(new TreePath(node.getPath()));
-			//Paint.main.gui.canvas.getPanel().repaint();
-		}
-		
-		public void delete()
-		{
-			//Paint.main.history.addChange(new DeleteLayerOp(this));
-		}
-		
-		public void deleteNoChange()
-		{
-			LayerNode n = (LayerNode) this.getParent();
-			if(n != null)
-			{
-				n.remove(this);
-				//n.canvas.removeLayer(canvas);
-				model.reload();
-				tree.setSelectionPath(new TreePath(n.getPath()));
-				//Paint.main.gui.canvas.getPanel().repaint();
-			}
-		}
-		
-		public void restore(LayerNode node)
-		{
-			this.add(node);
-			//this.canvas.addLayer(node.canvas);
-			model.reload();
-			tree.setSelectionPath(new TreePath(node.getPath()));
-			//Paint.main.gui.canvas.getPanel().repaint();
-		}
 	}
 	
 	private class SelectionListener implements TreeSelectionListener
