@@ -20,89 +20,104 @@
 
 package heroesgrave.paint.gui;
 
+import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.blend.BlendMode;
+import heroesgrave.paint.image.change.doc.MetadataChange;
+import heroesgrave.paint.main.Paint;
+
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
+import com.alee.laf.button.WebButton;
+import com.alee.laf.combobox.WebComboBox;
+import com.alee.laf.label.WebLabel;
+import com.alee.laf.rootpane.WebDialog;
+import com.alee.laf.rootpane.WebFrame;
+import com.alee.laf.text.WebTextField;
+
 public class LayerSettings
 {
-	/* FIXME
-	private JDialog dialog;
+	private WebDialog dialog;
 	private Layer layer;
-	private JTextField label;
-	private JComboBox<BlendMode> blendMode;
+	private WebTextField label;
+	private WebComboBox blendMode;
 	
-	public LayerSettings()
+	@SuppressWarnings("unchecked")
+	public LayerSettings(WebFrame frame)
 	{
-		this.dialog =
-				new CentredJDialog(Paint.main.gui.frame, "Layer Settings");
+		this.dialog = new WebDialog(frame, "Layer Settings");
 		dialog.setSize(200, 120);
 		dialog.setVisible(false);
 		dialog.setResizable(false);
 		dialog.setLayout(new GridLayout(0, 2));
 		
-		blendMode = new JComboBox<BlendMode>();
+		blendMode = new WebComboBox();
 		
-		HashSet<BlendMode> modes = BlendMode.getBlendModes();
-		for(BlendMode mode : modes)
+		for(String mode : BlendMode.getBlendModeNames())
 			blendMode.addItem(mode);
 		
-		label = new JTextField("");
+		label = new WebTextField("");
 		
-		JButton done = new JButton("Done");
+		WebButton done = new WebButton("Done");
 		
 		done.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Paint.main.history.addChange(new LayerNameChange(canvas, label
-						.getText()));
+				if(!layer.getMetadata().get("name").equals(label.getText()))
+					Paint.main.document.addChange(new MetadataChange(layer, "name", label.getText()));
+				if(!layer.getMetadata().get("blend").equals(blendMode.getSelectedItem()))
+					Paint.main.document.addChange(new MetadataChange(layer, "blend", (String) blendMode.getSelectedItem()));
 				dialog.setVisible(false);
 			}
 		});
 		
-		dialog.add(new CentredJLabel("Layer Name:"));
+		dialog.add(new WebLabel("Layer Name:", WebLabel.CENTER));
 		dialog.add(label);
-		dialog.add(new CentredJLabel("Blend Mode:"));
+		dialog.add(new WebLabel("Blend Mode:", WebLabel.CENTER));
 		dialog.add(blendMode);
-		dialog.add(new JLabel());
+		dialog.add(new WebLabel());
 		dialog.add(done);
 		
-		blendMode.addActionListener(new ActionListener()
+		blendMode.addItemListener(new ItemListener()
 		{
-			public void actionPerformed(ActionEvent arg0)
+			public void itemStateChanged(ItemEvent arg0)
 			{
-				if(blendMode.getSelectedItem() != Paint.main.gui.canvas
-						.getCanvas().mode)
+				if(!blendMode.getSelectedItem().equals(layer.getMetadata().get("blend")))
 				{
-					Paint.main.history.addChange(new LayerBlendChange(canvas,
-							(BlendMode) blendMode.getSelectedItem()));
-					Paint.main.gui.canvas.getPanel().repaint();
+					// TODO Preview.
 				}
 			}
 		});
 		
-		label.setHorizontalAlignment(JLabel.CENTER);
+		label.setHorizontalAlignment(WebLabel.CENTER);
 	}
 	
-	public void updateIfVisible(Canvas canvas)
+	public void updateIfVisible(Layer layer)
 	{
 		if(dialog.isVisible())
 		{
-			this.canvas = canvas;
-			label.setText(canvas.name);
-			blendMode.setSelectedItem(canvas.mode);
+			this.layer = layer;
+			label.setText(layer.getMetadata().get("name"));
+			blendMode.setSelectedItem(layer.getMetadata().get("blend"));
 		}
 	}
 	
-	public void showFor(Canvas canvas)
+	public void showFor(Layer layer)
 	{
-		this.canvas = canvas;
-		label.setText(canvas.name);
+		this.layer = layer;
+		label.setText(layer.getMetadata().get("name"));
 		dialog.setVisible(true);
-		blendMode.setSelectedItem(canvas.mode);
+		dialog.setLocationRelativeTo(Paint.main.gui.frame);
+		blendMode.setSelectedItem(layer.getMetadata().get("blend"));
 	}
 	
 	public void dispose()
 	{
 		dialog.dispose();
 	}
-	*/
 }

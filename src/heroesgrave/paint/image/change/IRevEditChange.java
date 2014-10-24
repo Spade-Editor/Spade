@@ -28,7 +28,7 @@ import java.awt.image.BufferedImage;
  * @author HeroesGrave
  *
  */
-public abstract class IRevEditChange extends IEditChange
+public interface IRevEditChange extends IEditChange
 {
 	public abstract void revert(BufferedImage image);
 }

@@ -75,17 +75,15 @@ public class UserPreferences
 		
 		frame.setSize(windowWidth, windowHeight);
 		frame.setLocationRelativeTo(null);
+		
+		chooser.getDialog().setLocation(colourPickerX, colourPickerY);
 		if(prefs.getBoolean(COLOUR_PICKER_VISIBLE, false))
 		{
 			chooser.show();
-			chooser.getDialog().setLocation(colourPickerX, colourPickerY);
 		}
 		
-		if(prefs.getBoolean(LAYERS_VISIBLE, false))
-		{
-			layers.dialog.setVisible(true);
-			layers.dialog.setBounds(layersX, layersY, layersWidth, layersHeight);
-		}
+		layers.dialog.setVisible(prefs.getBoolean(LAYERS_VISIBLE, false));
+		layers.dialog.setBounds(layersX, layersY, layersWidth, layersHeight);
 		
 		Menu.DARK_BACKGROUND = prefs.getBoolean(BACKGROUND_DARK, false);
 	}
@@ -111,14 +109,12 @@ public class UserPreferences
 			prefs.putInt(WINDOW_HEIGHT, windowHeight);
 			prefs.putBoolean(WINDOW_MAXIMIZED, false);
 		}
-		if(chooser.isVisible())
-		{
-			colourPickerX = chooser.getDialog().getX();
-			colourPickerY = chooser.getDialog().getY();
-			prefs.putInt(COLOUR_PICKER_X, colourPickerX);
-			prefs.putInt(COLOUR_PICKER_Y, colourPickerY);
-		}
-		/*
+		colourPickerX = chooser.getDialog().getX();
+		colourPickerY = chooser.getDialog().getY();
+		prefs.putInt(COLOUR_PICKER_X, colourPickerX);
+		prefs.putInt(COLOUR_PICKER_Y, colourPickerY);
+		prefs.putBoolean(COLOUR_PICKER_VISIBLE, chooser.isVisible());
+		
 		layersX = layers.dialog.getX();
 		layersY = layers.dialog.getY();
 		layersWidth = layers.dialog.getWidth();
@@ -128,7 +124,6 @@ public class UserPreferences
 		prefs.putInt(LAYERS_WIDTH, layersWidth);
 		prefs.putInt(LAYERS_HEIGHT, layersHeight);
 		prefs.putBoolean(LAYERS_VISIBLE, layers.isVisible());
-		*/
 		
 		prefs.putBoolean(COLOUR_PICKER_VISIBLE, chooser.isVisible());
 		

@@ -33,4 +33,6 @@ public interface Serialised
 	public void write(DataOutputStream out) throws IOException;
 	
 	public void read(DataInputStream in) throws IOException;
+	
+	public boolean isMarker();
 }

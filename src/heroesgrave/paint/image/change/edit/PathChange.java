@@ -18,8 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.paint.image.change;
+package heroesgrave.paint.image.change.edit;
 
+import heroesgrave.paint.image.change.IEditChange;
 import heroesgrave.paint.io.Serialised;
 
 import java.awt.Color;
@@ -31,7 +32,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class PathChange extends IEditChange
+public class PathChange implements IEditChange
 {
 	private ArrayList<Point> points = new ArrayList<Point>();
 	private int colour;
@@ -130,6 +131,12 @@ public class PathChange extends IEditChange
 			points = new short[in.readInt()];
 			for(int i = 0; i < points.length; i++)
 				points[i] = in.readShort();
+		}
+		
+		@Override
+		public boolean isMarker()
+		{
+			return false;
 		}
 	}
 }

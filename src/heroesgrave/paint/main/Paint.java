@@ -20,13 +20,14 @@
 
 package heroesgrave.paint.main;
 
+import heroesgrave.paint.gui.Effects;
 import heroesgrave.paint.gui.GUIManager;
-import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.gui.Tools;
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.io.ImageExporter;
 import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.paint.tools.Tool;
+import heroesgrave.paint.tools.effects.Effect;
 import heroesgrave.utils.app.Application;
 import heroesgrave.utils.io.IOUtils;
 
@@ -39,9 +40,10 @@ import java.net.URL;
 import java.util.HashMap;
 
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileFilter;
 
+import com.alee.laf.filechooser.WebFileChooser;
 import com.alee.laf.rootpane.WebDialog;
 
 //
@@ -51,6 +53,7 @@ import com.alee.laf.rootpane.WebDialog;
 public class Paint extends Application
 {
 	// Major.Minor + optional letter for releases. The letter is for tiny revisions, such as fixing bugs that slipped through.
+	// Major.0-Beta for beta builds.
 	// Major.Minor-Dev for development builds.
 	// Eg: 1.3b is the 2nd revision of verion 1.3
 	
@@ -59,7 +62,7 @@ public class Paint extends Application
 	// Development for under-development new features.
 	
 	public static final String VERSION = "0.14-Dev";
-	public static final String RELEASED = "21/09/2014";
+	public static final String RELEASED = "25/10/2014";
 	
 	/**/public static final String BUILD_TYPE = "Development";
 	//*/public static final String BUILD_TYPE = "Beta";
@@ -79,13 +82,14 @@ public class Paint extends Application
 	public Tool currentTool;
 	
 	public Tools tools;
+	public Effects effects;
 	
 	public static int leftColour = 0xff000000;
 	public static int rightColour = 0xffffffff;
 	
 	private static HashMap<String, Tool> toolMap = new HashMap<String, Tool>();
 	
-	//private static HashMap<String, ImageOp> imageOps = new HashMap<String, ImageOp>();
+	private static HashMap<String, Effect> effectMap = new HashMap<String, Effect>();
 	
 	@Override
 	public void init()
@@ -95,6 +99,7 @@ public class Paint extends Application
 		pluginManager = PluginManager.instance(this);
 		
 		tools = new Tools();
+		effects = new Effects();
 		
 		if(toOpen != null)
 		{
@@ -117,11 +122,10 @@ public class Paint extends Application
 				setLeftColour(0xff000000, false);
 				
 				tools.registerTools();
+				effects.registerEffects();
 				setTool(currentTool);
 				pluginManager.registerOther();
 				gui.setDocument(document);
-				gui.layers.setDocument(document);
-				//gui.canvasPanel.activate();
 				
 				Paint.main.gui.frame.requestFocus();
 				pluginManager.onLaunch();
@@ -168,7 +172,7 @@ public class Paint extends Application
 			newImage.pack();
 			newImage.setResizable(false);
 			newImage.setVisible(true);
-			newImage.setLocationRelativeTo(null);
+			newImage.setLocationRelativeTo(gui.frame);
 			
 			save.addActionListener(new ActionListener()
 			{
@@ -220,19 +224,15 @@ public class Paint extends Application
 		return toolMap.get(key.toLowerCase());
 	}
 	
-	/*
-	public static void addImageOp(String key, ImageOp op)
+	public static void addEffect(String key, Effect op)
 	{
-		imageOps.put(key.toLowerCase(), op);
+		effectMap.put(key.toLowerCase(), op);
 	}
-	*/
 	
-	/*
-	public static ImageOp getImageOp(String key)
+	public static Effect getEffect(String key)
 	{
-		return imageOps.get(key.toLowerCase());
+		return effectMap.get(key.toLowerCase());
 	}
-	*/
 	
 	public static Document getDocument()
 	{
@@ -248,7 +248,6 @@ public class Paint extends Application
 		main.currentTool = tool;
 		main.currentTool.onSelect();
 		main.gui.setToolOption(tool.getOptions());
-		//main.gui.canvas.getPanel().repaint();
 		main.tools.toolbox.setSelected(tool);
 	}
 	
@@ -262,33 +261,70 @@ public class Paint extends Application
 	
 	public void saveAs()
 	{
-		JFileChooser chooser = new JFileChooser(document.getDir());
-		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		WebFileChooser chooser = new WebFileChooser(document.getDir());
+		chooser.setFileSelectionMode(WebFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
 		
 		for(ImageExporter exporter : ImageExporter.exporters)
 		{
 			chooser.addChoosableFileFilter(exporter);
 		}
-		
-		int returned = chooser.showSaveDialog(new CentredJDialog(main.gui.frame, "Save Image"));
-		ImageExporter format = (ImageExporter) chooser.getFileFilter();
-		
-		if(returned == JFileChooser.APPROVE_OPTION)
+		FileFilter allFilter = new FileFilter()
 		{
-			document.setFile(chooser.getSelectedFile());
-			
-			String fileName = document.getFile().getAbsolutePath();
-			
-			if(fileName.endsWith("." + format.getFileExtension()))
+			@Override
+			public boolean accept(File f)
 			{
-				// Do nothing.
+				if(f.isDirectory())
+					return true;
+				String fileName = f.getAbsolutePath();
+				int i = fileName.lastIndexOf('.');
+				if(i < 0)
+					return false;
+				
+				return ImageExporter.get(fileName.substring(i + 1)) != null;
+			}
+			
+			@Override
+			public String getDescription()
+			{
+				return "All supported import formats";
+			}
+		};
+		chooser.setFileFilter(allFilter);
+		
+		int returned = chooser.showSaveDialog(new WebDialog(main.gui.frame, "Save Image"));
+		
+		if(returned == WebFileChooser.APPROVE_OPTION)
+		{
+			// FIXME: The filechooser doesn't seem to change the filter to the one the user selected.
+			// It always seems to fall through to the else branch.
+			if(chooser.getFileFilter() instanceof ImageExporter)
+			{
+				ImageExporter format = (ImageExporter) chooser.getFileFilter();
+				File file = chooser.getSelectedFile();
+				
+				String fileName = file.getAbsolutePath();
+				
+				if(fileName.endsWith("." + format.getFileExtension()))
+				{
+					// Do nothing.
+					document.setFile(file);
+				}
+				else
+				{
+					// Put the format at the end of the File-Name!
+					fileName += "." + format.getFileExtension();
+					document.setFile(new File(fileName));
+				}
 			}
 			else
 			{
-				// Put the format at the end of the File-Name!
-				fileName += "." + format.getFileExtension();
-				document.setFile(new File(fileName));
+				File file = chooser.getSelectedFile();
+				if(!allFilter.accept(file))
+				{
+					file = new File(file.getAbsolutePath() + ".png");
+				}
+				document.setFile(file);
 			}
 			
 			document.save();
@@ -332,8 +368,7 @@ public class Paint extends Application
 		// BUTTON1 (LEFT): left
 		// BUTTON2 (MIDDLE): Color.BLACK
 		// BUTTON3 (RIGHT): right
-		return mouseButton == MouseEvent.BUTTON1 ? Paint.leftColour
-												: (mouseButton == MouseEvent.BUTTON3 ? Paint.rightColour : 0xFF000000);
+		return mouseButton == MouseEvent.BUTTON1 ? Paint.leftColour : (mouseButton == MouseEvent.BUTTON3 ? Paint.rightColour : 0xFF000000);
 	}
 	
 	public static void main(String[] args)

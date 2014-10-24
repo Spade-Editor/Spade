@@ -247,7 +247,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			Point2D p = this.transformCanvasPointToImagePoint(e.getPoint());
 			short x = (short) p.getX();
 			short y = (short) p.getY();
-			Paint.main.currentTool.onPressed(document.getLayer(), x, y, e.getButton());
+			Paint.main.currentTool.onPressed(document.getCurrent(), x, y, e.getButton());
 		}
 	}
 	
@@ -279,7 +279,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			Point2D p = this.transformCanvasPointToImagePoint(e.getPoint());
 			short x = (short) p.getX();
 			short y = (short) p.getY();
-			Paint.main.currentTool.onReleased(document.getLayer(), x, y, e.getButton());
+			Paint.main.currentTool.onReleased(document.getCurrent(), x, y, e.getButton());
 		}
 		lastButton = 0;
 	}
@@ -404,7 +404,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			Point2D p = this.transformCanvasPointToImagePoint(e.getPoint());
 			short x = (short) p.getX();
 			short y = (short) p.getY();
-			Paint.main.currentTool.whilePressed(document.getLayer(), x, y, lastButton);
+			Paint.main.currentTool.whilePressed(document.getCurrent(), x, y, lastButton);
 		}
 		
 		this.mouseLastDragPosX = e.getX();
@@ -419,7 +419,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			Point2D p = this.transformCanvasPointToImagePoint(e.getPoint());
 			short x = (short) p.getX();
 			short y = (short) p.getY();
-			Paint.main.currentTool.whileReleased(document.getLayer(), x, y, lastButton);
+			Paint.main.currentTool.whileReleased(document.getCurrent(), x, y, lastButton);
 		}
 	}
 	

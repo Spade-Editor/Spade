@@ -20,14 +20,16 @@
 
 package heroesgrave.paint.image;
 
-import heroesgrave.paint.gui.Renderer;
+import heroesgrave.paint.gui.PaintCanvas;
 import heroesgrave.paint.image.blend.BlendMode;
-import heroesgrave.paint.image.change.IEditChange;
+import heroesgrave.paint.image.change.IChange;
+import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.misc.Metadata;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -39,9 +41,12 @@ public class Layer extends DefaultMutableTreeNode
 	private FreezeBuffer buffer;
 	private Metadata info;
 	private boolean changed = true; // If this layer needs to be redrawn.
-	private ArrayList<Layer> children = new ArrayList<Layer>();
 	private BlendMode blend;
-	private Layer parent;
+	
+	public Layer(Document doc, Metadata info)
+	{
+		this(doc, new BufferedImage(doc.getWidth(), doc.getHeight(), BufferedImage.TYPE_INT_ARGB), info);
+	}
 	
 	public Layer(Document doc, RawImage image, Metadata info)
 	{
@@ -52,33 +57,51 @@ public class Layer extends DefaultMutableTreeNode
 	{
 		super(info.getOrSet("name", "New Layer"));
 		this.doc = doc;
-		this.buffer = new FreezeBuffer(this, image);
+		this.buffer = new FreezeBuffer(image);
 		this.frozen = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		this.info = info;
-		this.blend = BlendMode.NORMAL;
+		this.blend = BlendMode.getBlendMode(info.getOrSet("blend", "Normal"));
 	}
 	
-	public Layer setParent(Layer parent)
+	public void updateMetadata()
 	{
-		this.parent = parent;
-		return this;
+		BlendMode newMode = BlendMode.getBlendMode(info.get("blend"));
+		if(newMode != blend)
+		{
+			blend = newMode;
+			this.changed = true;
+		}
+		String newName = info.get("name");
+		if(!newName.equals(this.getUserObject()))
+		{
+			this.setUserObject(newName);
+			Paint.main.gui.layers.redrawTree();
+		}
 	}
 	
-	public Layer getParent()
+	public Layer getParentLayer()
 	{
-		return parent;
+		return (Layer) super.getParent();
 	}
 	
 	public void addLayer(Layer l)
 	{
-		children.add(l);
+		super.add(l);
 		this.changed = true;
 	}
 	
-	public void removeLayer(Layer l)
+	public void addLayer(Layer l, int index)
 	{
-		children.remove(l);
+		super.insert(l, index);
 		this.changed = true;
+	}
+	
+	public int removeLayer(Layer l)
+	{
+		int index = super.getIndex(l);
+		super.remove(l);
+		this.changed = true;
+		return index;
 	}
 	
 	public int getWidth()
@@ -98,9 +121,11 @@ public class Layer extends DefaultMutableTreeNode
 	
 	public boolean childChanged()
 	{
-		for(Layer l : children)
+		@SuppressWarnings("unchecked")
+		Enumeration<Layer> children = this.children();
+		while(children.hasMoreElements())
 		{
-			if(l.refresh())
+			if(((Layer) children.nextElement()).refresh())
 				return true;
 		}
 		return false;
@@ -116,12 +141,14 @@ public class Layer extends DefaultMutableTreeNode
 		if(this.refresh())
 		{
 			Graphics2D cg = frozen.createGraphics();
-			cg.setBackground(Renderer.TRANSPARENT);
+			cg.setBackground(PaintCanvas.TRANSPARENT);
 			cg.clearRect(0, 0, getWidth(), getHeight());
 			cg.drawImage(this.buffer.getFront(), 0, 0, null);
-			for(Layer l : children)
+			@SuppressWarnings("unchecked")
+			Enumeration<Layer> children = this.children();
+			while(children.hasMoreElements())
 			{
-				l.render(cg);
+				((Layer) children.nextElement()).render(cg);
 			}
 			cg.dispose();
 			this.changed = false;
@@ -133,9 +160,11 @@ public class Layer extends DefaultMutableTreeNode
 	
 	public void constructFlatMap(ArrayList<Layer> flatmap)
 	{
-		for(Layer layer : children)
+		@SuppressWarnings("unchecked")
+		Enumeration<Layer> children = this.children();
+		while(children.hasMoreElements())
 		{
-			layer.constructFlatMap(flatmap);
+			((Layer) children.nextElement()).constructFlatMap(flatmap);
 		}
 		flatmap.add(this);
 	}
@@ -145,7 +174,7 @@ public class Layer extends DefaultMutableTreeNode
 		return changed;
 	}
 	
-	public void addChange(IEditChange change)
+	public void addChange(IChange change)
 	{
 		doc.getHistory().addChange(doc.getFlatMap().indexOf(this));
 		buffer.addChange(change);

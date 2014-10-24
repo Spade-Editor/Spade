@@ -32,8 +32,8 @@ public class RegisterTools
 		this.tools = tools;
 	}
 	
-	public void register(String name, Tool tool, String key)
+	public void register(Tool tool, String key)
 	{
-		tools.addTool(tool, name, key);
+		tools.addTool(tool, key);
 	}
 }

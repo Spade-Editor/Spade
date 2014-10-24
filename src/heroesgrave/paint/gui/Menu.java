@@ -33,8 +33,6 @@ import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -43,10 +41,12 @@ import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.AbstractDocument;
 
+import com.alee.laf.filechooser.WebFileChooser;
 import com.alee.laf.menu.MenuBarStyle;
 import com.alee.laf.menu.WebMenu;
 import com.alee.laf.menu.WebMenuBar;
 import com.alee.laf.menu.WebMenuItem;
+import com.alee.laf.rootpane.WebDialog;
 
 public class Menu
 {
@@ -67,9 +67,9 @@ public class Menu
 		menuBar.add(createViewMenu());
 		
 		// Editing Menus
-		menuBar.add(ToolMenu.createImageMenu());
+		menuBar.add((Paint.main.effects.operations = new WebMenu("Image")));
 		menuBar.add((Paint.main.tools.toolsMenu = new WebMenu("Tools")));
-		menuBar.add(ToolMenu.createEffectMenu());
+		menuBar.add((Paint.main.effects.effects = new WebMenu("Effects")));
 		
 		// Info Menus
 		menuBar.add(createWindowMenu());
@@ -99,6 +99,7 @@ public class Menu
 			public void actionPerformed(ActionEvent e)
 			{
 				Paint.main.gui.about.setVisible(true);
+				Paint.main.gui.about.setLocationRelativeTo(Paint.main.gui.frame);
 			}
 		});
 		
@@ -170,7 +171,7 @@ public class Menu
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				showNewMenu();
+				showNewDialog();
 			}
 		});
 		
@@ -215,10 +216,10 @@ public class Menu
 	
 	public static void showOpenMenu()
 	{
-		final JFileChooser chooser = new JFileChooser(Paint.getDocument().getDir());
-		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		final WebFileChooser chooser = new WebFileChooser(Paint.getDocument().getDir());
+		chooser.setFileSelectionMode(WebFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
-		chooser.setFileFilter(new FileFilter()
+		chooser.addChoosableFileFilter(new FileFilter()
 		{
 			@Override
 			public boolean accept(File f)
@@ -238,16 +239,44 @@ public class Menu
 			@Override
 			public String getDescription()
 			{
-				return "ImageIO Supported import image formats (.png, .jpg, .bmp)";
+				return "ImageIO supported import formats (.png, .jpg, .bmp)";
+			}
+		});
+		chooser.setFileFilter(new FileFilter()
+		{
+			@Override
+			public boolean accept(File f)
+			{
+				if(f.isDirectory())
+					return true;
+				String name = f.getAbsolutePath();
+				if(name.endsWith(".png"))
+					return true;
+				if(name.endsWith(".jpg"))
+					return true;
+				if(name.endsWith(".bmp"))
+					return true;
+				
+				int i = name.lastIndexOf('.');
+				if(i < 0)
+					return false;
+				
+				return ImageImporter.get(name.substring(i + 1)) != null;
+			}
+			
+			@Override
+			public String getDescription()
+			{
+				return "All supported import formats";
 			}
 		});
 		
 		// Add ALL the custom image-importers!
 		ImageImporter.addAllImporters(chooser);
 		
-		int returned = chooser.showOpenDialog(new CentredJDialog(Paint.main.gui.frame, "Load Image"));
+		int returned = chooser.showOpenDialog(new WebDialog(Paint.main.gui.frame, "Load Image"));
 		
-		if(returned == JFileChooser.APPROVE_OPTION)
+		if(returned == WebFileChooser.APPROVE_OPTION)
 		{
 			// If a Image takes too long, the application might crash.
 			// By running the actual loading process in another thread, the AWT-Event Thread can continue working while the image is being loaded.
@@ -262,9 +291,9 @@ public class Menu
 		}
 	}
 	
-	public static void showNewMenu()
+	public static void showNewDialog()
 	{
-		final JDialog dialog = new CentredJDialog(Paint.main.gui.frame, "New Image");
+		final JDialog dialog = new WebDialog(Paint.main.gui.frame, "New Image");
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
@@ -330,6 +359,7 @@ public class Menu
 		dialog.pack();
 		dialog.setResizable(false);
 		dialog.setVisible(true);
+		dialog.setLocationRelativeTo(Paint.main.gui.frame);
 	}
 	
 	private static WebMenu createEditMenu()
@@ -427,40 +457,6 @@ public class Menu
 		view.add(darkDraw);
 		
 		return view;
-	}
-	
-	public static class CentredJDialog extends JDialog
-	{
-		private static final long serialVersionUID = 2628868597000831164L;
-		
-		public CentredJDialog(JFrame frame, String title)
-		{
-			super(frame, title);
-		}
-		
-		@Override
-		public void setVisible(boolean b)
-		{
-			super.setVisible(b);
-			if(b)
-			{
-				this.setLocationRelativeTo(null);
-			}
-		}
-	}
-	
-	public static class CentredJLabel extends JLabel
-	{
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -782420829240440738L;
-		
-		public CentredJLabel(String label)
-		{
-			super(label);
-			this.setHorizontalAlignment(JLabel.CENTER);
-		}
 	}
 	
 	public static class NumberTextField extends JTextField

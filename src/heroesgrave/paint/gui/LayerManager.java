@@ -22,6 +22,9 @@ package heroesgrave.paint.gui;
 
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.change.doc.DeleteLayer;
+import heroesgrave.paint.image.change.doc.MoveLayer;
+import heroesgrave.paint.image.change.doc.NewLayer;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.BorderLayout;
@@ -44,6 +47,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import com.alee.laf.panel.WebPanel;
 import com.alee.laf.rootpane.WebDialog;
+import com.alee.laf.rootpane.WebFrame;
 import com.alee.laf.tree.WebTree;
 
 public class LayerManager
@@ -57,9 +61,9 @@ public class LayerManager
 	protected WebTree<Layer> tree;
 	protected WebPanel controls;
 	
-	public LayerManager()
+	public LayerManager(WebFrame frame)
 	{
-		dialog = new WebDialog(Paint.main.gui.frame, "Layers").center();
+		dialog = new WebDialog(frame, "Layers").center();
 		dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		dialog.setTitle("Layers");
 		dialog.getContentPane().setPreferredSize(new Dimension(200, 300));
@@ -69,7 +73,6 @@ public class LayerManager
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		tree.setShowsRootHandles(true);
 		tree.getSelectionModel().addTreeSelectionListener(new SelectionListener());
-		tree.setVisibleRowCount(8);
 		tree.setExpandsSelectedPaths(true);
 		
 		JScrollPane scroll = new JScrollPane(tree);
@@ -81,10 +84,10 @@ public class LayerManager
 		JButton deleteLayer = new JButton("Delete");
 		JButton moveUp = new JButton("Move Up");
 		JButton moveDown = new JButton("Move Down");
-		JButton moveIn = new JButton("Move In");
 		JButton moveOut = new JButton("Move Out");
+		JButton moveIn = new JButton("Move In");
 		JButton settings = new JButton("Settings");
-		JButton merge = new JButton("Merge Out");
+		JButton merge = new JButton("Merge In");
 		
 		newLayer.addActionListener(new ActionListener()
 		{
@@ -96,7 +99,9 @@ public class LayerManager
 					n = rootNode;
 				else
 					n = (Layer) path.getLastPathComponent();
-				//FIXME n.createLayer();
+				Document doc = n.getDocument();
+				doc.addChange(new NewLayer(n));
+				Paint.main.gui.repaint();
 			}
 		});
 		
@@ -112,7 +117,9 @@ public class LayerManager
 					n = (Layer) path.getLastPathComponent();
 				if(n.equals(rootNode))
 					return;
-				//FIXME n.delete();
+				Document doc = n.getDocument();
+				doc.addChange(new DeleteLayer(n));
+				Paint.main.gui.repaint();
 			}
 		});
 		
@@ -126,12 +133,13 @@ public class LayerManager
 					return;
 				else
 					n = (Layer) path.getLastPathComponent();
-				if(n.equals(rootNode))
+				if(n.equals(rootNode) || n.getPreviousSibling() == null)
 					return;
-				//Paint.main.history.addChange(new LayerMoveOp(n, LayerMoveOp.MOVE_UP));
-				redrawTree();
-				tree.setSelectionPath(new TreePath(n.getPath()));
-				//Paint.main.gui.canvas.getPanel().repaint();
+				Layer parent = n.getParentLayer();
+				int index = parent.getIndex(n);
+				Document doc = n.getDocument();
+				doc.addChange(new MoveLayer(n, parent, index - 1));
+				Paint.main.gui.repaint();
 			}
 		});
 		
@@ -145,31 +153,13 @@ public class LayerManager
 					return;
 				else
 					n = (Layer) path.getLastPathComponent();
-				if(n.equals(rootNode))
+				if(n.equals(rootNode) || n.getNextSibling() == null)
 					return;
-				//Paint.main.history.addChange(new LayerMoveOp(n, LayerMoveOp.MOVE_DOWN));
-				redrawTree();
-				tree.setSelectionPath(new TreePath(n.getPath()));
-				//Paint.main.gui.canvas.getPanel().repaint();
-			}
-		});
-		
-		moveIn.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				TreePath path = tree.getSelectionModel().getSelectionPath();
-				Layer n;
-				if(path == null)
-					return;
-				else
-					n = (Layer) path.getLastPathComponent();
-				if(n.equals(rootNode))
-					return;
-				//Paint.main.history.addChange(new LayerMoveOp(n, LayerMoveOp.MOVE_IN));
-				redrawTree();
-				tree.setSelectionPath(new TreePath(n.getPath()));
-				//Paint.main.gui.canvas.getPanel().repaint();
+				Layer parent = n.getParentLayer();
+				int index = parent.getIndex(n);
+				Document doc = n.getDocument();
+				doc.addChange(new MoveLayer(n, parent, index + 1));
+				Paint.main.gui.repaint();
 			}
 		});
 		
@@ -183,12 +173,32 @@ public class LayerManager
 					return;
 				else
 					n = (Layer) path.getLastPathComponent();
-				if(n.equals(rootNode))
+				if(n.equals(rootNode) || n.getPreviousSibling() == null)
 					return;
-				//Paint.main.history.addChange(new LayerMoveOp(n, LayerMoveOp.MOVE_OUT));
-				redrawTree();
-				tree.setSelectionPath(new TreePath(n.getPath()));
-				//Paint.main.gui.canvas.getPanel().repaint();
+				Document doc = n.getDocument();
+				doc.addChange(new MoveLayer(n, (Layer) n.getPreviousSibling(), -1));
+				Paint.main.gui.repaint();
+			}
+		});
+		
+		moveIn.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				TreePath path = tree.getSelectionModel().getSelectionPath();
+				Layer n;
+				if(path == null)
+					return;
+				else
+					n = (Layer) path.getLastPathComponent();
+				if(n.equals(rootNode) || n.getParentLayer().equals(rootNode))
+					return;
+				Layer parent = n.getParentLayer();
+				Layer grandparent = parent.getParentLayer();
+				int index = grandparent.getIndex(parent);
+				Document doc = n.getDocument();
+				doc.addChange(new MoveLayer(n, grandparent, index + 1));
+				Paint.main.gui.repaint();
 			}
 		});
 		
@@ -206,8 +216,6 @@ public class LayerManager
 					return;
 				Layer parent = (Layer) n.getParent();
 				// FIXME parent.merge(n);
-				redrawTree();
-				tree.setSelectionPath(new TreePath(parent.getPath()));
 			}
 		});
 		
@@ -221,47 +229,46 @@ public class LayerManager
 					return;
 				else
 					n = (Layer) path.getLastPathComponent();
-				//lsettings.showFor(n.canvas);
+				lsettings.showFor(n);
 			}
 		});
 		
 		controls.add(newLayer);
 		controls.add(deleteLayer);
-		controls.add(merge);
-		controls.add(settings);
 		controls.add(moveUp);
+		controls.add(settings);
 		controls.add(moveDown);
+		controls.add(merge);
 		controls.add(moveIn);
 		controls.add(moveOut);
 		
 		controls.setVisible(false);
 		
+		WebPanel controls = new WebPanel();
+		controls.setLayout(new BorderLayout());
+		controls.add(this.controls, BorderLayout.CENTER);
+		
 		dialog.setLayout(new BorderLayout());
-		dialog.add(controls, BorderLayout.CENTER);
-		dialog.add(scroll, BorderLayout.NORTH);
+		dialog.add(controls, BorderLayout.SOUTH);
+		dialog.add(scroll, BorderLayout.CENTER);
 		
 		dialog.pack();
 		dialog.setResizable(true);
 		
-		lsettings = new LayerSettings();
+		lsettings = new LayerSettings(frame);
 	}
 	
 	public void setDocument(Document doc)
 	{
-		model = new DefaultTreeModel(doc.getRoot());
-		tree.setModel(model);
+		setRoot(doc.getRoot());
 	}
 	
 	public void setRoot(Layer root)
 	{
 		rootNode = root;
-		model.setRoot(rootNode);
-		tree.setEditable(false);
-		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		tree.setShowsRootHandles(true);
-		tree.getSelectionModel().addTreeSelectionListener(new SelectionListener());
-		tree.setVisibleRowCount(10);
-		tree.setExpandsSelectedPaths(true);
+		model = new DefaultTreeModel(rootNode);
+		tree.setModel(model);
+		tree.revalidate();
 	}
 	
 	public void show()
@@ -282,35 +289,50 @@ public class LayerManager
 	public void dispose()
 	{
 		dialog.dispose();
-		//lsettings.dispose();
+		lsettings.dispose();
+	}
+	
+	public void select(Layer layer)
+	{
+		tree.setSelectedNode(layer);
 	}
 	
 	public void redrawTree()
 	{
-		// Capture the current state of the JTree node expansions.
-		Vector<TreePath> paths = new Vector<TreePath>();
-		
-		Enumeration<TreePath> e = tree.getExpandedDescendants(new TreePath(rootNode));
-		Layer selpath = (Layer) tree.getSelectionPath().getLastPathComponent();
-		
-		if(e != null)
-			while(e.hasMoreElements())
-			{
-				paths.addElement(e.nextElement());
-			}
-		
-		// Force the JTree to rebuild itself.
-		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-		model.reload();
-		
-		// Recover the old expanded state of the JTree.
-		for(int i = 0; i < paths.size(); i++)
+		if(tree.getSelectionPath() != null)
 		{
-			TreePath path = (TreePath) paths.elementAt(i);
-			tree.expandPath(path);
+			// Capture the current state of the Tree node expansions.
+			Vector<TreePath> paths = new Vector<TreePath>();
+			
+			Enumeration<TreePath> e = tree.getExpandedDescendants(new TreePath(rootNode));
+			Layer selpath = (Layer) tree.getSelectionPath().getLastPathComponent();
+			
+			if(e != null)
+				while(e.hasMoreElements())
+				{
+					paths.addElement(e.nextElement());
+				}
+			
+			// Force the Tree to rebuild itself.
+			DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+			model.reload();
+			
+			// Recover the old expanded state of the Tree.
+			for(int i = 0; i < paths.size(); i++)
+			{
+				TreePath path = (TreePath) paths.elementAt(i);
+				tree.expandPath(path);
+			}
+			
+			tree.setSelectionPath(new TreePath(selpath.getPath()));
 		}
-		
-		tree.setSelectionPath(new TreePath(selpath.getPath()));
+		else
+		{
+			DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+			model.reload();
+		}
+		tree.revalidate();
+		tree.repaint();
 	}
 	
 	public boolean isVisible()
@@ -324,26 +346,26 @@ public class LayerManager
 		{
 			if(e.getNewLeadSelectionPath() == null)
 			{
-				//Paint.main.gui.canvas.selectRoot();
+				Paint.main.document.selected(Paint.main.document.getRoot());
 				controls.setVisible(false);
 				return;
 			}
 			Layer l = (Layer) e.getNewLeadSelectionPath().getLastPathComponent();
 			if(l == null)
 			{
-				Paint.main.document.setCurrent(Paint.main.document.getRoot());
+				Paint.main.document.selected(Paint.main.document.getRoot());
 				controls.setVisible(false);
 			}
 			else
 			{
-				Paint.main.document.setCurrent(l);
+				Paint.main.document.selected(l);
 				controls.setVisible(true);
-				// TODO LayerSettings.update()
+				lsettings.updateIfVisible(l);
 			}
 		}
 	}
 	
-	public JDialog getDialog()
+	public WebDialog getDialog()
 	{
 		return dialog;
 	}

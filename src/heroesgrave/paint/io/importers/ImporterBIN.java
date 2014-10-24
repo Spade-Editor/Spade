@@ -108,5 +108,4 @@ public class ImporterBIN extends ImageImporter
 	{
 		return "BIN - Raw Binary Image Data Format";
 	}
-	
 }

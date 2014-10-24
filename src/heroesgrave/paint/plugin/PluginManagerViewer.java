@@ -20,7 +20,6 @@
 
 package heroesgrave.paint.plugin;
 
-import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.BorderLayout;
@@ -38,6 +37,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListDataListener;
 
+import com.alee.laf.rootpane.WebDialog;
+
 /**
  * 
  * @author Longor1996
@@ -53,7 +54,7 @@ public class PluginManagerViewer
 	
 	public PluginManagerViewer(final PluginManager pluginManager)
 	{
-		dialog = new CentredJDialog(Paint.main.gui.frame, "Plugin Manager");
+		dialog = new WebDialog(Paint.main.gui.frame, "Plugin Manager");
 		dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		dialog.setTitle("Plugin Manager");
 		dialog.setSize(640, 480);
@@ -179,5 +180,6 @@ public class PluginManagerViewer
 	public void show()
 	{
 		dialog.setVisible(true);
+		dialog.setLocationRelativeTo(Paint.main.gui.frame);
 	}
 }

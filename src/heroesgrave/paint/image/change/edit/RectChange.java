@@ -18,8 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.paint.image.change;
+package heroesgrave.paint.image.change.edit;
 
+import heroesgrave.paint.image.change.IEditChange;
 import heroesgrave.paint.io.Serialised;
 
 import java.awt.Color;
@@ -29,7 +30,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class RectChange extends IEditChange implements Serialised
+public class RectChange implements IEditChange, Serialised
 {
 	private short x1, y1, x2, y2;
 	private int colour;
@@ -87,5 +88,11 @@ public class RectChange extends IEditChange implements Serialised
 		y1 = in.readShort();
 		x2 = in.readShort();
 		y2 = in.readShort();
+	}
+	
+	@Override
+	public boolean isMarker()
+	{
+		return false;
 	}
 }

@@ -22,6 +22,7 @@ package heroesgrave.paint.gui;
 
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Tool;
+import heroesgrave.paint.tools.effects.Effect;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,49 +31,11 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JMenu;
 
 import com.alee.laf.menu.WebMenuItem;
 
 public class ToolMenu
 {
-	public static JMenu createImageMenu()
-	{
-		JMenu menu = new JMenu("Image");
-		/*
-		menu.add(new ImageMenuItem("Blank Image", new Clear(), "B"));
-		menu.add(new ImageMenuItem("Clear Image", new Clear2(), "C"));
-		menu.add(new ImageMenuItem("Resize Image", new Resize(), "R"));
-		menu.add(new ImageMenuItem("Resize Canvas", new ResizeCanvas(), null));
-		menu.add(new ImageMenuItem("Flip Vertically", new FlipVert(), null));
-		menu.add(new ImageMenuItem("Flip Horizontally", new FlipHoriz(), null));
-		*/
-		//heroesgrave.paint.plugin.PluginManager.instance.registerImageOps(menu);
-		
-		return menu;
-	}
-	
-	public static JMenu createEffectMenu()
-	{
-		JMenu menu = new JMenu("Effects");
-		
-		/*
-		menu.add(new ImageMenuItem("Invert Colour", new Invert(), "I"));
-		menu.add(new ImageMenuItem("Grid-Maker", new MakeGrid(), "G"));
-		menu.add(new ImageMenuItem("Channel Filter", new RemoveChannels(), "F"));
-		menu.add(new ImageMenuItem("White Noise", new WhiteNoise(), null));
-		menu.add(new ImageMenuItem("Simplex Noise", new SimplexNoiseOp(), null));
-		menu.add(new ImageMenuItem("Simple Blur", new SimpleBlur(), null));
-		menu.add(new ImageMenuItem("Simple Sharpen", new SimpleSharpen(), null));
-		*/
-		// BUGGED -> menu.add(new ImageMenuItem("Simple Edge Detect", new SimpleEdgeDetect(), null));
-		// BUGGED -> menu.add(new ImageMenuItem("Perlin Noise", new PerlinNoiseOp(), null));
-		
-		//heroesgrave.paint.plugin.PluginManager.instance.registerEffects(menu);
-		
-		return menu;
-	}
-	
 	@SuppressWarnings("serial")
 	public static class ToolMenuItem extends WebMenuItem
 	{
@@ -120,26 +83,24 @@ public class ToolMenu
 		}
 	}
 	
-	/*
-	public static class ImageMenuItem extends JMenuItem
+	@SuppressWarnings("serial")
+	public static class EffectMenuItem extends WebMenuItem
 	{
-		private static final long serialVersionUID = 7018700148731008154L;
+		private Effect effect;
 		
-		private ImageOp op;
-		
-		public ImageMenuItem(String name, ImageOp o, String key)
+		public EffectMenuItem(String name, Effect e, String key)
 		{
-			this(name, o, key, null);
+			this(name, e, key, null);
 		}
 		
-		public ImageMenuItem(String name, ImageOp o, String key, String toolTip)
+		public EffectMenuItem(String name, Effect e, String key, String toolTip)
 		{
 			super(key == null ? (name) : (name + " (Ctrl+Shift+" + key + ")"));
 			
 			// This is here, so some ImageOps don't have to have a key assigned. We can't have key-code's for ALL the ImageOp's! It's impossible!
 			if(key != null)
 			{
-				Paint.addImageOp(key, o);
+				Paint.addEffect(key, e);
 			}
 			
 			// If there is a ToolTip Text given over the Constructor, use it.
@@ -149,15 +110,12 @@ public class ToolMenu
 			}
 			
 			// 
-			this.op = o;
+			this.effect = e;
 			
 			// TRY to load the icon!
 			try
 			{
-				URL url =
-						this.getClass().getResource(
-								"/heroesgrave/paint/res/icons/imageops/" + name
-										+ ".png");
+				URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/effects/" + name + ".png");
 				
 				if(url != null)
 				{
@@ -165,24 +123,22 @@ public class ToolMenu
 				}
 				else
 				{
-					this.setIcon(new ImageIcon(ImageIO
-							.read(Paint.questionMarkURL)));
+					this.setIcon(new ImageIcon(ImageIO.read(Paint.questionMarkURL)));
 				}
 			}
 			catch(IOException e1)
 			{
-				System.err.println("Error: ImageOp '" + name
-						+ "' is missing an icon!");
+				System.err.println("Error: Effect '" + name + "' is missing an icon!");
 			}
 			
 			this.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					op.operation();
+					effect.perform(Paint.getDocument().getCurrent());
+					Paint.main.gui.repaint();
 				}
 			});
 		}
 	}
-	*/
 }

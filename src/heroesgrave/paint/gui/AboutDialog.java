@@ -36,10 +36,9 @@ import com.alee.laf.rootpane.WebDialog;
 import com.alee.laf.rootpane.WebFrame;
 import com.alee.laf.text.WebTextPane;
 
+@SuppressWarnings("serial")
 public class AboutDialog extends WebDialog
 {
-	private static final long serialVersionUID = -1020702247965837857L;
-	
 	public AboutDialog(WebFrame frame)
 	{
 		super(frame, "About Paint.JAVA");

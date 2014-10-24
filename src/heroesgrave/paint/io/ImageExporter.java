@@ -70,9 +70,6 @@ public abstract class ImageExporter extends FileFilter
 	@Override
 	public boolean accept(File f)
 	{
-		if(f.isDirectory())
-			return true;
-		
 		if(f.getAbsolutePath().endsWith("." + getFileExtension()))
 			return true;
 		
@@ -85,7 +82,6 @@ public abstract class ImageExporter extends FileFilter
 		return getFileExtensionDescription();
 	}
 	
-	// FIXME: We shouldn't fail when we can't find the right format
 	public static ImageExporter get(String extension)
 	{
 		for(ImageExporter exporter : exporters)
@@ -94,13 +90,13 @@ public abstract class ImageExporter extends FileFilter
 				return exporter;
 		}
 		
-		throw new RuntimeException("Image Exporter for the given Format '" + extension + "' could not be found!");
+		return null;
 	}
 	
 	public static void add(ImageExporter exporter)
 	{
 		if(exporter == null)
-			throw new IllegalArgumentException("Input cannot be null!");
+			throw new IllegalArgumentException("Tried to add null exporter");
 		
 		exporters.add(exporter);
 	}
@@ -120,8 +116,7 @@ public abstract class ImageExporter extends FileFilter
 		catch(IOException e)
 		{
 			e.printStackTrace();
-			Popup.show("Save Image", "An error occured while trying to save the image in " + format + " format to "
-					+ path + ".");
+			Popup.show("Save Image", "An error occured while trying to save the image in " + format + " format to " + path + ".");
 		}
 	}
 }

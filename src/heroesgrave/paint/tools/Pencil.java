@@ -21,7 +21,7 @@
 package heroesgrave.paint.tools;
 
 import heroesgrave.paint.image.Layer;
-import heroesgrave.paint.image.change.PathChange;
+import heroesgrave.paint.image.change.edit.PathChange;
 import heroesgrave.paint.main.Paint;
 
 public class Pencil extends Tool

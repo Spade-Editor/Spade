@@ -37,10 +37,10 @@ public class Tools
 	public JMenu toolsMenu;
 	public ToolBox toolbox;
 	
-	public void addTool(Tool tool, String name, String shortcut)
+	public void addTool(Tool tool, String shortcut)
 	{
-		toolbox.addButton(new ToolBoxButton(name, tool));
-		toolsMenu.add(new ToolMenuItem(name, tool, shortcut));
+		toolbox.addButton(new ToolBoxButton(tool.name, tool));
+		toolsMenu.add(new ToolMenuItem(tool.name, tool, shortcut));
 	}
 	
 	public void registerTools()
@@ -48,8 +48,8 @@ public class Tools
 		DEF = new Pencil("Pencil");
 		Paint.main.currentTool = DEF;
 		
-		addTool(DEF, "Pencil", "P");
-		addTool(new Rectangle("Rectangle"), "Rectangle", "R");
+		addTool(DEF, "P");
+		addTool(new Rectangle("Rectangle"), "R");
 		/*
 		addTool(new Brush("Brush"), "Brush", "B");
 		addTool(new Eraser("Eraser"), "Eraser", "E");

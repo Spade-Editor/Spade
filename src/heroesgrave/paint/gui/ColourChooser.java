@@ -20,7 +20,6 @@
 
 package heroesgrave.paint.gui;
 
-import heroesgrave.paint.gui.Menu.CentredJDialog;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.io.IOUtils;
 import heroesgrave.utils.io.TxtFileFilter;
@@ -55,9 +54,7 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -65,6 +62,9 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
+
+import com.alee.laf.rootpane.WebDialog;
+import com.alee.laf.rootpane.WebFrame;
 
 public class ColourChooser
 {
@@ -1096,7 +1096,7 @@ public class ColourChooser
 	/**                                              **/
 	/**                                              **/
 	
-	JDialog dialog;
+	WebDialog dialog;
 	SpringLayout dialogLayout;
 	
 	JPanel chooserLeft;
@@ -1173,11 +1173,11 @@ public class ColourChooser
 	}
 	
 	@SuppressWarnings("serial")
-	public ColourChooser(JFrame mainFrame)
+	public ColourChooser(WebFrame mainFrame)
 	{
 		
 		// ----- Create the Dialog
-		dialog = new CentredJDialog(mainFrame, "Colour-Chooser - Editing PRIMARY Color");
+		dialog = new WebDialog(mainFrame, "Colour-Chooser - Editing PRIMARY Color");
 		dialogLayout = new SpringLayout();
 		
 		// ----- Do the typical configurations for it.
@@ -1633,7 +1633,6 @@ public class ColourChooser
 		// We do this because we don't wan't to spend an awful lot of time on the Swing-side of Java internally changing states.
 		if(!dialog.isVisible())
 			dialog.setVisible(true);
-		
 	}
 	
 	/**
@@ -1803,7 +1802,7 @@ public class ColourChooser
 	 * 
 	 * @return The colour-choosers JDialog instance.
 	 **/
-	public JDialog getDialog()
+	public WebDialog getDialog()
 	{
 		return dialog;
 	}

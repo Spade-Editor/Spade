@@ -20,8 +20,10 @@
 
 package heroesgrave.paint.image;
 
+import heroesgrave.paint.image.change.DocumentChange;
 import heroesgrave.paint.io.ImageExporter;
 import heroesgrave.paint.io.ImageImporter;
+import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.misc.Metadata;
 import heroesgrave.utils.misc.RandomUtils;
 
@@ -30,11 +32,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
 
 public class Document
 {
+	private LinkedList<DocumentChange> changes = new LinkedList<DocumentChange>();
+	private LinkedList<DocumentChange> reverted = new LinkedList<DocumentChange>();
+	
 	private int width, height;
 	private File file;
 	private Metadata info;
@@ -67,7 +73,8 @@ public class Document
 		}
 		/**/
 		this.current = this.root = new Layer(this, image, new Metadata());
-		this.reconstructFlatmap();
+		this.flatmap.clear();
+		root.constructFlatMap(flatmap);
 	}
 	
 	public Document(File f)
@@ -76,11 +83,13 @@ public class Document
 		this.history = new History(this);
 		this.file = f;
 		ImageImporter.loadImage(file.getAbsolutePath(), this);
-		this.reconstructFlatmap();
+		this.flatmap.clear();
+		root.constructFlatMap(flatmap);
 	}
 	
 	public void reconstructFlatmap()
 	{
+		Paint.main.gui.layers.redrawTree();
 		this.flatmap.clear();
 		root.constructFlatMap(flatmap);
 	}
@@ -95,7 +104,7 @@ public class Document
 		return root;
 	}
 	
-	public Layer getLayer()
+	public Layer getCurrent()
 	{
 		return current;
 	}
@@ -107,6 +116,12 @@ public class Document
 	}
 	
 	public void setCurrent(Layer current)
+	{
+		Paint.main.gui.layers.select(current);
+		this.current = current;
+	}
+	
+	public void selected(Layer current)
 	{
 		this.current = current;
 	}
@@ -124,7 +139,7 @@ public class Document
 	
 	public void save()
 	{
-		String fileName = this.file.getAbsolutePath();
+		final String fileName = this.file.getAbsolutePath();
 		
 		String extension = "";
 		
@@ -135,20 +150,30 @@ public class Document
 			extension = fileName.substring(i + 1);
 		}
 		
-		ImageExporter exporter = ImageExporter.get(extension);
+		final ImageExporter exporter = ImageExporter.get(extension);
 		
-		try
+		System.out.println("Extension: \"" + extension + "\" Exporter: " + exporter);
+		
+		final Document doc = this;
+		
+		new Thread(new Runnable()
 		{
-			exporter.export(this, new File(fileName));
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return;
-		}
+			@Override
+			public void run()
+			{
+				try
+				{
+					exporter.export(doc, new File(fileName));
+				}
+				catch(IOException e)
+				{
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
+		}).start();
 	}
 	
 	public String getDir()
@@ -202,5 +227,35 @@ public class Document
 	public File getFile()
 	{
 		return file;
+	}
+	
+	public void addChange(DocumentChange change)
+	{
+		System.out.println(change);
+		history.addChange(-1);
+		changes.push(change);
+		change.apply(this);
+	}
+	
+	public void revertChange()
+	{
+		if(changes.isEmpty())
+		{
+			return;
+		}
+		DocumentChange change = changes.pop();
+		reverted.push(change);
+		change.revert(this);
+	}
+	
+	public void repeatChange()
+	{
+		if(reverted.isEmpty())
+		{
+			return;
+		}
+		DocumentChange change = reverted.pop();
+		changes.push(change);
+		change.apply(this);
 	}
 }

@@ -21,7 +21,7 @@
 package heroesgrave.paint.tools;
 
 import heroesgrave.paint.image.Layer;
-import heroesgrave.paint.image.change.RectChange;
+import heroesgrave.paint.image.change.edit.RectChange;
 import heroesgrave.paint.main.Paint;
 
 public class Rectangle extends Tool

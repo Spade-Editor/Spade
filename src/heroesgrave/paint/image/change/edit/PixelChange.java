@@ -18,8 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.paint.image.change;
+package heroesgrave.paint.image.change.edit;
 
+import heroesgrave.paint.image.change.IRevEditChange;
 import heroesgrave.paint.io.Serialised;
 
 import java.awt.image.BufferedImage;
@@ -31,7 +32,7 @@ import java.io.IOException;
  * Yes, we can implement both an extension of IChange and Serialised.
  * This should be used when the change type stores no extra information.
  */
-public class PixelChange extends IRevEditChange implements Serialised
+public class PixelChange implements IRevEditChange, Serialised
 {
 	private short x, y;
 	private int c, o;
@@ -89,5 +90,11 @@ public class PixelChange extends IRevEditChange implements Serialised
 		y = in.readShort();
 		c = in.readInt();
 		o = in.readInt();
+	}
+	
+	@Override
+	public boolean isMarker()
+	{
+		return false;
 	}
 }

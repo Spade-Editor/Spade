@@ -44,7 +44,7 @@ public class History
 	{
 		if(changes.isEmpty())
 			return;
-		int layerID = changes.pollLast();
+		int layerID = changes.pop();
 		if(layerID != -1)
 		{
 			doc.getFlatMap().get(layerID).revertChange();
@@ -52,6 +52,7 @@ public class History
 		else
 		{
 			// Document Change
+			doc.revertChange();
 		}
 		reverted.push(layerID);
 	}
@@ -68,7 +69,8 @@ public class History
 		else
 		{
 			// Document Change
+			doc.repeatChange();
 		}
-		changes.addLast(layerID);
+		changes.push(layerID);
 	}
 }

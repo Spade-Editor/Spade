@@ -63,12 +63,14 @@ public class ExporterZipBIN extends ImageExporter
 		
 		// Buffer the Image-Data
 		int[] buf = new int[image.getWidth() * image.getHeight()];
-		byte[] abyte0 = new byte[image.getWidth() * image.getHeight() * 4];
 		
 		image.getRGB(0, 0, image.getWidth(), image.getHeight(), buf, 0, image.getWidth());
 		
-		SimpleModalProgressDialog DIALOG =
-				new SimpleModalProgressDialog("Saving...", "Saving Image...", buf.length + 1);
+		SimpleModalProgressDialog DIALOG = new SimpleModalProgressDialog("Saving...", "Saving Image...", buf.length + 1);
+		
+		// Compress Image Data!
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		GZIPOutputStream outZ = new GZIPOutputStream(out);
 		
 		// Go trough ALL the pixels and convert from INT_ARGB to INT_RGBA
 		for(int k = 0; k < buf.length; k++)
@@ -78,10 +80,10 @@ public class ExporterZipBIN extends ImageExporter
 			int G = (buf[k] >> 8) & 0xff;
 			int B = buf[k] & 0xff;
 			
-			abyte0[(k * 4) + 0] = (byte) R;//R
-			abyte0[(k * 4) + 1] = (byte) G;//G
-			abyte0[(k * 4) + 2] = (byte) B;//B
-			abyte0[(k * 4) + 3] = (byte) A;//A
+			outZ.write(R);//R
+			outZ.write(G);//R
+			outZ.write(B);//R
+			outZ.write(A);//R
 			
 			if(k % 128 == 0)
 			{
@@ -91,10 +93,6 @@ public class ExporterZipBIN extends ImageExporter
 		
 		DIALOG.setMessage("COMPRESSING!");
 		
-		// Compress Image Data!
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		GZIPOutputStream outZ = new GZIPOutputStream(out);
-		outZ.write(abyte0);
 		outZ.flush();
 		outZ.finish();
 		outZ.close();
@@ -116,6 +114,8 @@ public class ExporterZipBIN extends ImageExporter
 		output.flush();
 		output.close();
 		DIALOG.close();
+		
+		buf = null;
 	}
 	
 	@Override

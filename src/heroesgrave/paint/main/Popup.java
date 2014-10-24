@@ -20,29 +20,27 @@
 
 package heroesgrave.paint.main;
 
-import heroesgrave.paint.gui.Menu.CentredJDialog;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import com.alee.laf.panel.WebPanel;
+import com.alee.laf.rootpane.WebDialog;
+import com.alee.laf.text.WebTextArea;
 
 public class Popup
 {
 	public static void show(String title, String msg)
 	{
-		JDialog dialog = new CentredJDialog(Paint.main.gui.frame, title);
+		WebDialog dialog = new WebDialog(Paint.main.gui.frame, title);
 		
-		JTextArea text = new JTextArea();
+		WebTextArea text = new WebTextArea();
 		text.setEditable(false);
 		text.setWrapStyleWord(true);
 		text.setLineWrap(true);
 		
 		text.append(msg);
 		
-		JPanel panel = (JPanel) dialog.getContentPane();
+		WebPanel panel = (WebPanel) dialog.getContentPane();
 		panel.setLayout(new BorderLayout());
 		
 		panel.setPreferredSize(new Dimension(400, 200));
@@ -52,5 +50,6 @@ public class Popup
 		dialog.pack();
 		dialog.setResizable(true);
 		dialog.setVisible(true);
+		dialog.setLocationRelativeTo(Paint.main.gui.frame);
 	}
 }

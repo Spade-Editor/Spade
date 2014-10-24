@@ -22,6 +22,7 @@ package heroesgrave.paint.main;
 
 import heroesgrave.paint.gui.Menu;
 import heroesgrave.paint.tools.Tool;
+import heroesgrave.paint.tools.effects.Effect;
 
 import java.awt.AWTException;
 import java.awt.MouseInfo;
@@ -77,15 +78,18 @@ public class Input implements KeyListener
 			MOVE = 8;
 			if(e.isShiftDown())
 			{
-				if(keyCodeToStr.containsKey(e.getKeyCode()))
+				if(e.getKeyCode() == KeyEvent.VK_S)
 				{
-					/*
-					ImageOp op = Paint.getImageOp(keyCodeToStr.get(e.getKeyCode()).toLowerCase());
-					if(op != null)
+					Paint.main.saveAs();
+				}
+				else if(keyCodeToStr.containsKey(e.getKeyCode()))
+				{
+					Effect effect = Paint.getEffect(keyCodeToStr.get(e.getKeyCode()).toLowerCase());
+					if(effect != null)
 					{
-						op.operation();
+						effect.perform(Paint.getDocument().getCurrent());
+						Paint.main.gui.repaint();
 					}
-					*/
 				}
 			}
 			else
@@ -134,7 +138,7 @@ public class Input implements KeyListener
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_N)
 				{
-					Menu.showNewMenu();
+					Menu.showNewDialog();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_O)
 				{

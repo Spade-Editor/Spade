@@ -20,7 +20,9 @@
 
 package heroesgrave.paint.image;
 
+import heroesgrave.paint.image.change.IChange;
 import heroesgrave.paint.image.change.IEditChange;
+import heroesgrave.paint.image.change.IImageChange;
 import heroesgrave.paint.image.change.IRevEditChange;
 import heroesgrave.paint.image.change.Marker;
 import heroesgrave.paint.io.Serialised;
@@ -28,6 +30,7 @@ import heroesgrave.paint.io.Serialised;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
+// FIXME Image Changes.
 public class FreezeBuffer
 {
 	private class OldBuffer
@@ -42,25 +45,22 @@ public class FreezeBuffer
 		}
 	}
 	
-	public static final int MAXIMUM = 4;
+	public static final int MAXIMUM = 16;
 	public static final int MAXIMUM2 = MAXIMUM + MAXIMUM / 2;
-	private History source;
+	public static final int MAXIMUM_ORDER = 8;
+	
 	private LinkedList<OldBuffer> oldBuffers = new LinkedList<OldBuffer>();
 	private BufferedImage front, back;
-	private LinkedList<IEditChange> changes = new LinkedList<IEditChange>();
-	private LinkedList<IEditChange> reverted = new LinkedList<IEditChange>();
+	private LinkedList<IChange> changes = new LinkedList<IChange>();
+	private LinkedList<IChange> reverted = new LinkedList<IChange>();
 	private LinkedList<Serialised> oldChanges = new LinkedList<Serialised>();
-	private Layer layer;
-	private Document doc;
+	private Serialised marker;
 	private boolean rebuffer;
 	
-	public FreezeBuffer(Layer layer, BufferedImage image)
+	public FreezeBuffer(BufferedImage image)
 	{
-		this.layer = layer;
-		this.doc = layer.getDocument();
 		this.back = image;
-		this.oldBuffers.push(new OldBuffer(1, back));
-		this.oldChanges.push(new Marker());
+		this.marker = new Marker();
 		this.front = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		this.rebuffer = true;
 	}
@@ -73,7 +73,7 @@ public class FreezeBuffer
 			return;
 		}
 		OldBuffer top = this.oldBuffers.pop();
-		if(top.order == buffer.order)
+		if(top.order == buffer.order && top.order != MAXIMUM_ORDER)
 		{
 			top.order *= 2;
 			pushOldBuffer(top);
@@ -97,11 +97,14 @@ public class FreezeBuffer
 			Serialised s;
 			while((s = oldChanges.poll()) != null)
 			{
-				if(s instanceof Marker)
+				if(s.isMarker())
+				{
+					this.marker = s;
 					break;
+				}
 				else
 				{
-					this.changes.push((IEditChange) s.decode());
+					this.changes.push(s.decode());
 				}
 			}
 			return true;
@@ -117,7 +120,7 @@ public class FreezeBuffer
 				{
 					throw new IllegalStateException("Not enough markers");
 				}
-				else if(s instanceof Marker)
+				else if(s.isMarker())
 				{
 					i--;
 				}
@@ -131,14 +134,23 @@ public class FreezeBuffer
 				{
 					throw new IllegalStateException("Not enough markers");
 				}
-				else if(s instanceof Marker)
+				else if(s.isMarker())
 				{
 					i--;
+					if(s instanceof IImageChange)
+					{
+						image = ((IImageChange) s).apply(image);
+					}
 				}
 				else
 				{
-					((IEditChange) s.decode()).apply(image);
+					IChange c = s.decode();
+					if(c instanceof IEditChange)
+					{
+						((IEditChange) c).apply(image);
+					}
 				}
+				
 				toReturn.push(s);
 			}
 			top.order /= 2;
@@ -161,19 +173,40 @@ public class FreezeBuffer
 		System.out.println();
 	}
 	
-	public void addChange(IEditChange change)
+	public void addChange(IChange change)
 	{
-		changes.add(change);
-		change.apply(front);
-		if(changes.size() >= MAXIMUM)
+		if(change instanceof IEditChange)
 		{
+			changes.add(change);
+			((IEditChange) change).apply(front);
+			if(changes.size() >= MAXIMUM)
+			{
+				checkBuffered();
+				pushOldBuffer(new OldBuffer(1, back));
+				
+				this.back = this.front;
+				this.front = new BufferedImage(front.getWidth(), front.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				this.rebuffer = true;
+				
+				oldChanges.push(marker);
+				marker = new Marker();
+				while(!changes.isEmpty())
+					oldChanges.push(changes.removeFirst().encode());
+				printBuffers();
+			}
+		}
+		else if(change instanceof IImageChange)
+		{
+			checkBuffered();
 			pushOldBuffer(new OldBuffer(1, back));
 			
-			this.back = this.front;
+			// this.front is renewed in case IImageChange wants to reuse the image.
+			this.back = ((IImageChange) change).apply(this.front);
 			this.front = new BufferedImage(front.getWidth(), front.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			this.rebuffer = true;
 			
-			oldChanges.push(new Marker());
+			oldChanges.push(marker);
+			marker = change.encode();
 			while(!changes.isEmpty())
 				oldChanges.push(changes.removeFirst().encode());
 			printBuffers();
@@ -184,16 +217,27 @@ public class FreezeBuffer
 	{
 		if(changes.isEmpty())
 		{
+			if(marker instanceof IImageChange)
+			{
+				reverted.push(marker.decode());
+				popOldBuffer();
+				rebuffer = true;
+				return;
+			}
+			
 			this.front = this.back;
 			if(!popOldBuffer())
 				return;
 		}
-		IEditChange change = changes.pollLast();
+		IChange change = changes.pollLast();
 		reverted.push(change);
-		if(change instanceof IRevEditChange)
-			((IRevEditChange) change).revert(front);
-		else
-			rebuffer = true;
+		if(change instanceof IEditChange)
+		{
+			if(change instanceof IRevEditChange)
+				((IRevEditChange) change).revert(front);
+			else
+				rebuffer = true;
+		}
 	}
 	
 	public void repeatChange()
@@ -202,18 +246,39 @@ public class FreezeBuffer
 		{
 			return;
 		}
-		IEditChange change = reverted.pop();
-		changes.add(change);
-		change.apply(front);
-		if(changes.size() >= MAXIMUM2)
+		IChange change = reverted.pop();
+		if(change instanceof IEditChange)
 		{
+			((IEditChange) change).apply(front);
+			changes.add(change);
+			if(changes.size() >= MAXIMUM2)
+			{
+				checkBuffered();
+				pushOldBuffer(new OldBuffer(1, back));
+				
+				this.back = this.front;
+				this.front = new BufferedImage(front.getWidth(), front.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				this.rebuffer = true;
+				
+				oldChanges.push(marker);
+				marker = new Marker();
+				while(!changes.isEmpty())
+					oldChanges.push(changes.removeFirst().encode());
+				printBuffers();
+			}
+		}
+		else if(change instanceof IImageChange)
+		{
+			checkBuffered();
 			pushOldBuffer(new OldBuffer(1, back));
 			
-			this.back = this.front;
+			// this.front is renewed in case IImageChange wants to reuse the image.
+			this.back = ((IImageChange) change).apply(this.front);
 			this.front = new BufferedImage(front.getWidth(), front.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			this.rebuffer = true;
 			
-			oldChanges.push(new Marker());
+			oldChanges.push(marker);
+			marker = change.encode();
 			while(!changes.isEmpty())
 				oldChanges.push(changes.removeFirst().encode());
 			printBuffers();
@@ -223,11 +288,17 @@ public class FreezeBuffer
 	public void rebuffer()
 	{
 		front.setData(back.getData());
-		for(IEditChange c : changes)
+		for(IChange c : changes)
 		{
-			c.apply(front);
+			((IEditChange) c).apply(front);
 		}
 		rebuffer = false;
+	}
+	
+	public void checkBuffered()
+	{
+		if(rebuffer)
+			rebuffer();
 	}
 	
 	public BufferedImage getFront()

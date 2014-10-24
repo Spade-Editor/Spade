@@ -40,7 +40,6 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -134,13 +133,12 @@ public class GUIManager
 	{
 		initFrame();
 		initMenu();
-		//initBGPanel();
 		this.canvasPanel = new PaintCanvas(frame);
 		panel.add(canvasPanel, BorderLayout.CENTER);
-		
 		chooser = new ColourChooser(frame);
-		layers = new LayerManager();
+		layers = new LayerManager(frame);
 		about = new AboutDialog(frame);
+		
 		Paint.main.tools.toolbox = toolBox = new ToolBox();
 		panel.add(toolBox.getToolbar(), BorderLayout.WEST);
 		finish();
@@ -164,59 +162,6 @@ public class GUIManager
 	{
 		frame.setTitle(title);
 	}
-	
-	/*
-	public void setRenderer(Renderer r)
-	{
-		this.canvasPanel.setRenderer(r);
-	}
-	
-	public void initBGPanel()
-	{
-		this.canvasPanel = new BackgroundPanel();
-		
-		scroll = new WebScrollPane(canvasPanel);
-		scroll.removeMouseWheelListener(scroll.getMouseWheelListeners()[0]);
-		scroll.addMouseWheelListener(new MouseWheelListener()
-		{
-			@Override
-			public void mouseWheelMoved(final MouseWheelEvent e)
-			{
-				if(e.isControlDown())
-				{
-					if(e.getUnitsToScroll() > 0)
-					{
-						canvasPanel.decZoom();
-					}
-					else if(e.getUnitsToScroll() < 0)
-					{
-						canvasPanel.incZoom();
-					}
-				}
-				else
-				{
-					if(e.isShiftDown())
-					{
-						// Horizontal scrolling
-						Adjustable adj = scroll.getHorizontalScrollBar();
-						int scroll = e.getUnitsToScroll() * adj.getBlockIncrement();
-						adj.setValue(adj.getValue() + scroll);
-					}
-					else
-					{
-						// Vertical scrolling
-						Adjustable adj = scroll.getVerticalScrollBar();
-						int scroll = e.getUnitsToScroll() * adj.getBlockIncrement();
-						adj.setValue(adj.getValue() + scroll);
-					}
-				}
-			}
-		});
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		scroll.getHorizontalScrollBar().setUnitIncrement(16);
-		this.panel.add(scroll, BorderLayout.CENTER);
-	}
-	*/
 	
 	public void initMenu()
 	{
@@ -298,7 +243,7 @@ public class GUIManager
 		}
 		
 		// dialogue creation
-		final JDialog close = new WebDialog(frame, "Save before you quit?");
+		final WebDialog close = new WebDialog(frame, "Save before you quit?");
 		close.setAlwaysOnTop(true);
 		close.setAutoRequestFocus(true);
 		close.setLayout(new BorderLayout());
@@ -347,7 +292,7 @@ public class GUIManager
 		close.pack();
 		close.setResizable(false);
 		close.setVisible(true);
-		close.setLocationRelativeTo(null);
+		close.setLocationRelativeTo(frame);
 	}
 	
 	/**
@@ -364,11 +309,7 @@ public class GUIManager
 	
 	public void initInputs()
 	{
-		Input in = new Input();
-		
-		frame.addKeyListener(in);
-		chooser.getDialog().addKeyListener(in);
-		layers.getDialog().addKeyListener(in);
+		frame.addKeyListener(new Input());
 	}
 	
 	public static final ImageIcon getIcon(String name)
@@ -405,5 +346,7 @@ public class GUIManager
 	public void setDocument(Document document)
 	{
 		canvasPanel.setDocument(document);
+		layers.setDocument(document);
+		document.reconstructFlatmap();
 	}
 }

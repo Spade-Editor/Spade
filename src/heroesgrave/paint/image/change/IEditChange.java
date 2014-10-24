@@ -22,7 +22,7 @@ package heroesgrave.paint.image.change;
 
 import java.awt.image.BufferedImage;
 
-public abstract class IEditChange implements IChange
+public interface IEditChange extends IChange
 {
-	public abstract void apply(BufferedImage image);
+	public void apply(BufferedImage image);
 }

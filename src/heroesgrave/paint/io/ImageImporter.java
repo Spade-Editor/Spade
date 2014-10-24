@@ -33,8 +33,9 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
+
+import com.alee.laf.filechooser.WebFileChooser;
 
 public abstract class ImageImporter extends FileFilter
 {
@@ -101,7 +102,12 @@ public abstract class ImageImporter extends FileFilter
 			throw new RuntimeException("The resource \"" + path + "\" was missing!");
 	}
 	
-	public static void addAllImporters(JFileChooser chooser)
+	public static ImageImporter get(String extension)
+	{
+		return importers.get(extension);
+	}
+	
+	public static void addAllImporters(WebFileChooser chooser)
 	{
 		for(Entry<String, ImageImporter> importer : importers.entrySet())
 		{

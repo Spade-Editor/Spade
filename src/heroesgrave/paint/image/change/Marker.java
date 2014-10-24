@@ -10,7 +10,7 @@ public class Marker implements Serialised
 {
 	public IChange decode()
 	{
-		return null;
+		throw new IllegalStateException("Cannot decode a Marker");
 	}
 	
 	public void write(DataOutputStream out) throws IOException
@@ -21,5 +21,10 @@ public class Marker implements Serialised
 	public void read(DataInputStream in) throws IOException
 	{
 		
+	}
+	
+	public final boolean isMarker()
+	{
+		return true;
 	}
 }
