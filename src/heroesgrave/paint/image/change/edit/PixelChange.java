@@ -20,10 +20,10 @@
 
 package heroesgrave.paint.image.change.edit;
 
+import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.IRevEditChange;
 import heroesgrave.paint.io.Serialised;
 
-import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -50,16 +50,16 @@ public class PixelChange implements IRevEditChange, Serialised
 	}
 	
 	@Override
-	public void apply(BufferedImage image)
+	public void apply(RawImage image)
 	{
-		o = image.getRGB(x, y);
-		image.setRGB(x, y, c);
+		o = image.getPixel(x, y);
+		image.setPixel(x, y, c);
 	}
 	
 	@Override
-	public void revert(BufferedImage image)
+	public void revert(RawImage image)
 	{
-		image.setRGB(x, y, o);
+		image.setPixel(x, y, o);
 	}
 	
 	@Override

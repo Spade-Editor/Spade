@@ -22,11 +22,11 @@ package heroesgrave.paint.io;
 
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.io.importers.ImporterBIN;
 import heroesgrave.paint.io.importers.ImporterZipBIN;
 import heroesgrave.utils.misc.Metadata;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -88,8 +88,8 @@ public abstract class ImageImporter extends FileFilter
 				}
 				else
 				{
-					BufferedImage image = ImageIO.read(file);
-					doc.setDimensions(image.getWidth(), image.getHeight());
+					RawImage image = RawImage.fromBufferedImage(ImageIO.read(file));
+					doc.setDimensions(image.width, image.height);
 					doc.setRoot(new Layer(doc, image, new Metadata()));
 				}
 			}

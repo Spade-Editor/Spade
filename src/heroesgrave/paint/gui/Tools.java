@@ -24,6 +24,7 @@ import heroesgrave.paint.gui.ToolBox.ToolBoxButton;
 import heroesgrave.paint.gui.ToolMenu.ToolMenuItem;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.plugin.PluginManager;
+import heroesgrave.paint.tools.FillRectangle;
 import heroesgrave.paint.tools.Pencil;
 import heroesgrave.paint.tools.Rectangle;
 import heroesgrave.paint.tools.Tool;
@@ -50,6 +51,7 @@ public class Tools
 		
 		addTool(DEF, "P");
 		addTool(new Rectangle("Rectangle"), "R");
+		addTool(new FillRectangle("Fill Rectangle"), "F");
 		/*
 		addTool(new Brush("Brush"), "Brush", "B");
 		addTool(new Eraser("Eraser"), "Eraser", "E");

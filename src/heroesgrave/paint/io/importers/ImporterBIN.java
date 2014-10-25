@@ -23,10 +23,10 @@ package heroesgrave.paint.io.importers;
 import heroesgrave.paint.gui.SimpleModalProgressDialog;
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.io.ImageImporter;
 import heroesgrave.utils.misc.Metadata;
 
-import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -89,9 +89,7 @@ public class ImporterBIN extends ImageImporter
 		
 		in.close();
 		
-		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		
-		image.setRGB(0, 0, width, height, raw, 0, width);
+		RawImage image = new RawImage(width, height, raw);
 		
 		doc.setDimensions(width, height);
 		doc.setRoot(new Layer(doc, image, new Metadata()));

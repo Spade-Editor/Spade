@@ -23,10 +23,10 @@ package heroesgrave.paint.io.importers;
 import heroesgrave.paint.gui.SimpleModalProgressDialog;
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.io.ImageImporter;
 import heroesgrave.utils.misc.Metadata;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
@@ -64,9 +64,7 @@ public class ImporterZipBIN extends ImageImporter
 		for(int index = 0, pixel = 0; index < surfaceArea; index++)
 		{
 			// pixel = RGBA
-			pixel =
-					(inImgZipData.read() << 24) | (inImgZipData.read() << 16) | (inImgZipData.read() << 8)
-							| (inImgZipData.read());
+			pixel = (inImgZipData.read() << 24) | (inImgZipData.read() << 16) | (inImgZipData.read() << 8) | (inImgZipData.read());
 			
 			// fastest possible conversion from RGBA to ARGB (?)
 			int RGB = ((pixel & 0xFFFFFFFF) >> 8) & 0xFFFFFF;
@@ -92,8 +90,7 @@ public class ImporterZipBIN extends ImageImporter
 		DIALOG.close();
 		in.close();
 		
-		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		image.setRGB(0, 0, width, height, raw, 0, width);
+		RawImage image = new RawImage(width, height, raw);
 		
 		doc.setDimensions(width, height);
 		doc.setRoot(new Layer(doc, image, new Metadata()));

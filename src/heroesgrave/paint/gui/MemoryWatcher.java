@@ -102,9 +102,8 @@ public class MemoryWatcher extends JPanel implements Runnable
 			double usedD = ((double) used / (double) total) * 100D;
 			
 			// Clamp and set the value, and the text of the progressbar, to reflect the state of the memory usage.
-			PB.setValue(MathUtils.clamp((int) usedD, 100, 0));
-			PB.setString(StringUtil.humanReadableByteCount(used, true) + "  of  "
-					+ StringUtil.humanReadableByteCount(total, true));
+			PB.setValue(MathUtils.clamp((int) usedD, 0, 100));
+			PB.setString(StringUtil.humanReadableByteCount(used, true) + "  of  " + StringUtil.humanReadableByteCount(total, true));
 			
 			try
 			{

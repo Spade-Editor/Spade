@@ -20,7 +20,7 @@
 
 package heroesgrave.paint.image.change;
 
-import java.awt.image.BufferedImage;
+import heroesgrave.paint.image.RawImage;
 
 /**
  * Changes that are easily revertable should use this interface instead of IEditChange.
@@ -30,5 +30,5 @@ import java.awt.image.BufferedImage;
  */
 public interface IRevEditChange extends IEditChange
 {
-	public abstract void revert(BufferedImage image);
+	public abstract void revert(RawImage image);
 }

@@ -1,12 +1,11 @@
 package heroesgrave.paint.image.change;
 
+import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.io.Serialised;
-
-import java.awt.image.BufferedImage;
 
 public abstract class IImageChange implements IChange, Serialised
 {
-	public abstract BufferedImage apply(BufferedImage image);
+	public abstract RawImage apply(RawImage image);
 	
 	public final boolean isMarker()
 	{

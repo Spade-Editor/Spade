@@ -28,12 +28,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class RectChange implements IEditChange, Serialised
+public class FillRectChange implements IEditChange, Serialised
 {
 	private short x1, y1, x2, y2;
 	private int colour;
 	
-	public RectChange(short x1, short y1, short x2, short y2, int colour)
+	public FillRectChange(short x1, short y1, short x2, short y2, int colour)
 	{
 		this.colour = colour;
 		this.x1 = x1;
@@ -51,17 +51,17 @@ public class RectChange implements IEditChange, Serialised
 	@Override
 	public void apply(RawImage image)
 	{
-		image.drawRect(Math.min(x1, x2), Math.min(y1, y2), Math.max(x1, x2), Math.max(y1, y2), colour);
+		image.fillRect(Math.min(x1, x2), Math.min(y1, y2), Math.max(x1, x2), Math.max(y1, y2), colour);
 	}
 	
 	@Override
-	public RectChange encode()
+	public FillRectChange encode()
 	{
 		return this;
 	}
 	
 	@Override
-	public RectChange decode()
+	public FillRectChange decode()
 	{
 		return this;
 	}

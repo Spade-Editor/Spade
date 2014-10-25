@@ -18,27 +18,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.utils.misc;
+package heroesgrave.paint.tools;
 
-import heroesgrave.utils.math.MathUtils;
+import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.change.edit.FillRectChange;
+import heroesgrave.paint.main.Paint;
 
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
-
-public class ColourNumberFilter extends DocumentFilter
+public class FillRectangle extends Tool
 {
-	public void insertString(FilterBypass fb, int off, String str, AttributeSet att) throws BadLocationException
+	private FillRectChange rect;
+	
+	public FillRectangle(String name)
 	{
-		int v = Integer.parseInt(str.replaceAll("\\D++", ""));
-		v = MathUtils.clamp(v, 0, 0xFF);
-		fb.insertString(off, "" + v, att);
+		super(name);
 	}
 	
-	public void replace(FilterBypass fb, int off, int len, String str, AttributeSet att) throws BadLocationException
+	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		int v = Integer.parseInt(str.replaceAll("\\D++", ""));
-		v = MathUtils.clamp(v, 0, 0xFF);
-		fb.replace(off, len, "" + v, att);
+		rect = new FillRectChange(x, y, x, y, Paint.main.getColor(button));
+	}
+	
+	public void onReleased(Layer layer, short x, short y, int button)
+	{
+		layer.addChange(rect);
+		Paint.main.gui.repaint();
+		rect = null;
+	}
+	
+	public void whilePressed(Layer layer, short x, short y, int button)
+	{
+		rect.moveTo(x, y);
 	}
 }

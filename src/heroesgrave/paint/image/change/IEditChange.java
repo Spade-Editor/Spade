@@ -20,9 +20,9 @@
 
 package heroesgrave.paint.image.change;
 
-import java.awt.image.BufferedImage;
+import heroesgrave.paint.image.RawImage;
 
 public interface IEditChange extends IChange
 {
-	public void apply(BufferedImage image);
+	public void apply(RawImage image);
 }

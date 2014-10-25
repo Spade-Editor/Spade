@@ -36,9 +36,9 @@ public class FreezeBuffer
 	private class OldBuffer
 	{
 		int order; // Also equals number of markers.
-		BufferedImage image;
+		RawImage image;
 		
-		OldBuffer(int order, BufferedImage image)
+		OldBuffer(int order, RawImage image)
 		{
 			this.order = order;
 			this.image = image;
@@ -50,18 +50,20 @@ public class FreezeBuffer
 	public static final int MAXIMUM_ORDER = 8;
 	
 	private LinkedList<OldBuffer> oldBuffers = new LinkedList<OldBuffer>();
-	private BufferedImage front, back;
+	private RawImage front, back;
+	private BufferedImage image;
 	private LinkedList<IChange> changes = new LinkedList<IChange>();
 	private LinkedList<IChange> reverted = new LinkedList<IChange>();
 	private LinkedList<Serialised> oldChanges = new LinkedList<Serialised>();
 	private Serialised marker;
 	private boolean rebuffer;
 	
-	public FreezeBuffer(BufferedImage image)
+	public FreezeBuffer(RawImage image)
 	{
 		this.back = image;
 		this.marker = new Marker();
-		this.front = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		this.image = new BufferedImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB);
+		this.front = RawImage.fromRaster(this.image);
 		this.rebuffer = true;
 	}
 	
@@ -126,8 +128,7 @@ public class FreezeBuffer
 				}
 				toReturn.push(s);
 			}
-			BufferedImage image = new BufferedImage(front.getWidth(), front.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			image.setData(top.image.getData());
+			RawImage image = RawImage.copyOf(top.image);
 			while(i > 0)
 			{
 				if((s = oldChanges.poll()) == null)
@@ -185,7 +186,8 @@ public class FreezeBuffer
 				pushOldBuffer(new OldBuffer(1, back));
 				
 				this.back = this.front;
-				this.front = new BufferedImage(front.getWidth(), front.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				this.image = new BufferedImage(front.width, front.height, BufferedImage.TYPE_INT_ARGB);
+				this.front = RawImage.fromRaster(image);
 				this.rebuffer = true;
 				
 				oldChanges.push(marker);
@@ -202,7 +204,8 @@ public class FreezeBuffer
 			
 			// this.front is renewed in case IImageChange wants to reuse the image.
 			this.back = ((IImageChange) change).apply(this.front);
-			this.front = new BufferedImage(front.getWidth(), front.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			this.image = new BufferedImage(front.width, front.height, BufferedImage.TYPE_INT_ARGB);
+			this.front = RawImage.fromRaster(image);
 			this.rebuffer = true;
 			
 			oldChanges.push(marker);
@@ -257,7 +260,8 @@ public class FreezeBuffer
 				pushOldBuffer(new OldBuffer(1, back));
 				
 				this.back = this.front;
-				this.front = new BufferedImage(front.getWidth(), front.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				this.image = new BufferedImage(front.width, front.height, BufferedImage.TYPE_INT_ARGB);
+				this.front = RawImage.fromRaster(image);
 				this.rebuffer = true;
 				
 				oldChanges.push(marker);
@@ -274,7 +278,8 @@ public class FreezeBuffer
 			
 			// this.front is renewed in case IImageChange wants to reuse the image.
 			this.back = ((IImageChange) change).apply(this.front);
-			this.front = new BufferedImage(front.getWidth(), front.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			this.image = new BufferedImage(front.width, front.height, BufferedImage.TYPE_INT_ARGB);
+			this.front = RawImage.fromRaster(image);
 			this.rebuffer = true;
 			
 			oldChanges.push(marker);
@@ -287,7 +292,7 @@ public class FreezeBuffer
 	
 	public void rebuffer()
 	{
-		front.setData(back.getData());
+		front.copyFrom(back);
 		for(IChange c : changes)
 		{
 			((IEditChange) c).apply(front);
@@ -303,8 +308,7 @@ public class FreezeBuffer
 	
 	public BufferedImage getFront()
 	{
-		if(rebuffer)
-			rebuffer();
-		return front;
+		checkBuffered();
+		return image;
 	}
 }

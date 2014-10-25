@@ -21,7 +21,6 @@
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.image.Document;
-import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
 
@@ -57,8 +56,7 @@ import com.alee.laf.rootpane.WebFrame;
  * - Drawing of any given Image.
  **/
 @SuppressWarnings("serial")
-public class PaintCanvas extends JComponent implements MouseListener, MouseMotionListener, MouseWheelListener,
-		KeyListener
+public class PaintCanvas extends JComponent implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 {
 	public static final Color TRANSPARENT = new Color(255, 255, 255, 0);
 	public static BufferedImage backgroundLight, backgroundDark;
@@ -135,47 +133,11 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		this.repaint();
 	}
 	
-	/*
-	public void setImage(BufferedImage image)
-	{
-		this.image = image;
-		this.cam_zoom = 1;
-		this.cam_rotation = 0;
-		this.cam_positionX = image.getWidth() / 2;
-		this.cam_positionY = image.getHeight() / 2;
-		
-		this.updateBackground();
-		this.repaint();
-	}
-
-	public void setImageContent(int[] rawARGB)
-	{
-		int width = this.image.getWidth();
-		int height = this.image.getHeight();
-		int surface = width * height;
-		
-		if(surface != rawARGB.length)
-		{
-			throw new RuntimeException(
-					"Given ARGB-array is not equal in surface area compared to current image. Unable to replace contents!");
-		}
-		
-		this.image.setRGB(0, 0, width, height, rawARGB, 0, width);
-		
-		// full update
-		this.updateBackground();
-		this.repaint();
-	}
-	*/
-	
 	@Override
 	public void paint(Graphics g)
 	{
 		Graphics2D g2d = (Graphics2D) g;
 		
-		// clear background
-		g2d.setColor(Color.BLACK);
-		//g2d.setPaint(this.backgroundPaint);
 		if(Menu.DARK_BACKGROUND)
 		{
 			g.setColor(new Color(0x0f171f));
@@ -185,9 +147,6 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			g.setColor(new Color(0xDDEEFF));
 		}
 		g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
-		
-		// rendering hints for image drawing
-		// g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		AffineTransform Tx = new AffineTransform();
 		Tx.translate(this.getWidth() / 2, this.getHeight() / 2);
@@ -206,21 +165,16 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		}
 		g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
 		
-		if(document != null)
+		if(document != null && document.repaint)
 		{
-			Layer layer = document.getRoot();
-			if(layer.isChanged() || layer.childChanged())
-			{
-				Graphics2D cg = image.createGraphics();
-				cg.setBackground(TRANSPARENT);
-				cg.clearRect(0, 0, image.getWidth(), image.getHeight());
-				layer.render(cg);
-			}
+			Graphics2D cg = image.createGraphics();
+			cg.setBackground(TRANSPARENT);
+			cg.clearRect(0, 0, image.getWidth(), image.getHeight());
+			document.render(cg);
+			document.repaint = false;
 		}
 		
-		g2d.drawImage(this.image, 0, 0, null);
-		
-		// System.out.println("repainted canvas");
+		g2d.drawImage(image, 0, 0, null);
 	}
 	
 	@Override

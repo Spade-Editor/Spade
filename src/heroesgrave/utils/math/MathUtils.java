@@ -76,7 +76,7 @@ public class MathUtils
 		return r;
 	}
 	
-	public static final double clamp(double d, double max, double min)
+	public static final double clamp(double d, double min, double max)
 	{
 		if(d >= max)
 			return max;
@@ -85,7 +85,7 @@ public class MathUtils
 		return d;
 	}
 	
-	public static final int clamp(int i, int max, int min)
+	public static final int clamp(int i, int min, int max)
 	{
 		if(i >= max)
 			return max;

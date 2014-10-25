@@ -20,6 +20,7 @@
 
 package heroesgrave.paint.image;
 
+import heroesgrave.paint.gui.PaintCanvas;
 import heroesgrave.paint.image.change.DocumentChange;
 import heroesgrave.paint.io.ImageExporter;
 import heroesgrave.paint.io.ImageImporter;
@@ -47,7 +48,10 @@ public class Document
 	private Layer root, current;
 	private History history;
 	
-	public boolean saved;
+	private BufferedImage frozen;
+	private int frozenTo, lowestChange;
+	
+	public boolean saved, repaint;
 	
 	private ArrayList<Layer> flatmap = new ArrayList<Layer>();
 	
@@ -55,6 +59,7 @@ public class Document
 	{
 		this.width = width;
 		this.height = height;
+		this.frozen = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		this.info = new Metadata();
 		this.history = new History(this);
 		
@@ -206,6 +211,7 @@ public class Document
 	{
 		this.width = width;
 		this.height = height;
+		this.frozen = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	}
 	
 	public BufferedImage getRenderedImage()
@@ -213,10 +219,61 @@ public class Document
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		{
 			Graphics2D g = image.createGraphics();
-			root.render(g);
+			for(Layer l : flatmap)
+			{
+				l.render(g);
+			}
 			g.dispose();
 		}
 		return image;
+	}
+	
+	// BufferedImage:
+	// 9 Layers: ~10ms
+	
+	public void render(Graphics2D g)
+	{
+		long start = System.nanoTime();
+		int index = flatmap.indexOf(current);
+		if(Math.min(index, lowestChange) < frozenTo)
+		{
+			lowestChange = frozenTo = index;
+			Graphics2D fg = frozen.createGraphics();
+			fg.setBackground(PaintCanvas.TRANSPARENT);
+			fg.clearRect(0, 0, width, height);
+			for(int i = 0; i < frozenTo; i++)
+			{
+				flatmap.get(i).render(fg);
+			}
+		}
+		else if(index > frozenTo)
+		{
+			Graphics2D fg = frozen.createGraphics();
+			for(int i = frozenTo; i < index; i++)
+			{
+				flatmap.get(i).render(fg);
+			}
+			lowestChange = frozenTo = index;
+		}
+		g.drawImage(frozen, 0, 0, null);
+		for(int i = frozenTo; i < flatmap.size(); i++)
+		{
+			flatmap.get(i).render(g);
+		}
+		long end = System.nanoTime();
+		System.out.println("Rendering took: " + (end - start) / 1000000 + "ms");
+	}
+	
+	public void changed(Layer layer)
+	{
+		lowestChange = Math.min(lowestChange, flatmap.indexOf(layer));
+		repaint = true;
+	}
+	
+	public void allChanged()
+	{
+		lowestChange = -1;
+		repaint = true;
 	}
 	
 	public void setFile(File file)
@@ -231,10 +288,10 @@ public class Document
 	
 	public void addChange(DocumentChange change)
 	{
-		System.out.println(change);
 		history.addChange(-1);
 		changes.push(change);
 		change.apply(this);
+		this.allChanged();
 	}
 	
 	public void revertChange()
@@ -246,6 +303,7 @@ public class Document
 		DocumentChange change = changes.pop();
 		reverted.push(change);
 		change.revert(this);
+		this.allChanged();
 	}
 	
 	public void repeatChange()
@@ -257,5 +315,6 @@ public class Document
 		DocumentChange change = reverted.pop();
 		changes.push(change);
 		change.apply(this);
+		this.allChanged();
 	}
 }

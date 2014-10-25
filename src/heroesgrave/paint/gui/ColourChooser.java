@@ -292,8 +292,7 @@ public class ColourChooser
 			g.setPaint(transparenzyImagePaint);
 			g.fillRect(0, 0, getWidth(), getHeight());
 			
-			g.setPaint(new GradientPaint(0, 0, new Color(gradientLeft, true), getWidth(), 0, new Color(gradientRight,
-					true)));
+			g.setPaint(new GradientPaint(0, 0, new Color(gradientLeft, true), getWidth(), 0, new Color(gradientRight, true)));
 			g.fillRect(0, 0, getWidth(), getHeight());
 			
 			g.setPaint(null);
@@ -331,7 +330,7 @@ public class ColourChooser
 			if(sliderValue > 1)
 				sliderValue = 1;
 			
-			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 255, 0));
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 0, 255));
 			
 			this.repaint();
 			
@@ -345,7 +344,7 @@ public class ColourChooser
 			if(sliderValue > 1)
 				sliderValue = 1;
 			
-			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 255, 0));
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 0, 255));
 		}
 		
 		public abstract void onSliderUpdate(float sliderValue, int sliderValueInt);
@@ -443,7 +442,7 @@ public class ColourChooser
 			if(sliderValue > 1)
 				sliderValue = 1;
 			
-			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 255, 0));
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 0, 255));
 			
 			this.repaint();
 			
@@ -599,7 +598,7 @@ public class ColourChooser
 			if(sliderValue > 1)
 				sliderValue = 1;
 			
-			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 255, 0));
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 0, 255));
 			
 			this.repaint();
 			
@@ -758,7 +757,7 @@ public class ColourChooser
 			if(sliderValue > 1)
 				sliderValue = 1;
 			
-			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 255, 0));
+			this.onSliderUpdate(sliderValue, (int) MathUtils.clamp(sliderValue * 256, 0, 255));
 			
 			this.repaint();
 			
@@ -1012,8 +1011,8 @@ public class ColourChooser
 			for(int y = 0; y < getHeight(); y++)
 				for(int x = 0; x < getHeight(); x++)
 				{
-					g.setColor(new Color(Color.HSBtoRGB(chooserRightHSBimplH.sliderValue, 1f * x / (getHeight() - 1),
-							1f * ((getHeight() - 1) - y) / (getHeight() - 1))));
+					g.setColor(new Color(Color.HSBtoRGB(chooserRightHSBimplH.sliderValue, 1f * x / (getHeight() - 1), 1f * ((getHeight() - 1) - y)
+							/ (getHeight() - 1))));
 					g.drawLine(x, y, x, y);
 				}
 		}
@@ -1229,8 +1228,7 @@ public class ColourChooser
 		
 		// borders
 		//chooserLeftColourCircle.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "Color Circle"));
-		chooserLeftColourPallete.setBorder(BorderFactory.createTitledBorder(
-				BorderFactory.createEmptyBorder(2, 2, 2, 2), "Color Pallet"));
+		chooserLeftColourPallete.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "Color Pallet"));
 		
 		chooserLeftColourCircle.setSize(256, 256);
 		JLabel title = new JLabel("Color Square");
@@ -1246,8 +1244,7 @@ public class ColourChooser
 		colorSquareLayout.putConstraint(SpringLayout.WEST, HSBSquare, -76, SpringLayout.EAST, chooserLeftColourCircle);
 		colorSquareLayout.putConstraint(SpringLayout.EAST, HSBSquare, 0, SpringLayout.EAST, chooserLeftColourCircle);
 		
-		Color[] pallet =
-				readColorPalletFromURL(ClassLoader.getSystemResource("heroesgrave/paint/res/defaultColorPallet.txt"));
+		Color[] pallet = readColorPalletFromURL(ClassLoader.getSystemResource("heroesgrave/paint/res/defaultColorPallet.txt"));
 		
 		// chooserLeftColourPallete.add(new JLabel("Not yet implemented!"));
 		for(int i = 0; i < pallet.length; i++)
@@ -1274,8 +1271,7 @@ public class ColourChooser
 			{
 				JFileChooser fileChooser = new JFileChooser();
 				
-				fileChooser.setCurrentDirectory(new File(IOUtils.assemblePath(System.getProperty("user.home"),
-						".paint-java", "palettes")));
+				fileChooser.setCurrentDirectory(new File(IOUtils.assemblePath(System.getProperty("user.home"), ".paint-java", "palettes")));
 				
 				fileChooser.setAcceptAllFileFilterUsed(false);
 				fileChooser.setFileFilter(new TxtFileFilter());
@@ -1329,40 +1325,30 @@ public class ColourChooser
 		});
 		
 		// layout for ((chooserLeftColourSelector))
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourSelectorEditColourSelector,
-				0, SpringLayout.NORTH, chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, chooserLeftColourSelectorEditColourSelector,
-				0, SpringLayout.WEST, chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelectorEditColourSelector,
-				64, SpringLayout.NORTH, chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector,
-				64, SpringLayout.WEST, chooserLeftColourSelector);
-		
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, colourResetButton, 0, SpringLayout.NORTH,
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.NORTH,
 				chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, colourResetButton, 0, SpringLayout.EAST,
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, chooserLeftColourSelectorEditColourSelector, 0, SpringLayout.WEST,
+				chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelectorEditColourSelector, 64, SpringLayout.NORTH,
+				chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector, 64, SpringLayout.WEST,
+				chooserLeftColourSelector);
+		
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, colourResetButton, 0, SpringLayout.NORTH, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, colourResetButton, 0, SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, colourResetButton, 32, SpringLayout.NORTH, chooserLeftColourSelector);
+		
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, changeColourPalletButton, 0, SpringLayout.SOUTH, colourResetButton);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, changeColourPalletButton, 0, SpringLayout.EAST,
 				chooserLeftColourSelectorEditColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, colourResetButton, 32, SpringLayout.NORTH,
-				chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, changeColourPalletButton, 64, SpringLayout.NORTH, chooserLeftColourSelector);
 		
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, changeColourPalletButton, 0,
-				SpringLayout.SOUTH, colourResetButton);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, changeColourPalletButton, 0,
-				SpringLayout.EAST, chooserLeftColourSelectorEditColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, changeColourPalletButton, 64,
-				SpringLayout.NORTH, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, changeColourPalletButton, 0, SpringLayout.WEST, colourSwapButton);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, colourResetButton, 0, SpringLayout.WEST, colourSwapButton);
 		
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, changeColourPalletButton, 0,
-				SpringLayout.WEST, colourSwapButton);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.EAST, colourResetButton, 0, SpringLayout.WEST,
-				colourSwapButton);
-		
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, colourSwapButton, 0, SpringLayout.NORTH,
-				chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, colourSwapButton, -64, SpringLayout.EAST,
-				chooserLeftColourSelector);
-		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, colourSwapButton, 64, SpringLayout.NORTH,
-				chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.NORTH, colourSwapButton, 0, SpringLayout.NORTH, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.WEST, colourSwapButton, -64, SpringLayout.EAST, chooserLeftColourSelector);
+		chooserLeftColourSelectorLayout.putConstraint(SpringLayout.SOUTH, colourSwapButton, 64, SpringLayout.NORTH, chooserLeftColourSelector);
 		
 		chooserLeftColourSelector.add(chooserLeftColourSelectorEditColourSelector);
 		chooserLeftColourSelector.add(changeColourPalletButton);
@@ -1445,8 +1431,7 @@ public class ColourChooser
 		chooserRightRGB.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "RGB"));
 		chooserRightHEX.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "HEX"));
 		chooserRightHSB.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "HSB"));
-		chooserRightALPHA.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),
-				"Alpha"));
+		chooserRightALPHA.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2), "Alpha"));
 		
 		// inner layout
 		chooserRightRGB.setLayout(new GridLayout(0, 1, 4, 4));
@@ -1505,29 +1490,21 @@ public class ColourChooser
 		Container contentPane = chooserLeft;
 		// chooserLeftLayout
 		
-		chooserLeftLayout
-				.putConstraint(SpringLayout.WEST, chooserLeftColourSelector, 0, SpringLayout.WEST, contentPane);
+		chooserLeftLayout.putConstraint(SpringLayout.WEST, chooserLeftColourSelector, 0, SpringLayout.WEST, contentPane);
 		chooserLeftLayout.putConstraint(SpringLayout.WEST, chooserLeftColourCircle, 0, SpringLayout.WEST, contentPane);
 		chooserLeftLayout.putConstraint(SpringLayout.WEST, chooserLeftColourPallete, 0, SpringLayout.WEST, contentPane);
 		
-		chooserLeftLayout
-				.putConstraint(SpringLayout.EAST, chooserLeftColourSelector, 0, SpringLayout.EAST, contentPane);
+		chooserLeftLayout.putConstraint(SpringLayout.EAST, chooserLeftColourSelector, 0, SpringLayout.EAST, contentPane);
 		chooserLeftLayout.putConstraint(SpringLayout.EAST, chooserLeftColourCircle, 0, SpringLayout.EAST, contentPane);
 		chooserLeftLayout.putConstraint(SpringLayout.EAST, chooserLeftColourPallete, 0, SpringLayout.EAST, contentPane);
 		
-		chooserLeftLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourSelector, 0, SpringLayout.NORTH,
-				contentPane);
-		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelector, 0, SpringLayout.NORTH,
-				chooserLeftColourCircle);
-		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelector, 64, SpringLayout.NORTH,
-				contentPane);
-		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourCircle, 0, SpringLayout.NORTH,
-				chooserLeftColourPallete);
-		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourPallete, 0, SpringLayout.SOUTH,
-				contentPane);
+		chooserLeftLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourSelector, 0, SpringLayout.NORTH, contentPane);
+		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelector, 0, SpringLayout.NORTH, chooserLeftColourCircle);
+		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourSelector, 64, SpringLayout.NORTH, contentPane);
+		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourCircle, 0, SpringLayout.NORTH, chooserLeftColourPallete);
+		chooserLeftLayout.putConstraint(SpringLayout.SOUTH, chooserLeftColourPallete, 0, SpringLayout.SOUTH, contentPane);
 		
-		chooserLeftLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourCircle, 64, SpringLayout.NORTH,
-				contentPane);
+		chooserLeftLayout.putConstraint(SpringLayout.NORTH, chooserLeftColourCircle, 64, SpringLayout.NORTH, contentPane);
 		
 	}
 	
@@ -1700,10 +1677,10 @@ public class ColourChooser
 		int G = (COLOUR >> 8) & 0xFF;
 		int B = (COLOUR) & 0xFF;
 		
-		chooserRightRGBimplR.sliderValue = (float) MathUtils.clamp((float) R / 256F, 1, 0);
-		chooserRightRGBimplG.sliderValue = (float) MathUtils.clamp((float) G / 256F, 1, 0);
-		chooserRightRGBimplB.sliderValue = (float) MathUtils.clamp((float) B / 256F, 1, 0);
-		chooserRightALPHAimpl.sliderValue = (float) MathUtils.clamp((float) A / 256F, 1, 0);
+		chooserRightRGBimplR.sliderValue = (float) MathUtils.clamp((float) R / 256F, 0, 1);
+		chooserRightRGBimplG.sliderValue = (float) MathUtils.clamp((float) G / 256F, 0, 1);
+		chooserRightRGBimplB.sliderValue = (float) MathUtils.clamp((float) B / 256F, 0, 1);
+		chooserRightALPHAimpl.sliderValue = (float) MathUtils.clamp((float) A / 256F, 0, 1);
 		
 		updatePaintGUI();
 		updateAllChooserSubComponents_ColorChanged();
@@ -1840,11 +1817,9 @@ public class ColourChooser
 	private void updateColorLabels()
 	{
 		int c = getSelectedEditColor();
-		((TitledBorder) chooserRightHSB.getBorder()).setTitle("HSB (" + (int) (chooserRightHSBimplH.sliderValue * 360)
-				+ ", " + (int) (chooserRightHSBimplS.sliderValue * 255) + ", "
-				+ (int) (chooserRightHSBimplB.sliderValue * 255) + ")");
-		((TitledBorder) chooserRightRGB.getBorder()).setTitle("RGB (" + ((c >> 16) & 0xFF) + ", " + ((c >> 8) & 0xFF)
-				+ ", " + (c & 0xFF) + ")");
+		((TitledBorder) chooserRightHSB.getBorder()).setTitle("HSB (" + (int) (chooserRightHSBimplH.sliderValue * 360) + ", "
+				+ (int) (chooserRightHSBimplS.sliderValue * 255) + ", " + (int) (chooserRightHSBimplB.sliderValue * 255) + ")");
+		((TitledBorder) chooserRightRGB.getBorder()).setTitle("RGB (" + ((c >> 16) & 0xFF) + ", " + ((c >> 8) & 0xFF) + ", " + (c & 0xFF) + ")");
 		((TitledBorder) chooserRightALPHA.getBorder()).setTitle("Alpha (" + ((c >> 24) & 0xFF) + ")");
 	}
 }
