@@ -399,7 +399,7 @@ public class Paint extends Application
 			}
 			
 			// Print detailed version info and exit.
-			if(STR.equalsIgnoreCase("-vv"))
+			if(STR.equalsIgnoreCase("--version"))
 			{
 				System.out.println("Paint.JAVA v" + VERSION);
 				System.out.println("Version Released: " + RELEASED);
@@ -408,21 +408,21 @@ public class Paint extends Application
 			}
 			
 			// Print the absolute path of the jar and exit.
-			if(STR.equalsIgnoreCase("-p"))
+			if(STR.equalsIgnoreCase("--print-jar-path"))
 			{
 				System.out.println(IOUtils.jarPath());
 				System.exit(0);
 			}
 			
 			// ...If the arguments contain the DmemoryWatcherFlag flag, set the property to true to enable the MemoryWatcher.
-			if(STR.equalsIgnoreCase("DmemoryWatcherFlag"))
+			if(STR.equalsIgnoreCase("--show-memory-watcher"))
 			{
 				System.setProperty("DmemoryWatcherFlag", "true");
 			}
 			
-			if(STR.startsWith("DlafClassName="))
+			if(STR.startsWith("--look-and-feel="))
 			{
-				System.setProperty("DlafClassName", STR.substring(14));
+				System.setProperty("DlafClassName", STR.substring(16));
 			}
 			
 			if(STR.equals("--debug"))

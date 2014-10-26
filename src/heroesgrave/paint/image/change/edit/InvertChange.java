@@ -23,10 +23,12 @@ public class InvertChange extends IImageChange
 	public RawImage apply(RawImage image)
 	{
 		int[] buffer = image.getBuffer();
+		boolean[] mask = image.getMask();
 		
 		for(int i = 0; i < buffer.length; i++)
 		{
-			buffer[i] ^= 0x00FFFFFF; // I hope this is correct.
+			if(mask == null || mask[i])
+				buffer[i] ^= 0x00FFFFFF; // I hope this is correct.
 		}
 		
 		return image;

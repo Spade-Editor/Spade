@@ -20,12 +20,8 @@
 
 package heroesgrave.paint.image;
 
-import heroesgrave.paint.gui.PaintCanvas;
 import heroesgrave.paint.image.change.DocumentChange;
 import heroesgrave.paint.image.change.IChange;
-import heroesgrave.paint.image.change.IEditChange;
-import heroesgrave.paint.image.change.IGeneratorChange;
-import heroesgrave.paint.image.change.IImageChange;
 import heroesgrave.paint.io.ImageExporter;
 import heroesgrave.paint.io.ImageImporter;
 import heroesgrave.paint.main.Paint;
@@ -51,9 +47,8 @@ public class Document
 	private Layer root, current;
 	private History history;
 	
-	private BufferedImage frozen, preview;
 	private IChange previewChange;
-	private int frozenTo, lowestChange;
+	public int lowestChange;
 	
 	public boolean saved, repaint;
 	
@@ -63,15 +58,10 @@ public class Document
 	{
 		this.width = width;
 		this.height = height;
-		this.frozen = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		this.preview = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		this.info = new Metadata();
 		this.history = new History(this);
 		
-		RawImage image = new RawImage(width, height);
-		//* Fill the image with gradient + noise.
-		/**/
-		this.current = this.root = new Layer(this, image, new Metadata());
+		this.current = this.root = new Layer(this, new RawImage(width, height), new Metadata());
 		this.flatmap.clear();
 		root.constructFlatMap(flatmap);
 	}
@@ -134,8 +124,6 @@ public class Document
 	{
 		this.width = width;
 		this.height = height;
-		this.frozen = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		this.preview = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	}
 	
 	public void save()
@@ -222,71 +210,6 @@ public class Document
 		return image;
 	}
 	
-	public void render(BufferedImage image)
-	{
-		// Create graphics and clear image.
-		Graphics2D g = image.createGraphics();
-		g.setBackground(PaintCanvas.TRANSPARENT);
-		g.clearRect(0, 0, image.getWidth(), image.getHeight());
-		
-		int index = flatmap.indexOf(current) - 1;
-		if(index >= 0)
-		{
-			if(Math.min(index, lowestChange) < frozenTo)
-			{
-				lowestChange = frozenTo = index;
-				Graphics2D fg = frozen.createGraphics();
-				fg.setBackground(PaintCanvas.TRANSPARENT);
-				fg.clearRect(0, 0, width, height);
-				for(int i = 0; i <= frozenTo; i++)
-				{
-					flatmap.get(i).render(fg);
-				}
-			}
-			else if(index > frozenTo)
-			{
-				Graphics2D fg = frozen.createGraphics();
-				for(int i = frozenTo + 1; i <= index; i++)
-				{
-					flatmap.get(i).render(fg);
-				}
-				lowestChange = frozenTo = index;
-			}
-			g.drawImage(frozen, 0, 0, null);
-		}
-		else
-		{
-			frozenTo = -1;
-		}
-		
-		flatmap.get(index + 1).render(g);
-		
-		if(previewChange != null)
-		{
-			g.dispose(); // I think disposing the graphics context helps performance.
-			RawImage rawPreview = RawImage.unwrapBufferedImage(image);
-			if(previewChange instanceof IEditChange)
-			{
-				((IEditChange) previewChange).apply(rawPreview);
-			}
-			else if(previewChange instanceof IImageChange)
-			{
-				rawPreview.copyFrom(((IImageChange) previewChange).apply(rawPreview), true);
-			}
-			else if(previewChange instanceof IGeneratorChange)
-			{
-				rawPreview.copyFrom(((IGeneratorChange) previewChange).generate(width, height), true);
-			}
-			rawPreview.dispose();
-			g = image.createGraphics();
-		}
-		
-		for(int i = index + 2; i < flatmap.size(); i++)
-		{
-			flatmap.get(i).render(g);
-		}
-	}
-	
 	public void preview(IChange change)
 	{
 		this.previewChange = change;
@@ -310,6 +233,11 @@ public class Document
 	{
 		lowestChange = -1;
 		repaint = true;
+	}
+	
+	public IChange getPreview()
+	{
+		return previewChange;
 	}
 	
 	public void setFile(File file)

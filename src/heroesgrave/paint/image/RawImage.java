@@ -30,7 +30,7 @@ public class RawImage
 {
 	public enum MaskMode
 	{
-		ADD, SUB, XOR, AND
+		REP, ADD, SUB, XOR, AND
 	}
 	
 	private int[] buffer;
@@ -95,10 +95,10 @@ public class RawImage
 	public void drawRect(int x1, int y1, int x2, int y2, final int c)
 	{
 		// Do the clamping once at the start so we don't have to perform checks when drawing the pixel.
-		x1 = MathUtils.clamp(x1, 0, width);
-		x2 = MathUtils.clamp(x2, 0, width);
-		y1 = MathUtils.clamp(y1, 0, height);
-		y2 = MathUtils.clamp(y2, 0, height);
+		x1 = MathUtils.clamp(x1, 0, width - 1);
+		x2 = MathUtils.clamp(x2, 0, width - 1);
+		y1 = MathUtils.clamp(y1, 0, height - 1);
+		y2 = MathUtils.clamp(y2, 0, height - 1);
 		
 		if(mask == null)
 		{
@@ -144,10 +144,10 @@ public class RawImage
 	
 	public void fillRect(int x1, int y1, int x2, int y2, int c)
 	{
-		x1 = MathUtils.clamp(x1, 0, width);
-		x2 = MathUtils.clamp(x2, 0, width);
-		y1 = MathUtils.clamp(y1, 0, height);
-		y2 = MathUtils.clamp(y2, 0, height);
+		x1 = MathUtils.clamp(x1, 0, width - 1);
+		x2 = MathUtils.clamp(x2, 0, width - 1);
+		y1 = MathUtils.clamp(y1, 0, height - 1);
+		y2 = MathUtils.clamp(y2, 0, height - 1);
 		
 		if(mask == null)
 		{
@@ -191,12 +191,31 @@ public class RawImage
 		}
 	}
 	
+	public void fill(int c)
+	{
+		if(mask == null)
+		{
+			this.clear(c);
+		}
+		else
+		{
+			for(int i = 0; i < buffer.length; i++)
+			{
+				if(mask[i])
+					buffer[i] = c;
+			}
+		}
+	}
+	
 	// Mask Manipulation
 	
-	public void clearMask(MaskMode mode)
+	public void fillMask(MaskMode mode)
 	{
+		if(this.mask == null)
+			return;
 		switch(mode)
 		{
+			case REP:
 			case ADD:
 				Arrays.fill(mask, true);
 				break;
@@ -214,13 +233,15 @@ public class RawImage
 	
 	public void maskRect(int x1, int y1, int x2, int y2, MaskMode mode)
 	{
-		x1 = MathUtils.clamp(x1, 0, width);
-		x2 = MathUtils.clamp(x2, 0, width);
-		y1 = MathUtils.clamp(y1, 0, height);
-		y2 = MathUtils.clamp(y2, 0, height);
+		x1 = MathUtils.clamp(x1, 0, width - 1);
+		x2 = MathUtils.clamp(x2, 0, width - 1);
+		y1 = MathUtils.clamp(y1, 0, height - 1);
+		y2 = MathUtils.clamp(y2, 0, height - 1);
 		
 		switch(mode)
 		{
+			case REP:
+				this.fillMask(MaskMode.SUB);
 			case ADD:
 				for(; y1 <= y2; y1++)
 				{
@@ -255,11 +276,11 @@ public class RawImage
 				Arrays.fill(mask, offset2, mask.length, false);
 				
 				// Within Rectangle
-				final int offstep = x1 + width - x2;
-				final int onstep = x2 - x1;
+				final int onstep = x2 - x1 + 1;
+				final int offstep = width - onstep;
 				
-				for(int i = offset; i < offset2; i += offstep)
-					Arrays.fill(mask, i, onstep, false);
+				for(int i = offset + onstep; i < offset2; i += width)
+					Arrays.fill(mask, i, i + offstep, false);
 				break;
 		}
 	}
@@ -370,9 +391,7 @@ public class RawImage
 	public void copyFrom(RawImage image, boolean withMask)
 	{
 		if(image == this)
-		{
 			return;
-		}
 		if(this.buffer.length != image.buffer.length)
 			throw new RuntimeException("Cannot copy from a different sized RawImage");
 		System.arraycopy(image.buffer, 0, buffer, 0, buffer.length);
@@ -390,17 +409,26 @@ public class RawImage
 	public void copyMaskFrom(RawImage image)
 	{
 		if(image == this)
-		{
 			return;
-		}
-		if(this.mask.length != image.mask.length)
+		
+		if(image.mask == null)
+			this.mask = null;
+		else if(this.mask == null)
+			this.mask = Arrays.copyOf(image.mask, image.mask.length);
+		else if(this.mask.length != image.mask.length)
 			throw new RuntimeException("Cannot copy from a different sized RawImage");
-		System.arraycopy(image.mask, 0, mask, 0, mask.length);
+		else
+			System.arraycopy(image.mask, 0, mask, 0, mask.length);
 	}
 	
 	public void dispose()
 	{
 		buffer = null;
 		mask = null;
+	}
+	
+	public boolean isMaskEnabled()
+	{
+		return mask != null;
 	}
 }

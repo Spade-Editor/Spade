@@ -22,6 +22,9 @@ package heroesgrave.paint.main;
 
 import heroesgrave.paint.effects.Effect;
 import heroesgrave.paint.gui.Menu;
+import heroesgrave.paint.image.RawImage.MaskMode;
+import heroesgrave.paint.image.change.edit.ClearMaskChange;
+import heroesgrave.paint.image.change.edit.FillMaskChange;
 import heroesgrave.paint.tools.Tool;
 
 import java.awt.AWTException;
@@ -156,16 +159,11 @@ public class Input implements KeyListener
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_D)
 				{
-					//Paint.main.gui.canvas.selection.drop();
+					Paint.getDocument().getCurrent().addChange(new ClearMaskChange());
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_A)
 				{
-					/*
-					Paint.main.gui.canvas.selection.create(
-							new Rectangle2D.Float(0, 0, Paint.main.gui.canvas
-									.getWidth(), Paint.main.gui.canvas
-									.getHeight()), CombineMode.REPLACE);
-					*/
+					Paint.getDocument().getCurrent().addChange(new FillMaskChange(MaskMode.ADD));
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_C)
 				{

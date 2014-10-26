@@ -155,4 +155,9 @@ public class Layer extends DefaultMutableTreeNode
 	{
 		return blend;
 	}
+	
+	public RawImage getImage()
+	{
+		return buffer.getImage();
+	}
 }

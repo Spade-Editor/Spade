@@ -215,7 +215,7 @@ public class FreezeBuffer
 			
 			this.back = ((IGeneratorChange) change).generate(front.width, front.height);
 			
-			front.copyFrom(back, false);
+			front.copyFrom(back, true);
 			
 			oldChanges.push(marker);
 			marker = change.encode();
@@ -228,8 +228,9 @@ public class FreezeBuffer
 			pushOldBuffer(new OldBuffer(1, back));
 			
 			this.back = ((IImageChange) change).apply(RawImage.copyOf(front));
-			
-			front.copyFrom(back, false);
+			this.image = new BufferedImage(front.width, front.height, BufferedImage.TYPE_INT_ARGB);
+			this.front = RawImage.unwrapBufferedImage(this.image);
+			front.copyFrom(back, true);
 			
 			oldChanges.push(marker);
 			marker = change.encode();
@@ -277,7 +278,7 @@ public class FreezeBuffer
 	
 	public void rebuffer()
 	{
-		front.copyFrom(back, false);
+		front.copyFrom(back, true);
 		for(IChange c : changes)
 		{
 			((IEditChange) c).apply(front);
@@ -295,5 +296,10 @@ public class FreezeBuffer
 	{
 		checkBuffered();
 		return image;
+	}
+	
+	public RawImage getImage()
+	{
+		return front;
 	}
 }

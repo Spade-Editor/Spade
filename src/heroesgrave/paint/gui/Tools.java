@@ -24,10 +24,10 @@ import heroesgrave.paint.gui.ToolBox.ToolBoxButton;
 import heroesgrave.paint.gui.ToolMenu.ToolMenuItem;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.plugin.PluginManager;
-import heroesgrave.paint.tools.FillRectangle;
 import heroesgrave.paint.tools.Line;
 import heroesgrave.paint.tools.Pencil;
 import heroesgrave.paint.tools.Rectangle;
+import heroesgrave.paint.tools.Select;
 import heroesgrave.paint.tools.Tool;
 
 import javax.swing.JMenu;
@@ -53,7 +53,7 @@ public class Tools
 		addTool(DEF, "P");
 		addTool(new Rectangle("Rectangle"), "R");
 		addTool(new Line("Line"), "L");
-		addTool(new FillRectangle("Fill Rectangle"), "F");
+		addTool(new Select("Select"), "S");
 		/*
 		addTool(new Brush("Brush"), "Brush", "B");
 		addTool(new Eraser("Eraser"), "Eraser", "E");
