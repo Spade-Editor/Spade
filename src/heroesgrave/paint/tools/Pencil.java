@@ -36,75 +36,18 @@ public class Pencil extends Tool
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
 		path = new PathChange(x, y, Paint.main.getColor(button));
+		Paint.getDocument().preview(path);
 	}
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		layer.addChange(path);
-		Paint.main.gui.repaint();
+		Paint.getDocument().applyPreview();
 		path = null;
 	}
 	
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
-		path.moveTo(x, y);
+		if(path.moveTo(x, y))
+			Paint.getDocument().repaint();
 	}
-	
-	/*
-	private void stroke(Layer l, int x1, int y1, int x2, int y2, int b)
-	{
-		float dx = x2 - x1;
-		float dy = y2 - y1;
-		
-		float grad;
-		
-		if(Math.abs(dx) > Math.abs(dy))
-		{
-			grad = dy / dx;
-			if(dx > 0)
-			{
-				for(short x = (short) x1; x <= x2; x++)
-				{
-					brush(l, x,
-							(short) MathUtils.floor((grad * (x - x1)) + y1), b);
-				}
-			}
-			else
-			{
-				for(short x = (short) x1; x >= x2; x--)
-				{
-					brush(l, x,
-							(short) MathUtils.floor((grad * (x - x1)) + y1), b);
-				}
-			}
-		}
-		else
-		{
-			grad = dx / dy;
-			if(dy > 0)
-			{
-				for(short y = (short) y1; y <= y2; y++)
-				{
-					brush(l, (short) MathUtils.floor((grad * (y - y1)) + x1),
-							y, b);
-				}
-			}
-			else
-			{
-				for(short y = (short) y1; y >= y2; y--)
-				{
-					brush(l, (short) MathUtils.floor((grad * (y - y1)) + x1),
-							y, b);
-				}
-			}
-		}
-	}
-	
-	public void brush(Layer layer, short x, short y, int button)
-	{
-		if(x < 0 || y < 0 || x >= layer.getWidth() || y >= layer.getHeight())
-			return;
-		layer.addChange(new PixelChange(x, y, Paint.main.getColor(button)));
-	}
-	*/
 }

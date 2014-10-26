@@ -36,17 +36,18 @@ public class Rectangle extends Tool
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
 		rect = new RectChange(x, y, x, y, Paint.main.getColor(button));
+		Paint.getDocument().preview(rect);
 	}
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		layer.addChange(rect);
-		Paint.main.gui.repaint();
+		Paint.getDocument().applyPreview();
 		rect = null;
 	}
 	
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
-		rect.moveTo(x, y);
+		if(rect.moveTo(x, y))
+			Paint.getDocument().repaint();
 	}
 }

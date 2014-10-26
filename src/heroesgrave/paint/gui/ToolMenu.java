@@ -20,9 +20,9 @@
 
 package heroesgrave.paint.gui;
 
+import heroesgrave.paint.effects.Effect;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.tools.Tool;
-import heroesgrave.paint.tools.effects.Effect;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

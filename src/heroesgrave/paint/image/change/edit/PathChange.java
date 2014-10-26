@@ -46,14 +46,17 @@ public class PathChange implements IEditChange
 		points.add(p);
 	}
 	
-	public void moveTo(short x, short y)
+	public boolean moveTo(short x, short y)
 	{
-		this.moveTo(new Point(x, y));
+		return this.moveTo(new Point(x, y));
 	}
 	
-	public void moveTo(Point p)
+	public boolean moveTo(Point p)
 	{
+		if(points.get(points.size() - 1).equals(p))
+			return false;
 		points.add(p);
+		return true;
 	}
 	
 	@Override
@@ -72,16 +75,20 @@ public class PathChange implements IEditChange
 	@Override
 	public void apply(RawImage image)
 	{
-		Point p1 = points.get(0);
-		Point p2;
-		
-		for(int i = 1; i < points.size(); i++)
+		if(points.size() == 1)
 		{
-			p2 = points.get(i);
-			
-			image.drawLine(p1.x, p1.y, p2.x, p2.y, colour);
-			
-			p1 = p2;
+			Point p = points.get(0);
+			image.drawPixel(p.x, p.y, colour);
+		}
+		else
+		{
+			for(int i = 1; i < points.size(); i++)
+			{
+				Point p1 = points.get(i - 1);
+				Point p2 = points.get(i);
+				
+				image.drawLine(p1.x, p1.y, p2.x, p2.y, colour);
+			}
 		}
 	}
 	

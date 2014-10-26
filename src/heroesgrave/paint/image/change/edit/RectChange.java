@@ -42,10 +42,13 @@ public class RectChange implements IEditChange, Serialised
 		this.y2 = y2;
 	}
 	
-	public void moveTo(short x, short y)
+	public boolean moveTo(short x, short y)
 	{
+		if(x2 == x && y2 == y)
+			return false;
 		this.x2 = x;
 		this.y2 = y;
+		return true;
 	}
 	
 	@Override

@@ -22,11 +22,14 @@ package heroesgrave.paint.image;
 
 import heroesgrave.paint.gui.PaintCanvas;
 import heroesgrave.paint.image.change.DocumentChange;
+import heroesgrave.paint.image.change.IChange;
+import heroesgrave.paint.image.change.IEditChange;
+import heroesgrave.paint.image.change.IGeneratorChange;
+import heroesgrave.paint.image.change.IImageChange;
 import heroesgrave.paint.io.ImageExporter;
 import heroesgrave.paint.io.ImageImporter;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.misc.Metadata;
-import heroesgrave.utils.misc.RandomUtils;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -48,7 +51,8 @@ public class Document
 	private Layer root, current;
 	private History history;
 	
-	private BufferedImage frozen;
+	private BufferedImage frozen, preview;
+	private IChange previewChange;
 	private int frozenTo, lowestChange;
 	
 	public boolean saved, repaint;
@@ -60,22 +64,12 @@ public class Document
 		this.width = width;
 		this.height = height;
 		this.frozen = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		this.preview = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		this.info = new Metadata();
 		this.history = new History(this);
 		
 		RawImage image = new RawImage(width, height);
 		//* Fill the image with gradient + noise.
-		for(int i = 0; i < 512; i++)
-		{
-			for(int j = 0; j < 512; j++)
-			{
-				int color = 0xff000000;
-				color |= (i / 2) << 0;
-				color |= (j / 2) << 8;
-				color |= RandomUtils.rInt(0xff) << 16;
-				image.setPixel(i, j, color);
-			}
-		}
 		/**/
 		this.current = this.root = new Layer(this, image, new Metadata());
 		this.flatmap.clear();
@@ -140,6 +134,8 @@ public class Document
 	{
 		this.width = width;
 		this.height = height;
+		this.frozen = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		this.preview = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	}
 	
 	public void save()
@@ -209,9 +205,7 @@ public class Document
 	 */
 	public void setDimensions(int width, int height)
 	{
-		this.width = width;
-		this.height = height;
-		this.frozen = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		resize(width, height);
 	}
 	
 	public BufferedImage getRenderedImage()
@@ -228,40 +222,82 @@ public class Document
 		return image;
 	}
 	
-	// BufferedImage:
-	// 9 Layers: ~10ms
-	
-	public void render(Graphics2D g)
+	public void render(BufferedImage image)
 	{
-		long start = System.nanoTime();
-		int index = flatmap.indexOf(current);
-		if(Math.min(index, lowestChange) < frozenTo)
+		// Create graphics and clear image.
+		Graphics2D g = image.createGraphics();
+		g.setBackground(PaintCanvas.TRANSPARENT);
+		g.clearRect(0, 0, image.getWidth(), image.getHeight());
+		
+		int index = flatmap.indexOf(current) - 1;
+		if(index >= 0)
 		{
-			lowestChange = frozenTo = index;
-			Graphics2D fg = frozen.createGraphics();
-			fg.setBackground(PaintCanvas.TRANSPARENT);
-			fg.clearRect(0, 0, width, height);
-			for(int i = 0; i < frozenTo; i++)
+			if(Math.min(index, lowestChange) < frozenTo)
 			{
-				flatmap.get(i).render(fg);
+				lowestChange = frozenTo = index;
+				Graphics2D fg = frozen.createGraphics();
+				fg.setBackground(PaintCanvas.TRANSPARENT);
+				fg.clearRect(0, 0, width, height);
+				for(int i = 0; i <= frozenTo; i++)
+				{
+					flatmap.get(i).render(fg);
+				}
 			}
+			else if(index > frozenTo)
+			{
+				Graphics2D fg = frozen.createGraphics();
+				for(int i = frozenTo + 1; i <= index; i++)
+				{
+					flatmap.get(i).render(fg);
+				}
+				lowestChange = frozenTo = index;
+			}
+			g.drawImage(frozen, 0, 0, null);
 		}
-		else if(index > frozenTo)
+		else
 		{
-			Graphics2D fg = frozen.createGraphics();
-			for(int i = frozenTo; i < index; i++)
-			{
-				flatmap.get(i).render(fg);
-			}
-			lowestChange = frozenTo = index;
+			frozenTo = -1;
 		}
-		g.drawImage(frozen, 0, 0, null);
-		for(int i = frozenTo; i < flatmap.size(); i++)
+		
+		flatmap.get(index + 1).render(g);
+		
+		if(previewChange != null)
+		{
+			g.dispose(); // I think disposing the graphics context helps performance.
+			RawImage rawPreview = RawImage.unwrapBufferedImage(image);
+			if(previewChange instanceof IEditChange)
+			{
+				((IEditChange) previewChange).apply(rawPreview);
+			}
+			else if(previewChange instanceof IImageChange)
+			{
+				rawPreview.copyFrom(((IImageChange) previewChange).apply(rawPreview), true);
+			}
+			else if(previewChange instanceof IGeneratorChange)
+			{
+				rawPreview.copyFrom(((IGeneratorChange) previewChange).generate(width, height), true);
+			}
+			rawPreview.dispose();
+			g = image.createGraphics();
+		}
+		
+		for(int i = index + 2; i < flatmap.size(); i++)
 		{
 			flatmap.get(i).render(g);
 		}
-		long end = System.nanoTime();
-		System.out.println("Rendering took: " + (end - start) / 1000000 + "ms");
+	}
+	
+	public void preview(IChange change)
+	{
+		this.previewChange = change;
+		this.repaint();
+	}
+	
+	public void applyPreview()
+	{
+		this.getCurrent().addChange(previewChange);
+		this.previewChange = null;
+		this.repaint();
 	}
 	
 	public void changed(Layer layer)
@@ -316,5 +352,11 @@ public class Document
 		changes.push(change);
 		change.apply(this);
 		this.allChanged();
+	}
+	
+	public void repaint()
+	{
+		repaint = true;
+		Paint.main.gui.repaint();
 	}
 }

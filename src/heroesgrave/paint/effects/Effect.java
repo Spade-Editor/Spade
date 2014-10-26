@@ -1,4 +1,4 @@
-package heroesgrave.paint.tools.effects;
+package heroesgrave.paint.effects;
 
 import heroesgrave.paint.image.Layer;
 

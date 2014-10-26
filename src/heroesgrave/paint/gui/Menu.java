@@ -70,6 +70,7 @@ public class Menu
 		menuBar.add((Paint.main.effects.operations = new WebMenu("Image")));
 		menuBar.add((Paint.main.tools.toolsMenu = new WebMenu("Tools")));
 		menuBar.add((Paint.main.effects.effects = new WebMenu("Effects")));
+		menuBar.add((Paint.main.effects.generators = new WebMenu("Generators")));
 		
 		// Info Menus
 		menuBar.add(createWindowMenu());

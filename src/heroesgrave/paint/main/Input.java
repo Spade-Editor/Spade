@@ -20,9 +20,9 @@
 
 package heroesgrave.paint.main;
 
+import heroesgrave.paint.effects.Effect;
 import heroesgrave.paint.gui.Menu;
 import heroesgrave.paint.tools.Tool;
-import heroesgrave.paint.tools.effects.Effect;
 
 import java.awt.AWTException;
 import java.awt.MouseInfo;

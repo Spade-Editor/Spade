@@ -45,4 +45,9 @@ public class RandomUtils
 	{
 		return r.nextInt(max - min + 1) + min;
 	}
+	
+	public static long rLong()
+	{
+		return r.nextLong();
+	}
 }

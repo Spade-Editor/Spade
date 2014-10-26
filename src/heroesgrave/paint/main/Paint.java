@@ -20,6 +20,7 @@
 
 package heroesgrave.paint.main;
 
+import heroesgrave.paint.effects.Effect;
 import heroesgrave.paint.gui.Effects;
 import heroesgrave.paint.gui.GUIManager;
 import heroesgrave.paint.gui.Tools;
@@ -27,7 +28,6 @@ import heroesgrave.paint.image.Document;
 import heroesgrave.paint.io.ImageExporter;
 import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.paint.tools.Tool;
-import heroesgrave.paint.tools.effects.Effect;
 import heroesgrave.utils.app.Application;
 import heroesgrave.utils.io.IOUtils;
 

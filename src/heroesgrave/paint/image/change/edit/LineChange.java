@@ -21,7 +21,7 @@
 package heroesgrave.paint.image.change.edit;
 
 import heroesgrave.paint.image.RawImage;
-import heroesgrave.paint.image.change.IRevEditChange;
+import heroesgrave.paint.image.change.IEditChange;
 import heroesgrave.paint.io.Serialised;
 
 import java.io.DataInputStream;
@@ -32,44 +32,46 @@ import java.io.IOException;
  * Yes, we can implement both an extension of IChange and Serialised.
  * This should be used when the change type stores no extra information.
  */
-public class PixelChange implements IRevEditChange, Serialised
+public class LineChange implements IEditChange, Serialised
 {
-	private short x, y;
-	private int c, o;
+	private short sx, sy, ex, ey;
+	private int c;
 	
-	public PixelChange()
+	public LineChange()
 	{
 		
 	}
 	
-	public PixelChange(short x, short y, int c)
+	public LineChange(short x, short y, int c)
 	{
-		this.x = x;
-		this.y = y;
+		this.sx = this.ex = x;
+		this.sy = this.ey = y;
 		this.c = c;
+	}
+	
+	public boolean end(short x, short y)
+	{
+		if(x == ex && y == ey)
+			return false;
+		this.ex = x;
+		this.ey = y;
+		return true;
 	}
 	
 	@Override
 	public void apply(RawImage image)
 	{
-		o = image.getPixel(x, y);
-		image.drawPixel(x, y, c);
+		image.drawLine(sx, sy, ex, ey, c);
 	}
 	
 	@Override
-	public void revert(RawImage image)
-	{
-		image.drawPixel(x, y, o);
-	}
-	
-	@Override
-	public PixelChange decode()
+	public LineChange decode()
 	{
 		return this;
 	}
 	
 	@Override
-	public PixelChange encode()
+	public LineChange encode()
 	{
 		return this;
 	}
@@ -77,19 +79,21 @@ public class PixelChange implements IRevEditChange, Serialised
 	@Override
 	public void write(DataOutputStream out) throws IOException
 	{
-		out.writeShort(x);
-		out.writeShort(y);
+		out.writeShort(sx);
+		out.writeShort(sy);
+		out.writeShort(ex);
+		out.writeShort(ey);
 		out.writeInt(c);
-		out.writeInt(o);
 	}
 	
 	@Override
 	public void read(DataInputStream in) throws IOException
 	{
-		x = in.readShort();
-		y = in.readShort();
+		sx = in.readShort();
+		sy = in.readShort();
+		ex = in.readShort();
+		ey = in.readShort();
 		c = in.readInt();
-		o = in.readInt();
 	}
 	
 	@Override

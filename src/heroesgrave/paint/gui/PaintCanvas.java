@@ -134,47 +134,67 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	}
 	
 	@Override
-	public void paint(Graphics g)
+	public void paint(Graphics _g)
 	{
-		Graphics2D g2d = (Graphics2D) g;
+		Graphics2D g = (Graphics2D) _g;
 		
 		if(Menu.DARK_BACKGROUND)
 		{
-			g.setColor(new Color(0x0f171f));
+			_g.setColor(new Color(0x0f171f));
 		}
 		else
 		{
-			g.setColor(new Color(0xDDEEFF));
+			_g.setColor(new Color(0xDDEEFF));
 		}
-		g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
+		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 		
 		AffineTransform Tx = new AffineTransform();
 		Tx.translate(this.getWidth() / 2, this.getHeight() / 2);
-		Tx.scale(this.cam_zoom, this.cam_zoom);
 		Tx.rotate(this.cam_rotation);
+		Tx.scale(this.cam_zoom, this.cam_zoom);
 		Tx.translate(-this.cam_positionX, -this.cam_positionY);
 		
-		g2d.transform(Tx);
+		g.transform(Tx);
 		if(Menu.DARK_BACKGROUND)
 		{
-			g2d.setPaint(paintDark);
+			g.setPaint(paintDark);
 		}
 		else
 		{
-			g2d.setPaint(paintLight);
+			g.setPaint(paintLight);
 		}
-		g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
+		g.fillRect(0, 0, image.getWidth(), image.getHeight());
 		
 		if(document != null && document.repaint)
 		{
-			Graphics2D cg = image.createGraphics();
-			cg.setBackground(TRANSPARENT);
-			cg.clearRect(0, 0, image.getWidth(), image.getHeight());
-			document.render(cg);
+			document.render(image);
 			document.repaint = false;
 		}
 		
-		g2d.drawImage(image, 0, 0, null);
+		g.drawImage(image, 0, 0, null);
+		/*
+		if(Menu.GRID_ENABLED && cam_zoom >= 4)
+		{
+			Tx = new AffineTransform();
+			Tx.scale(1f / this.cam_zoom, 1f / this.cam_zoom);
+			g.transform(Tx);
+			g.setColor(Color.gray);
+			final int top = MathUtils.floor(ty * cam_zoom);
+			final int bottom = MathUtils.floor((ty + image.getHeight()) * cam_zoom);
+			final int left = MathUtils.floor(tx * cam_zoom);
+			final int right = MathUtils.floor((tx + image.getWidth()) * cam_zoom);
+			for(int i = 0; i < image.getWidth(); i++)
+			{
+				int ix = MathUtils.floor((tx + i) * cam_zoom);
+				g.drawLine(ix, top, ix, bottom);
+			}
+			for(int j = 0; j < image.getHeight(); j++)
+			{
+				int iy = MathUtils.floor((ty + j) * cam_zoom);
+				g.drawLine(left, iy, right, iy);
+			}
+		}
+		*/
 	}
 	
 	@Override

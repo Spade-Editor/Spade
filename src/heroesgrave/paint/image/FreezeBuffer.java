@@ -22,6 +22,7 @@ package heroesgrave.paint.image;
 
 import heroesgrave.paint.image.change.IChange;
 import heroesgrave.paint.image.change.IEditChange;
+import heroesgrave.paint.image.change.IGeneratorChange;
 import heroesgrave.paint.image.change.IImageChange;
 import heroesgrave.paint.image.change.IRevEditChange;
 import heroesgrave.paint.image.change.Marker;
@@ -30,7 +31,7 @@ import heroesgrave.paint.io.Serialised;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
-// FIXME Image Changes.
+// FIXME Doesn't work properly with IImageChanges/IGeneratorChanges.
 public class FreezeBuffer
 {
 	private class OldBuffer
@@ -46,7 +47,6 @@ public class FreezeBuffer
 	}
 	
 	public static final int MAXIMUM = 16;
-	public static final int MAXIMUM2 = MAXIMUM + MAXIMUM / 2;
 	public static final int MAXIMUM_ORDER = 8;
 	
 	private LinkedList<OldBuffer> oldBuffers = new LinkedList<OldBuffer>();
@@ -63,8 +63,8 @@ public class FreezeBuffer
 		this.back = image;
 		this.marker = new Marker();
 		this.image = new BufferedImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB);
-		this.front = RawImage.fromRaster(this.image);
-		this.rebuffer = true;
+		this.front = RawImage.unwrapBufferedImage(this.image);
+		this.front.copyFrom(this.back, false);
 	}
 	
 	private void pushOldBuffer(OldBuffer buffer)
@@ -90,7 +90,10 @@ public class FreezeBuffer
 	private boolean popOldBuffer()
 	{
 		if(oldBuffers.isEmpty())
+		{
+			marker = new Marker();
 			return false;
+		}
 		OldBuffer top = this.oldBuffers.peek();
 		if(top.order == 1)
 		{
@@ -106,14 +109,16 @@ public class FreezeBuffer
 				}
 				else
 				{
-					this.changes.push(s.decode());
+					this.changes.addFirst(s.decode());
 				}
 			}
+			rebuffer = true;
 			return true;
 		}
 		else
 		{
 			int i = top.order;
+			IChange lastMarker = null;
 			LinkedList<Serialised> toReturn = new LinkedList<Serialised>();
 			Serialised s;
 			while(i * 2 > top.order)
@@ -125,11 +130,22 @@ public class FreezeBuffer
 				else if(s.isMarker())
 				{
 					i--;
+					if(!(s instanceof Marker))
+					{
+						lastMarker = s.decode();
+					}
+					else
+					{
+						lastMarker = null;
+					}
 				}
 				toReturn.push(s);
 			}
 			RawImage image = RawImage.copyOf(top.image);
-			while(i > 0)
+			LinkedList<IChange> toApply = new LinkedList<IChange>();
+			if(lastMarker != null)
+				toApply.push(lastMarker);
+			while(i > 1)
 			{
 				if((s = oldChanges.poll()) == null)
 				{
@@ -138,21 +154,30 @@ public class FreezeBuffer
 				else if(s.isMarker())
 				{
 					i--;
-					if(s instanceof IImageChange)
+					if(s instanceof IGeneratorChange)
 					{
-						image = ((IImageChange) s).apply(image);
+						// We can take a shortcut here because a generator requires no input image.
+						image = ((IGeneratorChange) s.decode()).generate(image.width, image.height);
+						toReturn.push(s);
+						break;
 					}
 				}
-				else
-				{
-					IChange c = s.decode();
-					if(c instanceof IEditChange)
-					{
-						((IEditChange) c).apply(image);
-					}
-				}
-				
 				toReturn.push(s);
+				if(!(s instanceof Marker))
+				{
+					toApply.push(s.decode());
+				}
+			}
+			for(IChange c : toApply)
+			{
+				if(c instanceof IImageChange)
+				{
+					image = ((IImageChange) c).apply(image);
+				}
+				else if(c instanceof IEditChange)
+				{
+					((IEditChange) c).apply(image);
+				}
 			}
 			top.order /= 2;
 			this.oldBuffers.push(new OldBuffer(top.order, image));
@@ -164,55 +189,52 @@ public class FreezeBuffer
 		}
 	}
 	
-	public void printBuffers()
-	{
-		System.out.print("Buffers: ");
-		for(OldBuffer buf : this.oldBuffers)
-		{
-			System.out.printf("%d, ", buf.order);
-		}
-		System.out.println();
-	}
-	
 	public void addChange(IChange change)
 	{
 		if(change instanceof IEditChange)
 		{
-			changes.add(change);
+			changes.addLast(change);
+			checkBuffered();
 			((IEditChange) change).apply(front);
 			if(changes.size() >= MAXIMUM)
 			{
-				checkBuffered();
 				pushOldBuffer(new OldBuffer(1, back));
 				
-				this.back = this.front;
-				this.image = new BufferedImage(front.width, front.height, BufferedImage.TYPE_INT_ARGB);
-				this.front = RawImage.fromRaster(image);
-				this.rebuffer = true;
+				this.back = RawImage.copyOf(this.front);
 				
 				oldChanges.push(marker);
 				marker = new Marker();
 				while(!changes.isEmpty())
 					oldChanges.push(changes.removeFirst().encode());
-				printBuffers();
 			}
+		}
+		else if(change instanceof IGeneratorChange)
+		{
+			checkBuffered();
+			pushOldBuffer(new OldBuffer(1, back));
+			
+			this.back = ((IGeneratorChange) change).generate(front.width, front.height);
+			
+			front.copyFrom(back, false);
+			
+			oldChanges.push(marker);
+			marker = change.encode();
+			while(!changes.isEmpty())
+				oldChanges.push(changes.removeFirst().encode());
 		}
 		else if(change instanceof IImageChange)
 		{
 			checkBuffered();
 			pushOldBuffer(new OldBuffer(1, back));
 			
-			// this.front is renewed in case IImageChange wants to reuse the image.
-			this.back = ((IImageChange) change).apply(this.front);
-			this.image = new BufferedImage(front.width, front.height, BufferedImage.TYPE_INT_ARGB);
-			this.front = RawImage.fromRaster(image);
-			this.rebuffer = true;
+			this.back = ((IImageChange) change).apply(RawImage.copyOf(front));
+			
+			front.copyFrom(back, false);
 			
 			oldChanges.push(marker);
 			marker = change.encode();
 			while(!changes.isEmpty())
 				oldChanges.push(changes.removeFirst().encode());
-			printBuffers();
 		}
 	}
 	
@@ -220,15 +242,16 @@ public class FreezeBuffer
 	{
 		if(changes.isEmpty())
 		{
-			if(marker instanceof IImageChange)
+			if(!(marker instanceof Marker))
 			{
 				reverted.push(marker.decode());
 				popOldBuffer();
-				rebuffer = true;
 				return;
 			}
 			
-			this.front = this.back;
+			this.front.copyFrom(this.back, false);
+			rebuffer = true;
+			
 			if(!popOldBuffer())
 				return;
 		}
@@ -249,50 +272,12 @@ public class FreezeBuffer
 		{
 			return;
 		}
-		IChange change = reverted.pop();
-		if(change instanceof IEditChange)
-		{
-			((IEditChange) change).apply(front);
-			changes.add(change);
-			if(changes.size() >= MAXIMUM2)
-			{
-				checkBuffered();
-				pushOldBuffer(new OldBuffer(1, back));
-				
-				this.back = this.front;
-				this.image = new BufferedImage(front.width, front.height, BufferedImage.TYPE_INT_ARGB);
-				this.front = RawImage.fromRaster(image);
-				this.rebuffer = true;
-				
-				oldChanges.push(marker);
-				marker = new Marker();
-				while(!changes.isEmpty())
-					oldChanges.push(changes.removeFirst().encode());
-				printBuffers();
-			}
-		}
-		else if(change instanceof IImageChange)
-		{
-			checkBuffered();
-			pushOldBuffer(new OldBuffer(1, back));
-			
-			// this.front is renewed in case IImageChange wants to reuse the image.
-			this.back = ((IImageChange) change).apply(this.front);
-			this.image = new BufferedImage(front.width, front.height, BufferedImage.TYPE_INT_ARGB);
-			this.front = RawImage.fromRaster(image);
-			this.rebuffer = true;
-			
-			oldChanges.push(marker);
-			marker = change.encode();
-			while(!changes.isEmpty())
-				oldChanges.push(changes.removeFirst().encode());
-			printBuffers();
-		}
+		addChange(reverted.pop());
 	}
 	
 	public void rebuffer()
 	{
-		front.copyFrom(back);
+		front.copyFrom(back, false);
 		for(IChange c : changes)
 		{
 			((IEditChange) c).apply(front);
