@@ -1,5 +1,6 @@
+// {LICENSE}
 /*
- * Copyright 2013 HeroesGrave and other Paint.JAVA developers.
+ * Copyright 2013-2014 HeroesGrave and other Paint.JAVA developers.
  * 
  * This file is part of Paint.JAVA
  * 
@@ -10,31 +11,31 @@
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package experimental.colorchooser.event;
 
-import java.util.EventObject;
+package heroesgrave.paint.gui.colorchooser;
 
-import experimental.colorchooser.Channel;
+import javax.swing.JLabel;
 
 /**
  * @author BurntPizza
- * 
+ *
  */
 @SuppressWarnings("serial")
-public class ColorEvent extends EventObject {
-	
-	public final int val;
-	public final Channel channel;
-	
-	public ColorEvent(Object source, Channel channel, int val) {
-		super(source);
-		this.channel = channel;
-		this.val = val;
+public class SpacerLabel extends JLabel
+{
+	public SpacerLabel(String text, int w, int h)
+	{
+		super(text);
+		this.setAlignmentX(0.7f);
+		setSize(w, h);
+		setPreferredSize(getSize());
+		setMinimumSize(getSize());
+		setMaximumSize(getSize());
 	}
 }

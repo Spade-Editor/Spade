@@ -1,5 +1,6 @@
+// {LICENSE}
 /*
- * Copyright 2013 HeroesGrave and other Paint.JAVA developers.
+ * Copyright 2013-2014 HeroesGrave and other Paint.JAVA developers.
  * 
  * This file is part of Paint.JAVA
  * 
@@ -10,13 +11,14 @@
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package experimental.colorchooser.event;
+
+package heroesgrave.paint.gui.colorchooser.event;
 
 import java.util.EventListener;
 
@@ -24,7 +26,8 @@ import java.util.EventListener;
  * @author BurntPizza
  * 
  */
-public interface ColorListener extends EventListener {
+public interface ColourListener extends EventListener
+{
 	
-	public void changeColor(int r, int g, int b, int h, int s, int v, int a);
+	public void changeColor(int r, int g, int b, int h, int s, int v, int a, boolean primary);
 }

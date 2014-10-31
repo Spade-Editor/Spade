@@ -20,10 +20,10 @@
 
 package heroesgrave.paint.main;
 
-import heroesgrave.paint.gui.ColourChooser;
 import heroesgrave.paint.gui.LayerManager;
 import heroesgrave.paint.gui.Menu;
 import heroesgrave.paint.gui.ToolBox;
+import heroesgrave.paint.gui.colorchooser.ColourChooser;
 
 import java.awt.Frame;
 import java.util.prefs.Preferences;
@@ -76,10 +76,10 @@ public class UserPreferences
 		frame.setSize(windowWidth, windowHeight);
 		frame.setLocationRelativeTo(null);
 		
-		chooser.getDialog().setLocation(colourPickerX, colourPickerY);
+		chooser.setLocation(colourPickerX, colourPickerY);
 		if(prefs.getBoolean(COLOUR_PICKER_VISIBLE, false))
 		{
-			chooser.show();
+			chooser.setVisible(true);
 		}
 		
 		layers.dialog.setVisible(prefs.getBoolean(LAYERS_VISIBLE, false));
@@ -109,8 +109,8 @@ public class UserPreferences
 			prefs.putInt(WINDOW_HEIGHT, windowHeight);
 			prefs.putBoolean(WINDOW_MAXIMIZED, false);
 		}
-		colourPickerX = chooser.getDialog().getX();
-		colourPickerY = chooser.getDialog().getY();
+		colourPickerX = chooser.getX();
+		colourPickerY = chooser.getY();
 		prefs.putInt(COLOUR_PICKER_X, colourPickerX);
 		prefs.putInt(COLOUR_PICKER_Y, colourPickerY);
 		prefs.putBoolean(COLOUR_PICKER_VISIBLE, chooser.isVisible());

@@ -78,6 +78,8 @@ public class MathUtils
 	
 	public static final double clamp(double d, double min, double max)
 	{
+		if(min > max)
+			throw new IllegalArgumentException("min > max");
 		if(d >= max)
 			return max;
 		if(d <= min)
@@ -87,6 +89,8 @@ public class MathUtils
 	
 	public static final int clamp(int i, int min, int max)
 	{
+		if(min > max)
+			throw new IllegalArgumentException("min > max");
 		if(i >= max)
 			return max;
 		if(i <= min)

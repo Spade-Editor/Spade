@@ -46,7 +46,7 @@ public class FreezeBuffer
 		}
 	}
 	
-	public static final int MAXIMUM = 16;
+	public static final int MAXIMUM = 4;
 	public static final int MAXIMUM_ORDER = 8;
 	
 	private LinkedList<OldBuffer> oldBuffers = new LinkedList<OldBuffer>();
@@ -118,7 +118,6 @@ public class FreezeBuffer
 		else
 		{
 			int i = top.order;
-			IChange lastMarker = null;
 			LinkedList<Serialised> toReturn = new LinkedList<Serialised>();
 			Serialised s;
 			while(i * 2 > top.order)
@@ -130,22 +129,17 @@ public class FreezeBuffer
 				else if(s.isMarker())
 				{
 					i--;
-					if(!(s instanceof Marker))
+					if(i * 2 == top.order && !(s instanceof Marker))
 					{
-						lastMarker = s.decode();
-					}
-					else
-					{
-						lastMarker = null;
+						oldChanges.push(s);
+						break;
 					}
 				}
 				toReturn.push(s);
 			}
 			RawImage image = RawImage.copyOf(top.image);
 			LinkedList<IChange> toApply = new LinkedList<IChange>();
-			if(lastMarker != null)
-				toApply.push(lastMarker);
-			while(i > 1)
+			while(i > 0)
 			{
 				if((s = oldChanges.poll()) == null)
 				{

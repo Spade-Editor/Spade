@@ -1,5 +1,6 @@
+// {LICENSE}
 /*
- * Copyright 2013 HeroesGrave and other Paint.JAVA developers.
+ * Copyright 2013-2014 HeroesGrave and other Paint.JAVA developers.
  * 
  * This file is part of Paint.JAVA
  * 
@@ -10,40 +11,45 @@
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package experimental.colorchooser;
+
+package heroesgrave.paint.gui.colorchooser;
 
 /**
  * @author BurntPizza
  * 
  */
-public enum ColorUtils {
+public enum ColorUtils
+{
 	
 	;
 	
 	/**
 	 * 
 	 */
-	public static int pack(int r, int g, int b, int a) {
+	public static int pack(int r, int g, int b, int a)
+	{
 		return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
 	}
 	
 	/**
 	 * 
 	 */
-	public static int packf(double r, double g, double b, double a) {
+	public static int packf(double r, double g, double b, double a)
+	{
 		return ((((int) (a * 255)) & 0xFF) << 24) | ((((int) (r * 255)) & 0xFF) << 16) | ((((int) (g * 255)) & 0xFF) << 8) | (((int) (b * 255)) & 0xFF);
 	}
 	
 	/**
 	 * 
 	 */
-	public static int toARGB(double h, double s, double v, double a) {
+	public static int toARGB(double h, double s, double v, double a)
+	{
 		
 		double C = v * s;
 		double H = h * 6;
@@ -51,22 +57,33 @@ public enum ColorUtils {
 		
 		double ri = 0, gi = 0, bi = 0;
 		
-		if (H < 1) {
+		if(H < 1)
+		{
 			ri = C;
 			gi = X;
-		} else if (H < 2) {
+		}
+		else if(H < 2)
+		{
 			ri = X;
 			gi = C;
-		} else if (H < 3) {
+		}
+		else if(H < 3)
+		{
 			gi = C;
 			bi = X;
-		} else if (H < 4) {
+		}
+		else if(H < 4)
+		{
 			gi = X;
 			bi = C;
-		} else if (H < 5) {
+		}
+		else if(H < 5)
+		{
 			ri = X;
 			bi = C;
-		} else {
+		}
+		else
+		{
 			ri = C;
 			bi = X;
 		}
@@ -83,8 +100,8 @@ public enum ColorUtils {
 	/**
 	 * 
 	 */
-	public static long toHSVA(double r, double g, double b, double a) {
-		
+	public static long toHSVA(double r, double g, double b, double a)
+	{
 		double M = Math.max(r, Math.max(g, b));
 		double m = Math.min(r, Math.min(g, b));
 		double delta = M - m;
@@ -95,16 +112,16 @@ public enum ColorUtils {
 		v = M;
 		
 		double hue;
-		if (r == M)
+		if(r == M)
 			hue = ((g - b) / (delta + 1e-20)) % 6.;
-		else if (g == M)
+		else if(g == M)
 			hue = 2 + (b - r) / (delta + 1e-20);
 		else
 			hue = 4 + (r - g) / (delta + 1e-20);
 		
 		h = hue / 6;
 		
-		long l = (((long) (h * 1024)) << 32) | (((int) (s * 255)) << 16) | (((int) (v * 255)) << 8) | ((int) (a * 255));
+		long l = (((long) (h * 1023)) << 32) | (((int) (s * 255)) << 16) | (((int) (v * 255)) << 8) | ((int) (a * 255));
 		
 		return l;
 	}

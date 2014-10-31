@@ -1,5 +1,6 @@
+// {LICENSE}
 /*
- * Copyright 2013 HeroesGrave and other Paint.JAVA developers.
+ * Copyright 2013-2014 HeroesGrave and other Paint.JAVA developers.
  * 
  * This file is part of Paint.JAVA
  * 
@@ -10,95 +11,111 @@
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package experimental.colorchooser;
+
+package heroesgrave.paint.gui.colorchooser;
+
+import static heroesgrave.paint.gui.colorchooser.ColorUtils.pack;
 
 import java.awt.Color;
-
-import static experimental.colorchooser.ColorUtils.*;
 
 /**
  * @author BurntPizza
  * 
  */
 @SuppressWarnings("serial")
-public class MutableColor extends Color {
+public class MutableColor extends Color
+{
 	
 	private static final MutableColor[] swap;
 	private static int index;
 	
-	static {
+	static
+	{
 		swap = new MutableColor[2];
 		swap[0] = new MutableColor();
 		swap[1] = new MutableColor();
 		index = 0;
 	}
 	
-	public static MutableColor getColor(int r, int g, int b, int a) {
-		return swap[index++&1].setColor(r, g, b, a);
+	public static MutableColor getColor(int r, int g, int b, int a)
+	{
+		return swap[index++ & 1].setColor(r, g, b, a);
 	}
 	
-	public static MutableColor getColor(int argb) {
-		return swap[index++&1].setColor(argb);
+	public static MutableColor getColor(int argb)
+	{
+		return swap[index++ & 1].setColor(argb);
 	}
 	
-	public static MutableColor getColor(int r, int g, int b) {
-		return swap[index++&1].setColor(r, g, b, 255);
+	public static MutableColor getColor(int r, int g, int b)
+	{
+		return swap[index++ & 1].setColor(r, g, b, 255);
 	}
-	
 	
 	private int value;
 	
-	public MutableColor() {
+	public MutableColor()
+	{
 		this(0, 0, 0);
 	}
 	
-	public MutableColor(int r, int g, int b) {
+	public MutableColor(int r, int g, int b)
+	{
 		this(r, g, b, 255);
 	}
 	
-	public MutableColor(int r, int g, int b, int a) {
+	public MutableColor(int r, int g, int b, int a)
+	{
 		super(r, g, b, a);
 		setColor(r, g, b, a);
 	}
 	
-	public MutableColor setColor(int r, int g, int b) {
+	public MutableColor setColor(int r, int g, int b)
+	{
 		setColor(r, g, b, 255);
 		return this;
 	}
 	
-	public MutableColor setColor(int r, int g, int b, int a) {
+	public MutableColor setColor(int r, int g, int b, int a)
+	{
 		value = pack(r, g, b, a);
 		return this;
 	}
 	
-	public MutableColor setColor(int argb) {
+	public MutableColor setColor(int argb)
+	{
 		value = argb;
 		return this;
 	}
 	
-	public int getRed() {
+	public int getRed()
+	{
 		return (getRGB() >> 16) & 0xFF;
 	}
 	
-	public int getGreen() {
+	public int getGreen()
+	{
 		return (getRGB() >> 8) & 0xFF;
 	}
 	
-	public int getBlue() {
+	public int getBlue()
+	{
 		return (getRGB() >> 0) & 0xFF;
 	}
 	
-	public int getAlpha() {
+	public int getAlpha()
+	{
 		return (getRGB() >> 24) & 0xff;
 	}
 	
-	public int getRGB() {
+	public int getRGB()
+	{
 		return value;
 	}
 }

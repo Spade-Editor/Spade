@@ -18,9 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.paint.tools.old;
+package heroesgrave.paint.tools;
 
 import heroesgrave.paint.gui.Tools;
+import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.main.Paint;
 
 import java.awt.event.MouseEvent;
@@ -56,33 +57,27 @@ public class Picker extends Tool
 		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
 	}
 	
-	public void onPressed(int x, int y, int button)
+	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getCanvas().getWidth() || y >= Paint.main.gui.canvas.getCanvas().getHeight())
-			return;
-		
 		if(button == MouseEvent.BUTTON1)
 		{
-			Paint.main.setLeftColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y), false);
+			Paint.main.setLeftColour(layer.getImage().getPixel(x, y), false);
 		}
 		else if(button == MouseEvent.BUTTON3)
 		{
-			Paint.main.setRightColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y), false);
+			Paint.main.setRightColour(layer.getImage().getPixel(x, y), false);
 		}
 	}
 	
-	public void onReleased(int x, int y, int button)
+	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getCanvas().getWidth() || y >= Paint.main.gui.canvas.getCanvas().getHeight())
-			return;
-		
 		if(button == MouseEvent.BUTTON1)
 		{
-			Paint.main.setLeftColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y), false);
+			Paint.main.setLeftColour(layer.getImage().getPixel(x, y), false);
 		}
 		else if(button == MouseEvent.BUTTON3)
 		{
-			Paint.main.setRightColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y), false);
+			Paint.main.setRightColour(layer.getImage().getPixel(x, y), false);
 		}
 		
 		if(switchPencil.isSelected())
@@ -91,18 +86,15 @@ public class Picker extends Tool
 		}
 	}
 	
-	public void whilePressed(int x, int y, int button)
+	public void whilePressed(Layer layer, short x, short y, int button)
 	{
-		if(x < 0 || y < 0 || x >= Paint.main.gui.canvas.getCanvas().getWidth() || y >= Paint.main.gui.canvas.getCanvas().getHeight())
-			return;
-		
 		if(button == MouseEvent.BUTTON1)
 		{
-			Paint.main.setLeftColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y), false);
+			Paint.main.setLeftColour(layer.getImage().getPixel(x, y), false);
 		}
 		else if(button == MouseEvent.BUTTON3)
 		{
-			Paint.main.setRightColour(Paint.main.gui.canvas.getCanvas().getRGB(x, y), false);
+			Paint.main.setRightColour(layer.getImage().getPixel(x, y), false);
 		}
 	}
 }

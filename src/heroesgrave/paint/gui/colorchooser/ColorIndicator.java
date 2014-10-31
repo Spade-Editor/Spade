@@ -1,5 +1,6 @@
+// {LICENSE}
 /*
- * Copyright 2013 HeroesGrave and other Paint.JAVA developers.
+ * Copyright 2013-2014 HeroesGrave and other Paint.JAVA developers.
  * 
  * This file is part of Paint.JAVA
  * 
@@ -10,18 +11,21 @@
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package experimental.colorchooser;
 
-import static experimental.colorchooser.Channel.Alpha;
-import static experimental.colorchooser.Channel.Blue;
-import static experimental.colorchooser.Channel.Green;
-import static experimental.colorchooser.Channel.Red;
+package heroesgrave.paint.gui.colorchooser;
+
+import static heroesgrave.paint.gui.colorchooser.Channel.Alpha;
+import static heroesgrave.paint.gui.colorchooser.Channel.Blue;
+import static heroesgrave.paint.gui.colorchooser.Channel.Green;
+import static heroesgrave.paint.gui.colorchooser.Channel.Red;
+import heroesgrave.paint.gui.colorchooser.event.ColourEventBroadcaster;
+import heroesgrave.paint.gui.colorchooser.event.ColourListener;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -30,22 +34,20 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JComponent;
 
-import experimental.colorchooser.event.ColorEventBroadcaster;
-import experimental.colorchooser.event.ColorListener;
-
 /**
  * @author BurntPizza
  * 
  */
 @SuppressWarnings("serial")
-public class ColorIndicator extends JComponent implements MouseListener, ColorListener {
-	
+public class ColorIndicator extends JComponent implements MouseListener, ColourListener
+{
 	public static final int SIZE = 64;
 	
-	private ColorEventBroadcaster parent;
+	private ColourEventBroadcaster parent;
 	private MutableColor primary, secondary;
 	
-	public ColorIndicator(ColorEventBroadcaster parent) {
+	public ColorIndicator(ColourEventBroadcaster parent)
+	{
 		super();
 		this.parent = parent;
 		parent.addColorListener(this);
@@ -53,6 +55,8 @@ public class ColorIndicator extends JComponent implements MouseListener, ColorLi
 		setSize(52, 52);
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
+		setMaximumSize(getSize());
+		
 		setBackground(new Color(0, true));
 		setDoubleBuffered(true);
 		
@@ -63,31 +67,36 @@ public class ColorIndicator extends JComponent implements MouseListener, ColorLi
 		
 	}
 	
-	public MutableColor getPrimary() {
+	public MutableColor getPrimary()
+	{
 		return primary;
 	}
 	
-	public MutableColor getSecondary() {
+	public MutableColor getSecondary()
+	{
 		return secondary;
 	}
 	
-	public void setPrimary(int r, int g, int b, int a) {
+	public void setPrimary(int r, int g, int b, int a)
+	{
 		primary.setColor(r, g, b, a);
 	}
 	
-	public void setSecondary(int r, int g, int b, int a) {
+	public void setSecondary(int r, int g, int b, int a)
+	{
 		secondary.setColor(r, g, b, a);
 	}
 	
-	public void flip() {
+	public void flip()
+	{
 		int color = primary.getRGB();
 		primary.setColor(secondary.getRGB());
 		secondary.setColor(color);
 		repaint();
 	}
 	
-	public void paint(Graphics g) {
-		
+	public void paint(Graphics g)
+	{
 		g.setColor(Color.white);
 		g.drawRect(SIZE / 4 + 1, SIZE / 4 + 1, SIZE / 2 + 1, SIZE / 2 + 1);
 		g.setColor(Color.black);
@@ -95,8 +104,9 @@ public class ColorIndicator extends JComponent implements MouseListener, ColorLi
 		
 		final int off = 2;
 		
-		for (int y = 0; y < SIZE / 2; y += 16)
-			for (int x = 0; x < SIZE / 2; x += 16) {
+		for(int y = 0; y < SIZE / 2; y += 16)
+			for(int x = 0; x < SIZE / 2; x += 16)
+			{
 				g.setColor(Color.gray);
 				g.fillRect(off + x, off + y, 8, 8);
 				g.fillRect(off + x + 8, off + y + 8, 8, 8);
@@ -126,46 +136,67 @@ public class ColorIndicator extends JComponent implements MouseListener, ColorLi
 	}
 	
 	@Override
-	public void changeColor(int r, int g, int b, int h, int s, int v, int a) {
-		primary.setColor(r, g, b, a);
+	public void changeColor(int r, int g, int b, int h, int s, int v, int a, boolean primary)
+	{
+		if(primary)
+			this.primary.setColor(r, g, b, a);
+		else
+			this.secondary.setColor(r, g, b, a);
 	}
 	
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mouseClicked(MouseEvent e)
+	{
 	}
 	
 	@Override
-	public void mousePressed(MouseEvent e) {
+	public void mousePressed(MouseEvent e)
+	{
+		boolean p = (e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) == 0;
+		boolean swap = false;
 		int x = e.getX();
 		int y = e.getY();
 		
-		Color c = null;
-		
-		if (x >= 2 && y >= 2 && x < 34 && y < 34) {
-			c = primary;
-		} else if (((x >= 36 && y >= 18) || (x >= 18 && y >= 36)) && x < 50 && y < 50) {
-			c = secondary;
+		if(x >= 2 && y >= 2 && x < 34 && y < 34)
+		{
+			swap = !p;
 		}
-		if (c != null) {
-			parent.makeChange(this, Red, c.getRed());
-			parent.makeChange(this, Green, c.getGreen());
-			parent.makeChange(this, Blue, c.getBlue());
-			parent.makeChange(this, Alpha, c.getAlpha());
+		else if(((x >= 36 && y >= 18) || (x >= 18 && y >= 36)) && x < 50 && y < 50)
+		{
+			swap = p;
+		}
+		
+		if(swap)
+		{
+			MutableColor tmp = primary;
+			primary = secondary;
+			secondary = tmp;
+			parent.makeChange(this, Red, secondary.getRed(), false);
+			parent.makeChange(this, Green, secondary.getGreen(), false);
+			parent.makeChange(this, Blue, secondary.getBlue(), false);
+			parent.makeChange(this, Alpha, secondary.getAlpha(), false);
+			parent.makeChange(this, Red, primary.getRed(), true);
+			parent.makeChange(this, Green, primary.getGreen(), true);
+			parent.makeChange(this, Blue, primary.getBlue(), true);
+			parent.makeChange(this, Alpha, primary.getAlpha(), true);
 			
 			parent.broadcastChanges(this);
 		}
 	}
 	
 	@Override
-	public void mouseReleased(MouseEvent e) {
+	public void mouseReleased(MouseEvent e)
+	{
 	}
 	
 	@Override
-	public void mouseEntered(MouseEvent e) {
+	public void mouseEntered(MouseEvent e)
+	{
 	}
 	
 	@Override
-	public void mouseExited(MouseEvent e) {
+	public void mouseExited(MouseEvent e)
+	{
 	}
 	
 }

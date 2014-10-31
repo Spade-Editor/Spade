@@ -20,6 +20,8 @@
 
 package heroesgrave.paint.gui;
 
+import heroesgrave.paint.gui.colorchooser.ColourChooser;
+import heroesgrave.paint.gui.colorchooser.event.ColourListener;
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
@@ -135,13 +137,24 @@ public class GUIManager
 		initMenu();
 		this.canvasPanel = new PaintCanvas(frame);
 		panel.add(canvasPanel, BorderLayout.CENTER);
-		chooser = new ColourChooser(frame);
+		chooser = new ColourChooser();
 		layers = new LayerManager(frame);
 		about = new AboutDialog(frame);
 		
 		Paint.main.tools.toolbox = toolBox = new ToolBox();
 		panel.add(toolBox.getToolbar(), BorderLayout.WEST);
 		finish();
+		
+		chooser.addColorListener(new ColourListener()
+		{
+			public void changeColor(int r, int g, int b, int h, int s, int v, int a, boolean primary)
+			{
+				if(primary)
+					Paint.main.setLeftColour(a << 24 | r << 16 | g << 8 | b, true);
+				else
+					Paint.main.setRightColour(a << 24 | r << 16 | g << 8 | b, true);
+			}
+		});
 		
 		initInputs();
 	}

@@ -62,7 +62,7 @@ public class Paint extends Application
 	// Development for under-development new features.
 	
 	public static final String VERSION = "0.14-Dev";
-	public static final String RELEASED = "25/10/2014";
+	public static final String RELEASED = "31/10/2014";
 	
 	/**/public static final String BUILD_TYPE = "Development";
 	//*/public static final String BUILD_TYPE = "Beta";
@@ -118,8 +118,8 @@ public class Paint extends Application
 				gui = new GUIManager();
 				gui.init();
 				
-				setRightColour(0xffffffff, false);
 				setLeftColour(0xff000000, false);
+				setRightColour(0xffffffff, false);
 				
 				tools.registerTools();
 				effects.registerEffects();
@@ -335,7 +335,7 @@ public class Paint extends Application
 	{
 		if(!checked)
 		{
-			gui.chooser.setLeftColour(c);
+			gui.chooser.setColour(c, this, true);
 		}
 		Paint.leftColour = c;
 	}
@@ -349,7 +349,7 @@ public class Paint extends Application
 	{
 		if(!checked)
 		{
-			gui.chooser.setRightColour(c);
+			gui.chooser.setColour(c, this, false);
 		}
 		Paint.rightColour = c;
 	}
