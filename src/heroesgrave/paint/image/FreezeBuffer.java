@@ -46,7 +46,7 @@ public class FreezeBuffer
 		}
 	}
 	
-	public static final int MAXIMUM = 4;
+	public static final int MAXIMUM = 16;
 	public static final int MAXIMUM_ORDER = 8;
 	
 	private LinkedList<OldBuffer> oldBuffers = new LinkedList<OldBuffer>();
