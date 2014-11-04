@@ -22,6 +22,7 @@ package heroesgrave.paint.image;
 
 import heroesgrave.paint.image.blend.BlendMode;
 import heroesgrave.paint.image.change.IChange;
+import heroesgrave.paint.image.change.IMaskChange;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.misc.Metadata;
 
@@ -132,6 +133,10 @@ public class Layer extends DefaultMutableTreeNode
 		doc.getHistory().addChange(doc.getFlatMap().indexOf(this));
 		buffer.addChange(change);
 		doc.changed(this);
+		if(change instanceof IMaskChange)
+		{
+			Paint.main.gui.canvasPanel.maskChanged();
+		}
 	}
 	
 	public Document getDocument()
@@ -141,13 +146,19 @@ public class Layer extends DefaultMutableTreeNode
 	
 	public void revertChange()
 	{
-		buffer.revertChange();
+		if(buffer.revertChange() instanceof IMaskChange)
+		{
+			Paint.main.gui.canvasPanel.maskChanged();
+		}
 		doc.changed(this);
 	}
 	
 	public void repeatChange()
 	{
-		buffer.repeatChange();
+		if(buffer.repeatChange() instanceof IMaskChange)
+		{
+			Paint.main.gui.canvasPanel.maskChanged();
+		}
 		doc.changed(this);
 	}
 	

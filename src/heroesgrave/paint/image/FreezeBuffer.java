@@ -232,22 +232,23 @@ public class FreezeBuffer
 		}
 	}
 	
-	public void revertChange()
+	public IChange revertChange()
 	{
 		if(changes.isEmpty())
 		{
 			if(!(marker instanceof Marker))
 			{
-				reverted.push(marker.decode());
+				IChange ret = marker.decode();
+				reverted.push(ret);
 				popOldBuffer();
-				return;
+				return ret;
 			}
 			
 			this.front.copyFrom(this.back, false);
 			rebuffer = true;
 			
 			if(!popOldBuffer())
-				return;
+				return null;
 		}
 		IChange change = changes.pollLast();
 		reverted.push(change);
@@ -258,15 +259,18 @@ public class FreezeBuffer
 			else
 				rebuffer = true;
 		}
+		return change;
 	}
 	
-	public void repeatChange()
+	public IChange repeatChange()
 	{
 		if(reverted.isEmpty())
 		{
-			return;
+			return null;
 		}
-		addChange(reverted.pop());
+		IChange change = reverted.pop();
+		addChange(change);
+		return change;
 	}
 	
 	public void rebuffer()

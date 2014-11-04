@@ -104,10 +104,6 @@ public final class RawImage
 		// Copy back from tmp
 		if(mask == null)
 		{
-			// Do y-axis bounds clipping.
-			Arrays.fill(tmp, 0, src, 0); // Cut out top.
-			Arrays.fill(tmp, buffer.length - dst, buffer.length, 0); // Cut out bottom
-			
 			// Do x-axis bounds clipping.
 			if(dx < 0)
 			{
@@ -126,6 +122,10 @@ public final class RawImage
 			
 			// Do the actual copying.
 			System.arraycopy(tmp, src, buffer, dst, len);
+			
+			// Do y-axis bounds clipping.
+			Arrays.fill(buffer, 0, dst, 0); // Cut out top.
+			Arrays.fill(buffer, buffer.length - src, buffer.length, 0); // Cut out bottom
 		}
 		else
 		{

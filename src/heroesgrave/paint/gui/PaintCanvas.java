@@ -27,6 +27,7 @@ import heroesgrave.paint.image.change.IChange;
 import heroesgrave.paint.image.change.IEditChange;
 import heroesgrave.paint.image.change.IGeneratorChange;
 import heroesgrave.paint.image.change.IImageChange;
+import heroesgrave.paint.image.change.IMaskChange;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
 
@@ -87,6 +88,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	// Document rendering stuff 
 	private BufferedImage frozen, unselected;
 	private RawImage unselectedRaw;
+	private boolean maskChanged;
 	private int frozenTo;
 	
 	// Document
@@ -127,7 +129,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		this.mouseLastDragPosX = 0;
 		this.mouseLastDragPosY = 0;
 		
-		// fixes startup NPEs and misc, probably not an actual solution
+		// XXX: fixes startup NPEs and misc, probably not an actual solution
 		setDocument(Paint.getDocument());
 	}
 	
@@ -414,6 +416,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 				if(previewChange instanceof IEditChange)
 				{
 					((IEditChange) previewChange).apply(rawImage);
+					maskChanged = maskChanged || (previewChange instanceof IMaskChange);
 				}
 				else if(previewChange instanceof IImageChange)
 				{
@@ -424,11 +427,12 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 					rawImage.copyFrom(((IGeneratorChange) previewChange).generate(document.getWidth(), document.getHeight()), true);
 				}
 				
-				if(rawImage.isMaskEnabled())
+				if(rawImage.isMaskEnabled() && maskChanged)
 				{
 					unselectedRaw.setMask(rawImage.borrowMask());
 					unselectedRaw.clear(SELECTION_OVERLAY);
 					unselectedRaw.fill(0);
+					maskChanged = false;
 				}
 				else
 				{
@@ -437,11 +441,12 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 				
 				rawImage.dispose();
 			}
-			else if(current.isMaskEnabled())
+			else if(current.isMaskEnabled() && maskChanged)
 			{
-				unselectedRaw.copyMaskFrom(current);
+				unselectedRaw.setMask(current.borrowMask());
 				unselectedRaw.clear(SELECTION_OVERLAY);
 				unselectedRaw.fill(0);
+				maskChanged = false;
 			}
 			else
 			{
@@ -487,6 +492,11 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			}
 		}
 		*/
+	}
+	
+	public void maskChanged()
+	{
+		this.maskChanged = true;
 	}
 	
 	public void resized(int width, int height)
