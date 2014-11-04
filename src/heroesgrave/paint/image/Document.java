@@ -141,8 +141,6 @@ public class Document
 		
 		final ImageExporter exporter = ImageExporter.get(extension);
 		
-		System.out.println("Extension: \"" + extension + "\" Exporter: " + exporter);
-		
 		final Document doc = this;
 		
 		new Thread(new Runnable()

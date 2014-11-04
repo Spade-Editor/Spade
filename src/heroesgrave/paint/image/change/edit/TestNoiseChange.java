@@ -30,6 +30,7 @@ public class TestNoiseChange extends IGeneratorChange
 	{
 		RawImage image = new RawImage(width, height);
 		Random random = new Random(seed);
+		
 		for(int i = 0; i < width; i++)
 		{
 			for(int j = 0; j < height; j++)
@@ -41,7 +42,7 @@ public class TestNoiseChange extends IGeneratorChange
 				image.setPixel(i, j, color);
 			}
 		}
+		
 		return image;
 	}
-	
 }

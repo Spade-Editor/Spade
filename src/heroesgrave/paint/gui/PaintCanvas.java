@@ -25,7 +25,6 @@ import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.IChange;
 import heroesgrave.paint.image.change.IEditChange;
-import heroesgrave.paint.image.change.IGeneratorChange;
 import heroesgrave.paint.image.change.IImageChange;
 import heroesgrave.paint.image.change.IMaskChange;
 import heroesgrave.paint.main.Paint;
@@ -422,17 +421,16 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 				{
 					rawImage.copyFrom(((IImageChange) previewChange).apply(rawImage), true);
 				}
-				else if(previewChange instanceof IGeneratorChange)
-				{
-					rawImage.copyFrom(((IGeneratorChange) previewChange).generate(document.getWidth(), document.getHeight()), true);
-				}
 				
-				if(rawImage.isMaskEnabled() && maskChanged)
+				if(rawImage.isMaskEnabled())
 				{
-					unselectedRaw.setMask(rawImage.borrowMask());
-					unselectedRaw.clear(SELECTION_OVERLAY);
-					unselectedRaw.fill(0);
-					maskChanged = false;
+					if(maskChanged)
+					{
+						unselectedRaw.setMask(rawImage.borrowMask());
+						unselectedRaw.clear(SELECTION_OVERLAY);
+						unselectedRaw.fill(0);
+						maskChanged = false;
+					}
 				}
 				else
 				{
@@ -441,12 +439,15 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 				
 				rawImage.dispose();
 			}
-			else if(current.isMaskEnabled() && maskChanged)
+			else if(current.isMaskEnabled())
 			{
-				unselectedRaw.setMask(current.borrowMask());
-				unselectedRaw.clear(SELECTION_OVERLAY);
-				unselectedRaw.fill(0);
-				maskChanged = false;
+				if(maskChanged)
+				{
+					unselectedRaw.setMask(current.borrowMask());
+					unselectedRaw.clear(SELECTION_OVERLAY);
+					unselectedRaw.fill(0);
+					maskChanged = false;
+				}
 			}
 			else
 			{

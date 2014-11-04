@@ -151,7 +151,7 @@ public final class RawImage
 				}
 			}
 			
-			// Now we can copy the data back.
+			// Now we can copy the data back, if it's not masked out.
 			for(int i = 0; i < len; i++)
 			{
 				if(mask[dst + i])
@@ -482,6 +482,27 @@ public final class RawImage
 		if(image.mask == null)
 			return new RawImage(image.width, image.height, image.copyBuffer());
 		return new RawImage(image.width, image.height, image.copyBuffer(), image.copyMask());
+	}
+	
+	public void copyRegion(RawImage image)
+	{
+		if(image == this)
+			return;
+		if(this.buffer.length != image.buffer.length)
+			throw new RuntimeException("Cannot copy from a different sized RawImage");
+		
+		if(this.mask == null)
+		{
+			System.arraycopy(image.buffer, 0, buffer, 0, buffer.length);
+		}
+		else
+		{
+			for(int i = 0; i < buffer.length; i++)
+			{
+				if(mask[i])
+					this.buffer[i] = image.buffer[i];
+			}
+		}
 	}
 	
 	public void copyFrom(RawImage image, boolean withMask)

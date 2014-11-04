@@ -8,6 +8,7 @@ public abstract class IGeneratorChange extends IImageChange
 	
 	public RawImage apply(RawImage image)
 	{
-		return this.generate(image.width, image.height);
+		image.copyRegion(this.generate(image.width, image.height));
+		return image;
 	}
 }

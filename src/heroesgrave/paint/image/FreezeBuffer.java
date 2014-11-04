@@ -22,7 +22,6 @@ package heroesgrave.paint.image;
 
 import heroesgrave.paint.image.change.IChange;
 import heroesgrave.paint.image.change.IEditChange;
-import heroesgrave.paint.image.change.IGeneratorChange;
 import heroesgrave.paint.image.change.IImageChange;
 import heroesgrave.paint.image.change.IRevEditChange;
 import heroesgrave.paint.image.change.Marker;
@@ -147,13 +146,6 @@ public class FreezeBuffer
 				else if(s.isMarker())
 				{
 					i--;
-					if(s instanceof IGeneratorChange)
-					{
-						// We can take a shortcut here because a generator requires no input image.
-						image = ((IGeneratorChange) s.decode()).generate(image.width, image.height);
-						toReturn.push(s);
-						break;
-					}
 				}
 				toReturn.push(s);
 				if(!(s instanceof Marker))
@@ -201,28 +193,12 @@ public class FreezeBuffer
 					oldChanges.push(changes.removeFirst().encode());
 			}
 		}
-		else if(change instanceof IGeneratorChange)
-		{
-			checkBuffered();
-			pushOldBuffer(new OldBuffer(1, back));
-			
-			this.back = ((IGeneratorChange) change).generate(front.width, front.height);
-			
-			front.copyFrom(back, true);
-			
-			oldChanges.push(marker);
-			marker = change.encode();
-			while(!changes.isEmpty())
-				oldChanges.push(changes.removeFirst().encode());
-		}
 		else if(change instanceof IImageChange)
 		{
 			checkBuffered();
 			pushOldBuffer(new OldBuffer(1, back));
 			
 			this.back = ((IImageChange) change).apply(RawImage.copyOf(front));
-			this.image = new BufferedImage(front.width, front.height, BufferedImage.TYPE_INT_ARGB);
-			this.front = RawImage.unwrapBufferedImage(this.image);
 			front.copyFrom(back, true);
 			
 			oldChanges.push(marker);
