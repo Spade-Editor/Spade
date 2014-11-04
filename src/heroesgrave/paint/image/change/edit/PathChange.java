@@ -32,8 +32,8 @@ import java.util.ArrayList;
 
 public class PathChange implements IEditChange
 {
-	private ArrayList<Point> points = new ArrayList<Point>();
-	private int colour;
+	protected ArrayList<Point> points = new ArrayList<Point>();
+	protected int colour;
 	
 	public PathChange(short x, short y, int colour)
 	{
