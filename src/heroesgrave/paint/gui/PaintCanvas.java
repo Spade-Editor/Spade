@@ -126,6 +126,9 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		
 		this.mouseLastDragPosX = 0;
 		this.mouseLastDragPosY = 0;
+		
+		// fixes startup NPEs and misc, probably not an actual solution
+		setDocument(Paint.getDocument());
 	}
 	
 	public void cam_zoom_decrease()

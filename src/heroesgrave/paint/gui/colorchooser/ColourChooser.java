@@ -171,6 +171,7 @@ public class ColourChooser extends WebDialog implements ColourEventBroadcaster
 		this.switchVisible();
 		
 		pack();
+		setAlwaysOnTop(true);
 		setLocationRelativeTo(null);
 		this.setResizable(false);
 		setVisible(true);
