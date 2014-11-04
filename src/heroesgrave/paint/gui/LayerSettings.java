@@ -89,7 +89,7 @@ public class LayerSettings
 			{
 				if(!blendMode.getSelectedItem().equals(layer.getMetadata().get("blend")))
 				{
-					// TODO Preview.
+					// TODO Preview?
 				}
 			}
 		});

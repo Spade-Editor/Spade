@@ -50,13 +50,13 @@ public class ColourChooser extends WebDialog implements ColourEventBroadcaster
 	private int[] primary = {0, 0, 0, 0, 0, 0, 255};
 	private int[] secondary = {0, 0, 0, 0, 0, 0, 255};
 	private int mode;
-	private Object lastSource; // Is this needed?
+	private Object lastSource; // XXX: Is this needed?
 	
 	private List<ColourListener> listeners;
 	
 	private PalettePanel palletPanel;
 	
-	private JComponent wheel, /*fieldPanel, sliderPanel,*/rgbPanel, hsvPanel, alphaPanel, indicator, modePanel, settings;
+	private JComponent wheel, rgbPanel, hsvPanel, alphaPanel, indicator, modePanel, settings;
 	private JPanel top, sliders, left;
 	
 	public ColourChooser()
@@ -69,7 +69,8 @@ public class ColourChooser extends WebDialog implements ColourEventBroadcaster
 		
 		palletPanel = new PalettePanel(this, Palette.defaultPallet());
 		wheel = new ColorWheel(this);
-		indicator = new ColorIndicator(this);
+		HexColourField hexField = new HexColourField(this);
+		indicator = new ColorIndicator(this, hexField);
 		modePanel = new ModePanel(this);
 		
 		rgbPanel = new JPanel();
@@ -179,13 +180,6 @@ public class ColourChooser extends WebDialog implements ColourEventBroadcaster
 	{
 		this.setVisible(!this.isVisible());
 	}
-	
-	/*
-	public static void main(String[] a) throws IOException
-	{
-		new ColourChooser();
-	}
-	*/
 	
 	@Override
 	public void addColorListener(ColourListener c)
@@ -368,4 +362,12 @@ public class ColourChooser extends WebDialog implements ColourEventBroadcaster
 		this.makeChange(source, Channel.Alpha, (colour >>= 8) & 0xFF, primary);
 		this.broadcastChanges(null);
 	}
+	
+	/*
+	public static void main(String[] a) throws IOException
+	{
+		GUIManager.setLAF();
+		new ColourChooser();
+	}
+	*/
 }

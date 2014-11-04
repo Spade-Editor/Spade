@@ -18,105 +18,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.paint.tools.old;
+package heroesgrave.paint.tools;
 
-import heroesgrave.paint.image.old.SelectionCanvas;
-import heroesgrave.paint.image.old.CanvasManager.CanvasRenderer;
-import heroesgrave.paint.image.old.change.KeyFrame;
+import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.change.edit.MoveChange;
 import heroesgrave.paint.main.Paint;
-
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
 public class Move extends Tool
 {
-	private int sx, sy;
-	private BufferedImage image, origin;
-	private boolean hovering;
+	private short sx, sy;
+	private MoveChange change;
 	
 	public Move(String name)
 	{
 		super(name);
 	}
 	
-	public void onDeselect()
+	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		Paint.main.gui.canvas.preview(null);
-		image = null;
-		origin = null;
-		hovering = false;
+		sx = x;
+		sy = y;
+		change = new MoveChange((short) 0, (short) 0);
+		Paint.getDocument().preview(change);
 	}
 	
-	public void onPressed(int x, int y, int button)
+	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		if(hovering)
-		{
-			Paint.main.gui.canvas.getCanvas().getHistory().revertChange();
-			move(x - sx, y - sy, image, origin);
-			Paint.main.gui.canvas.applyPreview();
-			image = null;
-			origin = null;
-			SelectionCanvas c = Paint.main.gui.canvas.selection.getSelection();
-			if(c == Paint.main.gui.canvas.getCanvas())
-			{
-				c.finalizeTranslation();
-			}
-			hovering = false;
-		}
-		else
-		{
-			sx = x;
-			sy = y;
-			origin = Paint.main.gui.canvas.getCanvas().getImage();
-			image = new BufferedImage(origin.getWidth(), origin.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			move(0, 0, image, origin);
-			hovering = true;
-			Paint.main.gui.canvas.getCanvas().addChange(new KeyFrame(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB)));
-		}
+		change.dx = (short) (x - sx);
+		change.dy = (short) (y - sy);
+		Paint.getDocument().applyPreview();
 	}
 	
-	public void onReleased(int x, int y, int button)
+	public void whilePressed(Layer layer, short x, short y, int button)
 	{
-		
-	}
-	
-	public void whilePressed(int x, int y, int button)
-	{
-		move(x - sx, y - sy, image, origin);
-		Paint.main.gui.canvas.getPanel().repaint();
-	}
-	
-	public void whileReleased(int x, int y, int button)
-	{
-		if(hovering)
-		{
-			move(x - sx, y - sy, image, origin);
-			Paint.main.gui.canvas.getPanel().repaint();
-		}
-	}
-	
-	public static void move(int x, int y, BufferedImage image, BufferedImage origin)
-	{
-		Graphics2D g = image.createGraphics();
-		g.setBackground(CanvasRenderer.TRANSPARENT);
-		g.clearRect(0, 0, image.getWidth(), image.getHeight());
-		g.drawImage(origin, x, y, null);
-		
-		Paint.main.gui.canvas.preview(new KeyFrame(image));
-		SelectionCanvas c = Paint.main.gui.canvas.selection.getSelection();
-		if(c == Paint.main.gui.canvas.getCanvas())
-		{
-			c.setTranslation(x, y);
-		}
-	}
-	
-	public static void do_move(int x, int y)
-	{
-		BufferedImage image = Paint.main.gui.canvas.getCanvas().getImage();
-		BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		
-		newImage.createGraphics().drawImage(image, x, y, null);
-		
-		Paint.addChange(new KeyFrame(newImage));
+		short dx = (short) (x - sx);
+		short dy = (short) (y - sy);
+		if(change.moved(dx, dy))
+			Paint.getDocument().repaint();
 	}
 }

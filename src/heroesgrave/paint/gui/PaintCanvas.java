@@ -172,18 +172,6 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		this.setScale(scale);
 	}
 	
-	public void changeSelectedRegion()
-	{
-		if(unselectedRaw == null)
-		{
-			unselectedRaw = RawImage.unwrapBufferedImage(unselected);
-		}
-		unselectedRaw.clear(SELECTION_OVERLAY); // Fill the image with the overlay colour
-		unselectedRaw.copyMaskFrom(document.getCurrent().getImage());
-		unselectedRaw.fill(0x00000000); // Cut out the bits that are selected.
-		document.repaint();
-	}
-	
 	public float getScale()
 	{
 		return cam_zoom;
@@ -205,7 +193,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	@Override
 	public void mouseDragged(MouseEvent e)
 	{
-		// XXX: Don't use BUTTON2_MASK because it will trigger when ALT is pressed. Sometimes Java is stupid.
+		// Don't use BUTTON2_MASK because it will trigger when ALT is pressed. Sometimes Java is stupid.
 		int middleMouseMod = MouseEvent.BUTTON2_DOWN_MASK;
 		int modifier = e.getModifiersEx();
 		boolean middleMouseDown = (modifier & middleMouseMod) != 0;
@@ -333,13 +321,6 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 				return;
 			}
 		}
-		
-	}
-	
-	public void noSelectedRegion()
-	{
-		unselectedRaw = null;
-		document.repaint();
 	}
 	
 	@Override
@@ -416,11 +397,16 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			
 			cg.dispose(); // I think disposing the graphics context helps performance.
 			
+			boolean masked = true;
+			RawImage current = document.getCurrent().getImage();
+			
 			if(previewChange != null)
 			{
 				RawImage rawImage = RawImage.unwrapBufferedImage(image);
-				if(unselectedRaw != null)
-					rawImage.copyMaskFrom(unselectedRaw);
+				if(current.isMaskEnabled())
+				{
+					rawImage.copyMaskFrom(current);
+				}
 				
 				if(previewChange instanceof IEditChange)
 				{
@@ -434,13 +420,35 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 				{
 					rawImage.copyFrom(((IGeneratorChange) previewChange).generate(document.getWidth(), document.getHeight()), true);
 				}
+				
+				if(rawImage.isMaskEnabled())
+				{
+					unselectedRaw.setMask(rawImage.borrowMask());
+					unselectedRaw.clear(SELECTION_OVERLAY);
+					unselectedRaw.fill(0);
+				}
+				else
+				{
+					masked = false;
+				}
+				
 				rawImage.dispose();
+			}
+			else if(current.isMaskEnabled())
+			{
+				unselectedRaw.copyMaskFrom(current);
+				unselectedRaw.clear(SELECTION_OVERLAY);
+				unselectedRaw.fill(0);
+			}
+			else
+			{
+				masked = false;
 			}
 			
 			cg = image.createGraphics();
 			
-			// Draw the selection overlay.
-			cg.drawImage(unselected, 0, 0, null);
+			if(masked) // Draw the selection overlay.
+				cg.drawImage(unselected, 0, 0, null);
 			
 			for(int i = index + 2; i < flatmap.size(); i++)
 			{
@@ -483,6 +491,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		this.image = document.getRenderedImage();
 		this.frozen = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		this.unselected = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		this.unselectedRaw = RawImage.unwrapBufferedImage(unselected);
 		this.repaint();
 	}
 	
@@ -492,6 +501,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		this.image = document.getRenderedImage();
 		this.frozen = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		this.unselected = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		this.unselectedRaw = RawImage.unwrapBufferedImage(unselected);
 		this.cam_zoom = 1;
 		this.cam_positionX = image.getWidth() / 2;
 		this.cam_positionY = image.getHeight() / 2;

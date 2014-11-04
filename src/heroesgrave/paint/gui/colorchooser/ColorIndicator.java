@@ -44,11 +44,13 @@ public class ColorIndicator extends JComponent implements MouseListener, ColourL
 	public static final int SIZE = 64;
 	
 	private ColourEventBroadcaster parent;
+	private HexColourField hexField;
 	private MutableColor primary, secondary;
 	
-	public ColorIndicator(ColourEventBroadcaster parent)
+	public ColorIndicator(ColourEventBroadcaster parent, HexColourField hexField)
 	{
 		super();
+		this.hexField = hexField;
 		this.parent = parent;
 		parent.addColorListener(this);
 		
@@ -152,19 +154,7 @@ public class ColorIndicator extends JComponent implements MouseListener, ColourL
 	@Override
 	public void mousePressed(MouseEvent e)
 	{
-		boolean p = (e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) == 0;
-		boolean swap = false;
-		int x = e.getX();
-		int y = e.getY();
-		
-		if(x >= 2 && y >= 2 && x < 34 && y < 34)
-		{
-			swap = !p;
-		}
-		else if(((x >= 36 && y >= 18) || (x >= 18 && y >= 36)) && x < 50 && y < 50)
-		{
-			swap = p;
-		}
+		boolean swap = (e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) == 0;
 		
 		if(swap)
 		{
@@ -181,6 +171,20 @@ public class ColorIndicator extends JComponent implements MouseListener, ColourL
 			parent.makeChange(this, Alpha, primary.getAlpha(), true);
 			
 			parent.broadcastChanges(this);
+		}
+		else
+		{
+			int x = e.getX();
+			int y = e.getY();
+			
+			if(x >= 2 && y >= 2 && x < 34 && y < 34)
+			{
+				hexField.showFor(true, this);
+			}
+			else if(((x >= 36 && y >= 18) || (x >= 18 && y >= 36)) && x < 50 && y < 50)
+			{
+				hexField.showFor(false, this);
+			}
 		}
 	}
 	

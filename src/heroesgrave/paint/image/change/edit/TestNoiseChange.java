@@ -35,8 +35,8 @@ public class TestNoiseChange extends IGeneratorChange
 			for(int j = 0; j < height; j++)
 			{
 				int color = 0xff000000;
-				color |= (i / 2) << 0;
-				color |= (j / 2) << 8;
+				color |= ((i * 256) / width) << 0;
+				color |= ((j * 256) / height) << 8;
 				color |= random.nextInt(0xff) << 16;
 				image.setPixel(i, j, color);
 			}

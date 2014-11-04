@@ -59,6 +59,8 @@ public class Picker extends Tool
 	
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
+		if(x < 0 || y < 0 || x >= layer.getWidth() || y >= layer.getHeight())
+			return;
 		if(button == MouseEvent.BUTTON1)
 		{
 			Paint.main.setLeftColour(layer.getImage().getPixel(x, y), false);
@@ -71,6 +73,8 @@ public class Picker extends Tool
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
+		if(x < 0 || y < 0 || x >= layer.getWidth() || y >= layer.getHeight())
+			return;
 		if(button == MouseEvent.BUTTON1)
 		{
 			Paint.main.setLeftColour(layer.getImage().getPixel(x, y), false);
@@ -88,6 +92,8 @@ public class Picker extends Tool
 	
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
+		if(x < 0 || y < 0 || x >= layer.getWidth() || y >= layer.getHeight())
+			return;
 		if(button == MouseEvent.BUTTON1)
 		{
 			Paint.main.setLeftColour(layer.getImage().getPixel(x, y), false);

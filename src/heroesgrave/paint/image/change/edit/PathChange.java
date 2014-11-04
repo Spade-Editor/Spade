@@ -78,7 +78,7 @@ public class PathChange implements IEditChange
 		if(points.size() == 1)
 		{
 			Point p = points.get(0);
-			image.drawPixel(p.x, p.y, colour);
+			image.drawPixelChecked(p.x, p.y, colour);
 		}
 		else
 		{

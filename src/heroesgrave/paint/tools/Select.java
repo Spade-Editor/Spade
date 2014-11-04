@@ -23,14 +23,12 @@ package heroesgrave.paint.tools;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.RawImage.MaskMode;
 import heroesgrave.paint.image.change.edit.MaskRectChange;
-import heroesgrave.paint.image.change.edit.RectChange;
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
 
 public class Select extends Tool
 {
-	private RectChange rect;
-	private MaskMode mode;
+	private MaskRectChange rect;
 	
 	public Select(String name)
 	{
@@ -39,9 +37,7 @@ public class Select extends Tool
 	
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		Paint.main.gui.canvasPanel.noSelectedRegion();
-		rect = new RectChange(x, y, x, y, 0x7f007fff);
-		Paint.getDocument().preview(rect);
+		MaskMode mode;
 		if(Input.CTRL)
 		{
 			if(Input.ALT)
@@ -61,14 +57,14 @@ public class Select extends Tool
 		{
 			mode = MaskMode.REP;
 		}
+		rect = new MaskRectChange(x, y, x, y, mode);
+		Paint.getDocument().preview(rect);
 	}
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		Paint.getDocument().preview(null);
-		layer.addChange(new MaskRectChange(rect.x1, rect.y1, rect.x2, rect.y2, mode));
+		Paint.getDocument().applyPreview();
 		rect = null;
-		mode = null;
 	}
 	
 	public void whilePressed(Layer layer, short x, short y, int button)

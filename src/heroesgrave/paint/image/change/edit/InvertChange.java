@@ -22,8 +22,8 @@ public class InvertChange extends IImageChange
 	@Override
 	public RawImage apply(RawImage image)
 	{
-		int[] buffer = image.getBuffer();
-		boolean[] mask = image.getMask();
+		int[] buffer = image.borrowBuffer();
+		boolean[] mask = image.borrowMask();
 		
 		for(int i = 0; i < buffer.length; i++)
 		{

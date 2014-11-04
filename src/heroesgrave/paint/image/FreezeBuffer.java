@@ -31,7 +31,6 @@ import heroesgrave.paint.io.Serialised;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
-// FIXME Doesn't work properly with IImageChanges/IGeneratorChanges.
 public class FreezeBuffer
 {
 	private class OldBuffer

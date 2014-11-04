@@ -226,13 +226,13 @@ public class Document
 	public void changed(Layer layer)
 	{
 		lowestChange = Math.min(lowestChange, flatmap.indexOf(layer));
-		repaint = true;
+		this.repaint();
 	}
 	
 	public void allChanged()
 	{
 		lowestChange = -1;
-		repaint = true;
+		this.repaint();
 	}
 	
 	public IChange getPreview()

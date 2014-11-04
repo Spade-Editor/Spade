@@ -4,7 +4,6 @@ import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.RawImage.MaskMode;
 import heroesgrave.paint.image.change.IEditChange;
 import heroesgrave.paint.io.Serialised;
-import heroesgrave.paint.main.Paint;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -38,7 +37,6 @@ public class MaskRectChange implements IEditChange, Serialised
 	{
 		image.setMaskEnabled(true);
 		image.maskRect(Math.min(x1, x2), Math.min(y1, y2), Math.max(x1, x2), Math.max(y1, y2), mode);
-		Paint.main.gui.canvasPanel.changeSelectedRegion();
 	}
 	
 	@Override

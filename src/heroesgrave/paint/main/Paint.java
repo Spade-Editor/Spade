@@ -62,9 +62,10 @@ public class Paint extends Application
 	// Development for under-development new features.
 	
 	public static final String VERSION = "0.14-Dev";
-	public static final String RELEASED = "31/10/2014";
+	public static final String RELEASED = "1/11/2014";
 	
-	/**/public static final String BUILD_TYPE = "Development";
+	/* Remove the stars on the following lines to change the build type string.
+	//*/public static final String BUILD_TYPE = "Development";
 	//*/public static final String BUILD_TYPE = "Beta";
 	//*/public static final String BUILD_TYPE = "Stable";
 	

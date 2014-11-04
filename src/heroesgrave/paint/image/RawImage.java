@@ -26,8 +26,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.Arrays;
 
-public class RawImage
+public final class RawImage
 {
+	private static int[] TMP;
+	
 	public enum MaskMode
 	{
 		REP, ADD, SUB, XOR, AND
@@ -62,6 +64,100 @@ public class RawImage
 			throw new IllegalArgumentException("Buffer length must be `width*height`");
 		this.buffer = buffer;
 		this.mask = mask;
+	}
+	
+	// Returns or allocates a temporary buffer with a size of at least width*height.
+	private static int[] get_tmp(int width, int height)
+	{
+		if(TMP == null || TMP.length < width * height)
+		{
+			TMP = new int[width * height];
+		}
+		return TMP;
+	}
+	
+	public void move(int dx, int dy)
+	{
+		final int offset = dx + dy * width;
+		if(Math.abs(dx) >= width || Math.abs(dy) >= height)
+		{
+			this.fill(0); // Fill, not clear, so the mask is respected.
+			return;
+		}
+		else if(offset == 0)
+			return;
+		
+		int[] tmp = get_tmp(width, height);
+		
+		int src = 0;
+		int dst = offset;
+		if(offset < 0)
+		{
+			src = -offset;
+			dst = 0;
+		}
+		final int len = buffer.length - (src + dst);
+		
+		// Copy whole buffer to tmp.
+		System.arraycopy(buffer, 0, tmp, 0, buffer.length);
+		
+		// Copy back from tmp
+		if(mask == null)
+		{
+			// Do y-axis bounds clipping.
+			Arrays.fill(tmp, 0, src, 0); // Cut out top.
+			Arrays.fill(tmp, buffer.length - dst, buffer.length, 0); // Cut out bottom
+			
+			// Do x-axis bounds clipping.
+			if(dx < 0)
+			{
+				for(int y = 0; y < height; y++)
+				{
+					Arrays.fill(tmp, y * width, y * width - dx, 0);
+				}
+			}
+			else if(dx > 0)
+			{
+				for(int y = 1; y <= height; y++)
+				{
+					Arrays.fill(tmp, y * width - dx, y * width, 0);
+				}
+			}
+			
+			// Do the actual copying.
+			System.arraycopy(tmp, src, buffer, dst, len);
+		}
+		else
+		{
+			this.fill(0); // Clear the old pixels. Only necessary when mask is enabled.
+			
+			// First translate the mask.
+			System.arraycopy(mask, src, mask, dst, len);
+			// Then do bounds clipping.
+			Arrays.fill(mask, 0, dst, false); // Cut out top.
+			Arrays.fill(mask, buffer.length - src, buffer.length, false); // Cut out bottom
+			if(dx < 0) // Cut out whatever side.
+			{
+				for(int y = 1; y <= height; y++)
+				{
+					Arrays.fill(mask, y * width + dx, y * width, false);
+				}
+			}
+			else if(dx > 0)
+			{
+				for(int y = 0; y < height; y++)
+				{
+					Arrays.fill(mask, y * width, y * width + dx, false);
+				}
+			}
+			
+			// Now we can copy the data back.
+			for(int i = 0; i < len; i++)
+			{
+				if(mask[dst + i])
+					buffer[dst + i] = tmp[src + i];
+			}
+		}
 	}
 	
 	// Drawing functions
@@ -315,7 +411,7 @@ public class RawImage
 		return mask == null ? null : Arrays.copyOf(mask, mask.length);
 	}
 	
-	public boolean[] getMask()
+	public boolean[] borrowMask()
 	{
 		return mask;
 	}
@@ -352,7 +448,7 @@ public class RawImage
 		return Arrays.copyOf(buffer, buffer.length);
 	}
 	
-	public int[] getBuffer()
+	public int[] borrowBuffer()
 	{
 		return buffer;
 	}

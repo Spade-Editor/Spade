@@ -28,6 +28,5 @@ import java.util.EventListener;
  */
 public interface ColourListener extends EventListener
 {
-	
 	public void changeColor(int r, int g, int b, int h, int s, int v, int a, boolean primary);
 }

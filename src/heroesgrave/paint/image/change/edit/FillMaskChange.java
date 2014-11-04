@@ -4,7 +4,6 @@ import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.RawImage.MaskMode;
 import heroesgrave.paint.image.change.IEditChange;
 import heroesgrave.paint.io.Serialised;
-import heroesgrave.paint.main.Paint;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -24,7 +23,6 @@ public class FillMaskChange implements IEditChange, Serialised
 	{
 		image.setMaskEnabled(true);
 		image.fillMask(mode);
-		Paint.main.gui.canvasPanel.changeSelectedRegion();
 	}
 	
 	@Override

@@ -18,111 +18,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.paint.tools.old;
+package heroesgrave.paint.tools;
 
-import heroesgrave.paint.image.old.change.ShapeChange;
+import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.change.edit.PathChange;
 import heroesgrave.paint.main.Paint;
-
-import java.awt.BasicStroke;
-import java.awt.Stroke;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.GeneralPath;
-
-import javax.swing.JLabel;
-import javax.swing.JSlider;
-import javax.swing.SpringLayout;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 public class Eraser extends Tool
 {
-	private GeneralPath path;
-	private ShapeChange change;
-	private JSlider slider;
-	private JLabel size;
-	
-	private Ellipse2D.Float previewCircle;
-	private Stroke previewStroke = new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+	private PathChange path;
 	
 	public Eraser(String name)
 	{
 		super(name);
-		slider = new JSlider(0, 16, 0);
-		slider.addChangeListener(new ChangeListener()
-		{
-			@Override
-			public void stateChanged(ChangeEvent e)
-			{
-				size.setText("Size: " + slider.getValue());
-				previewCircle.width = previewCircle.height = slider.getValue();
-			}
-		});
-		
-		JLabel label = (JLabel) menu.getComponent(0);
-		
-		SpringLayout layout = new SpringLayout();
-		menu.setLayout(layout);
-		
-		slider.setFocusable(false);
-		
-		size = new JLabel("Size: " + slider.getValue());
-		
-		menu.add(label);
-		menu.add(size);
-		menu.add(slider);
-		
-		layout.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, menu);
-		layout.putConstraint(SpringLayout.WEST, size, 20, SpringLayout.EAST, label);
-		layout.putConstraint(SpringLayout.WEST, slider, 20, SpringLayout.EAST, size);
-		layout.putConstraint(SpringLayout.EAST, menu, 20, SpringLayout.EAST, slider);
-		
-		layout.putConstraint(SpringLayout.NORTH, slider, -3, SpringLayout.NORTH, menu);
-		
-		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
-		
-		previewCircle = new Ellipse2D.Float(0,0,slider.getValue(),slider.getValue());
 	}
 	
-	@Override
-	public void onPressed(int x, int y, int button)
+	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		path = new GeneralPath();
-		path.moveTo(x, y);
-		change = new ShapeChange(path, 0x000000, new BasicStroke(slider.getValue() + 1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-		Paint.main.gui.canvas.preview(change);
-		Paint.main.gui.canvas.getPanel().repaint();
+		path = new PathChange(x, y, 0x00000000);
+		Paint.getDocument().preview(path);
 	}
 	
-	public void onReleased(int x, int y, int button)
+	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		if(path != null)
-		{
-			path.lineTo(x, y);
-		}
-		Paint.main.gui.canvas.applyPreview();
+		Paint.getDocument().applyPreview();
 		path = null;
-		change = null;
 	}
 	
-	public void whilePressed(int x, int y, int button)
+	public void whilePressed(Layer layer, short x, short y, int button)
 	{
-		if(path != null)
-		{
-			path.lineTo(x, y);
-		}
-		whileReleased(x, y, button);
-		Paint.main.gui.canvas.getPanel().repaint();
-	}
-	
-	@Override
-	public void whileReleased(int x, int y, int button) {
-		previewCircle.x = x - previewCircle.width / 2;
-		previewCircle.y = y - previewCircle.width / 2;
-		Paint.main.gui.canvas.getPanel().repaint();
-	}
-	
-	@Override
-	public void onSelect() {
-		Paint.main.gui.canvas.getPanel().setCursorPreview(previewCircle, previewStroke);
+		if(path.moveTo(x, y))
+			Paint.getDocument().repaint();
 	}
 }

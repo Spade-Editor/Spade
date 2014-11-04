@@ -74,13 +74,12 @@ public class GUIManager
 	
 	private JPanel toolOptions;
 	
-	public GUIManager()
+	public static void setLAF()
 	{
 		// Check if the DlafClassName-property is avaible, and if so, use it's value as LAF name.
-		if(System.getProperty("DlafClassName") != "")
+		String LAF_TO_USE = System.getProperty("DlafClassName");
+		if(LAF_TO_USE != null && LAF_TO_USE != "")
 		{
-			String LAF_TO_USE = System.getProperty("DlafClassName");
-			
 			if(LAF_TO_USE.equalsIgnoreCase("system_default"))
 			{
 				try
@@ -129,6 +128,11 @@ public class GUIManager
 			WebLookAndFeel.install();
 			WebLookAndFeel.setDecorateAllWindows(true);
 		}
+	}
+	
+	public GUIManager()
+	{
+		setLAF();
 	}
 	
 	public void init()
