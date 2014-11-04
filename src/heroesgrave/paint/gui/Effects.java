@@ -20,8 +20,7 @@
 
 package heroesgrave.paint.gui;
 
-import heroesgrave.paint.effects.Effect;
-import heroesgrave.paint.effects.Invert;
+import heroesgrave.paint.effects.*;
 import heroesgrave.paint.effects.generators.TestGenerator;
 import heroesgrave.paint.gui.ToolMenu.EffectMenuItem;
 
@@ -49,6 +48,7 @@ public class Effects
 	public void registerEffects()
 	{
 		addEffect(new Invert("Invert Colour"), "I");
+		addEffect(new Grayscale("Make grayscale"), "G");
 		addGenerator(new TestGenerator(), null);
 		//PluginManager.instance.registerEffects(this);
 	}
