@@ -85,8 +85,8 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	TexturePaint paintLight, paintDark;
 	
 	// Document rendering stuff 
-	private BufferedImage frozen, unselected;
-	private RawImage unselectedRaw;
+	private BufferedImage frozen, unselected, preview;
+	private RawImage unselectedRaw, previewRaw;
 	private boolean maskChanged;
 	private int frozenTo;
 	
@@ -397,36 +397,27 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 				frozenTo = -1;
 			}
 			
-			flatmap.get(index + 1).render(cg);
-			
-			cg.dispose(); // I think disposing the graphics context helps performance.
-			
 			boolean masked = true;
-			RawImage current = document.getCurrent().getImage();
 			
 			if(previewChange != null)
 			{
-				RawImage rawImage = RawImage.unwrapBufferedImage(image);
-				if(current.isMaskEnabled())
-				{
-					rawImage.copyMaskFrom(current);
-				}
+				previewRaw.copyFrom(document.getCurrent().getImage(), true);
 				
 				if(previewChange instanceof IEditChange)
 				{
-					((IEditChange) previewChange).apply(rawImage);
+					((IEditChange) previewChange).apply(previewRaw);
 					maskChanged = maskChanged || (previewChange instanceof IMaskChange);
 				}
 				else if(previewChange instanceof IImageChange)
 				{
-					rawImage.copyFrom(((IImageChange) previewChange).apply(rawImage), true);
+					previewRaw.copyFrom(((IImageChange) previewChange).apply(previewRaw), true);
 				}
 				
-				if(rawImage.isMaskEnabled())
+				if(previewRaw.isMaskEnabled())
 				{
 					if(maskChanged)
 					{
-						unselectedRaw.setMask(rawImage.borrowMask());
+						unselectedRaw.setMask(previewRaw.borrowMask());
 						unselectedRaw.clear(SELECTION_OVERLAY);
 						unselectedRaw.fill(0);
 						maskChanged = false;
@@ -437,24 +428,32 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 					masked = false;
 				}
 				
-				rawImage.dispose();
-			}
-			else if(current.isMaskEnabled())
-			{
-				if(maskChanged)
-				{
-					unselectedRaw.setMask(current.borrowMask());
-					unselectedRaw.clear(SELECTION_OVERLAY);
-					unselectedRaw.fill(0);
-					maskChanged = false;
-				}
+				// Draw Preview
+				cg.setComposite(document.getCurrent().getBlendMode());
+				cg.drawImage(preview, 0, 0, null);
 			}
 			else
 			{
-				masked = false;
+				// Render Current Layer
+				flatmap.get(index + 1).render(cg);
+				
+				RawImage current = document.getCurrent().getImage();
+				
+				if(current.isMaskEnabled())
+				{
+					if(maskChanged)
+					{
+						unselectedRaw.setMask(current.borrowMask());
+						unselectedRaw.clear(SELECTION_OVERLAY);
+						unselectedRaw.fill(0);
+						maskChanged = false;
+					}
+				}
+				else
+				{
+					masked = false;
+				}
 			}
-			
-			cg = image.createGraphics();
 			
 			if(masked) // Draw the selection overlay.
 				cg.drawImage(unselected, 0, 0, null);
@@ -506,6 +505,8 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		this.frozen = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		this.unselected = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		this.unselectedRaw = RawImage.unwrapBufferedImage(unselected);
+		this.preview = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		this.previewRaw = RawImage.unwrapBufferedImage(preview);
 		this.repaint();
 	}
 	
@@ -516,6 +517,8 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		this.frozen = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		this.unselected = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		this.unselectedRaw = RawImage.unwrapBufferedImage(unselected);
+		this.preview = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		this.previewRaw = RawImage.unwrapBufferedImage(preview);
 		this.cam_zoom = 1;
 		this.cam_positionX = image.getWidth() / 2;
 		this.cam_positionY = image.getHeight() / 2;

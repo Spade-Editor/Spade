@@ -20,7 +20,7 @@
 
 package heroesgrave.paint.image;
 
-import heroesgrave.paint.image.change.DocumentChange;
+import heroesgrave.paint.image.change.IDocChange;
 import heroesgrave.paint.image.change.IChange;
 import heroesgrave.paint.io.ImageExporter;
 import heroesgrave.paint.io.ImageImporter;
@@ -38,8 +38,8 @@ import javax.swing.JOptionPane;
 
 public class Document
 {
-	private LinkedList<DocumentChange> changes = new LinkedList<DocumentChange>();
-	private LinkedList<DocumentChange> reverted = new LinkedList<DocumentChange>();
+	private LinkedList<IDocChange> changes = new LinkedList<IDocChange>();
+	private LinkedList<IDocChange> reverted = new LinkedList<IDocChange>();
 	
 	private int width, height;
 	private File file;
@@ -248,7 +248,7 @@ public class Document
 		return file;
 	}
 	
-	public void addChange(DocumentChange change)
+	public void addChange(IDocChange change)
 	{
 		history.addChange(-1);
 		changes.push(change);
@@ -262,7 +262,7 @@ public class Document
 		{
 			return;
 		}
-		DocumentChange change = changes.pop();
+		IDocChange change = changes.pop();
 		reverted.push(change);
 		change.revert(this);
 		this.allChanged();
@@ -274,7 +274,7 @@ public class Document
 		{
 			return;
 		}
-		DocumentChange change = reverted.pop();
+		IDocChange change = reverted.pop();
 		changes.push(change);
 		change.apply(this);
 		this.allChanged();

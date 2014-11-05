@@ -22,7 +22,7 @@ package heroesgrave.paint.image.change;
 
 import heroesgrave.paint.image.Document;
 
-public interface DocumentChange
+public interface IDocChange
 {
 	public void apply(Document doc);
 	

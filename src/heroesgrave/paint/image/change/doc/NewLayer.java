@@ -22,10 +22,10 @@ package heroesgrave.paint.image.change.doc;
 
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
-import heroesgrave.paint.image.change.DocumentChange;
+import heroesgrave.paint.image.change.IDocChange;
 import heroesgrave.utils.misc.Metadata;
 
-public class NewLayer implements DocumentChange
+public class NewLayer implements IDocChange
 {
 	private Layer layer, parent;
 	private int index = -1;

@@ -22,9 +22,9 @@ package heroesgrave.paint.image.change.doc;
 
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
-import heroesgrave.paint.image.change.DocumentChange;
+import heroesgrave.paint.image.change.IDocChange;
 
-public class MoveLayer implements DocumentChange
+public class MoveLayer implements IDocChange
 {
 	private Layer layer, oldParent, newParent;
 	private int oldIndex = -1, newIndex = -1;

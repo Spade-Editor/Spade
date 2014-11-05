@@ -22,9 +22,9 @@ package heroesgrave.paint.image.change.doc;
 
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
-import heroesgrave.paint.image.change.DocumentChange;
+import heroesgrave.paint.image.change.IDocChange;
 
-public class DeleteLayer implements DocumentChange
+public class DeleteLayer implements IDocChange
 {
 	private Layer layer, parent;
 	private int index = -1;
