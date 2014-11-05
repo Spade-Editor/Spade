@@ -23,8 +23,7 @@ package heroesgrave.paint.image.change.edit;
 import heroesgrave.paint.image.RawImage;
 
 import java.awt.Point;
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Same as a PathChange (a series of points), but flood-fills the image starting at each point.
@@ -60,42 +59,64 @@ public class FloodPathChange extends PathChange
 	// scan line flood fill as described in Wikipedia
 	private static void floodFill(RawImage image, int x, int y, int color)
 	{
-		if (x < 0 | y < 0 || x >= image.width || y >= image.height)
+		final int iw = image.width;
+		
+		if (x < 0 | y < 0 || x >= iw || y >= image.height)
 			return;
 		
 		int[] buffer = image.borrowBuffer();
 		boolean[] mask = image.borrowMask();
-		int targetColor = buffer[x + y * image.width];
+		int targetColor = buffer[x + y * iw];
 		
-		if (targetColor == color || (mask != null && !mask[x + y * image.width]))
+		if (targetColor == color || mask != null && !mask[x + y * iw])
 			return;
 		
-		// if more speed is necessary, implement an IntQueue
-		Queue<Integer> queue = new ArrayDeque<>();
+		int[] stack = new int[1024];
+		int head = -1;
 		
-		queue.add(x + y * image.width);
+		stack[++head] = x + y * iw;
 
-		while(!queue.isEmpty())
+		while(head >= 0)
 		{
-			int n = queue.poll();
+			int n = stack[head--];
 			if(buffer[n] == targetColor) // mask predicate is guaranteed here
 			{
-				int ny = n / image.height;
-				int nyo = ny * image.height;
-				int nxl = nyo + image.width;
+				final int ny = n / iw;
+				final int nyo = ny * iw;
+				final int nxl = nyo + iw;
 				int w = n, e = n;
 				// scan out on each side of current pixel
 				while(w >= nyo && buffer[w] == targetColor && (mask == null || mask[w])) --w;
 				while(e < nxl && buffer[e] == targetColor && (mask == null || mask[e])) ++e;
 				// fill in between
-				for(int i = w + 1; i < e; ++i)
-				{
+				w += 1;
+				
+				for(int i = w; i < e; ++i)
 					buffer[i] = color;
-					if (ny > 0 && buffer[i - image.height] == targetColor && (mask == null || mask[i - image.height]))
-						queue.add(i - image.height);
-					if (ny < image.height - 1 && buffer[i + image.height] == targetColor && (mask == null || mask[i + image.height]))
-						queue.add(i + image.height);
-				}
+				
+				w -= iw;
+				e -= iw;
+				
+				if(ny > 0)
+					for(int i = w; i < e; ++i)
+						if (buffer[i] == targetColor && (mask == null || mask[i]))
+						{
+							stack[++head] = i;
+							if(head == stack.length - 1)
+								stack = Arrays.copyOf(stack, stack.length * 2);
+						}
+				
+				w += iw * 2;
+				e += iw * 2;
+				
+				if(ny < image.height - 1)
+					for(int i = w; i < e; ++i)
+						if (buffer[i] == targetColor && (mask == null || mask[i]))
+						{
+							stack[++head] = i;
+							if(head == stack.length - 1)
+								stack = Arrays.copyOf(stack, stack.length * 2);
+						}
 			}
 		}
 	}
