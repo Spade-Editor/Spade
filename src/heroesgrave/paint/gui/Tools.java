@@ -24,14 +24,7 @@ import heroesgrave.paint.gui.ToolBox.ToolBoxButton;
 import heroesgrave.paint.gui.ToolMenu.ToolMenuItem;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.plugin.PluginManager;
-import heroesgrave.paint.tools.Eraser;
-import heroesgrave.paint.tools.Line;
-import heroesgrave.paint.tools.Move;
-import heroesgrave.paint.tools.Pencil;
-import heroesgrave.paint.tools.Picker;
-import heroesgrave.paint.tools.Rectangle;
-import heroesgrave.paint.tools.Select;
-import heroesgrave.paint.tools.Tool;
+import heroesgrave.paint.tools.*;
 
 import javax.swing.JMenu;
 
@@ -57,6 +50,7 @@ public class Tools
 		addTool(new Eraser("Eraser"), "E");
 		addTool(new Picker("Colour Picker"), "K");
 		addTool(new Line("Line"), "L");
+		addTool(new FloodFill("Flood Fill"), "F");
 		addTool(new Rectangle("Rectangle"), "R");
 		addTool(new Select("Select"), "S");
 		addTool(new Move("Move"), "M");
