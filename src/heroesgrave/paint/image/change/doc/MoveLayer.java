@@ -40,18 +40,22 @@ public class MoveLayer implements IDocChange
 	public void apply(Document doc)
 	{
 		oldIndex = oldParent.getIndex(layer);
-		if(newIndex != -1)
-			newParent.addLayer(layer, newIndex);
-		else
-			newParent.addLayer(layer);
-		doc.setCurrent(layer);
+		newParent.addLayer(layer);
 		doc.reconstructFlatmap();
+		doc.setCurrent(layer);
 	}
 	
 	public void revert(Document doc)
 	{
 		oldParent.addLayer(layer, oldIndex);
-		doc.setCurrent(layer);
 		doc.reconstructFlatmap();
+		doc.setCurrent(layer);
+	}
+	
+	public void repeat(Document doc)
+	{
+		newParent.addLayer(layer, newIndex);
+		doc.reconstructFlatmap();
+		doc.setCurrent(layer);
 	}
 }

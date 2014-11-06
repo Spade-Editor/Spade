@@ -38,14 +38,21 @@ public class DeleteLayer implements IDocChange
 	{
 		parent = layer.getParentLayer();
 		index = parent.removeLayer(layer);
-		doc.setCurrent(parent);
 		doc.reconstructFlatmap();
+		doc.setCurrent(parent);
 	}
 	
 	public void revert(Document doc)
 	{
 		parent.addLayer(layer, index);
-		doc.setCurrent(layer);
 		doc.reconstructFlatmap();
+		doc.setCurrent(layer);
+	}
+	
+	public void repeat(Document doc)
+	{
+		parent.removeLayer(layer);
+		doc.reconstructFlatmap();
+		doc.setCurrent(parent);
 	}
 }

@@ -49,8 +49,8 @@ public class MetadataChange implements IDocChange
 		layer.updateMetadata();
 	}
 	
-	public String toString()
+	public void repeat(Document doc)
 	{
-		return "MetadataChange(\"" + key + "\": \"" + newValue + "\")";
+		apply(doc);
 	}
 }

@@ -25,7 +25,10 @@ import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.change.doc.DeleteLayer;
 import heroesgrave.paint.image.change.doc.MoveLayer;
 import heroesgrave.paint.image.change.doc.NewLayer;
+import heroesgrave.paint.image.change.edit.ClearMaskChange;
+import heroesgrave.paint.image.change.edit.SetMaskChange;
 import heroesgrave.paint.main.Paint;
+import heroesgrave.paint.tools.SelectionTool;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -346,19 +349,31 @@ public class LayerManager
 		{
 			if(e.getNewLeadSelectionPath() == null)
 			{
-				Paint.main.document.selected(Paint.main.document.getRoot());
+				Paint.getDocument().setCurrent(Paint.getDocument().getRoot());
 				controls.setVisible(false);
 				return;
 			}
 			Layer l = (Layer) e.getNewLeadSelectionPath().getLastPathComponent();
 			if(l == null)
 			{
-				Paint.main.document.selected(Paint.main.document.getRoot());
+				Paint.getDocument().setCurrent(Paint.getDocument().getRoot());
 				controls.setVisible(false);
 			}
 			else
 			{
-				Paint.main.document.selected(l);
+				Layer current = Paint.getDocument().getCurrent();
+				if(Paint.getDocument().setCurrent(l))
+				{
+					if(current != null && current.getImage().isMaskEnabled())
+					{
+						boolean[] mask = current.getImage().copyMask();
+						current.addChange(new ClearMaskChange());
+						if(Paint.main.currentTool instanceof SelectionTool)
+						{
+							l.addChange(new SetMaskChange(mask));
+						}
+					}
+				}
 				controls.setVisible(true);
 				lsettings.updateIfVisible(l);
 			}

@@ -20,6 +20,7 @@
 package heroesgrave.paint.image.change.edit;
 
 import heroesgrave.paint.image.RawImage;
+import heroesgrave.paint.image.change.IEditChange;
 import heroesgrave.paint.image.change.IMaskChange;
 import heroesgrave.paint.io.Serialised;
 
@@ -27,7 +28,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class ClearMaskChange implements IMaskChange, Serialised
+public class ClearMaskChange implements IEditChange, IMaskChange, Serialised
 {
 	public ClearMaskChange()
 	{

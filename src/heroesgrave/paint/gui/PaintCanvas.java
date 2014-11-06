@@ -464,7 +464,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			}
 			
 			end = System.nanoTime();
-			System.out.printf("Render Time: %dms\n", (end - start) / 1000000);
+			//System.out.printf("Render Time: %dms\n", (end - start) / 1000000);
 			document.repaint = false;
 		}
 		

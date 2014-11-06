@@ -21,68 +21,35 @@
 package heroesgrave.paint.image.change.edit;
 
 import heroesgrave.paint.image.RawImage;
-import heroesgrave.paint.image.change.IEditChange;
-import heroesgrave.paint.image.change.IMaskChange;
-import heroesgrave.paint.io.Serialised;
+import heroesgrave.paint.image.change.IImageChange;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class MoveChange implements IEditChange, IMaskChange, Serialised
+public class SetMaskChange extends IImageChange
 {
-	public short dx, dy;
+	private boolean[] mask;
 	
-	public MoveChange(short dx, short dy)
+	public SetMaskChange(boolean[] mask)
 	{
-		this.dx = dx;
-		this.dy = dy;
-	}
-	
-	public boolean moved(short dx, short dy)
-	{
-		if(this.dx == dx && this.dy == dy)
-			return false;
-		this.dx = dx;
-		this.dy = dy;
-		return true;
+		this.mask = mask;
 	}
 	
 	@Override
-	public void apply(RawImage image)
+	public RawImage apply(RawImage image)
 	{
-		image.move(dx, dy);
-	}
-	
-	@Override
-	public MoveChange encode()
-	{
-		return this;
-	}
-	
-	@Override
-	public MoveChange decode()
-	{
-		return this;
+		image.setMask(mask);
+		return image;
 	}
 	
 	@Override
 	public void write(DataOutputStream out) throws IOException
 	{
-		out.writeShort(dx);
-		out.writeShort(dy);
 	}
 	
 	@Override
 	public void read(DataInputStream in) throws IOException
 	{
-		dx = in.readShort();
-		dy = in.readShort();
-	}
-	
-	@Override
-	public boolean isMarker()
-	{
-		return false;
 	}
 }

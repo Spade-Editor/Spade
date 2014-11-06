@@ -24,6 +24,8 @@ import java.util.LinkedList;
 
 public class History
 {
+	public static final int DOC_CHANGE = -1;
+	
 	private LinkedList<Integer> changes = new LinkedList<Integer>();
 	private LinkedList<Integer> reverted = new LinkedList<Integer>();
 	
@@ -45,16 +47,8 @@ public class History
 		if(changes.isEmpty())
 			return;
 		int layerID = changes.pop();
-		if(layerID != -1)
-		{
-			doc.getFlatMap().get(layerID).revertChange();
-		}
-		else
-		{
-			// Document Change
-			doc.revertChange();
-		}
 		reverted.push(layerID);
+		revertChange(layerID);
 	}
 	
 	public void repeatChange()
@@ -62,15 +56,35 @@ public class History
 		if(reverted.isEmpty())
 			return;
 		int layerID = reverted.pop();
-		if(layerID != -1)
+		changes.push(layerID);
+		repeatChange(layerID);
+	}
+	
+	private void revertChange(int layerID)
+	{
+		if(layerID == DOC_CHANGE)
 		{
-			doc.getFlatMap().get(layerID).repeatChange();
+			doc.revertChange();
 		}
 		else
 		{
-			// Document Change
+			Layer l = doc.getFlatMap().get(layerID);
+			doc.setCurrent(l);
+			l.revertChange();
+		}
+	}
+	
+	private void repeatChange(int layerID)
+	{
+		if(layerID == DOC_CHANGE)
+		{
 			doc.repeatChange();
 		}
-		changes.push(layerID);
+		else
+		{
+			Layer l = doc.getFlatMap().get(layerID);
+			doc.setCurrent(l);
+			l.repeatChange();
+		}
 	}
 }

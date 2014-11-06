@@ -27,4 +27,6 @@ public interface IDocChange
 	public void apply(Document doc);
 	
 	public void revert(Document doc);
+	
+	public void repeat(Document doc);
 }

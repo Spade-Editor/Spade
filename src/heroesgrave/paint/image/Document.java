@@ -20,8 +20,8 @@
 
 package heroesgrave.paint.image;
 
-import heroesgrave.paint.image.change.IDocChange;
 import heroesgrave.paint.image.change.IChange;
+import heroesgrave.paint.image.change.IDocChange;
 import heroesgrave.paint.io.ImageExporter;
 import heroesgrave.paint.io.ImageImporter;
 import heroesgrave.paint.main.Paint;
@@ -104,15 +104,15 @@ public class Document
 		this.reconstructFlatmap();
 	}
 	
-	public void setCurrent(Layer current)
+	public boolean setCurrent(Layer current)
 	{
+		if(this.current == current)
+		{
+			return false;
+		}
+		this.current = current;
 		Paint.main.gui.layers.select(current);
-		this.current = current;
-	}
-	
-	public void selected(Layer current)
-	{
-		this.current = current;
+		return true;
 	}
 	
 	public Metadata getMetadata()
@@ -276,7 +276,7 @@ public class Document
 		}
 		IDocChange change = reverted.pop();
 		changes.push(change);
-		change.apply(this);
+		change.repeat(this);
 		this.allChanged();
 	}
 	

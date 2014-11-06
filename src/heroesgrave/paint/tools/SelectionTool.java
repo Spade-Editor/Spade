@@ -18,9 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.paint.image.change;
+package heroesgrave.paint.tools;
 
-public interface IMaskChange extends IChange
+public interface SelectionTool
 {
 	
 }

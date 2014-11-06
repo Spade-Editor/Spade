@@ -26,7 +26,7 @@ import heroesgrave.paint.image.change.edit.MaskRectChange;
 import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
 
-public class Select extends Tool
+public class Select extends Tool implements SelectionTool
 {
 	private MaskRectChange rect;
 	
