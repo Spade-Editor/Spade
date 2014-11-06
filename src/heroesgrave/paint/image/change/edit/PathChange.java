@@ -60,7 +60,7 @@ public class PathChange implements IEditChange
 	}
 	
 	@Override
-	public SerialPathChange encode()
+	public Serial encode()
 	{
 		short[] data = new short[points.size() * 2];
 		int i = 0;
@@ -69,7 +69,7 @@ public class PathChange implements IEditChange
 			data[i++] = (short) p.x;
 			data[i++] = (short) p.y;
 		}
-		return new SerialPathChange(data, colour);
+		return new Serial(data, colour);
 	}
 	
 	@Override
@@ -92,17 +92,17 @@ public class PathChange implements IEditChange
 		}
 	}
 	
-	public static class SerialPathChange implements Serialised
+	public static class Serial implements Serialised
 	{
 		private short[] points;
 		private int colour;
 		
-		public SerialPathChange()
+		public Serial()
 		{
 			
 		}
 		
-		public SerialPathChange(short[] data, int colour)
+		public Serial(short[] data, int colour)
 		{
 			this.colour = colour;
 			this.points = data;

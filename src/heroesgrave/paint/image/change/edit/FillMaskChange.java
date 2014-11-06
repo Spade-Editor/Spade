@@ -34,6 +34,11 @@ public class FillMaskChange implements IEditChange, IMaskChange, Serialised
 {
 	private MaskMode mode;
 	
+	public FillMaskChange()
+	{
+		
+	}
+	
 	public FillMaskChange(MaskMode mode)
 	{
 		this.mode = mode;

@@ -31,6 +31,11 @@ public class SetMaskChange extends IImageChange
 {
 	private boolean[] mask;
 	
+	public SetMaskChange()
+	{
+		
+	}
+	
 	public SetMaskChange(boolean[] mask)
 	{
 		this.mask = mask;
@@ -46,10 +51,16 @@ public class SetMaskChange extends IImageChange
 	@Override
 	public void write(DataOutputStream out) throws IOException
 	{
+		out.writeInt(mask.length);
+		for(int i = 0; i < mask.length; i++)
+			out.writeBoolean(mask[i]);
 	}
 	
 	@Override
 	public void read(DataInputStream in) throws IOException
 	{
+		mask = new boolean[in.readInt()];
+		for(int i = 0; i < mask.length; i++)
+			mask[i] = in.readBoolean();
 	}
 }

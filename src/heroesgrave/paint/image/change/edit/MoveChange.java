@@ -33,6 +33,11 @@ public class MoveChange implements IEditChange, IMaskChange, Serialised
 {
 	public short dx, dy;
 	
+	public MoveChange()
+	{
+		
+	}
+	
 	public MoveChange(short dx, short dy)
 	{
 		this.dx = dx;

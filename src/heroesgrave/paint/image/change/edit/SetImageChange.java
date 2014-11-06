@@ -31,6 +31,11 @@ public class SetImageChange extends IImageChange
 {
 	private int[] buffer;
 	
+	public SetImageChange()
+	{
+		
+	}
+	
 	public SetImageChange(int[] buffer)
 	{
 		this.buffer = buffer;
@@ -46,10 +51,16 @@ public class SetImageChange extends IImageChange
 	@Override
 	public void write(DataOutputStream out) throws IOException
 	{
+		out.writeInt(buffer.length);
+		for(int i = 0; i < buffer.length; i++)
+			out.writeInt(buffer[i]);
 	}
 	
 	@Override
 	public void read(DataInputStream in) throws IOException
 	{
+		buffer = new int[in.readInt()];
+		for(int i = 0; i < buffer.length; i++)
+			buffer[i] = in.readInt();
 	}
 }

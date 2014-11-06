@@ -35,6 +35,11 @@ public class MaskRectChange implements IEditChange, IMaskChange, Serialised
 	private short x1, y1, x2, y2;
 	private MaskMode mode;
 	
+	public MaskRectChange()
+	{
+		
+	}
+	
 	public MaskRectChange(short x1, short y1, short x2, short y2, MaskMode mode)
 	{
 		this.x1 = x1;

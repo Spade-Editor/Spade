@@ -33,6 +33,11 @@ public class FillRectChange implements IEditChange, Serialised
 	private short x1, y1, x2, y2;
 	private int colour;
 	
+	public FillRectChange()
+	{
+		
+	}
+	
 	public FillRectChange(short x1, short y1, short x2, short y2, int colour)
 	{
 		this.colour = colour;
@@ -69,21 +74,21 @@ public class FillRectChange implements IEditChange, Serialised
 	@Override
 	public void write(DataOutputStream out) throws IOException
 	{
-		out.writeInt(colour);
 		out.writeShort(x1);
 		out.writeShort(y1);
 		out.writeShort(x2);
 		out.writeShort(y2);
+		out.writeInt(colour);
 	}
 	
 	@Override
 	public void read(DataInputStream in) throws IOException
 	{
-		colour = in.readInt();
 		x1 = in.readShort();
 		y1 = in.readShort();
 		x2 = in.readShort();
 		y2 = in.readShort();
+		colour = in.readInt();
 	}
 	
 	@Override

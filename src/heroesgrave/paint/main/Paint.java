@@ -25,6 +25,7 @@ import heroesgrave.paint.gui.Effects;
 import heroesgrave.paint.gui.GUIManager;
 import heroesgrave.paint.gui.Tools;
 import heroesgrave.paint.image.Document;
+import heroesgrave.paint.io.HistoryIO;
 import heroesgrave.paint.io.ImageExporter;
 import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.paint.tools.Tool;
@@ -98,6 +99,8 @@ public class Paint extends Application
 		ImageExporter.registerExporters();
 		
 		pluginManager = PluginManager.instance(this);
+		
+		HistoryIO.init();
 		
 		tools = new Tools();
 		effects = new Effects();

@@ -21,35 +21,62 @@
 package heroesgrave.paint.image.change.edit;
 
 import heroesgrave.paint.image.RawImage;
+import heroesgrave.paint.image.change.IEditChange;
+import heroesgrave.paint.io.Serialised;
 
 import java.awt.Point;
-import java.util.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-/**
- * Same as a PathChange (a series of points), but flood-fills the image starting at each point.
- * 
- * @author BurntPizza
- *
- */
-public class FloodPathChange extends PathChange
+public class FloodPathChange implements IEditChange
 {
-
-	public FloodPathChange(Point p, int colour)
-	{
-		super(p, colour);
-		
-	}
+	protected ArrayList<Point> points = new ArrayList<Point>();
+	protected int colour;
 	
 	public FloodPathChange(short x, short y, int colour)
 	{
-		super(x, y, colour);
-		
+		this(new Point(x, y), colour);
+	}
+	
+	public FloodPathChange(Point p, int colour)
+	{
+		this.colour = colour;
+		points.add(p);
+	}
+	
+	public boolean moveTo(short x, short y)
+	{
+		return this.moveTo(new Point(x, y));
+	}
+	
+	public boolean moveTo(Point p)
+	{
+		if(points.get(points.size() - 1).equals(p))
+			return false;
+		points.add(p);
+		return true;
+	}
+	
+	@Override
+	public Serial encode()
+	{
+		short[] data = new short[points.size() * 2];
+		int i = 0;
+		for(Point p : points)
+		{
+			data[i++] = (short) p.x;
+			data[i++] = (short) p.y;
+		}
+		return new Serial(data, colour);
 	}
 	
 	@Override
 	public void apply(RawImage image)
 	{
-		for (Point p : points)
+		for(Point p : points)
 		{
 			floodFill(image, p.x, p.y, colour);
 		}
@@ -61,21 +88,21 @@ public class FloodPathChange extends PathChange
 	{
 		final int iw = image.width;
 		
-		if (x < 0 | y < 0 || x >= iw || y >= image.height)
+		if(x < 0 | y < 0 || x >= iw || y >= image.height)
 			return;
 		
 		int[] buffer = image.borrowBuffer();
 		boolean[] mask = image.borrowMask();
 		int targetColor = buffer[x + y * iw];
 		
-		if (targetColor == color || mask != null && !mask[x + y * iw])
+		if(targetColor == color || mask != null && !mask[x + y * iw])
 			return;
 		
 		int[] stack = new int[1024];
 		int head = -1;
 		
 		stack[++head] = x + y * iw;
-
+		
 		while(head >= 0)
 		{
 			int n = stack[head--];
@@ -86,8 +113,10 @@ public class FloodPathChange extends PathChange
 				final int nxl = nyo + iw;
 				int w = n, e = n;
 				// scan out on each side of current pixel
-				while(w >= nyo && buffer[w] == targetColor && (mask == null || mask[w])) --w;
-				while(e < nxl && buffer[e] == targetColor && (mask == null || mask[e])) ++e;
+				while(w >= nyo && buffer[w] == targetColor && (mask == null || mask[w]))
+					--w;
+				while(e < nxl && buffer[e] == targetColor && (mask == null || mask[e]))
+					++e;
 				// fill in between
 				w += 1;
 				
@@ -99,7 +128,7 @@ public class FloodPathChange extends PathChange
 				
 				if(ny > 0)
 					for(int i = w; i < e; ++i)
-						if (buffer[i] == targetColor && (mask == null || mask[i]))
+						if(buffer[i] == targetColor && (mask == null || mask[i]))
 						{
 							stack[++head] = i;
 							if(head == stack.length - 1)
@@ -111,13 +140,63 @@ public class FloodPathChange extends PathChange
 				
 				if(ny < image.height - 1)
 					for(int i = w; i < e; ++i)
-						if (buffer[i] == targetColor && (mask == null || mask[i]))
+						if(buffer[i] == targetColor && (mask == null || mask[i]))
 						{
 							stack[++head] = i;
 							if(head == stack.length - 1)
 								stack = Arrays.copyOf(stack, stack.length * 2);
 						}
 			}
+		}
+	}
+	
+	public static class Serial implements Serialised
+	{
+		private short[] points;
+		private int colour;
+		
+		public Serial()
+		{
+			
+		}
+		
+		public Serial(short[] data, int colour)
+		{
+			this.colour = colour;
+			this.points = data;
+		}
+		
+		@Override
+		public FloodPathChange decode()
+		{
+			FloodPathChange change = new FloodPathChange(points[0], points[1], colour);
+			for(int i = 2; i < points.length; i += 2)
+				change.moveTo(points[i], points[i + 1]);
+			return change;
+		}
+		
+		@Override
+		public void write(DataOutputStream out) throws IOException
+		{
+			out.writeInt(colour);
+			out.writeInt(points.length);
+			for(short s : points)
+				out.writeShort(s);
+		}
+		
+		@Override
+		public void read(DataInputStream in) throws IOException
+		{
+			colour = in.readInt();
+			points = new short[in.readInt()];
+			for(int i = 0; i < points.length; i++)
+				points[i] = in.readShort();
+		}
+		
+		@Override
+		public boolean isMarker()
+		{
+			return false;
 		}
 	}
 }

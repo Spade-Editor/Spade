@@ -25,6 +25,7 @@ import heroesgrave.paint.image.change.IEditChange;
 import heroesgrave.paint.image.change.IImageChange;
 import heroesgrave.paint.image.change.IRevEditChange;
 import heroesgrave.paint.image.change.Marker;
+import heroesgrave.paint.io.HistoryIO;
 import heroesgrave.paint.io.Serialised;
 
 import java.awt.image.BufferedImage;
@@ -45,19 +46,22 @@ public class FreezeBuffer
 	}
 	
 	public static final int MAXIMUM = 16;
-	public static final int MAXIMUM_ORDER = 8;
+	public static final int MAXIMUM_ORDER = 16;
 	
+	private LinkedList<OldBuffer> fullBuffers = new LinkedList<OldBuffer>();
 	private LinkedList<OldBuffer> oldBuffers = new LinkedList<OldBuffer>();
 	private RawImage front, back;
 	private BufferedImage image;
 	private LinkedList<IChange> changes = new LinkedList<IChange>();
 	private LinkedList<IChange> reverted = new LinkedList<IChange>();
 	private LinkedList<Serialised> oldChanges = new LinkedList<Serialised>();
+	private HistoryIO file;
 	private Serialised marker;
 	private boolean rebuffer;
 	
 	public FreezeBuffer(RawImage image)
 	{
+		this.file = new HistoryIO();
 		this.back = image;
 		this.marker = new Marker();
 		this.image = new BufferedImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB);
@@ -73,10 +77,36 @@ public class FreezeBuffer
 			return;
 		}
 		OldBuffer top = this.oldBuffers.pop();
-		if(top.order == buffer.order && top.order != MAXIMUM_ORDER)
+		if(top.order == buffer.order)
 		{
-			top.order *= 2;
-			pushOldBuffer(top);
+			if(top.order == MAXIMUM_ORDER)
+			{
+				this.oldBuffers.push(buffer);
+				fullBuffers.push(top);
+				System.out.println("Filled Buffer");
+				if(fullBuffers.size() == 4)
+				{
+					System.out.println("Sending to disk");
+					LinkedList<Serialised> changes = new LinkedList<Serialised>();
+					int i = MAXIMUM_ORDER * 2 + 1;
+					while(i > 0)
+					{
+						Serialised s = oldChanges.pollLast();
+						if(s.isMarker())
+						{
+							i--;
+						}
+						changes.push(s);
+					}
+					oldChanges.addLast(changes.pop()); // We don't want the last marker
+					file.write(changes, fullBuffers.pollLast().image, fullBuffers.pollLast().image);
+				}
+			}
+			else
+			{
+				top.order *= 2;
+				pushOldBuffer(top);
+			}
 		}
 		else
 		{
@@ -89,6 +119,26 @@ public class FreezeBuffer
 	{
 		if(oldBuffers.isEmpty())
 		{
+			if(!fullBuffers.isEmpty())
+			{
+				this.oldBuffers.push(fullBuffers.pop());
+				return popOldBuffer();
+			}
+			else
+			{
+				// Try loading from file
+				HistoryIO.Result result = file.read();
+				if(result != null)
+				{
+					this.fullBuffers.addLast(new OldBuffer(MAXIMUM_ORDER, result.b));
+					this.fullBuffers.addLast(new OldBuffer(MAXIMUM_ORDER, result.a));
+					while(!result.changes.isEmpty())
+					{
+						this.oldChanges.addLast(result.changes.pop());
+					}
+					return popOldBuffer();
+				}
+			}
 			marker = new Marker();
 			return false;
 		}
