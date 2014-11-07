@@ -20,8 +20,9 @@
 
 package heroesgrave.paint.gui;
 
-import heroesgrave.paint.effects.*;
-import heroesgrave.paint.effects.generators.TestGenerator;
+import heroesgrave.paint.editing.Effect;
+import heroesgrave.paint.editing.ResizeCanvas;
+import heroesgrave.paint.editing.ResizeImage;
 import heroesgrave.paint.gui.ToolMenu.EffectMenuItem;
 
 import com.alee.laf.menu.WebMenu;
@@ -45,11 +46,9 @@ public class Effects
 		operations.add(new EffectMenuItem(effect.name, effect, shortcut));
 	}
 	
-	public void registerEffects()
+	public void init()
 	{
-		addEffect(new Invert("Invert Colour"), "I");
-		addEffect(new Grayscale("Make grayscale"), "G");
-		addGenerator(new TestGenerator(), null);
-		//PluginManager.instance.registerEffects(this);
+		addOperation(new ResizeImage("Resize Image"), "R");
+		addOperation(new ResizeCanvas("Resize Canvas"), "C");
 	}
 }

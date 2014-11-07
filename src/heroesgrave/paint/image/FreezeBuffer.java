@@ -83,10 +83,8 @@ public class FreezeBuffer
 			{
 				this.oldBuffers.push(buffer);
 				fullBuffers.push(top);
-				System.out.println("Filled Buffer");
 				if(fullBuffers.size() == 4)
 				{
-					System.out.println("Sending to disk");
 					LinkedList<Serialised> changes = new LinkedList<Serialised>();
 					int i = MAXIMUM_ORDER * 2 + 1;
 					while(i > 0)
@@ -185,9 +183,8 @@ public class FreezeBuffer
 				}
 				toReturn.push(s);
 			}
-			RawImage image = RawImage.copyOf(top.image);
 			LinkedList<IChange> toApply = new LinkedList<IChange>();
-			while(i > 0)
+			while(i >= 0)
 			{
 				if((s = oldChanges.poll()) == null)
 				{
@@ -196,6 +193,11 @@ public class FreezeBuffer
 				else if(s.isMarker())
 				{
 					i--;
+					if(i == -1 && !(s instanceof Marker))
+					{
+						oldChanges.push(s);
+						break;
+					}
 				}
 				toReturn.push(s);
 				if(!(s instanceof Marker))
@@ -203,6 +205,7 @@ public class FreezeBuffer
 					toApply.push(s.decode());
 				}
 			}
+			RawImage image = RawImage.copyOf(top.image);
 			for(IChange c : toApply)
 			{
 				if(c instanceof IImageChange)
@@ -229,8 +232,10 @@ public class FreezeBuffer
 		if(change instanceof IEditChange)
 		{
 			changes.addLast(change);
+			
 			checkBuffered();
 			((IEditChange) change).apply(front);
+			
 			if(changes.size() >= MAXIMUM)
 			{
 				pushOldBuffer(new OldBuffer(1, back));
@@ -245,10 +250,15 @@ public class FreezeBuffer
 		}
 		else if(change instanceof IImageChange)
 		{
-			checkBuffered();
 			pushOldBuffer(new OldBuffer(1, back));
 			
+			checkBuffered();
 			this.back = ((IImageChange) change).apply(RawImage.copyOf(front));
+			if(back.width != front.width || back.height != front.height)
+			{
+				image = new BufferedImage(back.width, back.height, BufferedImage.TYPE_INT_ARGB);
+				this.front = RawImage.unwrapBufferedImage(this.image);
+			}
 			front.copyFrom(back, true);
 			
 			oldChanges.push(marker);
@@ -267,10 +277,15 @@ public class FreezeBuffer
 				IChange ret = marker.decode();
 				reverted.push(ret);
 				popOldBuffer();
+				if(back.width != front.width || back.height != front.height)
+				{
+					image = new BufferedImage(back.width, back.height, BufferedImage.TYPE_INT_ARGB);
+					this.front = RawImage.unwrapBufferedImage(this.image);
+				}
 				return ret;
 			}
 			
-			this.front.copyFrom(this.back, false);
+			front.copyFrom(back, true);
 			rebuffer = true;
 			
 			if(!popOldBuffer())

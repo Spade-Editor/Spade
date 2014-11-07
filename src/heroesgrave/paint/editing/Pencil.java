@@ -18,22 +18,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.paint.plugin;
+package heroesgrave.paint.editing;
 
-import heroesgrave.paint.editing.Tool;
-import heroesgrave.paint.gui.Tools;
+import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.change.edit.PathChange;
+import heroesgrave.paint.main.Paint;
 
-public class RegisterTools
+public class Pencil extends Tool
 {
-	private Tools tools;
+	private PathChange path;
 	
-	public RegisterTools(Tools tools)
+	public Pencil(String name)
 	{
-		this.tools = tools;
+		super(name);
 	}
 	
-	public void register(Tool tool, String key)
+	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		tools.addTool(tool, key);
+		path = new PathChange(x, y, Paint.main.getColor(button));
+		Paint.getDocument().preview(path);
+	}
+	
+	public void onReleased(Layer layer, short x, short y, int button)
+	{
+		Paint.getDocument().applyPreview();
+		path = null;
+	}
+	
+	public void whilePressed(Layer layer, short x, short y, int button)
+	{
+		if(path.moveTo(x, y))
+			Paint.getDocument().repaint();
 	}
 }

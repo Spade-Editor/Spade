@@ -34,6 +34,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -56,6 +57,8 @@ import com.alee.laf.scroll.WebScrollPane;
 
 public class GUIManager
 {
+	public static final BufferedImage ICON;
+	
 	public WebFrame frame;
 	private JPanel panel;
 	private WebPanel menus;
@@ -233,17 +236,7 @@ public class GUIManager
 		});
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		
-		// Load the frames Icon. It looks a lot nicer with an actual logo. Remove if inappropriate.
-		try
-		{
-			frame.setIconImage(ImageIO.read(this.getClass().getResource("/heroesgrave/paint/res/favicon.png")));
-		}
-		catch(IOException e1)
-		{
-			// Ignore the error if there is one! The logo doesn't matter so much as to crash the application.
-		}
-		
-		heroesgrave.paint.plugin.PluginManager.instance.frameCreationEvent(frame);
+		frame.setIconImage(ICON);
 		
 		panel = (JPanel) frame.getContentPane();
 		
@@ -255,8 +248,7 @@ public class GUIManager
 		if(Paint.getDocument().saved)
 		{
 			UserPreferences.savePrefs(frame, chooser, layers, toolBox);
-			Paint.main.terminate = true;
-			return;
+			Paint.close();
 		}
 		
 		// dialogue creation
@@ -277,8 +269,8 @@ public class GUIManager
 			{
 				Paint.save();
 				UserPreferences.savePrefs(frame, chooser, layers, toolBox);
-				Paint.main.terminate = true;
 				close.dispose();
+				Paint.close();
 			}
 		});
 		dispose.addActionListener(new ActionListener()
@@ -287,8 +279,8 @@ public class GUIManager
 			public void actionPerformed(ActionEvent e)
 			{
 				UserPreferences.savePrefs(frame, chooser, layers, toolBox);
-				Paint.main.terminate = true;
 				close.dispose();
+				Paint.close();
 			}
 		});
 		cancel.addActionListener(new ActionListener()
@@ -331,7 +323,7 @@ public class GUIManager
 	
 	public static final ImageIcon getIcon(String name)
 	{
-		String fullPath = "/heroesgrave/paint/res/icons/" + name + ".png";
+		String fullPath = "/res/icons/" + name + ".png";
 		
 		try
 		{
@@ -365,5 +357,19 @@ public class GUIManager
 		canvasPanel.setDocument(document);
 		layers.setDocument(document);
 		document.reconstructFlatmap();
+	}
+	
+	static
+	{
+		BufferedImage image = null;
+		try
+		{
+			image = ImageIO.read(GUIManager.class.getResource("/res/favicon.png"));
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		ICON = image;
 	}
 }

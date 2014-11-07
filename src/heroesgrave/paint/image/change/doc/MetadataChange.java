@@ -39,13 +39,13 @@ public class MetadataChange implements IDocChange
 	
 	public void apply(Document doc)
 	{
-		layer.getMetadata().put(key, newValue);
+		layer.getMetadata().set(key, newValue);
 		layer.updateMetadata();
 	}
 	
 	public void revert(Document doc)
 	{
-		layer.getMetadata().put(key, oldValue);
+		layer.getMetadata().set(key, oldValue);
 		layer.updateMetadata();
 	}
 	

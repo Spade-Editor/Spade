@@ -20,12 +20,12 @@
 
 package heroesgrave.paint.main;
 
-import heroesgrave.paint.effects.Effect;
+import heroesgrave.paint.editing.Effect;
+import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.gui.Menu;
 import heroesgrave.paint.image.RawImage.MaskMode;
 import heroesgrave.paint.image.change.edit.ClearMaskChange;
 import heroesgrave.paint.image.change.edit.FillMaskChange;
-import heroesgrave.paint.tools.Tool;
 
 import java.awt.AWTException;
 import java.awt.MouseInfo;
@@ -155,7 +155,9 @@ public class Input implements KeyListener
 				else if(e.getKeyCode() == KeyEvent.VK_B)
 				{
 					Menu.DARK_BACKGROUND = !Menu.DARK_BACKGROUND;
-					Paint.main.gui.frame.repaint();
+					Paint.main.gui.canvasPanel.repaint();
+					//Paint.getDocument().repaint();
+					//Paint.main.gui.canvasPanel.maskChanged();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_D)
 				{

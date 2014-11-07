@@ -45,7 +45,6 @@ public class LayerSettings
 	private WebTextField label;
 	private WebComboBox blendMode;
 	
-	@SuppressWarnings("unchecked")
 	public LayerSettings(WebFrame frame)
 	{
 		this.dialog = new WebDialog(frame, "Layer Settings");
@@ -56,8 +55,7 @@ public class LayerSettings
 		
 		blendMode = new WebComboBox();
 		
-		for(String mode : BlendMode.getBlendModeNames())
-			blendMode.addItem(mode);
+		addAllBlendModes();
 		
 		label = new WebTextField("");
 		
@@ -70,8 +68,9 @@ public class LayerSettings
 			{
 				if(!layer.getMetadata().get("name").equals(label.getText()))
 					Paint.main.document.addChange(new MetadataChange(layer, "name", label.getText()));
-				if(!layer.getMetadata().get("blend").equals(blendMode.getSelectedItem()))
-					Paint.main.document.addChange(new MetadataChange(layer, "blend", (String) blendMode.getSelectedItem()));
+				if(blendMode.getSelectedItem() != null)
+					if(!layer.getMetadata().get("blend").equals(blendMode.getSelectedItem()))
+						Paint.main.document.addChange(new MetadataChange(layer, "blend", (String) blendMode.getSelectedItem()));
 				dialog.setVisible(false);
 			}
 		});
@@ -87,6 +86,8 @@ public class LayerSettings
 		{
 			public void itemStateChanged(ItemEvent arg0)
 			{
+				if(layer == null || blendMode.getSelectedItem() == null)
+					return;
 				if(!blendMode.getSelectedItem().equals(layer.getMetadata().get("blend")))
 				{
 					// TODO Preview?
@@ -95,6 +96,14 @@ public class LayerSettings
 		});
 		
 		label.setHorizontalAlignment(WebLabel.CENTER);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void addAllBlendModes()
+	{
+		blendMode.removeAllItems();
+		for(String mode : BlendMode.getBlendModeNames())
+			blendMode.addItem(mode);
 	}
 	
 	public void updateIfVisible(Layer layer)

@@ -20,17 +20,18 @@
 
 package heroesgrave.paint.main;
 
-import heroesgrave.paint.effects.Effect;
+import heroesgrave.paint.editing.Effect;
+import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.gui.Effects;
 import heroesgrave.paint.gui.GUIManager;
 import heroesgrave.paint.gui.Tools;
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.io.HistoryIO;
 import heroesgrave.paint.io.ImageExporter;
+import heroesgrave.paint.plugin.Plugin;
 import heroesgrave.paint.plugin.PluginManager;
-import heroesgrave.paint.tools.Tool;
-import heroesgrave.utils.app.Application;
 import heroesgrave.utils.io.IOUtils;
+import heroesgrave.utils.misc.Version;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -47,11 +48,7 @@ import javax.swing.filechooser.FileFilter;
 import com.alee.laf.filechooser.WebFileChooser;
 import com.alee.laf.rootpane.WebDialog;
 
-//
-// "Ninety-nine little bugs in the code, ninety-nine little bugs! Take one down, patch it around, one-hundred and seventeen bugs in the code!"
-//       -Aoefanatic (/r/Minecraft)
-
-public class Paint extends Application
+public class Paint
 {
 	// Major.Minor + optional letter for releases. The letter is for tiny revisions, such as fixing bugs that slipped through.
 	// Major.0-Beta for beta builds.
@@ -62,17 +59,20 @@ public class Paint extends Application
 	// Beta for new completed features.
 	// Development for under-development new features.
 	
-	public static final String VERSION = "0.14-Dev";
-	public static final String RELEASED = "1/11/2014";
+	public static final String VERSION_STRING = "0.14-Dev";
+	public static final Version VERSION = Version.parse(VERSION_STRING);
+	public static final String RELEASED = "07-11-2014";
 	
 	/* Remove the stars on the following lines to change the build type string.
 	//*/public static final String BUILD_TYPE = "Development";
+	//*/public static final String BUILD_TYPE = "Alpha";
 	//*/public static final String BUILD_TYPE = "Beta";
+	//*/public static final String BUILD_TYPE = "Release Candidate";
 	//*/public static final String BUILD_TYPE = "Stable";
 	
 	public static boolean debug;
 	public static Paint main = new Paint();
-	public static URL questionMarkURL = Paint.class.getResource("/heroesgrave/paint/res/icons/questionmark.png");
+	public static URL questionMarkURL = Paint.class.getResource("/res/icons/questionmark.png");
 	
 	public GUIManager gui;
 	public PluginManager pluginManager;
@@ -93,12 +93,15 @@ public class Paint extends Application
 	
 	private static HashMap<String, Effect> effectMap = new HashMap<String, Effect>();
 	
-	@Override
-	public void init()
+	public void launch()
 	{
 		ImageExporter.registerExporters();
 		
-		pluginManager = PluginManager.instance(this);
+		pluginManager = PluginManager.instance;
+		
+		pluginManager.addPluginDirectory(new File(IOUtils.assemblePath(System.getProperty("user.home"), ".paint-java", "plugins")));
+		pluginManager.addPluginDirectory(new File(IOUtils.assemblePath(IOUtils.jarDir(), "plugins")));
+		pluginManager.loadPluginFiles();
 		
 		HistoryIO.init();
 		
@@ -125,35 +128,15 @@ public class Paint extends Application
 				setLeftColour(0xff000000, false);
 				setRightColour(0xffffffff, false);
 				
-				tools.registerTools();
-				effects.registerEffects();
+				tools.init();
+				effects.init();
+				pluginManager.loadPlugins();
 				setTool(currentTool);
-				pluginManager.registerOther();
 				gui.setDocument(document);
 				
 				Paint.main.gui.frame.requestFocus();
-				pluginManager.onLaunch();
 			}
 		});
-	}
-	
-	@Override
-	public void update()
-	{
-		//gui.info.setSaved(saved);
-		//gui.setFile(openFile);
-	}
-	
-	@Override
-	public void render()
-	{
-		
-	}
-	
-	@Override
-	public void dispose()
-	{
-		
 	}
 	
 	public void newImage(final int width, final int height)
@@ -375,6 +358,13 @@ public class Paint extends Application
 		return mouseButton == MouseEvent.BUTTON1 ? Paint.leftColour : (mouseButton == MouseEvent.BUTTON3 ? Paint.rightColour : 0xFF000000);
 	}
 	
+	public static void launchWithPlugin(String[] args, Plugin... plugins)
+	{
+		for(Plugin p : plugins)
+			PluginManager.instance.registerPlugin(p);
+		main(args);
+	}
+	
 	public static void main(String[] args)
 	{
 		IOUtils.setMainClass(Paint.class);
@@ -438,10 +428,10 @@ public class Paint extends Application
 		}
 		
 		// Finally Launch Paint.JAVA!
-		Application.launch(main);
+		main.launch();
 	}
 	
-	public static String getVersionString()
+	public static Version getVersion()
 	{
 		return VERSION;
 	}
@@ -451,5 +441,12 @@ public class Paint extends Application
 		main.document = new Document(file);
 		main.gui.layers.setDocument(main.document);
 		main.gui.setDocument(main.document);
+	}
+	
+	public static void close()
+	{
+		main.pluginManager.dispose();
+		main.gui.frame.dispose();
+		System.exit(0);
 	}
 }

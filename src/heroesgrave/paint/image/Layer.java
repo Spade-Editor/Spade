@@ -162,6 +162,16 @@ public class Layer extends DefaultMutableTreeNode
 		doc.changed(this);
 	}
 	
+	public void addChangeSilent(IChange change)
+	{
+		buffer.addChange(change);
+		doc.changed(this);
+		if(change instanceof IMaskChange)
+		{
+			Paint.main.gui.canvasPanel.maskChanged();
+		}
+	}
+	
 	public BlendMode getBlendMode()
 	{
 		return blend;

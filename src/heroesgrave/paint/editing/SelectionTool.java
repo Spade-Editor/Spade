@@ -18,22 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.paint.plugin;
+package heroesgrave.paint.editing;
 
-import heroesgrave.paint.editing.Tool;
-import heroesgrave.paint.gui.Tools;
-
-public class RegisterTools
+public interface SelectionTool
 {
-	private Tools tools;
 	
-	public RegisterTools(Tools tools)
-	{
-		this.tools = tools;
-	}
-	
-	public void register(Tool tool, String key)
-	{
-		tools.addTool(tool, key);
-	}
 }

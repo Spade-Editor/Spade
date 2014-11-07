@@ -14,6 +14,7 @@
 # Other #
 /etc
 /doc
+/plugins
 /test
 *.sh
 *.directory

@@ -37,8 +37,6 @@ public abstract class BlendMode implements Composite, CompositeContext
 	static
 	{
 		addBlendMode(NORMAL);
-		addBlendMode(new Replace());
-		addBlendMode(new MaskReplace());
 	}
 	
 	public final String name;

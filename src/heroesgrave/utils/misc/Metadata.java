@@ -26,7 +26,7 @@ public class Metadata
 {
 	private HashMap<String, String> metadata = new HashMap<String, String>();
 	
-	public String put(String key, String value)
+	public String set(String key, String value)
 	{
 		return metadata.put(key, value);
 	}
@@ -52,9 +52,14 @@ public class Metadata
 		String ret = metadata.get(key);
 		if(ret == null)
 		{
-			this.put(key, def);
+			this.set(key, def);
 			return def;
 		}
 		return ret;
+	}
+	
+	public boolean has(String key)
+	{
+		return metadata.containsKey(key);
 	}
 }

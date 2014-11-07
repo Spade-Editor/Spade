@@ -20,8 +20,8 @@
 
 package heroesgrave.paint.gui;
 
+import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.tools.Tool;
 
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -92,7 +92,7 @@ public class ToolBox
 			// TRY to load the icon!
 			try
 			{
-				URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/tools/" + name + ".png");
+				URL url = tool.getClass().getResource("/res/icons/tools/" + name + ".png");
 				
 				if(url != null)
 				{

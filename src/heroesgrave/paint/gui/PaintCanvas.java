@@ -23,6 +23,7 @@ package heroesgrave.paint.gui;
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.RawImage;
+import heroesgrave.paint.image.blend.BlendMode;
 import heroesgrave.paint.image.change.IChange;
 import heroesgrave.paint.image.change.IEditChange;
 import heroesgrave.paint.image.change.IImageChange;
@@ -63,7 +64,7 @@ import com.alee.laf.rootpane.WebFrame;
 public class PaintCanvas extends JComponent implements MouseListener, MouseMotionListener, MouseWheelListener
 {
 	public static final Color TRANSPARENT = new Color(255, 255, 255, 0);
-	public static final int SELECTION_OVERLAY = 0x3f000000;
+	public static final int SELECTION_OVERLAY = 0x3f3f5f7f;
 	public static BufferedImage backgroundLight, backgroundDark;
 	
 	// MISC
@@ -97,9 +98,9 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	{
 		try
 		{
-			backgroundLight = ImageIO.read(PaintCanvas.class.getResource("/heroesgrave/paint/res/tbg.png"));
+			backgroundLight = ImageIO.read(PaintCanvas.class.getResource("/res/tbg.png"));
 			
-			backgroundDark = ImageIO.read(PaintCanvas.class.getResource("/heroesgrave/paint/res/tbgd.png"));
+			backgroundDark = ImageIO.read(PaintCanvas.class.getResource("/res/tbgd.png"));
 		}
 		catch(IOException e)
 		{
@@ -128,7 +129,6 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		this.mouseLastDragPosX = 0;
 		this.mouseLastDragPosY = 0;
 		
-		// XXX: fixes startup NPEs and misc, probably not an actual solution
 		setDocument(Paint.getDocument());
 	}
 	
@@ -456,7 +456,10 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			}
 			
 			if(masked) // Draw the selection overlay.
+			{
+				cg.setComposite(BlendMode.NORMAL);
 				cg.drawImage(unselected, 0, 0, null);
+			}
 			
 			for(int i = index + 2; i < flatmap.size(); i++)
 			{
@@ -464,7 +467,8 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			}
 			
 			end = System.nanoTime();
-			//System.out.printf("Render Time: %dms\n", (end - start) / 1000000);
+			if(Paint.debug)
+				System.out.printf("Render Time: %dms\n", (end - start) / 1000000);
 			document.repaint = false;
 		}
 		
@@ -507,6 +511,9 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		this.unselectedRaw = RawImage.unwrapBufferedImage(unselected);
 		this.preview = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		this.previewRaw = RawImage.unwrapBufferedImage(preview);
+		this.cam_zoom = 1;
+		this.cam_positionX = image.getWidth() / 2;
+		this.cam_positionY = image.getHeight() / 2;
 		this.repaint();
 	}
 	
@@ -519,7 +526,6 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		this.unselectedRaw = RawImage.unwrapBufferedImage(unselected);
 		this.preview = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		this.previewRaw = RawImage.unwrapBufferedImage(preview);
-		this.cam_zoom = 1;
 		this.cam_positionX = image.getWidth() / 2;
 		this.cam_positionY = image.getHeight() / 2;
 		this.repaint();

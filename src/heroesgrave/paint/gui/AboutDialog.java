@@ -42,6 +42,7 @@ public class AboutDialog extends WebDialog
 	public AboutDialog(WebFrame frame)
 	{
 		super(frame, "About Paint.JAVA");
+		this.setIconImage(GUIManager.ICON);
 		this.center(400, 300);
 		this.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		
@@ -52,7 +53,7 @@ public class AboutDialog extends WebDialog
 		
 		append(doc, "Paint.JAVA", "large");
 		append(doc, "\n    Version: ", "bold");
-		append(doc, Paint.VERSION, "regular");
+		append(doc, Paint.getVersion().toString(), "regular");
 		append(doc, "\n    Build Type: ", "bold");
 		append(doc, Paint.BUILD_TYPE, "regular");
 		append(doc, "\n    Released on: ", "bold");
@@ -82,7 +83,7 @@ public class AboutDialog extends WebDialog
 		this.setResizable(false);
 	}
 	
-	protected static void append(StyledDocument doc, String str, String sty)
+	public static void append(StyledDocument doc, String str, String sty)
 	{
 		try
 		{
@@ -94,7 +95,7 @@ public class AboutDialog extends WebDialog
 		}
 	}
 	
-	protected static void addStylesToDocument(StyledDocument doc)
+	public static void addStylesToDocument(StyledDocument doc)
 	{
 		//Initialize some styles.
 		Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);

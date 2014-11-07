@@ -18,22 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.paint.plugin;
+package heroesgrave.paint.editing;
 
-import heroesgrave.paint.editing.Tool;
-import heroesgrave.paint.gui.Tools;
+import heroesgrave.paint.image.Layer;
 
-public class RegisterTools
+public abstract class Effect
 {
-	private Tools tools;
+	public final String name;
 	
-	public RegisterTools(Tools tools)
+	public Effect(String name)
 	{
-		this.tools = tools;
+		this.name = name;
 	}
 	
-	public void register(Tool tool, String key)
-	{
-		tools.addTool(tool, key);
-	}
+	public abstract void perform(Layer layer);
 }

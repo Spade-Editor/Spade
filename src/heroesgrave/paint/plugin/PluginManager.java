@@ -1,349 +1,274 @@
-// {LICENSE}
-/*
- * Copyright 2013-2014 HeroesGrave and other Paint.JAVA developers.
- * 
- * This file is part of Paint.JAVA
- * 
- * Paint.JAVA is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 package heroesgrave.paint.plugin;
 
-import heroesgrave.paint.gui.Tools;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.main.Popup;
-import heroesgrave.utils.io.IOUtils;
-import heroesgrave.utils.misc.StringUtil;
+import heroesgrave.utils.misc.Metadata;
+import heroesgrave.utils.misc.Version;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import javax.swing.JFrame;
-
-/**
- * PluginManager class.<hr>
- * 
- * This class loads and manages Plugin's, small libraries that can be added to the application to make it more powerful and awesome.
- * 
- * <br><br>
- * @author Longor1996 & HeroesGrave
- *
- */
 public class PluginManager
 {
-	/**
-	 * The instance of the PluginManager. There should ALWAYS only be ONE PluginManager in existance!
-	 **/
-	public static PluginManager instance = null;
+	public static final PluginManager instance = new PluginManager();
 	
-	/**
-	 * The directory in which all the Plugin's are stored.
-	 **/
-	private File pluginRootDirectory;
+	private ArrayList<Plugin> plugins = new ArrayList<Plugin>();
+	private ArrayList<Plugin> validPlugins = new ArrayList<Plugin>();
 	
-	/**
-	 * The list of loaded, and thus active, Plugin's.
-	 **/
-	private ArrayList<Plugin> loadedPlugins;
+	private ArrayList<File> pluginFiles = new ArrayList<File>();
+	private ArrayList<Metadata> pluginFileInfo = new ArrayList<Metadata>();
 	
-	/**
-	 * The PluginManager Viewer.
-	 **/
-	private PluginManagerViewer pluginViewer;
+	private PluginViewer pluginViewer;
+	private URLClassLoader classLoader;
 	
-	private PluginManager(Paint paint)
+	public void loadPlugins()
 	{
-		// Make sure the plugin folder exists and is accessible!
-		pluginRootDirectory = new File(IOUtils.assemblePath(System.getProperty("user.home"), ".paint-java", "plugins"));
-		
-		if(!pluginRootDirectory.exists())
+		for(Plugin plugin : validPlugins)
 		{
-			pluginRootDirectory.mkdirs();
+			plugin.load();
 		}
-		
-		// 
-		loadedPlugins = new ArrayList<Plugin>();
-		
-		// Get a list of all files and directories in the folder using a filter that filters for directories and jar-files.
-		File[] possiblePluginRoots = pluginRootDirectory.listFiles(new PluginFileFilter());
-		
-		for(File possiblePluginRoot : possiblePluginRoots)
+		Registrar registrar = new Registrar();
+		for(Plugin plugin : validPlugins)
 		{
-			if(possiblePluginRoot.isFile() && possiblePluginRoot.getName().endsWith(".jar"))
-			{
-				handlePossibleJarBasedPlugin(possiblePluginRoot);
-			}
+			plugin.register(registrar);
+			plugin.loaded = true;
 		}
-		
-		for(Plugin plugin : this.loadedPlugins)
-		{
-			plugin.init(paint);
-		}
+		registrar.completeRegistration(Paint.main.tools, Paint.main.effects);
 	}
 	
-	private void handlePossibleJarBasedPlugin(File possiblePluginRoot)
+	public void dispose()
 	{
-		//System.out.println("[PluginManager] Found possible Jar-plugin! Checking now... @" + possiblePluginRoot.getAbsolutePath());
-		
 		try
 		{
-			// Open JAR
-			JarFile jarFile = new JarFile(possiblePluginRoot);
-			
-			// Get name of Jar without the ".jar"
-			String jarName = possiblePluginRoot.getName().replace(".jar", "");
-			
-			// (Make the name uppercase if it isn't already)
-			if(Character.isLowerCase(jarName.charAt(0)))
-			{
-				jarName = Character.toUpperCase(jarName.charAt(0)) + jarName.substring(1);
-			}
-			
-			// Try to get the plugin-info file from the Jar-File! If not possible, stop here.
-			JarEntry pluginInfoEntry = jarFile.getJarEntry("plugin.info");
-			
-			if(pluginInfoEntry == null)
-			{
-				//System.out.println("[PluginManager] " + possiblePluginRoot.getName() + " is not a Plugin! Cannot FIND 'plugin.info' file!");
-				jarFile.close();
-				return;
-			}
-			
-			Properties props = new Properties();
-			
-			// Load the plugin information file! If not possible, stop here.
-			try
-			{
-				props.load(jarFile.getInputStream(pluginInfoEntry));
-			}
-			catch(Exception e3)
-			{
-				e3.printStackTrace();
-				Popup.show("Plugin Load Error",
-						"[PluginManager] Cannot READ 'plugin.info' file!\nThe Plugin may be corrupt, or is not a plugin at all");
-				jarFile.close();
-				return;
-			}
-			
-			// Check if the plugin-info contains the main-class key! If not, stop here.
-			if(!props.containsKey("main"))
-			{
-				Popup.show("Plugin Load Error", "[PluginManager] 'plugin.info'-file is invalid!\n"
-						+ "Key 'main' (Plugin Main Class Name) is missing!\nThe Plugin may be corrupt");
-				jarFile.close();
-				return;
-			}
-			
-			// Get Main-Class name!
-			String mainClassName = props.getProperty("main");
-			
-			// List Entries
-			Enumeration<JarEntry> e = jarFile.entries();
-			
-			// Load JAR?
-			URL[] urls = {new URL("jar:file:" + possiblePluginRoot.getAbsolutePath() + "!/")};
-			
-			// This should not be closed (or should it?)
-			URLClassLoader cl = URLClassLoader.newInstance(urls);
-			
-			Class<?> mainClass = null;
-			
-			while(e.hasMoreElements())
-			{
-				JarEntry je = e.nextElement();
-				
-				if(je.isDirectory() || !je.getName().endsWith(".class"))
-				{
-					continue;
-				}
-				
-				// Get the actual class-name!
-				String className = je.getName().replace(".class", "");
-				className = className.replace('/', '.');
-				
-				// If this is not the main-class, skip it! This speeds up the time it takes to load the plugin,
-				// since we don't load all classes at once, but rather by just loading the main-class and then
-				// letting the JVM-SystemClassLoader do its work. (Its faster this way!)
-				
-				/* FIXME: The JVM-SystemClassLoader isn't doing it's work, so I removed this bit.
-				if(!className.equals(mainClassName))
-				{
-					continue;
-				}
-				/**/
-				
-				// Try to load the class!
-				try
-				{
-					//Load
-					Class<?> c = cl.loadClass(className);
-					
-					if(className.equals(mainClassName))
-					{
-						mainClass = c;
-					}
-				}
-				catch(ClassNotFoundException e1)
-				{
-					e1.printStackTrace();
-				}
-			}
-			
-			// Check if the main class is assignable from PluginBase (Is it a plugin?)
-			if(Plugin.class.isAssignableFrom(mainClass))
-			{
-				// The class is a Plugin main-class!
-				// Cast it into the right type now...
-				Class<? extends Plugin> pluginClass = mainClass.asSubclass(Plugin.class);
-				
-				// Then try to instantiate it...
-				try
-				{
-					Plugin newPluginInstance = pluginClass.newInstance();
-					this.loadedPlugins.add(newPluginInstance);
-					
-					System.out.println("[PluginManager] Loaded Plugin: " + newPluginInstance.name);
-					
-					// Create info object.
-					newPluginInstance.info = new Properties();
-					
-					// Format 'Size'
-					newPluginInstance.info.put("size",
-							StringUtil.humanReadableByteCount(possiblePluginRoot.length(), true));
-					
-					// Format 'Description'
-					newPluginInstance.info.put("description", ((String) props.get("description")).replace("\\n", "\n"));
-					
-					// Author
-					newPluginInstance.info.put("author", (props.get("author")));
-					
-					// Version (defined by author)
-					newPluginInstance.info.put("version", (props.get("version")));
-					
-					// Date updated (defined by author)
-					newPluginInstance.info.put("updated", (props.get("updated")));
-					
-					newPluginInstance.info.put("plugin_location", possiblePluginRoot.getAbsolutePath());
-				}
-				catch(ReflectiveOperationException e1)
-				{
-					e1.printStackTrace();
-				}
-			}
-			
-			cl.close();
-			
-			// Close JAR
-			jarFile.close();
+			if(classLoader != null)
+				classLoader.close();
 		}
 		catch(IOException e)
 		{
-			System.out.println("[PluginManager] The JAR-file '" + possiblePluginRoot.getAbsolutePath()
-					+ "' could not be read!");
 			e.printStackTrace();
-			return;
 		}
 	}
 	
-	/**
-	 * Initial instance construction method. Call this method only ONCE on application startup.
-	 **/
-	public static PluginManager instance(Paint paint)
+	public void registerPlugin(Plugin plugin)
 	{
-		if(instance == null)
+		if(validatePlugin(plugin))
 		{
-			instance = new PluginManager(paint);
+			System.out.println("[PluginManager] Loaded plugin: " + plugin.getInfo().get("name"));
+			plugins.add(plugin);
+			validPlugins.add(plugin);
+		}
+	}
+	
+	private boolean validatePlugin(Plugin plugin)
+	{
+		Metadata info = plugin.getInfo();
+		if(info == null)
+			return false;
+		if(!info.has("name"))
+		{
+			System.err.println("[PluginManager] Unnamed plugin");
+			return false;
+		}
+		String name = info.get("name");
+		if(!info.has("version"))
+		{
+			System.err.println("[PluginManager] Plugin \"" + name + "\" has no version field.");
+			return false;
+		}
+		if(info.has("min-paint-version"))
+		{
+			if(Version.parse(info.get("min-paint-version")).isGreater(Paint.getVersion()))
+			{
+				System.err.println("[PluginManager] Plugin \"" + name + "\" requires a newer version of Paint.JAVA");
+				System.err.println("[PluginManager] Have: " + Paint.getVersion());
+				System.err.println("[PluginManager] Need at least: " + Version.parse(info.get("min-paint-version")));
+				plugins.add(plugin);
+				return false;
+			}
+		}
+		if(info.has("max-paint-version"))
+		{
+			if(Paint.getVersion().isGreater(Version.parse(info.get("max-paint-version"))))
+			{
+				System.err.println("[PluginManager] Plugin \"" + name + "\" requires an older version of Paint.JAVA");
+				System.err.println("[PluginManager] Have: " + Paint.getVersion());
+				System.err.println("[PluginManager] Need less than: " + Version.parse(info.get("max-paint-version")));
+				plugins.add(plugin);
+				return false;
+			}
+		}
+		Version version = Version.parse(info.get("version"));
+		Plugin replace = null;
+		for(Plugin p : plugins)
+		{
+			if(p.getInfo().get("name").equals(info.get("name")))
+			{
+				Version otherv = Version.parse(p.getInfo().get("version"));
+				if(version.isGreater(otherv))
+				{
+					System.err.println("[PluginManager] Multiple versions of plugin \"" + name + "\" detected.");
+					System.err.printf("[PluginManager] Choosing the latest version (%s >= %s)\n", version, otherv);
+					replace = p;
+				}
+				else
+				{
+					System.err.println("[PluginManager] Multiple versions of plugin \"" + name + "\" detected.");
+					System.err.printf("[PluginManager] Choosing the latest version (%s >= %s)\n", otherv, version);
+					plugins.add(plugin);
+					return false;
+				}
+			}
 		}
 		
-		return instance;
+		if(replace != null)
+		{
+			plugins.remove(replace);
+			plugins.add(replace);
+		}
+		return true;
 	}
 	
-	public void registerTools(Tools tools)
+	public void loadPluginFiles()
 	{
-		//System.out.println("[Event] Tool-Menu creation.");
-		RegisterTools register = new RegisterTools(tools);
-		
-		for(Plugin plugin : loadedPlugins)
+		URL[] urls = new URL[pluginFiles.size()];
+		for(int i = 0; i < urls.length; i++)
 		{
-			plugin.registerTools(register);
+			try
+			{
+				urls[i] = pluginFiles.get(i).toURI().toURL();
+			}
+			catch(MalformedURLException e)
+			{
+				System.err.println("[PluginManager] Error loading plugin file: " + pluginFiles.get(i));
+			}
+		}
+		classLoader = new URLClassLoader(urls, getClass().getClassLoader());
+		
+		for(Metadata info : pluginFileInfo)
+		{
+			try
+			{
+				@SuppressWarnings("unchecked")
+				Class<? extends Plugin> pluginClass = (Class<? extends Plugin>) classLoader.loadClass(info.get("main"));
+				Plugin plugin = pluginClass.newInstance();
+				
+				plugin.setInfo(info);
+				registerPlugin(plugin);
+				
+				continue;
+			}
+			catch(ClassNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+			catch(InstantiationException e)
+			{
+				e.printStackTrace();
+			}
+			catch(IllegalAccessException e)
+			{
+				e.printStackTrace();
+			}
+			System.err.println("[PluginManager] Error creating plugin instance for " + info.get("main"));
+		}
+		
+		pluginFiles.clear();
+		pluginFileInfo.clear();
+	}
+	
+	private boolean loadPluginInfo(File file)
+	{
+		try(JarFile jar = new JarFile(file))
+		{
+			JarEntry entry = jar.getJarEntry("plugin.info");
+			if(entry == null)
+			{
+				System.err.println("[PluginManager] Plugin file " + file + " is missing a 'plugin.info' file. Perhaps it is corrupted?");
+				return false;
+			}
+			
+			BufferedReader in = new BufferedReader(new InputStreamReader(jar.getInputStream(entry)));
+			
+			Metadata info = new Metadata();
+			
+			String line;
+			while((line = in.readLine()) != null)
+			{
+				line = line.trim();
+				if(line.equals(""))
+					continue;
+				String[] splits = line.split(":", 2);
+				if(splits.length != 2)
+				{
+					System.err.println("[PluginManager] Error reading 'plugin.info'. Metadata must be stored in the format \"<key> : <value>\"");
+					System.err.println("[PluginManager] Plugin File: " + file);
+					System.err.println("[PluginManager] Line: " + line);
+					return false;
+				}
+				info.set(splits[0].trim(), splits[1].trim());
+			}
+			
+			if(info.has("main"))
+			{
+				pluginFileInfo.add(info);
+			}
+			else
+			{
+				System.err.println("[PluginManager] plugin.info is missing a 'main' key and so cannot be loaded. Source: " + file);
+			}
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public void addPluginFile(File file)
+	{
+		if(file.exists() && !file.isDirectory())
+		{
+			String filename = file.getAbsolutePath();
+			if(filename.endsWith(".jar") || filename.endsWith(".plugin"))
+			{
+				pluginFiles.add(file);
+				loadPluginInfo(file);
+			}
 		}
 	}
 	
-	/*
-	public void registerImageOps(JMenu menu)
+	public void addPluginDirectory(File file)
 	{
-		//System.out.println("[Event] ImageOP-Menu creation.");
-		RegisterImageOps register = new RegisterImageOps(menu);
-		
-		for(Plugin plugin : loadedPlugins)
+		if(file.exists() && file.isDirectory())
 		{
-			plugin.registerImageOps(register);
+			for(File f : file.listFiles())
+			{
+				addPluginFile(f);
+			}
 		}
 	}
 	
-	public void registerEffects(JMenu menu)
+	public ArrayList<Plugin> getPlugins()
 	{
-		RegisterEffects register = new RegisterEffects(menu);
-		
-		for(Plugin plugin : loadedPlugins)
-		{
-			plugin.registerEffects(register);
-		}
-	}
-	*/
-	
-	public void registerOther()
-	{
-		for(Plugin plugin : loadedPlugins)
-			plugin.registerOther();
+		return plugins;
 	}
 	
-	public void frameCreationEvent(JFrame frame)
+	public int getPluginCount()
 	{
-		//System.out.println("[Event] Frame creation.");
-		
-		pluginViewer = new PluginManagerViewer(this);
+		return plugins.size();
 	}
 	
-	public void onLaunch()
+	public void showPluginViewer()
 	{
-		for(Plugin plugin : loadedPlugins)
-		{
-			plugin.onLaunch();
-		}
-	}
-	
-	/**
-	 * Makes the PluginManager-Viewer Dialog pop-up.
-	 **/
-	public void showPluginManager()
-	{
+		if(pluginViewer == null)
+			pluginViewer = new PluginViewer(this);
 		pluginViewer.show();
-	}
-	
-	/**
-	 * Return's a list of all loaded and active plugin's.
-	 **/
-	public ArrayList<Plugin> getPluginList()
-	{
-		return this.loadedPlugins;
 	}
 }

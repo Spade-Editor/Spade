@@ -22,6 +22,7 @@ package heroesgrave.paint.gui.colorchooser;
 
 import static heroesgrave.paint.gui.colorchooser.ColorUtils.toARGB;
 import static heroesgrave.paint.gui.colorchooser.ColorUtils.toHSVA;
+import heroesgrave.paint.gui.GUIManager;
 import heroesgrave.paint.gui.colorchooser.PalettePanel.PaletteMode;
 import heroesgrave.paint.gui.colorchooser.event.ColourEventBroadcaster;
 import heroesgrave.paint.gui.colorchooser.event.ColourListener;
@@ -50,7 +51,6 @@ public class ColourChooser extends WebDialog implements ColourEventBroadcaster
 	private int[] primary = {0, 0, 0, 0, 0, 0, 255};
 	private int[] secondary = {0, 0, 0, 0, 0, 0, 255};
 	private int mode;
-	private Object lastSource; // XXX: Is this needed?
 	
 	private List<ColourListener> listeners;
 	
@@ -63,6 +63,7 @@ public class ColourChooser extends WebDialog implements ColourEventBroadcaster
 	{
 		super();
 		this.setTitle("Colour Chooser");
+		this.setIconImage(GUIManager.ICON);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		
 		listeners = new ArrayList<>();
@@ -351,8 +352,6 @@ public class ColourChooser extends WebDialog implements ColourEventBroadcaster
 		{
 			
 		}
-		
-		lastSource = source;
 	}
 	
 	public void setColour(int colour, Object source, boolean primary)

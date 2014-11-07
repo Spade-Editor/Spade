@@ -51,11 +51,6 @@ public class UserPreferences
 	private static int layersX, layersY, layersWidth, layersHeight;
 	private static int colourPickerX, colourPickerY;
 	
-	/**
-	 * Setup the provided
-	 * 
-	 * @param frame
-	 */
 	public static void loadPrefs(WebFrame frame, ColourChooser chooser, LayerManager layers)
 	{
 		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);
@@ -88,11 +83,6 @@ public class UserPreferences
 		Menu.DARK_BACKGROUND = prefs.getBoolean(BACKGROUND_DARK, false);
 	}
 	
-	/**
-	 * Save user preferences.
-	 * 
-	 * @param frame
-	 */
 	public static void savePrefs(JFrame frame, ColourChooser chooser, LayerManager layers, ToolBox toolBox)
 	{
 		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);

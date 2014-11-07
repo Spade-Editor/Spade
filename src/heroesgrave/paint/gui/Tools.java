@@ -20,11 +20,11 @@
 
 package heroesgrave.paint.gui;
 
+import heroesgrave.paint.editing.Pencil;
+import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.gui.ToolBox.ToolBoxButton;
 import heroesgrave.paint.gui.ToolMenu.ToolMenuItem;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.plugin.PluginManager;
-import heroesgrave.paint.tools.*;
 
 import javax.swing.JMenu;
 
@@ -41,25 +41,10 @@ public class Tools
 		toolsMenu.add(new ToolMenuItem(tool.name, tool, shortcut));
 	}
 	
-	public void registerTools()
+	public void init()
 	{
 		DEF = new Pencil("Pencil");
 		Paint.main.currentTool = DEF;
-		
 		addTool(DEF, "P");
-		addTool(new Eraser("Eraser"), "E");
-		addTool(new Picker("Colour Picker"), "K");
-		addTool(new Line("Line"), "L");
-		addTool(new FloodFill("Flood Fill"), "F");
-		addTool(new Rectangle("Rectangle"), "R");
-		addTool(new Select("Select"), "S");
-		addTool(new Move("Move"), "M");
-		/*
-		addTool(new Brush("Brush"), "Brush", "B");
-		addTool(new Fill("Paint Bucket"), "Paint Bucket", "F");
-		addTool(new Ellipse("Ellipse"), "Ellipse", "C");
-		addTool(new Move("Move"), "Move", "M");
-		*/
-		PluginManager.instance.registerTools(this);
 	}
 }

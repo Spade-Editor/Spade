@@ -24,19 +24,11 @@ import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.Marker;
 import heroesgrave.paint.image.change.edit.ClearMaskChange;
 import heroesgrave.paint.image.change.edit.FillMaskChange;
-import heroesgrave.paint.image.change.edit.FillRectChange;
-import heroesgrave.paint.image.change.edit.FloodPathChange;
-import heroesgrave.paint.image.change.edit.GrayscaleChange;
-import heroesgrave.paint.image.change.edit.InvertChange;
-import heroesgrave.paint.image.change.edit.LineChange;
-import heroesgrave.paint.image.change.edit.MaskRectChange;
-import heroesgrave.paint.image.change.edit.MoveChange;
 import heroesgrave.paint.image.change.edit.PathChange;
-import heroesgrave.paint.image.change.edit.PixelChange;
-import heroesgrave.paint.image.change.edit.RectChange;
+import heroesgrave.paint.image.change.edit.ResizeCanvasChange;
+import heroesgrave.paint.image.change.edit.ResizeImageChange;
 import heroesgrave.paint.image.change.edit.SetImageChange;
 import heroesgrave.paint.image.change.edit.SetMaskChange;
-import heroesgrave.paint.image.change.edit.TestNoiseChange;
 import heroesgrave.utils.io.IOUtils;
 import heroesgrave.utils.misc.RandomUtils;
 
@@ -236,24 +228,20 @@ public class HistoryIO
 		}
 		classes.add(Marker.class);
 		
-		classes.add(PixelChange.class);
-		classes.add(LineChange.class);
-		classes.add(RectChange.class);
-		classes.add(FillRectChange.class);
 		classes.add(PathChange.Serial.class);
-		classes.add(FloodPathChange.Serial.class);
 		
-		classes.add(MoveChange.class);
 		classes.add(SetImageChange.class);
 		classes.add(SetMaskChange.class);
 		
-		classes.add(MaskRectChange.class);
+		classes.add(ResizeImageChange.class);
+		classes.add(ResizeCanvasChange.class);
+		
 		classes.add(ClearMaskChange.class);
 		classes.add(FillMaskChange.class);
-		
-		classes.add(InvertChange.class);
-		classes.add(GrayscaleChange.class);
-		
-		classes.add(TestNoiseChange.class);
+	}
+	
+	public static void registerClass(Class<? extends Serialised> c)
+	{
+		classes.add(c);
 	}
 }

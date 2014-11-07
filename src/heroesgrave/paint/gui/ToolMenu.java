@@ -20,9 +20,9 @@
 
 package heroesgrave.paint.gui;
 
-import heroesgrave.paint.effects.Effect;
+import heroesgrave.paint.editing.Effect;
+import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.tools.Tool;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,7 +56,7 @@ public class ToolMenu
 			// TRY to load the icon!
 			try
 			{
-				URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/tools/" + name + ".png");
+				URL url = tool.getClass().getResource("/res/icons/tools/" + name + ".png");
 				
 				if(url != null)
 				{
@@ -115,7 +115,7 @@ public class ToolMenu
 			// TRY to load the icon!
 			try
 			{
-				URL url = this.getClass().getResource("/heroesgrave/paint/res/icons/effects/" + name + ".png");
+				URL url = effect.getClass().getResource("/res/icons/effects/" + name + ".png");
 				
 				if(url != null)
 				{

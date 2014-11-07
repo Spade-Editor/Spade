@@ -89,7 +89,7 @@ public class Menu
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				PluginManager.instance.showPluginManager();
+				PluginManager.instance.showPluginViewer();
 			}
 		});
 		
@@ -448,7 +448,8 @@ public class Menu
 			public void actionPerformed(ActionEvent e)
 			{
 				DARK_BACKGROUND = !DARK_BACKGROUND;
-				Paint.main.gui.frame.repaint();
+				Paint.getDocument().repaint();
+				Paint.main.gui.canvasPanel.maskChanged();
 			}
 		});
 		

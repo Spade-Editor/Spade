@@ -20,13 +20,13 @@
 
 package heroesgrave.paint.image.change.doc;
 
+import heroesgrave.paint.editing.SelectionTool;
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.change.IDocChange;
 import heroesgrave.paint.image.change.edit.ClearMaskChange;
 import heroesgrave.paint.image.change.edit.SetMaskChange;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.paint.tools.SelectionTool;
 import heroesgrave.utils.misc.Metadata;
 
 public class NewLayer implements IDocChange

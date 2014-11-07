@@ -124,6 +124,8 @@ public class Document
 	{
 		this.width = width;
 		this.height = height;
+		this.allChanged();
+		Paint.main.gui.canvasPanel.resized(width, height);
 	}
 	
 	public void save()
@@ -191,7 +193,8 @@ public class Document
 	 */
 	public void setDimensions(int width, int height)
 	{
-		resize(width, height);
+		this.width = width;
+		this.height = height;
 	}
 	
 	public BufferedImage getRenderedImage()
