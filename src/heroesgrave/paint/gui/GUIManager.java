@@ -267,7 +267,8 @@ public class GUIManager
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				Paint.save();
+				if(!Paint.save())
+					return;
 				UserPreferences.savePrefs(frame, chooser, layers, toolBox);
 				close.dispose();
 				Paint.close();

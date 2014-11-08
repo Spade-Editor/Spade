@@ -74,15 +74,14 @@ public class ToolBox
 		return toolbar;
 	}
 	
+	@SuppressWarnings("serial")
 	public static class ToolBoxButton extends WebToggleButton
 	{
-		private static final long serialVersionUID = -7985116966168623216L;
 		private Tool tool;
 		
 		public ToolBoxButton(String name, Tool tool)
 		{
 			super();
-			
 			setPreferredSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
 			setMargin(new Insets(0, 0, 0, 0));
 			setToolTipText(name);

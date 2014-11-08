@@ -21,8 +21,8 @@
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.editing.Effect;
-import heroesgrave.paint.editing.ResizeCanvas;
-import heroesgrave.paint.editing.ResizeImage;
+import heroesgrave.paint.editing.ResizeCanvasOp;
+import heroesgrave.paint.editing.ResizeImageOp;
 import heroesgrave.paint.gui.ToolMenu.EffectMenuItem;
 
 import com.alee.laf.menu.WebMenu;
@@ -48,7 +48,7 @@ public class Effects
 	
 	public void init()
 	{
-		addOperation(new ResizeImage("Resize Image"), "R");
-		addOperation(new ResizeCanvas("Resize Canvas"), "C");
+		addOperation(new ResizeImageOp("Resize Image"), "R");
+		addOperation(new ResizeCanvasOp("Resize Canvas"), "C");
 	}
 }

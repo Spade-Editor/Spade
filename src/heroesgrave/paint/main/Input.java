@@ -167,6 +167,10 @@ public class Input implements KeyListener
 				{
 					Paint.getDocument().getCurrent().addChange(new FillMaskChange(MaskMode.ADD));
 				}
+				else if(e.getKeyCode() == KeyEvent.VK_I)
+				{
+					Paint.getDocument().getCurrent().addChange(new FillMaskChange(MaskMode.XOR));
+				}
 				else if(e.getKeyCode() == KeyEvent.VK_C)
 				{
 					/*

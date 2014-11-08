@@ -2,7 +2,7 @@ package heroesgrave.paint.editing;
 
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.change.doc.DocResize;
-import heroesgrave.paint.image.change.edit.ResizeCanvasChange;
+import heroesgrave.paint.image.change.edit.ResizeImageChange;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.misc.NumberFilter;
 
@@ -20,9 +20,9 @@ import javax.swing.text.AbstractDocument;
 
 import com.alee.laf.rootpane.WebDialog;
 
-public class ResizeCanvas extends Effect
+public class ResizeImageOp extends Effect
 {
-	public ResizeCanvas(String name)
+	public ResizeImageOp(String name)
 	{
 		super(name);
 	}
@@ -30,7 +30,7 @@ public class ResizeCanvas extends Effect
 	@Override
 	public void perform(final Layer layer)
 	{
-		final WebDialog dialog = new WebDialog(Paint.main.gui.frame, "Resize Canvas");
+		final WebDialog dialog = new WebDialog(Paint.main.gui.frame, "Resize Image");
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
@@ -85,10 +85,11 @@ public class ResizeCanvas extends Effect
 		dialog.pack();
 		dialog.setResizable(false);
 		dialog.setVisible(true);
+		dialog.center(Paint.main.gui.frame);
 	}
 	
 	public void resize(Layer layer, int w, int h)
 	{
-		layer.getDocument().addChange(new DocResize(new ResizeCanvasChange(w, h)));
+		layer.getDocument().addChange(new DocResize(new ResizeImageChange(w, h)));
 	}
 }

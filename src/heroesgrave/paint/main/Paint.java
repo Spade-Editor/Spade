@@ -61,7 +61,7 @@ public class Paint
 	
 	public static final String VERSION_STRING = "0.14-Dev";
 	public static final Version VERSION = Version.parse(VERSION_STRING);
-	public static final String RELEASED = "07-11-2014";
+	public static final String RELEASED = "08-11-2014";
 	
 	/* Remove the stars on the following lines to change the build type string.
 	//*/public static final String BUILD_TYPE = "Development";
@@ -159,14 +159,15 @@ public class Paint
 			newImage.pack();
 			newImage.setResizable(false);
 			newImage.setVisible(true);
-			newImage.setLocationRelativeTo(gui.frame);
+			newImage.center(gui.frame);
 			
 			save.addActionListener(new ActionListener()
 			{
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					Paint.save();
+					if(!Paint.save())
+						return;
 					newImage.dispose();
 					createImage(width, height);
 				}
@@ -238,15 +239,18 @@ public class Paint
 		main.tools.toolbox.setSelected(tool);
 	}
 	
-	public static void save()
+	public static boolean save()
 	{
 		if(getDocument().getFile() != null)
+		{
 			getDocument().save();
+			return true;
+		}
 		else
-			main.saveAs();
+			return main.saveAs();
 	}
 	
-	public void saveAs()
+	public boolean saveAs()
 	{
 		WebFileChooser chooser = new WebFileChooser(document.getDir());
 		chooser.setFileSelectionMode(WebFileChooser.FILES_ONLY);
@@ -315,7 +319,9 @@ public class Paint
 			}
 			
 			document.save();
+			return true;
 		}
+		return false;
 	}
 	
 	public void setLeftColour(int c, boolean checked)
