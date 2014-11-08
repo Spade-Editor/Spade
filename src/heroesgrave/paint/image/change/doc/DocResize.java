@@ -3,14 +3,14 @@ package heroesgrave.paint.image.change.doc;
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.change.IDocChange;
-import heroesgrave.paint.image.change.edit.ResizingChange;
+import heroesgrave.paint.image.change.IResizingChange;
 
 public class DocResize implements IDocChange
 {
 	private int oldWidth, oldHeight;
-	private ResizingChange change;
+	private IResizingChange change;
 	
-	public DocResize(ResizingChange change)
+	public DocResize(IResizingChange change)
 	{
 		this.change = change;
 	}

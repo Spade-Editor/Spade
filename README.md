@@ -11,6 +11,22 @@ Since I'm programming in Java, it's only right that it would be called Paint.JAV
 
 I'll put up a changelog here at some point.
 
+Developing
+==========
+Note that most contributors are probably looking to develop on the editing functions rather than
+the framework of the application itself. If this includes you, head over to the
+[Core plugin repository](https://github.com/PaintDotJava/Core) and see the instructions there. You
+will still be required to set up Paint.JAVA for development.
+
+1. Clone the repository (`git clone https://github.com/PaintDotJava/Paint.JAVA`).
+2. Import the source into the IDE of your choice.
+3. Add `lib/weblaf-XXX.jar` to the build path of the project.
+4. Run `Start.java` (Found in `src/heroesgrave/paint/main/`). Make sure it works. If it doesn't and you can't work out why, create an issue.
+5. (Optional) You will probably want to install the `Core` plugin, which contains the majority of
+the editing functions. More information is available [here](https://github.com/PaintDotJava/Core).
+6. Make whatever changes you want.
+7. Commit your changes and make a pull request.
+
 Useful Links
 ============
 

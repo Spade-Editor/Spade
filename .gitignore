@@ -19,3 +19,4 @@
 *.sh
 *.directory
 .license
+*.jardesc

@@ -21,6 +21,9 @@
 package heroesgrave.paint.editing;
 
 import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.change.IChange;
+import heroesgrave.paint.main.Input;
+import heroesgrave.paint.main.Paint;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -82,5 +85,40 @@ public abstract class Tool
 	{
 		//default impl
 		//Paint.main.gui.canvas.getPanel().setCursorPreview(null, null);
+	}
+	
+	public static void preview(IChange change)
+	{
+		Paint.getDocument().preview(change);
+	}
+	
+	public static void applyPreview()
+	{
+		Paint.getDocument().applyPreview();
+	}
+	
+	public static void repaint()
+	{
+		Paint.getDocument().repaint();
+	}
+	
+	public static int getColour(int button)
+	{
+		return Paint.main.getColor(button);
+	}
+	
+	public static boolean isShiftDown()
+	{
+		return Input.SHIFT;
+	}
+	
+	public static boolean isCtrlDown()
+	{
+		return Input.CTRL;
+	}
+	
+	public static boolean isAltDown()
+	{
+		return Input.ALT;
 	}
 }

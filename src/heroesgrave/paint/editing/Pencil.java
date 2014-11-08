@@ -22,7 +22,6 @@ package heroesgrave.paint.editing;
 
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.change.edit.PathChange;
-import heroesgrave.paint.main.Paint;
 
 public class Pencil extends Tool
 {
@@ -35,19 +34,19 @@ public class Pencil extends Tool
 	
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		path = new PathChange(x, y, Paint.main.getColor(button));
-		Paint.getDocument().preview(path);
+		path = new PathChange(x, y, getColour(button));
+		preview(path);
 	}
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		Paint.getDocument().applyPreview();
+		applyPreview();
 		path = null;
 	}
 	
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
 		if(path.moveTo(x, y))
-			Paint.getDocument().repaint();
+			repaint();
 	}
 }
