@@ -52,8 +52,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
-
-import com.alee.laf.rootpane.WebFrame;
+import javax.swing.JFrame;
 
 /**
  * Handles:
@@ -68,7 +67,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	public static BufferedImage backgroundLight, backgroundDark;
 	
 	// MISC
-	final WebFrame mainframe;
+	final JFrame mainframe;
 	BufferedImage image;
 	
 	// Camera
@@ -108,7 +107,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		}
 	}
 	
-	public PaintCanvas(WebFrame mainframe)
+	public PaintCanvas(JFrame mainframe)
 	{
 		this.mainframe = mainframe;
 		

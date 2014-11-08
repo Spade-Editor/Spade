@@ -30,8 +30,6 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JFrame;
 
-import com.alee.laf.rootpane.WebFrame;
-
 public class UserPreferences
 {
 	private static final String WINDOW_WIDTH = "window.width";
@@ -51,7 +49,7 @@ public class UserPreferences
 	private static int layersX, layersY, layersWidth, layersHeight;
 	private static int colourPickerX, colourPickerY;
 	
-	public static void loadPrefs(WebFrame frame, ColourChooser chooser, LayerManager layers)
+	public static void loadPrefs(JFrame frame, ColourChooser chooser, LayerManager layers)
 	{
 		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);
 		

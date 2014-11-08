@@ -1,6 +1,7 @@
 package heroesgrave.paint.plugin;
 
 import heroesgrave.paint.main.Paint;
+import heroesgrave.utils.io.IOUtils;
 import heroesgrave.utils.misc.Metadata;
 import heroesgrave.utils.misc.Version;
 
@@ -105,8 +106,8 @@ public class PluginManager
 			}
 		}
 		Version version = Version.parse(info.get("version"));
-		Plugin replace = null;
-		for(Plugin p : plugins)
+		ArrayList<Plugin> replace = new ArrayList<Plugin>();
+		for(Plugin p : validPlugins)
 		{
 			if(p.getInfo().get("name").equals(info.get("name")))
 			{
@@ -115,7 +116,7 @@ public class PluginManager
 				{
 					System.err.println("[PluginManager] Multiple versions of plugin \"" + name + "\" detected.");
 					System.err.printf("[PluginManager] Choosing the latest version (%s >= %s)\n", version, otherv);
-					replace = p;
+					replace.add(p);
 				}
 				else
 				{
@@ -127,11 +128,7 @@ public class PluginManager
 			}
 		}
 		
-		if(replace != null)
-		{
-			plugins.remove(replace);
-			plugins.add(replace);
-		}
+		validPlugins.removeAll(replace);
 		return true;
 	}
 	
@@ -183,7 +180,7 @@ public class PluginManager
 		pluginFileInfo.clear();
 	}
 	
-	private boolean loadPluginInfo(File file)
+	private Metadata loadPluginInfo(File file)
 	{
 		try(JarFile jar = new JarFile(file))
 		{
@@ -191,44 +188,50 @@ public class PluginManager
 			if(entry == null)
 			{
 				System.err.println("[PluginManager] Plugin file " + file + " is missing a 'plugin.info' file. Perhaps it is corrupted?");
-				return false;
+				return null;
 			}
 			
 			BufferedReader in = new BufferedReader(new InputStreamReader(jar.getInputStream(entry)));
 			
-			Metadata info = new Metadata();
-			
-			String line;
-			while((line = in.readLine()) != null)
-			{
-				line = line.trim();
-				if(line.equals(""))
-					continue;
-				String[] splits = line.split(":", 2);
-				if(splits.length != 2)
-				{
-					System.err.println("[PluginManager] Error reading 'plugin.info'. Metadata must be stored in the format \"<key> : <value>\"");
-					System.err.println("[PluginManager] Plugin File: " + file);
-					System.err.println("[PluginManager] Line: " + line);
-					return false;
-				}
-				info.set(splits[0].trim(), splits[1].trim());
-			}
-			
-			if(info.has("main"))
-			{
-				pluginFileInfo.add(info);
-			}
-			else
-			{
-				System.err.println("[PluginManager] plugin.info is missing a 'main' key and so cannot be loaded. Source: " + file);
-			}
+			return loadPluginInfo(in);
 		}
 		catch(IOException e)
 		{
 			e.printStackTrace();
+			System.err.println("[PluginManager] Error loading plugin info. Source: " + file);
 		}
-		return false;
+		return null;
+	}
+	
+	public static Metadata loadPluginInfo(BufferedReader in) throws IOException
+	{
+		Metadata info = new Metadata();
+		
+		String line;
+		while((line = in.readLine()) != null)
+		{
+			line = line.trim();
+			if(line.equals(""))
+				continue;
+			String[] splits = line.split(":", 2);
+			if(splits.length != 2)
+			{
+				System.err.println("[PluginManager] Error reading 'plugin.info'. Metadata must be stored in the format \"<key> : <value>\"");
+				System.err.println("[PluginManager] Line: " + line);
+				return null;
+			}
+			info.set(splits[0].trim(), splits[1].trim());
+		}
+		
+		if(info.has("main"))
+		{
+			return info;
+		}
+		else
+		{
+			System.err.println("[PluginManager] plugin.info is missing a 'main' key and so cannot be loaded.");
+		}
+		return null;
 	}
 	
 	public void addPluginFile(File file)
@@ -238,8 +241,13 @@ public class PluginManager
 			String filename = file.getAbsolutePath();
 			if(filename.endsWith(".jar") || filename.endsWith(".plugin"))
 			{
-				pluginFiles.add(file);
-				loadPluginInfo(file);
+				Metadata info = loadPluginInfo(file);
+				if(info != null)
+				{
+					info.set("location", "File: " + IOUtils.relativeFrom(IOUtils.jarDir(), file.getAbsolutePath()));
+					pluginFileInfo.add(info);
+					pluginFiles.add(file);
+				}
 			}
 		}
 	}

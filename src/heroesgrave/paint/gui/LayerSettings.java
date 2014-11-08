@@ -31,11 +31,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import javax.swing.JFrame;
+
 import com.alee.laf.button.WebButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.label.WebLabel;
 import com.alee.laf.rootpane.WebDialog;
-import com.alee.laf.rootpane.WebFrame;
 import com.alee.laf.text.WebTextField;
 
 public class LayerSettings
@@ -45,7 +46,7 @@ public class LayerSettings
 	private WebTextField label;
 	private WebComboBox blendMode;
 	
-	public LayerSettings(WebFrame frame)
+	public LayerSettings(JFrame frame)
 	{
 		this.dialog = new WebDialog(frame, "Layer Settings");
 		dialog.setSize(200, 120);

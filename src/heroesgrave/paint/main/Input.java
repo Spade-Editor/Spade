@@ -41,7 +41,7 @@ public class Input implements KeyListener
 	public static boolean CTRL, SHIFT, ALT;
 	public static Robot robot;
 	
-	private static HashMap<Integer, String> keyCodeToStr = new HashMap<Integer, String>();
+	private static HashMap<Integer, Character> keyCodeToChar = new HashMap<Integer, Character>();
 	
 	public void keyPressed(KeyEvent e)
 	{
@@ -85,9 +85,9 @@ public class Input implements KeyListener
 				{
 					Paint.main.saveAs();
 				}
-				else if(keyCodeToStr.containsKey(e.getKeyCode()))
+				else if(keyCodeToChar.containsKey(e.getKeyCode()))
 				{
-					Effect effect = Paint.getEffect(keyCodeToStr.get(e.getKeyCode()).toLowerCase());
+					Effect effect = Paint.getEffect(keyCodeToChar.get(e.getKeyCode()));
 					if(effect != null)
 					{
 						effect.perform(Paint.getDocument().getCurrent());
@@ -205,9 +205,9 @@ public class Input implements KeyListener
 		}
 		else
 		{
-			if(keyCodeToStr.containsKey(e.getKeyCode()))
+			if(keyCodeToChar.containsKey(e.getKeyCode()))
 			{
-				Tool tool = Paint.getTool(keyCodeToStr.get(e.getKeyCode()).toLowerCase());
+				Tool tool = Paint.getTool(keyCodeToChar.get(e.getKeyCode()));
 				if(tool != null)
 				{
 					Paint.setTool(tool);
@@ -268,32 +268,32 @@ public class Input implements KeyListener
 	
 	static
 	{
-		keyCodeToStr.put(KeyEvent.VK_A, "A");
-		keyCodeToStr.put(KeyEvent.VK_B, "B");
-		keyCodeToStr.put(KeyEvent.VK_C, "C");
-		keyCodeToStr.put(KeyEvent.VK_D, "D");
-		keyCodeToStr.put(KeyEvent.VK_E, "E");
-		keyCodeToStr.put(KeyEvent.VK_F, "F");
-		keyCodeToStr.put(KeyEvent.VK_G, "G");
-		keyCodeToStr.put(KeyEvent.VK_H, "H");
-		keyCodeToStr.put(KeyEvent.VK_I, "I");
-		keyCodeToStr.put(KeyEvent.VK_J, "J");
-		keyCodeToStr.put(KeyEvent.VK_K, "K");
-		keyCodeToStr.put(KeyEvent.VK_L, "L");
-		keyCodeToStr.put(KeyEvent.VK_M, "M");
-		keyCodeToStr.put(KeyEvent.VK_N, "N");
-		keyCodeToStr.put(KeyEvent.VK_O, "O");
-		keyCodeToStr.put(KeyEvent.VK_P, "P");
-		keyCodeToStr.put(KeyEvent.VK_Q, "Q");
-		keyCodeToStr.put(KeyEvent.VK_R, "R");
-		keyCodeToStr.put(KeyEvent.VK_S, "S");
-		keyCodeToStr.put(KeyEvent.VK_T, "T");
-		keyCodeToStr.put(KeyEvent.VK_U, "U");
-		keyCodeToStr.put(KeyEvent.VK_V, "V");
-		keyCodeToStr.put(KeyEvent.VK_W, "W");
-		keyCodeToStr.put(KeyEvent.VK_X, "X");
-		keyCodeToStr.put(KeyEvent.VK_Y, "Y");
-		keyCodeToStr.put(KeyEvent.VK_Z, "Z");
+		keyCodeToChar.put(KeyEvent.VK_A, 'A');
+		keyCodeToChar.put(KeyEvent.VK_B, 'B');
+		keyCodeToChar.put(KeyEvent.VK_C, 'C');
+		keyCodeToChar.put(KeyEvent.VK_D, 'D');
+		keyCodeToChar.put(KeyEvent.VK_E, 'E');
+		keyCodeToChar.put(KeyEvent.VK_F, 'F');
+		keyCodeToChar.put(KeyEvent.VK_G, 'G');
+		keyCodeToChar.put(KeyEvent.VK_H, 'H');
+		keyCodeToChar.put(KeyEvent.VK_I, 'I');
+		keyCodeToChar.put(KeyEvent.VK_J, 'J');
+		keyCodeToChar.put(KeyEvent.VK_K, 'K');
+		keyCodeToChar.put(KeyEvent.VK_L, 'L');
+		keyCodeToChar.put(KeyEvent.VK_M, 'M');
+		keyCodeToChar.put(KeyEvent.VK_N, 'N');
+		keyCodeToChar.put(KeyEvent.VK_O, 'O');
+		keyCodeToChar.put(KeyEvent.VK_P, 'P');
+		keyCodeToChar.put(KeyEvent.VK_Q, 'Q');
+		keyCodeToChar.put(KeyEvent.VK_R, 'R');
+		keyCodeToChar.put(KeyEvent.VK_S, 'S');
+		keyCodeToChar.put(KeyEvent.VK_T, 'T');
+		keyCodeToChar.put(KeyEvent.VK_U, 'U');
+		keyCodeToChar.put(KeyEvent.VK_V, 'V');
+		keyCodeToChar.put(KeyEvent.VK_W, 'W');
+		keyCodeToChar.put(KeyEvent.VK_X, 'X');
+		keyCodeToChar.put(KeyEvent.VK_Y, 'Y');
+		keyCodeToChar.put(KeyEvent.VK_Z, 'Z');
 		
 		try
 		{

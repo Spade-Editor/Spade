@@ -25,6 +25,7 @@ import heroesgrave.paint.main.Paint;
 import java.awt.BorderLayout;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
@@ -33,13 +34,12 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 import com.alee.laf.rootpane.WebDialog;
-import com.alee.laf.rootpane.WebFrame;
 import com.alee.laf.text.WebTextPane;
 
 @SuppressWarnings("serial")
 public class AboutDialog extends WebDialog
 {
-	public AboutDialog(WebFrame frame)
+	public AboutDialog(JFrame frame)
 	{
 		super(frame, "About Paint.JAVA");
 		this.setIconImage(GUIManager.ICON);

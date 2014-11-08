@@ -194,6 +194,9 @@ public class PluginViewer
 			AboutDialog.append(doc, "Last Updated: ", "bold");
 			AboutDialog.append(doc, info.get("updated") + "\n", "regular");
 			
+			AboutDialog.append(doc, "Location: ", "bold");
+			AboutDialog.append(doc, info.get("location") + "\n", "regular");
+			
 			AboutDialog.append(doc, "Compatible with Paint.JAVA: ", "bold");
 			if(info.has("min-paint-version"))
 			{

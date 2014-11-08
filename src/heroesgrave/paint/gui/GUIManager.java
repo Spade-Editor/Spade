@@ -43,6 +43,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -59,7 +60,7 @@ public class GUIManager
 {
 	public static final BufferedImage ICON;
 	
-	public WebFrame frame;
+	public JFrame frame;
 	private JPanel panel;
 	private WebPanel menus;
 	//public BackgroundPanel canvasPanel;

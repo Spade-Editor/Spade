@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URISyntaxException;
 
 public class IOUtils
@@ -121,5 +122,18 @@ public class IOUtils
 		}
 		
 		return string;
+	}
+	
+	public static String relativeFrom(String from, String to)
+	{
+		try
+		{
+			return new URI(from).relativize(new URI(to)).getPath();
+		}
+		catch(URISyntaxException e)
+		{
+			e.printStackTrace();
+		}
+		return to;
 	}
 }

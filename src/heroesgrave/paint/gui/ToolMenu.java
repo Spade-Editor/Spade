@@ -41,7 +41,7 @@ public class ToolMenu
 	{
 		private Tool tool;
 		
-		public ToolMenuItem(String name, Tool t, String key)
+		public ToolMenuItem(String name, Tool t, Character key)
 		{
 			super(key == null ? (name) : (name + " (" + key + ")"));
 			
@@ -88,12 +88,12 @@ public class ToolMenu
 	{
 		private Effect effect;
 		
-		public EffectMenuItem(String name, Effect e, String key)
+		public EffectMenuItem(String name, Effect e, Character key)
 		{
 			this(name, e, key, null);
 		}
 		
-		public EffectMenuItem(String name, Effect e, String key, String toolTip)
+		public EffectMenuItem(String name, Effect e, Character key, String toolTip)
 		{
 			super(key == null ? (name) : (name + " (Ctrl+Shift+" + key + ")"));
 			

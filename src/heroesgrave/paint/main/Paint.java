@@ -37,7 +37,10 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -89,9 +92,9 @@ public class Paint
 	public static int leftColour = 0xff000000;
 	public static int rightColour = 0xffffffff;
 	
-	private static HashMap<String, Tool> toolMap = new HashMap<String, Tool>();
+	private static HashMap<Character, Tool> toolMap = new HashMap<Character, Tool>();
 	
-	private static HashMap<String, Effect> effectMap = new HashMap<String, Effect>();
+	private static HashMap<Character, Effect> effectMap = new HashMap<Character, Effect>();
 	
 	public void launch()
 	{
@@ -202,24 +205,24 @@ public class Paint
 		gui.setDocument(document);
 	}
 	
-	public static void addTool(String key, Tool tool)
+	public static void addTool(Character key, Tool tool)
 	{
-		toolMap.put(key.toLowerCase(), tool);
+		toolMap.put(Character.toLowerCase(key), tool);
 	}
 	
-	public static Tool getTool(String key)
+	public static Tool getTool(Character key)
 	{
-		return toolMap.get(key.toLowerCase());
+		return toolMap.get(Character.toLowerCase(key));
 	}
 	
-	public static void addEffect(String key, Effect op)
+	public static void addEffect(Character key, Effect op)
 	{
-		effectMap.put(key.toLowerCase(), op);
+		effectMap.put(Character.toLowerCase(key), op);
 	}
 	
-	public static Effect getEffect(String key)
+	public static Effect getEffect(Character key)
 	{
-		return effectMap.get(key.toLowerCase());
+		return effectMap.get(Character.toLowerCase(key));
 	}
 	
 	public static Document getDocument()
@@ -364,14 +367,29 @@ public class Paint
 		return mouseButton == MouseEvent.BUTTON1 ? Paint.leftColour : (mouseButton == MouseEvent.BUTTON3 ? Paint.rightColour : 0xFF000000);
 	}
 	
-	public static void launchWithPlugin(String[] args, Plugin... plugins)
+	public static void launchWithPlugins(String[] args, Plugin... plugins)
 	{
 		for(Plugin p : plugins)
+		{
+			if(p.getInfo() == null)
+			{
+				try
+				{
+					BufferedReader in = new BufferedReader(new InputStreamReader(p.getClass().getResourceAsStream("/plugin.info")));
+					p.setInfo(PluginManager.loadPluginInfo(in));
+				}
+				catch(IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+			p.getInfo().set("location", "Class: " + p.getClass().getCanonicalName());
 			PluginManager.instance.registerPlugin(p);
-		main(args);
+		}
+		launch(args);
 	}
 	
-	public static void main(String[] args)
+	public static void launch(String[] args)
 	{
 		IOUtils.setMainClass(Paint.class);
 		

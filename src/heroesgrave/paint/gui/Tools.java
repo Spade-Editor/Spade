@@ -35,7 +35,7 @@ public class Tools
 	public JMenu toolsMenu;
 	public ToolBox toolbox;
 	
-	public void addTool(Tool tool, String shortcut)
+	public void addTool(Tool tool, Character shortcut)
 	{
 		toolbox.addButton(new ToolBoxButton(tool.name, tool));
 		toolsMenu.add(new ToolMenuItem(tool.name, tool, shortcut));
@@ -45,6 +45,6 @@ public class Tools
 	{
 		DEF = new Pencil("Pencil");
 		Paint.main.currentTool = DEF;
-		addTool(DEF, "P");
+		addTool(DEF, 'P');
 	}
 }

@@ -55,19 +55,19 @@ public class Registrar
 	{
 		for(Pair<Tool, Character> pair : this.tools)
 		{
-			tools.addTool(pair.t, pair.u.toString());
+			tools.addTool(pair.t, pair.u);
 		}
 		for(Pair<Effect, Character> pair : this.effects)
 		{
-			effects.addEffect(pair.t, pair.u.toString());
+			effects.addEffect(pair.t, pair.u);
 		}
 		for(Pair<Effect, Character> pair : this.ops)
 		{
-			effects.addOperation(pair.t, pair.u.toString());
+			effects.addOperation(pair.t, pair.u);
 		}
 		for(Pair<Effect, Character> pair : this.generators)
 		{
-			effects.addGenerator(pair.t, pair.u.toString());
+			effects.addGenerator(pair.t, pair.u);
 		}
 		for(Class<? extends Serialised> c : this.serialisers)
 		{

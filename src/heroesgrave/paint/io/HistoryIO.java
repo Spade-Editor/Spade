@@ -25,8 +25,6 @@ import heroesgrave.paint.image.change.Marker;
 import heroesgrave.paint.image.change.edit.ClearMaskChange;
 import heroesgrave.paint.image.change.edit.FillMaskChange;
 import heroesgrave.paint.image.change.edit.PathChange;
-import heroesgrave.paint.image.change.edit.ResizeCanvasChange;
-import heroesgrave.paint.image.change.edit.ResizeImageChange;
 import heroesgrave.paint.image.change.edit.SetImageChange;
 import heroesgrave.paint.image.change.edit.SetMaskChange;
 import heroesgrave.utils.io.IOUtils;
@@ -232,9 +230,6 @@ public class HistoryIO
 		
 		classes.add(SetImageChange.class);
 		classes.add(SetMaskChange.class);
-		
-		classes.add(ResizeImageChange.class);
-		classes.add(ResizeCanvasChange.class);
 		
 		classes.add(ClearMaskChange.class);
 		classes.add(FillMaskChange.class);

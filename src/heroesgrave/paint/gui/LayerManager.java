@@ -40,6 +40,7 @@ import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -50,7 +51,6 @@ import javax.swing.tree.TreeSelectionModel;
 
 import com.alee.laf.panel.WebPanel;
 import com.alee.laf.rootpane.WebDialog;
-import com.alee.laf.rootpane.WebFrame;
 import com.alee.laf.tree.WebTree;
 
 public class LayerManager
@@ -64,7 +64,7 @@ public class LayerManager
 	protected WebTree<Layer> tree;
 	protected WebPanel controls;
 	
-	public LayerManager(WebFrame frame)
+	public LayerManager(JFrame frame)
 	{
 		dialog = new WebDialog(frame, "Layers").center();
 		dialog.setIconImage(GUIManager.ICON);

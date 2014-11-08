@@ -21,8 +21,6 @@
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.editing.Effect;
-import heroesgrave.paint.editing.ResizeCanvasOp;
-import heroesgrave.paint.editing.ResizeImageOp;
 import heroesgrave.paint.gui.ToolMenu.EffectMenuItem;
 
 import com.alee.laf.menu.WebMenu;
@@ -31,24 +29,23 @@ public class Effects
 {
 	public WebMenu effects, generators, operations;
 	
-	public void addEffect(Effect effect, String shortcut)
+	public void addEffect(Effect effect, Character shortcut)
 	{
 		effects.add(new EffectMenuItem(effect.name, effect, shortcut));
 	}
 	
-	public void addGenerator(Effect effect, String shortcut)
+	public void addGenerator(Effect effect, Character shortcut)
 	{
 		generators.add(new EffectMenuItem(effect.name, effect, shortcut));
 	}
 	
-	public void addOperation(Effect effect, String shortcut)
+	public void addOperation(Effect effect, Character shortcut)
 	{
 		operations.add(new EffectMenuItem(effect.name, effect, shortcut));
 	}
 	
 	public void init()
 	{
-		addOperation(new ResizeImageOp("Resize Image"), "R");
-		addOperation(new ResizeCanvasOp("Resize Canvas"), "C");
+		
 	}
 }
