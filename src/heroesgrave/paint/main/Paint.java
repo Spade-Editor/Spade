@@ -62,13 +62,13 @@ public class Paint
 	// Beta for new completed features.
 	// Development for under-development new features.
 	
-	public static final String VERSION_STRING = "0.14-Dev";
+	public static final String VERSION_STRING = "0.14";
 	public static final Version VERSION = Version.parse(VERSION_STRING);
 	public static final String RELEASED = "08-11-2014";
 	
-	/* Remove the stars on the following lines to change the build type string.
-	//*/public static final String BUILD_TYPE = "Development";
-	//*/public static final String BUILD_TYPE = "Alpha";
+	/* Add/Remove the stars on the following lines to change the build type string.
+	///public static final String BUILD_TYPE = "Development";
+	///public static final String BUILD_TYPE = "Alpha";
 	//*/public static final String BUILD_TYPE = "Beta";
 	//*/public static final String BUILD_TYPE = "Release Candidate";
 	//*/public static final String BUILD_TYPE = "Stable";

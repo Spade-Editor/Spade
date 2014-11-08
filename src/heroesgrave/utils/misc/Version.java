@@ -68,6 +68,8 @@ public class Version
 	
 	private int type()
 	{
+		if(this.type == null)
+			return 6;
 		switch(this.type)
 		{
 			case "Dev":
