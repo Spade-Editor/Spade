@@ -22,6 +22,7 @@ package heroesgrave.paint.editing;
 
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.change.edit.PathChange;
+import heroesgrave.paint.image.change.edit.DrawPathChange;
 
 public class Pencil extends Tool
 {
@@ -34,7 +35,7 @@ public class Pencil extends Tool
 	
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		path = new PathChange(x, y, getColour(button));
+		path = new PathChange(x, y, getColour(button), new DrawPathChange());
 		preview(path);
 	}
 	

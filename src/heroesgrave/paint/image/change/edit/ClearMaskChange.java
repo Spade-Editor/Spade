@@ -62,10 +62,4 @@ public class ClearMaskChange implements IEditChange, IMaskChange, Serialised
 	public void read(DataInputStream in) throws IOException
 	{
 	}
-	
-	@Override
-	public boolean isMarker()
-	{
-		return false;
-	}
 }

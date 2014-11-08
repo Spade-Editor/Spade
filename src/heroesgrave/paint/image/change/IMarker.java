@@ -26,25 +26,23 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class Marker implements Serialised
+public interface IMarker extends Serialised
 {
-	public IChange decode()
+	public class Marker implements IMarker
 	{
-		throw new IllegalStateException("Cannot decode a Marker");
-	}
-	
-	public void write(DataOutputStream out) throws IOException
-	{
+		public IChange decode()
+		{
+			throw new IllegalStateException("Cannot decode a Marker");
+		}
 		
-	}
-	
-	public void read(DataInputStream in) throws IOException
-	{
+		public void write(DataOutputStream out) throws IOException
+		{
+			
+		}
 		
-	}
-	
-	public final boolean isMarker()
-	{
-		return true;
+		public void read(DataInputStream in) throws IOException
+		{
+			
+		}
 	}
 }

@@ -22,12 +22,13 @@ package heroesgrave.paint.image.change.edit;
 
 import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.IImageChange;
+import heroesgrave.paint.image.change.SerialisedChange;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class SetImageChange extends IImageChange
+public class SetImageChange extends SerialisedChange implements IImageChange
 {
 	private int[] buffer;
 	

@@ -54,7 +54,9 @@ import com.alee.laf.rootpane.WebDialog;
 public class Paint
 {
 	// Major.Minor + optional letter for releases. The letter is for tiny revisions, such as fixing bugs that slipped through.
-	// Major.0-Beta for beta builds.
+	// Major.Minor-RC.# for Release Candidates (builds that may be promoted to releases).
+	// Major.Minor-Beta for beta builds.
+	// Major.Minor-Alpha for alpha builds.
 	// Major.Minor-Dev for development builds.
 	// Eg: 1.3b is the 2nd revision of verion 1.3
 	
@@ -62,13 +64,13 @@ public class Paint
 	// Beta for new completed features.
 	// Development for under-development new features.
 	
-	public static final String VERSION_STRING = "0.14";
+	public static final String VERSION_STRING = "0.15-Dev";
 	public static final Version VERSION = Version.parse(VERSION_STRING);
-	public static final String RELEASED = "08-11-2014";
+	public static final String RELEASED = "09-11-2014";
 	
 	/* Add/Remove the stars on the following lines to change the build type string.
-	///public static final String BUILD_TYPE = "Development";
-	///public static final String BUILD_TYPE = "Alpha";
+	//*/public static final String BUILD_TYPE = "Development";
+	//*/public static final String BUILD_TYPE = "Alpha";
 	//*/public static final String BUILD_TYPE = "Beta";
 	//*/public static final String BUILD_TYPE = "Release Candidate";
 	//*/public static final String BUILD_TYPE = "Stable";

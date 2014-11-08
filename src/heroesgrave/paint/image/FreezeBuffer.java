@@ -23,8 +23,9 @@ package heroesgrave.paint.image;
 import heroesgrave.paint.image.change.IChange;
 import heroesgrave.paint.image.change.IEditChange;
 import heroesgrave.paint.image.change.IImageChange;
+import heroesgrave.paint.image.change.IMarker;
+import heroesgrave.paint.image.change.IMarker.Marker;
 import heroesgrave.paint.image.change.IRevEditChange;
-import heroesgrave.paint.image.change.Marker;
 import heroesgrave.paint.io.HistoryIO;
 import heroesgrave.paint.io.Serialised;
 
@@ -45,8 +46,8 @@ public class FreezeBuffer
 		}
 	}
 	
-	public static final int MAXIMUM = 16;
-	public static final int MAXIMUM_ORDER = 16;
+	public static final int MAXIMUM = 1;
+	public static final int MAXIMUM_ORDER = 1;
 	
 	private LinkedList<OldBuffer> fullBuffers = new LinkedList<OldBuffer>();
 	private LinkedList<OldBuffer> oldBuffers = new LinkedList<OldBuffer>();
@@ -56,7 +57,7 @@ public class FreezeBuffer
 	private LinkedList<IChange> reverted = new LinkedList<IChange>();
 	private LinkedList<Serialised> oldChanges = new LinkedList<Serialised>();
 	private HistoryIO file;
-	private Serialised marker;
+	private IMarker marker;
 	private boolean rebuffer;
 	
 	public FreezeBuffer(RawImage image)
@@ -90,7 +91,7 @@ public class FreezeBuffer
 					while(i > 0)
 					{
 						Serialised s = oldChanges.pollLast();
-						if(s.isMarker())
+						if(s instanceof IMarker)
 						{
 							i--;
 						}
@@ -148,9 +149,9 @@ public class FreezeBuffer
 			Serialised s;
 			while((s = oldChanges.poll()) != null)
 			{
-				if(s.isMarker())
+				if(s instanceof IMarker)
 				{
-					this.marker = s;
+					this.marker = (IMarker) s;
 					break;
 				}
 				else
@@ -172,7 +173,7 @@ public class FreezeBuffer
 				{
 					throw new IllegalStateException("Not enough markers");
 				}
-				else if(s.isMarker())
+				else if(s instanceof IMarker)
 				{
 					i--;
 					if(i * 2 == top.order && !(s instanceof Marker))
@@ -190,7 +191,7 @@ public class FreezeBuffer
 				{
 					throw new IllegalStateException("Not enough markers");
 				}
-				else if(s.isMarker())
+				else if(s instanceof IMarker)
 				{
 					i--;
 					if(i == -1 && !(s instanceof Marker))
@@ -200,7 +201,7 @@ public class FreezeBuffer
 					}
 				}
 				toReturn.push(s);
-				if(!(s instanceof Marker))
+				if(!(s instanceof IMarker))
 				{
 					toApply.push(s.decode());
 				}
@@ -262,7 +263,7 @@ public class FreezeBuffer
 			front.copyFrom(back, true);
 			
 			oldChanges.push(marker);
-			marker = change.encode();
+			marker = (IMarker) change.encode();
 			while(!changes.isEmpty())
 				oldChanges.push(changes.removeFirst().encode());
 		}

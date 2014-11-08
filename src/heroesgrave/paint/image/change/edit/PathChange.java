@@ -22,6 +22,8 @@ package heroesgrave.paint.image.change.edit;
 
 import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.IEditChange;
+import heroesgrave.paint.image.change.SingleChange;
+import heroesgrave.paint.io.HistoryIO;
 import heroesgrave.paint.io.Serialised;
 
 import java.awt.Point;
@@ -32,18 +34,27 @@ import java.util.ArrayList;
 
 public class PathChange implements IEditChange
 {
+	public static abstract class IPathChange extends SingleChange
+	{
+		public abstract void point(RawImage image, int x, int y, int colour);
+		
+		public abstract void line(RawImage image, int x1, int y1, int x2, int y2, int colour);
+	}
+	
+	protected IPathChange change;
 	protected ArrayList<Point> points = new ArrayList<Point>();
 	protected int colour;
 	
-	public PathChange(short x, short y, int colour)
+	public PathChange(short x, short y, int colour, IPathChange change)
 	{
-		this(new Point(x, y), colour);
+		this(new Point(x, y), colour, change);
 	}
 	
-	public PathChange(Point p, int colour)
+	public PathChange(Point p, int colour, IPathChange change)
 	{
 		this.colour = colour;
 		points.add(p);
+		this.change = change;
 	}
 	
 	public boolean moveTo(short x, short y)
@@ -69,7 +80,7 @@ public class PathChange implements IEditChange
 			data[i++] = (short) p.x;
 			data[i++] = (short) p.y;
 		}
-		return new Serial(data, colour);
+		return new Serial(data, colour, change.encode());
 	}
 	
 	@Override
@@ -78,16 +89,23 @@ public class PathChange implements IEditChange
 		if(points.size() == 1)
 		{
 			Point p = points.get(0);
-			image.drawPixelChecked(p.x, p.y, colour);
+			change.point(image, p.x, p.y, colour);
 		}
 		else
 		{
+			// Fill in lines first
 			for(int i = 1; i < points.size(); i++)
 			{
 				Point p1 = points.get(i - 1);
 				Point p2 = points.get(i);
 				
-				image.drawLine(p1.x, p1.y, p2.x, p2.y, colour);
+				change.line(image, p1.x, p1.y, p2.x, p2.y, colour);
+			}
+			
+			// Points after
+			for(Point p : points)
+			{
+				change.point(image, p.x, p.y, colour);
 			}
 		}
 	}
@@ -96,22 +114,24 @@ public class PathChange implements IEditChange
 	{
 		private short[] points;
 		private int colour;
+		private Serialised change;
 		
 		public Serial()
 		{
 			
 		}
 		
-		public Serial(short[] data, int colour)
+		public Serial(short[] data, int colour, Serialised change)
 		{
 			this.colour = colour;
 			this.points = data;
+			this.change = change;
 		}
 		
 		@Override
 		public PathChange decode()
 		{
-			PathChange change = new PathChange(points[0], points[1], colour);
+			PathChange change = new PathChange(points[0], points[1], colour, (IPathChange) this.change.decode());
 			for(int i = 2; i < points.length; i += 2)
 				change.moveTo(points[i], points[i + 1]);
 			return change;
@@ -120,6 +140,8 @@ public class PathChange implements IEditChange
 		@Override
 		public void write(DataOutputStream out) throws IOException
 		{
+			out.writeByte(HistoryIO.getChangeID(change.getClass()));
+			change.write(out);
 			out.writeInt(colour);
 			out.writeInt(points.length);
 			for(short s : points)
@@ -129,16 +151,12 @@ public class PathChange implements IEditChange
 		@Override
 		public void read(DataInputStream in) throws IOException
 		{
+			change = HistoryIO.create(in.readByte());
+			change.read(in);
 			colour = in.readInt();
 			points = new short[in.readInt()];
 			for(int i = 0; i < points.length; i++)
 				points[i] = in.readShort();
-		}
-		
-		@Override
-		public boolean isMarker()
-		{
-			return false;
 		}
 	}
 }

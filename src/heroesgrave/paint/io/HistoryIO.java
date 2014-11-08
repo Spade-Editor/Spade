@@ -21,8 +21,10 @@
 package heroesgrave.paint.io;
 
 import heroesgrave.paint.image.RawImage;
-import heroesgrave.paint.image.change.Marker;
+import heroesgrave.paint.image.change.IMarker.Marker;
+import heroesgrave.paint.image.change.SingleChange;
 import heroesgrave.paint.image.change.edit.ClearMaskChange;
+import heroesgrave.paint.image.change.edit.DrawPathChange;
 import heroesgrave.paint.image.change.edit.FillMaskChange;
 import heroesgrave.paint.image.change.edit.PathChange;
 import heroesgrave.paint.image.change.edit.SetImageChange;
@@ -61,7 +63,6 @@ public class HistoryIO
 		{
 			historyDir.mkdirs();
 		}
-		registerClasses();
 	}
 	
 	private static File randomFile(String extension) throws IOException
@@ -143,6 +144,10 @@ public class HistoryIO
 			{
 				Class<? extends Serialised> c = classes.get(ID);
 				Serialised change = c.newInstance();
+				if(change instanceof SingleChange)
+				{
+					change = ((SingleChange) change).getInstance();
+				}
 				change.read(in);
 				changes.addLast(change);
 			}
@@ -212,20 +217,17 @@ public class HistoryIO
 			}
 			else
 			{
-				out.writeByte(classes.indexOf(change.getClass()));
+				out.writeByte(getChangeID(change.getClass()));
 				change.write(out);
 			}
 		}
 	}
 	
-	public static void registerClasses()
+	static
 	{
-		if(!classes.isEmpty())
-		{
-			throw new IllegalStateException("Cannot register serialised classes more than once");
-		}
 		classes.add(Marker.class);
 		
+		classes.add(DrawPathChange.class);
 		classes.add(PathChange.Serial.class);
 		
 		classes.add(SetImageChange.class);
@@ -238,5 +240,26 @@ public class HistoryIO
 	public static void registerClass(Class<? extends Serialised> c)
 	{
 		classes.add(c);
+	}
+	
+	public static int getChangeID(Class<? extends Serialised> c)
+	{
+		if(!classes.contains(c))
+			System.err.println("Unregistered Serialised Type: " + c);
+		return classes.indexOf(c);
+	}
+	
+	public static Serialised create(int id)
+	{
+		Class<? extends Serialised> c = classes.get(id);
+		try
+		{
+			return c.newInstance();
+		}
+		catch(InstantiationException | IllegalAccessException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

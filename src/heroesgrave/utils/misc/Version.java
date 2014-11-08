@@ -69,7 +69,11 @@ public class Version
 	private int type()
 	{
 		if(this.type == null)
-			return 6;
+			return 16;
+		if(this.type.startsWith("RC."))
+		{
+			return 3 + Integer.parseInt(this.type.substring(3));
+		}
 		switch(this.type)
 		{
 			case "Dev":
@@ -78,10 +82,8 @@ public class Version
 				return 2;
 			case "Beta":
 				return 3;
-			case "RC":
-				return 4;
 			default:
-				return 5;
+				return 15;
 		}
 	}
 	

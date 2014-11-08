@@ -82,10 +82,4 @@ public class FillMaskChange implements IEditChange, IMaskChange, Serialised
 			}
 		}
 	}
-	
-	@Override
-	public boolean isMarker()
-	{
-		return false;
-	}
 }

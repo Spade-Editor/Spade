@@ -22,7 +22,7 @@ package heroesgrave.paint.image.change;
 
 import heroesgrave.paint.image.RawImage;
 
-public abstract class IGeneratorChange extends IImageChange
+public abstract class IGeneratorChange implements IImageChange
 {
 	public abstract RawImage generate(int width, int height);
 	
