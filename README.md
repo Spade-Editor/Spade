@@ -23,16 +23,9 @@ will still be required to set up Paint.JAVA for development.
 3. Add `lib/weblaf-XXX.jar` to the build path of the project.
 4. Run `Start.java` (Found in `src/heroesgrave/paint/main/`). Make sure it works. If it doesn't and you can't work out why, create an issue.
 5. (Optional) You will probably want to install the `Core` plugin, which contains the majority of
-the editing functions. More information is available [here](https://github.com/PaintDotJava/Core).
+the editing functions. More information is available [here](https://github.com/PaintDotJava/Core#developing).
 6. Make whatever changes you want.
 7. Commit your changes and make a pull request.
-
-Useful Links
-============
-
-[Latest Download](https://github.com/HeroesGrave/Paint.JAVA/blob/master/build/Paint.JAVA.jar)
-
-[Wiki](https://github.com/HeroesGrave/Paint.JAVA/wiki)
 
 Super-Contributors
 ==================
