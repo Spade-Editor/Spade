@@ -27,6 +27,7 @@ import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.misc.Metadata;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -180,5 +181,10 @@ public class Layer extends DefaultMutableTreeNode
 	public RawImage getImage()
 	{
 		return buffer.getImage();
+	}
+	
+	public BufferedImage getBufferedImage()
+	{
+		return buffer.getFront();
 	}
 }

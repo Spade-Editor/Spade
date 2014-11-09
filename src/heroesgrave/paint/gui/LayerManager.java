@@ -24,6 +24,7 @@ import heroesgrave.paint.editing.SelectionTool;
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.change.doc.DeleteLayer;
+import heroesgrave.paint.image.change.doc.MergeLayer;
 import heroesgrave.paint.image.change.doc.MoveLayer;
 import heroesgrave.paint.image.change.doc.NewLayer;
 import heroesgrave.paint.image.change.edit.ClearMaskChange;
@@ -218,8 +219,8 @@ public class LayerManager
 					n = (Layer) path.getLastPathComponent();
 				if(n.isRoot())
 					return;
-				Layer parent = (Layer) n.getParent();
-				// FIXME parent.merge(n);
+				n.getDocument().addChange(new MergeLayer(n));
+				Paint.main.gui.repaint();
 			}
 		});
 		
