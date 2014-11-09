@@ -10,6 +10,7 @@ public class SimpleEffect extends Effect
 	public SimpleEffect(String name, SingleChange change)
 	{
 		super(name);
+		this.change = change;
 	}
 	
 	@Override
