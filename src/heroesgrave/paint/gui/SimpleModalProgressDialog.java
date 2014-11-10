@@ -104,10 +104,12 @@ public class SimpleModalProgressDialog implements AutoCloseable
 	public void close()
 	{
 		if(closed)
-			throw new RuntimeException("Dialog was already closed!");
-		
-		dlg.setVisible(false);
-		closed = true;
+			System.err.println("Dialog was already closed!");
+		else
+		{
+			dlg.dispose();
+			closed = true;
+		}
 	}
 	
 	/**
@@ -118,12 +120,11 @@ public class SimpleModalProgressDialog implements AutoCloseable
 	public void setValue(int value)
 	{
 		if(value < 0)
-			throw new IllegalArgumentException("'value' cannot be smaller than 0!");
-		
-		if(value >= maxValue)
-			throw new IllegalArgumentException("'value' cannot be bigger or equal than 'maxValue'!");
-		
-		dpb.setValue(value);
+			System.err.println("'value' cannot be smaller than 0!");
+		else if(value >= maxValue)
+			System.err.println("'value' (" + value + ") cannot be bigger or equal than 'maxValue' (" + maxValue + ")!");
+		else
+			dpb.setValue(value);
 	}
 	
 	/**
@@ -134,9 +135,18 @@ public class SimpleModalProgressDialog implements AutoCloseable
 	public void setMessage(String text)
 	{
 		if(text == null)
-			throw new IllegalArgumentException("'text' cannot be null!");
-		
-		dpm.setText(text);
+			System.err.println("'text' cannot be null!");
+		else
+			dpm.setText(text);
 	}
 	
+	public void incValue(int i)
+	{
+		setValue(getValue() + i);
+	}
+	
+	public int getValue()
+	{
+		return dpb.getValue();
+	}
 }

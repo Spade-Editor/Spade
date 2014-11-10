@@ -190,7 +190,13 @@ public class Menu
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				Paint.save();
+				new Thread(new Runnable()
+				{
+					public void run()
+					{
+						Paint.save();
+					}
+				}).start();
 			}
 		});
 		
@@ -199,7 +205,13 @@ public class Menu
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				Paint.main.saveAs();
+				new Thread(new Runnable()
+				{
+					public void run()
+					{
+						Paint.main.saveAs();
+					}
+				}).start();
 			}
 		});
 		
@@ -217,6 +229,7 @@ public class Menu
 	
 	public static void showOpenMenu()
 	{
+		System.out.println("ShowOpenMenu");
 		final WebFileChooser chooser = new WebFileChooser(Paint.getDocument().getDir());
 		chooser.setFileSelectionMode(WebFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);

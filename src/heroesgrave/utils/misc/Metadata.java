@@ -21,6 +21,8 @@
 package heroesgrave.utils.misc;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class Metadata
 {
@@ -61,5 +63,15 @@ public class Metadata
 	public boolean has(String key)
 	{
 		return metadata.containsKey(key);
+	}
+	
+	public int size()
+	{
+		return metadata.size();
+	}
+	
+	public Set<Entry<String, String>> getEntries()
+	{
+		return metadata.entrySet();
 	}
 }

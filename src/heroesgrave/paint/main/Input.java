@@ -83,7 +83,13 @@ public class Input implements KeyListener
 			{
 				if(e.getKeyCode() == KeyEvent.VK_S)
 				{
-					Paint.main.saveAs();
+					new Thread(new Runnable()
+					{
+						public void run()
+						{
+							Paint.main.saveAs();
+						}
+					}).start();
 				}
 				else if(keyCodeToChar.containsKey(e.getKeyCode()))
 				{
@@ -137,7 +143,13 @@ public class Input implements KeyListener
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_S)
 				{
-					Paint.save();
+					new Thread(new Runnable()
+					{
+						public void run()
+						{
+							Paint.save();
+						}
+					}).start();
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_N)
 				{

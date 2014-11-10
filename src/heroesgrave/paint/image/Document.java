@@ -145,24 +145,18 @@ public class Document
 		
 		final Document doc = this;
 		
-		new Thread(new Runnable()
+		System.out.println("a");
+		try
 		{
-			@Override
-			public void run()
-			{
-				try
-				{
-					exporter.export(doc, new File(fileName));
-				}
-				catch(IOException e)
-				{
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-			}
-		}).start();
+			exporter.export(doc, new File(fileName));
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		System.out.println("b");
 	}
 	
 	public String getDir()
@@ -287,5 +281,10 @@ public class Document
 	{
 		repaint = true;
 		Paint.main.gui.repaint();
+	}
+	
+	public void setMetadata(Metadata info)
+	{
+		this.info = info;
 	}
 }

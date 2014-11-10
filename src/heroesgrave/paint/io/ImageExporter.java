@@ -21,11 +21,7 @@
 package heroesgrave.paint.io;
 
 import heroesgrave.paint.image.Document;
-import heroesgrave.paint.io.exporters.ExporterBIN;
 import heroesgrave.paint.io.exporters.ExporterGenericImageIO;
-import heroesgrave.paint.io.exporters.ExporterJPEG;
-import heroesgrave.paint.io.exporters.ExporterTGA;
-import heroesgrave.paint.io.exporters.ExporterZipBIN;
 import heroesgrave.paint.main.Popup;
 
 import java.awt.image.BufferedImage;
@@ -42,19 +38,7 @@ public abstract class ImageExporter extends FileFilter
 	
 	public static void registerExporters()
 	{
-		// Add SOME OF the exporters!
-		
 		exporters.add(new ExporterGenericImageIO("png", "PNG - Portable Network Graphics Image"));
-		exporters.add(new ExporterGenericImageIO("bmp", "BMP - Microsoft Bitmap Image"));
-		exporters.add(new ExporterGenericImageIO("gif", "GIF - Graphics Interchange Format"));
-		exporters.add(new ExporterJPEG());
-		exporters.add(new ExporterTGA());
-		exporters.add(new ExporterBIN());
-		exporters.add(new ExporterZipBIN());
-		/*
-		exporters.add(new ExporterLBIN());
-		exporters.add(new ExporterZipLBIN());
-		*/
 	}
 	
 	/**

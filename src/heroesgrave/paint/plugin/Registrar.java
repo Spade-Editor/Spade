@@ -6,6 +6,8 @@ import heroesgrave.paint.gui.Effects;
 import heroesgrave.paint.gui.Tools;
 import heroesgrave.paint.image.blend.BlendMode;
 import heroesgrave.paint.io.HistoryIO;
+import heroesgrave.paint.io.ImageExporter;
+import heroesgrave.paint.io.ImageImporter;
 import heroesgrave.paint.io.Serialised;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.misc.Pair;
@@ -20,6 +22,8 @@ public class Registrar
 	private ArrayList<Pair<Effect, Character>> generators = new ArrayList<Pair<Effect, Character>>();
 	private ArrayList<Class<? extends Serialised>> serialisers = new ArrayList<Class<? extends Serialised>>();
 	private ArrayList<BlendMode> blendmodes = new ArrayList<BlendMode>();
+	private ArrayList<ImageExporter> exporters = new ArrayList<ImageExporter>();
+	private ArrayList<ImageImporter> importers = new ArrayList<ImageImporter>();
 	
 	public void registerTool(Tool tool, Character key)
 	{
@@ -51,6 +55,16 @@ public class Registrar
 		blendmodes.add(mode);
 	}
 	
+	public void registerImporter(ImageImporter importer)
+	{
+		importers.add(importer);
+	}
+	
+	public void registerExporter(ImageExporter exporter)
+	{
+		exporters.add(exporter);
+	}
+	
 	protected void completeRegistration(Tools tools, Effects effects)
 	{
 		for(Pair<Tool, Character> pair : this.tools)
@@ -78,5 +92,13 @@ public class Registrar
 			BlendMode.addBlendMode(mode);
 		}
 		Paint.main.gui.layers.updateBlendModes();
+		for(ImageExporter exporter : exporters)
+		{
+			ImageExporter.add(exporter);
+		}
+		for(ImageImporter importer : importers)
+		{
+			ImageImporter.add(importer);
+		}
 	}
 }

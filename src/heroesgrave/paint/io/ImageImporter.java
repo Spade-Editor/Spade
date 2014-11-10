@@ -23,8 +23,6 @@ package heroesgrave.paint.io;
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.RawImage;
-import heroesgrave.paint.io.importers.ImporterBIN;
-import heroesgrave.paint.io.importers.ImporterZipBIN;
 import heroesgrave.utils.misc.Metadata;
 
 import java.io.File;
@@ -47,12 +45,6 @@ public abstract class ImageImporter extends FileFilter
 		ImageIO.setUseCache(false);
 		
 		/// initialize importers?
-		
-		// Nothing here yet! Feel free to expand by adding new image-importers!
-		add(new ImporterBIN());
-		add(new ImporterZipBIN());
-		//add(new ImporterLBIN());
-		//add(new ImporterZipLBIN());
 	}
 	
 	public static void add(ImageImporter exporter)
