@@ -104,14 +104,14 @@ public class Paint
 		
 		pluginManager = PluginManager.instance;
 		
+		HistoryIO.init();
+		
 		// Order is important. Prefer local (./plugins) plugins to global (~/.paint-java/plugins).
 		if(localPlugins)
 			pluginManager.addPluginDirectory(new File(IOUtils.assemblePath(IOUtils.jarDir(), "plugins")));
 		if(globalPlugins)
 			pluginManager.addPluginDirectory(new File(IOUtils.assemblePath(System.getProperty("user.home"), ".paint-java", "plugins")));
 		pluginManager.loadPluginFiles();
-		
-		HistoryIO.init();
 		
 		tools = new Tools();
 		effects = new Effects();
@@ -137,7 +137,7 @@ public class Paint
 				setRightColour(0xffffffff, false);
 				
 				tools.init();
-				effects.init();
+				effects.init(); // Doesn't actually do anything
 				pluginManager.loadPlugins();
 				setTool(currentTool);
 				gui.setDocument(document);
@@ -326,6 +326,7 @@ public class Paint
 				document.setFile(file);
 			}
 			
+			gui.setTitle(document.getFile().getName());
 			document.save();
 			return true;
 		}

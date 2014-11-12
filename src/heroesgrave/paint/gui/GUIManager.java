@@ -359,6 +359,8 @@ public class GUIManager
 		canvasPanel.setDocument(document);
 		layers.setDocument(document);
 		document.reconstructFlatmap();
+		if(document.getFile() != null)
+			setTitle(document.getFile().getName());
 	}
 	
 	static
