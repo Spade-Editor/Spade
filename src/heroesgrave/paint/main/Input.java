@@ -78,8 +78,7 @@ public class Input implements KeyListener
 		
 		if(e.getKeyCode() == KeyEvent.VK_DELETE)
 		{
-			//Canvas selection = Paint.main.gui.canvas.selection.getSelection();
-			//Paint.main.history.addChange(new DeleteSelectionOp(selection, Paint.main.gui.canvas.getParentOf(selection)));
+			Paint.getDocument().getCurrent().addChange(new FillImageChange(0x00000000));
 		}
 		
 		int MOVE = 1;

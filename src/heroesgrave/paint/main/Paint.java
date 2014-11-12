@@ -75,7 +75,7 @@ public class Paint
 	//*/public static final String BUILD_TYPE = "Release Candidate";
 	//*/public static final String BUILD_TYPE = "Stable";
 	
-	public static boolean debug;
+	public static boolean debug, localPlugins = true, globalPlugins = true;
 	public static Paint main = new Paint();
 	public static URL questionMarkURL = Paint.class.getResource("/res/icons/questionmark.png");
 	
@@ -104,8 +104,11 @@ public class Paint
 		
 		pluginManager = PluginManager.instance;
 		
-		pluginManager.addPluginDirectory(new File(IOUtils.assemblePath(System.getProperty("user.home"), ".paint-java", "plugins")));
-		pluginManager.addPluginDirectory(new File(IOUtils.assemblePath(IOUtils.jarDir(), "plugins")));
+		// Order is important. Prefer local (./plugins) plugins to global (~/.paint-java/plugins).
+		if(localPlugins)
+			pluginManager.addPluginDirectory(new File(IOUtils.assemblePath(IOUtils.jarDir(), "plugins")));
+		if(globalPlugins)
+			pluginManager.addPluginDirectory(new File(IOUtils.assemblePath(System.getProperty("user.home"), ".paint-java", "plugins")));
 		pluginManager.loadPluginFiles();
 		
 		HistoryIO.init();
@@ -448,6 +451,16 @@ public class Paint
 			if(STR.equals("--debug"))
 			{
 				debug = true;
+			}
+			
+			if(STR.equals("--no-global-plugins"))
+			{
+				globalPlugins = false;
+			}
+			
+			if(STR.equals("--no-local-plugins"))
+			{
+				localPlugins = false;
 			}
 			
 			/// XXX: Expand here by adding more debugging options and system flags!
