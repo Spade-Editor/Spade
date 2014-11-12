@@ -22,12 +22,18 @@ package heroesgrave.paint.main;
 
 import heroesgrave.paint.editing.Effect;
 import heroesgrave.paint.editing.Tool;
+import heroesgrave.paint.gui.ClipboardHandler;
 import heroesgrave.paint.gui.Menu;
+import heroesgrave.paint.image.Document;
+import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.RawImage.MaskMode;
 import heroesgrave.paint.image.change.doc.FloatLayer;
 import heroesgrave.paint.image.change.doc.MergeLayer;
+import heroesgrave.paint.image.change.doc.NewLayer;
 import heroesgrave.paint.image.change.edit.ClearMaskChange;
+import heroesgrave.paint.image.change.edit.FillImageChange;
 import heroesgrave.paint.image.change.edit.FillMaskChange;
+import heroesgrave.paint.image.change.edit.ResizeCanvasChange;
 
 import java.awt.AWTException;
 import java.awt.MouseInfo;
@@ -190,33 +196,26 @@ public class Input implements KeyListener
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_C)
 				{
-					/*
-					SelectionCanvas sel =
-							Paint.main.gui.canvas.selection.getSelection();
-					if(sel != null)
-						ClipboardHandler.copy(sel.getBoundedSelection());
-					*/
+					ClipboardHandler.setImage(Paint.getDocument().getCurrent().getImage());
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_X)
 				{
-					/*
-					SelectionCanvas sel =
-							Paint.main.gui.canvas.selection.getSelection();
-					if(sel != null)
-					{
-						ClipboardHandler.copy(sel.getBoundedSelection());
-						Paint.main.history.addChange(new DeleteSelectionOp(sel,
-								Paint.main.gui.canvas.getParentOf(sel)));
-					}
-					*/
+					ClipboardHandler.setImage(Paint.getDocument().getCurrent().getImage());
+					Paint.getDocument().getCurrent().addChange(new FillImageChange(0x00000000));
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_V)
 				{
-					/*
-					BufferedImage image = ClipboardHandler.paste();
+					Document doc = Paint.getDocument();
+					RawImage image = ClipboardHandler.getImage();
 					if(image != null)
-						Paint.main.gui.canvas.selection.paste(image);
-					*/
+					{
+						// Fun hack.
+						if(image.width != doc.getWidth() || image.height != doc.getHeight())
+						{
+							image = new ResizeCanvasChange(doc.getWidth(), doc.getHeight()).apply(image);
+						}
+						doc.addChange(new NewLayer(doc.getCurrent(), image, "Floating Layer"));
+					}
 				}
 			}
 		}

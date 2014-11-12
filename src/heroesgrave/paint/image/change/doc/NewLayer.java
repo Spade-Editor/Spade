@@ -31,20 +31,41 @@ public class NewLayer implements IDocChange
 {
 	private Layer layer, parent;
 	private int index = -1;
+	private RawImage image;
+	private String name;
 	
 	public NewLayer(Layer parent)
 	{
+		this(parent, prepareImage(parent));
+	}
+	
+	private static RawImage prepareImage(Layer parent)
+	{
+		RawImage image = new RawImage(parent.getWidth(), parent.getHeight());
+		image.copyMaskFrom(parent.getImage());
+		return image;
+	}
+	
+	public NewLayer(Layer parent, RawImage image)
+	{
+		this(parent, image, "New Layer");
+	}
+	
+	public NewLayer(Layer parent, RawImage image, String name)
+	{
 		this.parent = parent;
+		this.image = image;
+		this.name = name;
 	}
 	
 	public void apply(Document doc)
 	{
-		RawImage image = new RawImage(doc.getWidth(), doc.getHeight());
-		image.copyMaskFrom(parent.getImage());
-		
 		parent.addChangeSilent(new ClearMaskChange());
 		
-		layer = new Layer(doc, image, new Metadata());
+		Metadata info = new Metadata();
+		info.set("name", name);
+		
+		layer = new Layer(doc, image, info);
 		parent.addLayer(layer);
 		doc.reconstructFlatmap();
 		doc.setCurrent(layer);

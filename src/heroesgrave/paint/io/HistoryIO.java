@@ -25,8 +25,10 @@ import heroesgrave.paint.image.change.IMarker.Marker;
 import heroesgrave.paint.image.change.SingleChange;
 import heroesgrave.paint.image.change.edit.ClearMaskChange;
 import heroesgrave.paint.image.change.edit.DrawPathChange;
+import heroesgrave.paint.image.change.edit.FillImageChange;
 import heroesgrave.paint.image.change.edit.FillMaskChange;
 import heroesgrave.paint.image.change.edit.PathChange;
+import heroesgrave.paint.image.change.edit.ResizeCanvasChange;
 import heroesgrave.paint.image.change.edit.SetImageChange;
 import heroesgrave.paint.image.change.edit.SetMaskChange;
 import heroesgrave.utils.io.IOUtils;
@@ -235,6 +237,9 @@ public class HistoryIO
 		
 		classes.add(ClearMaskChange.class);
 		classes.add(FillMaskChange.class);
+		classes.add(FillImageChange.class);
+		
+		classes.add(ResizeCanvasChange.class);
 	}
 	
 	public static void registerClass(Class<? extends Serialised> c)
