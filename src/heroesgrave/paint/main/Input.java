@@ -83,17 +83,7 @@ public class Input implements KeyListener
 			MOVE = 8;
 			if(e.isShiftDown())
 			{
-				if(e.getKeyCode() == KeyEvent.VK_S)
-				{
-					new Thread(new Runnable()
-					{
-						public void run()
-						{
-							Paint.main.saveAs();
-						}
-					}).start();
-				}
-				else if(keyCodeToChar.containsKey(e.getKeyCode()))
+				if(keyCodeToChar.containsKey(e.getKeyCode()))
 				{
 					Effect effect = Paint.getEffect(keyCodeToChar.get(e.getKeyCode()));
 					if(effect != null)
@@ -145,11 +135,15 @@ public class Input implements KeyListener
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_S)
 				{
+					final boolean as = e.isAltDown();
 					new Thread(new Runnable()
 					{
 						public void run()
 						{
-							Paint.save();
+							if(as)
+								Paint.main.saveAs();
+							else
+								Paint.save();
 						}
 					}).start();
 				}
@@ -187,7 +181,7 @@ public class Input implements KeyListener
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_F)
 				{
-					Paint.getDocument().addChange(new FloatLayer(Paint.getDocument().getCurrent()));
+					Paint.getDocument().addChange(new FloatLayer(Paint.getDocument().getCurrent(), e.isAltDown()));
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_M)
 				{

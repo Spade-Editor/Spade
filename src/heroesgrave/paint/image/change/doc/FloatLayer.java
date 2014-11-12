@@ -32,10 +32,12 @@ public class FloatLayer implements IDocChange
 {
 	private Layer layer, parent;
 	private int index = -1;
+	private boolean preserveOld;
 	
-	public FloatLayer(Layer parent)
+	public FloatLayer(Layer parent, boolean preserveOld)
 	{
 		this.parent = parent;
+		this.preserveOld = preserveOld;
 	}
 	
 	public void apply(Document doc)
@@ -44,7 +46,8 @@ public class FloatLayer implements IDocChange
 		image.copyMaskFrom(parent.getImage());
 		image.copyRegion(parent.getImage());
 		
-		parent.addChangeSilent(new FillImageChange(0x00000000));
+		if(!preserveOld)
+			parent.addChangeSilent(new FillImageChange(0x00000000));
 		parent.addChangeSilent(new ClearMaskChange());
 		
 		Metadata info = new Metadata();
@@ -62,7 +65,8 @@ public class FloatLayer implements IDocChange
 		doc.reconstructFlatmap();
 		doc.setCurrent(parent);
 		
-		parent.revertChange();
+		if(!preserveOld)
+			parent.revertChange();
 		parent.revertChange();
 	}
 	
@@ -72,7 +76,8 @@ public class FloatLayer implements IDocChange
 		doc.reconstructFlatmap();
 		doc.setCurrent(layer);
 		
-		parent.repeatChange();
+		if(!preserveOld)
+			parent.repeatChange();
 		parent.repeatChange();
 	}
 }
