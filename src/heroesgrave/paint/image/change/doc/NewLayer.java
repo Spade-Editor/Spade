@@ -20,13 +20,11 @@
 
 package heroesgrave.paint.image.change.doc;
 
-import heroesgrave.paint.editing.SelectionTool;
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.IDocChange;
 import heroesgrave.paint.image.change.edit.ClearMaskChange;
-import heroesgrave.paint.image.change.edit.SetMaskChange;
-import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.misc.Metadata;
 
 public class NewLayer implements IDocChange
@@ -41,20 +39,14 @@ public class NewLayer implements IDocChange
 	
 	public void apply(Document doc)
 	{
-		layer = new Layer(doc, new Metadata());
+		RawImage image = new RawImage(doc.getWidth(), doc.getHeight());
+		image.copyMaskFrom(parent.getImage());
+		
+		parent.addChangeSilent(new ClearMaskChange());
+		
+		layer = new Layer(doc, image, new Metadata());
 		parent.addLayer(layer);
 		doc.reconstructFlatmap();
-		
-		Layer current = Paint.getDocument().getCurrent();
-		if(current.getImage().isMaskEnabled())
-		{
-			boolean[] mask = current.getImage().copyMask();
-			current.addChange(new ClearMaskChange());
-			if(Paint.main.currentTool instanceof SelectionTool)
-			{
-				layer.addChange(new SetMaskChange(mask));
-			}
-		}
 		doc.setCurrent(layer);
 	}
 	
@@ -63,10 +55,14 @@ public class NewLayer implements IDocChange
 		index = parent.removeLayer(layer);
 		doc.reconstructFlatmap();
 		doc.setCurrent(parent);
+		
+		parent.revertChange();
 	}
 	
 	public void repeat(Document doc)
 	{
+		parent.repeatChange();
+		
 		parent.addLayer(layer, index);
 		doc.reconstructFlatmap();
 		doc.setCurrent(layer);

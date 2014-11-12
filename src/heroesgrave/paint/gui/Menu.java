@@ -229,7 +229,6 @@ public class Menu
 	
 	public static void showOpenMenu()
 	{
-		System.out.println("ShowOpenMenu");
 		final WebFileChooser chooser = new WebFileChooser(Paint.getDocument().getDir());
 		chooser.setFileSelectionMode(WebFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);

@@ -24,6 +24,8 @@ import heroesgrave.paint.editing.Effect;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.gui.Menu;
 import heroesgrave.paint.image.RawImage.MaskMode;
+import heroesgrave.paint.image.change.doc.FloatLayer;
+import heroesgrave.paint.image.change.doc.MergeLayer;
 import heroesgrave.paint.image.change.edit.ClearMaskChange;
 import heroesgrave.paint.image.change.edit.FillMaskChange;
 
@@ -182,6 +184,14 @@ public class Input implements KeyListener
 				else if(e.getKeyCode() == KeyEvent.VK_I)
 				{
 					Paint.getDocument().getCurrent().addChange(new FillMaskChange(MaskMode.XOR));
+				}
+				else if(e.getKeyCode() == KeyEvent.VK_F)
+				{
+					Paint.getDocument().addChange(new FloatLayer(Paint.getDocument().getCurrent()));
+				}
+				else if(e.getKeyCode() == KeyEvent.VK_M)
+				{
+					Paint.getDocument().addChange(new MergeLayer(Paint.getDocument().getCurrent()));
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_C)
 				{

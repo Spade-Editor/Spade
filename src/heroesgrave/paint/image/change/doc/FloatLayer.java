@@ -22,42 +22,57 @@ package heroesgrave.paint.image.change.doc;
 
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.IDocChange;
+import heroesgrave.paint.image.change.edit.ClearMaskChange;
+import heroesgrave.paint.image.change.edit.FillImageChange;
+import heroesgrave.utils.misc.Metadata;
 
-public class MoveLayer implements IDocChange
+public class FloatLayer implements IDocChange
 {
-	private Layer layer, oldParent, newParent;
-	private int oldIndex = -1, newIndex = -1;
+	private Layer layer, parent;
+	private int index = -1;
 	
-	public MoveLayer(Layer layer, Layer target, int targetIndex)
+	public FloatLayer(Layer parent)
 	{
-		this.layer = layer;
-		this.oldParent = layer.getParentLayer();
-		this.newParent = target;
-		newIndex = targetIndex;
+		this.parent = parent;
 	}
 	
 	public void apply(Document doc)
 	{
-		oldIndex = oldParent.removeLayer(layer);
-		newParent.addLayer(layer, newIndex);
+		RawImage image = new RawImage(parent.getWidth(), parent.getHeight());
+		image.copyMaskFrom(parent.getImage());
+		image.copyRegion(parent.getImage());
+		
+		parent.addChangeSilent(new FillImageChange(0x00000000));
+		parent.addChangeSilent(new ClearMaskChange());
+		
+		Metadata info = new Metadata();
+		info.set("name", "Floating Layer");
+		
+		layer = new Layer(doc, image, info);
+		parent.addLayer(layer);
 		doc.reconstructFlatmap();
 		doc.setCurrent(layer);
 	}
 	
 	public void revert(Document doc)
 	{
-		newParent.removeLayer(layer);
-		oldParent.addLayer(layer, oldIndex);
+		index = parent.removeLayer(layer);
 		doc.reconstructFlatmap();
-		doc.setCurrent(layer);
+		doc.setCurrent(parent);
+		
+		parent.revertChange();
+		parent.revertChange();
 	}
 	
 	public void repeat(Document doc)
 	{
-		oldParent.removeLayer(layer);
-		newParent.addLayer(layer, newIndex);
+		parent.addLayer(layer, index);
 		doc.reconstructFlatmap();
 		doc.setCurrent(layer);
+		
+		parent.repeatChange();
+		parent.repeatChange();
 	}
 }

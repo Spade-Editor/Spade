@@ -67,7 +67,7 @@ public class FreezeBuffer
 		this.marker = new Marker();
 		this.image = new BufferedImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB);
 		this.front = RawImage.unwrapBufferedImage(this.image);
-		this.front.copyFrom(this.back, false);
+		this.front.copyFrom(this.back, true);
 	}
 	
 	private void pushOldBuffer(OldBuffer buffer)
