@@ -157,6 +157,7 @@ public class Input implements KeyListener
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_G)
 				{
+					// FIXME Grid isn't actually working.
 					Menu.GRID_ENABLED = !Menu.GRID_ENABLED;
 					Paint.main.gui.repaint();
 				}

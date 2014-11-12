@@ -46,7 +46,7 @@ import javax.swing.WindowConstants;
  * 
  * @author Longor1996
  **/
-public class SimpleModalProgressDialog implements AutoCloseable
+public class ProgressDialog implements AutoCloseable
 {
 	// ALL FIELDS ARE PRIVATE, because there are nice methods, and you should use them Sir!
 	private final JDialog dlg;
@@ -58,7 +58,7 @@ public class SimpleModalProgressDialog implements AutoCloseable
 	/**
 	 * Constructor
 	 **/
-	public SimpleModalProgressDialog(String title, String message, int maxValue)
+	public ProgressDialog(String title, String message, int maxValue)
 	{
 		
 		// Create/Assign variables.

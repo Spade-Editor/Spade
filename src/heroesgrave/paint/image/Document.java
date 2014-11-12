@@ -145,7 +145,6 @@ public class Document
 		
 		final Document doc = this;
 		
-		System.out.println("a");
 		try
 		{
 			exporter.export(doc, new File(fileName));
@@ -156,7 +155,6 @@ public class Document
 			JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		System.out.println("b");
 	}
 	
 	public String getDir()
