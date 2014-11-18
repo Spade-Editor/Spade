@@ -66,7 +66,7 @@ public class Paint
 	
 	public static final String VERSION_STRING = "0.15-Dev";
 	public static final Version VERSION = Version.parse(VERSION_STRING);
-	public static final String RELEASED = "12-11-2014";
+	public static final String RELEASED = "18-11-2014";
 	
 	/* Add/Remove the stars on the following lines to change the build type string.
 	//*/public static final String BUILD_TYPE = "Development";

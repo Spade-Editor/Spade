@@ -25,6 +25,7 @@ import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.gui.ClipboardHandler;
 import heroesgrave.paint.gui.Menu;
 import heroesgrave.paint.image.Document;
+import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.RawImage.MaskMode;
 import heroesgrave.paint.image.change.doc.FloatLayer;
@@ -187,11 +188,17 @@ public class Input implements KeyListener
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_F)
 				{
-					Paint.getDocument().addChange(new FloatLayer(Paint.getDocument().getCurrent(), e.isAltDown()));
+					Document doc = Paint.getDocument();
+					if(!doc.getCurrent().isFloating())
+					{
+						doc.addChange(new FloatLayer(Paint.getDocument().getCurrent(), e.isAltDown()));
+					}
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_M)
 				{
-					Paint.getDocument().addChange(new MergeLayer(Paint.getDocument().getCurrent()));
+					Layer current = Paint.getDocument().getCurrent();
+					if(current.getChildCount() == 0)
+						Paint.getDocument().addChange(new MergeLayer(current));
 				}
 				else if(e.getKeyCode() == KeyEvent.VK_C)
 				{
@@ -208,12 +215,16 @@ public class Input implements KeyListener
 					RawImage image = ClipboardHandler.getImage();
 					if(image != null)
 					{
+						if(doc.getCurrent().isFloating())
+						{
+							doc.addChange(new MergeLayer(doc.getCurrent()));
+						}
 						// Fun hack.
 						if(image.width != doc.getWidth() || image.height != doc.getHeight())
 						{
 							image = new ResizeCanvasChange(doc.getWidth(), doc.getHeight()).apply(image);
 						}
-						doc.addChange(new NewLayer(doc.getCurrent(), image, "Floating Layer"));
+						doc.addChange(new NewLayer(doc.getCurrent(), image, "Floating Layer").floating());
 					}
 				}
 			}

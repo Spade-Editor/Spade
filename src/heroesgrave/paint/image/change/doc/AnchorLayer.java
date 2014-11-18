@@ -24,59 +24,58 @@ import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.IDocChange;
-import heroesgrave.paint.image.change.edit.ClearMaskChange;
-import heroesgrave.paint.image.change.edit.FillImageChange;
 import heroesgrave.utils.misc.Metadata;
 
-public class FloatLayer implements IDocChange
+public class AnchorLayer implements IDocChange
 {
-	private Layer layer, parent;
+	private Layer layer, old, parent;
 	private int index = -1;
-	private boolean preserveOld;
+	private RawImage image;
+	private String name;
 	
-	public FloatLayer(Layer parent, boolean preserveOld)
+	public AnchorLayer(Layer layer)
 	{
-		this.parent = parent;
-		this.preserveOld = preserveOld;
+		this(layer, prepareImage(layer));
+	}
+	
+	private static RawImage prepareImage(Layer layer)
+	{
+		RawImage image = new RawImage(layer.getWidth(), layer.getHeight());
+		image.copyFrom(layer.getImage(), true);
+		return image;
+	}
+	
+	public AnchorLayer(Layer layer, RawImage image)
+	{
+		this.old = layer;
+		this.parent = layer.getParentLayer();
+		this.image = image;
+		this.name = layer.getMetadata().get("name");
+		if(this.name.equals("Floating Layer"))
+			this.name = "New Layer";
 	}
 	
 	public void apply(Document doc)
 	{
-		RawImage image = new RawImage(doc.getWidth(), doc.getHeight());
-		{
-			RawImage parentImage = parent.getImage();
-			image.copyMaskFrom(parentImage);
-			image.copyRegion(parentImage);
-		}
-		
-		if(!preserveOld)
-			parent.addChangeSilent(new FillImageChange(0x00000000));
-		parent.addChangeSilent(new ClearMaskChange());
-		
 		Metadata info = new Metadata();
-		info.set("name", "Floating Layer");
+		info.set("name", name);
 		
-		layer = new Layer(doc, image, info).floating();
-		parent.addLayer(layer);
+		layer = new Layer(doc, image, info);
+		index = parent.removeLayer(old);
+		parent.addLayer(layer, index);
 		doc.setCurrent(layer);
 	}
 	
 	public void revert(Document doc)
 	{
 		index = parent.removeLayer(layer);
+		parent.addLayer(old, index);
 		doc.setCurrent(parent);
-		
-		if(!preserveOld)
-			parent.revertChange();
-		parent.revertChange();
 	}
 	
 	public void repeat(Document doc)
 	{
-		if(!preserveOld)
-			parent.repeatChange();
-		parent.repeatChange();
-		
+		index = parent.removeLayer(old);
 		parent.addLayer(layer, index);
 		doc.setCurrent(layer);
 	}

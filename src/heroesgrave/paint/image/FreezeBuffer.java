@@ -339,6 +339,7 @@ public class FreezeBuffer
 	
 	public RawImage getImage()
 	{
+		checkBuffered();
 		return front;
 	}
 }

@@ -33,6 +33,7 @@ public class NewLayer implements IDocChange
 	private int index = -1;
 	private RawImage image;
 	private String name;
+	private boolean floating;
 	
 	public NewLayer(Layer parent)
 	{
@@ -58,6 +59,12 @@ public class NewLayer implements IDocChange
 		this.name = name;
 	}
 	
+	public NewLayer floating()
+	{
+		this.floating = true;
+		return this;
+	}
+	
 	public void apply(Document doc)
 	{
 		parent.addChangeSilent(new ClearMaskChange());
@@ -65,16 +72,18 @@ public class NewLayer implements IDocChange
 		Metadata info = new Metadata();
 		info.set("name", name);
 		
-		layer = new Layer(doc, image, info);
+		if(floating)
+			layer = new Layer(doc, image, info).floating();
+		else
+			layer = new Layer(doc, image, info);
+		
 		parent.addLayer(layer);
-		doc.reconstructFlatmap();
 		doc.setCurrent(layer);
 	}
 	
 	public void revert(Document doc)
 	{
 		index = parent.removeLayer(layer);
-		doc.reconstructFlatmap();
 		doc.setCurrent(parent);
 		
 		parent.revertChange();
@@ -85,7 +94,6 @@ public class NewLayer implements IDocChange
 		parent.repeatChange();
 		
 		parent.addLayer(layer, index);
-		doc.reconstructFlatmap();
 		doc.setCurrent(layer);
 	}
 }

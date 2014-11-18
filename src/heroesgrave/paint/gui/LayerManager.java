@@ -23,6 +23,7 @@ package heroesgrave.paint.gui;
 import heroesgrave.paint.editing.SelectionTool;
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.change.doc.AnchorLayer;
 import heroesgrave.paint.image.change.doc.DeleteLayer;
 import heroesgrave.paint.image.change.doc.MergeLayer;
 import heroesgrave.paint.image.change.doc.MoveLayer;
@@ -105,7 +106,14 @@ public class LayerManager
 				else
 					n = (Layer) path.getLastPathComponent();
 				Document doc = n.getDocument();
-				doc.addChange(new NewLayer(n));
+				if(n.isFloating())
+				{
+					doc.addChange(new AnchorLayer(n));
+				}
+				else
+				{
+					doc.addChange(new NewLayer(n));
+				}
 				Paint.main.gui.repaint();
 			}
 		});
@@ -219,8 +227,11 @@ public class LayerManager
 					n = (Layer) path.getLastPathComponent();
 				if(n.isRoot())
 					return;
-				n.getDocument().addChange(new MergeLayer(n));
-				Paint.main.gui.repaint();
+				if(n.getChildCount() == 0)
+				{
+					n.getDocument().addChange(new MergeLayer(n));
+					Paint.main.gui.repaint();
+				}
 			}
 		});
 		
@@ -369,9 +380,9 @@ public class LayerManager
 			else
 			{
 				Layer current = Paint.getDocument().getCurrent();
-				if(Paint.getDocument().setCurrent(l))
+				if(Paint.getDocument().setCurrent(l) && current != null)
 				{
-					if(current != null && current.getImage().isMaskEnabled())
+					if(current.getImage().isMaskEnabled())
 					{
 						boolean[] mask = current.getImage().copyMask();
 						current.addChange(new ClearMaskChange());

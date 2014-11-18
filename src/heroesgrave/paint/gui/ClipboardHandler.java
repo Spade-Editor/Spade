@@ -76,7 +76,7 @@ public class ClipboardHandler
 		else
 		{
 			bufferedImage = new BufferedImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB);
-			bufferedImage.setRGB(0, 0, image.width, image.height, image.borrowBuffer(), 0, image.width);
+			bufferedImage.setRGB(0, 0, image.width, image.height, image.copyBuffer(), 0, image.width);
 		}
 		
 		TransferableImage transfer = new TransferableImage(bufferedImage);

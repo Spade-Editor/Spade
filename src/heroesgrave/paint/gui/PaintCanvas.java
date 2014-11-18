@@ -394,6 +394,9 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			else
 			{
 				frozenTo = -1;
+				Graphics2D fg = frozen.createGraphics();
+				fg.setBackground(PaintCanvas.TRANSPARENT);
+				fg.clearRect(0, 0, document.getWidth(), document.getHeight());
 			}
 			
 			boolean masked = true;

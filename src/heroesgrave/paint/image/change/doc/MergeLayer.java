@@ -48,10 +48,11 @@ public class MergeLayer implements IDocChange
 		doc.reconstructFlatmap();
 		doc.setCurrent(parent);
 		
-		BufferedImage image = parent.getBufferedImage();
+		BufferedImage image = new BufferedImage(doc.getWidth(), doc.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		BlendMode mode = layer.getBlendMode();
 		{
 			Graphics2D g = image.createGraphics();
+			g.drawImage(parent.getBufferedImage(), 0, 0, null);
 			g.setComposite(mode);
 			g.drawImage(layer.getBufferedImage(), 0, 0, null);
 			g.dispose();
@@ -64,6 +65,7 @@ public class MergeLayer implements IDocChange
 	public void revert(Document doc)
 	{
 		parent.revertChange();
+		
 		parent.addLayer(layer, index);
 		doc.reconstructFlatmap();
 		doc.setCurrent(layer);
@@ -75,5 +77,7 @@ public class MergeLayer implements IDocChange
 		parent.removeLayer(layer);
 		doc.reconstructFlatmap();
 		doc.setCurrent(layer);
+		
+		parent.repeatChange();
 	}
 }

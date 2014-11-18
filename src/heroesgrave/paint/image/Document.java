@@ -251,6 +251,13 @@ public class Document
 		this.allChanged();
 	}
 	
+	public void addChangeSilent(IDocChange change)
+	{
+		changes.push(change);
+		change.apply(this);
+		this.allChanged();
+	}
+	
 	public void revertChange()
 	{
 		if(changes.isEmpty())

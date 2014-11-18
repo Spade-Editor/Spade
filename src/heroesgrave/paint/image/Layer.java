@@ -40,6 +40,7 @@ public class Layer extends DefaultMutableTreeNode
 	private FreezeBuffer buffer;
 	private Metadata info;
 	private BlendMode blend;
+	private boolean floating;
 	
 	public Layer(Document doc, Metadata info)
 	{
@@ -79,12 +80,14 @@ public class Layer extends DefaultMutableTreeNode
 	public void addLayer(Layer l)
 	{
 		super.add(l);
+		doc.reconstructFlatmap();
 		doc.changed(this);
 	}
 	
 	public void addLayer(Layer l, int index)
 	{
 		super.insert(l, index);
+		doc.reconstructFlatmap();
 		doc.changed(this);
 	}
 	
@@ -92,6 +95,7 @@ public class Layer extends DefaultMutableTreeNode
 	{
 		int index = super.getIndex(l);
 		super.remove(l);
+		doc.reconstructFlatmap();
 		doc.changed(this);
 		return index;
 	}
@@ -186,5 +190,16 @@ public class Layer extends DefaultMutableTreeNode
 	public BufferedImage getBufferedImage()
 	{
 		return buffer.getFront();
+	}
+	
+	public Layer floating()
+	{
+		this.floating = true;
+		return this;
+	}
+	
+	public boolean isFloating()
+	{
+		return this.floating;
 	}
 }
