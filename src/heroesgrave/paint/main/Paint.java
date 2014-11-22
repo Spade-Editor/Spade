@@ -31,20 +31,18 @@ import heroesgrave.paint.io.ImageExporter;
 import heroesgrave.paint.plugin.Plugin;
 import heroesgrave.paint.plugin.PluginManager;
 import heroesgrave.utils.io.IOUtils;
+import heroesgrave.utils.misc.Callback;
 import heroesgrave.utils.misc.Version;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
@@ -66,7 +64,7 @@ public class Paint
 	
 	public static final String VERSION_STRING = "0.15-Dev";
 	public static final Version VERSION = Version.parse(VERSION_STRING);
-	public static final String RELEASED = "18-11-2014";
+	public static final String RELEASED = "23-11-2014";
 	
 	/* Add/Remove the stars on the following lines to change the build type string.
 	//*/public static final String BUILD_TYPE = "Development";
@@ -82,9 +80,7 @@ public class Paint
 	public GUIManager gui;
 	public PluginManager pluginManager;
 	
-	public Document document;
-	
-	private File toOpen;
+	private Document document;
 	
 	public Tool currentTool;
 	
@@ -98,7 +94,7 @@ public class Paint
 	
 	private static HashMap<Character, Effect> effectMap = new HashMap<Character, Effect>();
 	
-	public void launch()
+	public void launch(File toOpen)
 	{
 		ImageExporter.registerExporters();
 		
@@ -116,10 +112,10 @@ public class Paint
 		tools = new Tools();
 		effects = new Effects();
 		
+		final Document document;
 		if(toOpen != null)
 		{
 			document = new Document(toOpen);
-			toOpen = null;
 		}
 		else
 		{
@@ -140,74 +136,19 @@ public class Paint
 				effects.init(); // Doesn't actually do anything
 				pluginManager.loadPlugins();
 				setTool(currentTool);
-				gui.setDocument(document);
+				Paint.addDocument(document);
+				Paint.setDocument(document);
 				
 				Paint.main.gui.frame.requestFocus();
 			}
 		});
 	}
 	
-	public void newImage(final int width, final int height)
+	public static void newImage(final int width, final int height)
 	{
-		if(!document.saved)
-		{
-			final WebDialog newImage = new WebDialog(gui.frame, "Save current image?");
-			newImage.setAlwaysOnTop(true);
-			newImage.setAutoRequestFocus(true);
-			newImage.setLayout(new BorderLayout());
-			
-			JButton save = new JButton("Save & Create New Image");
-			JButton dispose = new JButton("Create new image without saving");
-			JButton cancel = new JButton("Don't create new image");
-			
-			newImage.add(save, BorderLayout.NORTH);
-			newImage.add(dispose, BorderLayout.CENTER);
-			newImage.add(cancel, BorderLayout.SOUTH);
-			
-			newImage.pack();
-			newImage.setResizable(false);
-			newImage.setVisible(true);
-			newImage.center(gui.frame);
-			
-			save.addActionListener(new ActionListener()
-			{
-				@Override
-				public void actionPerformed(ActionEvent e)
-				{
-					if(!Paint.save())
-						return;
-					newImage.dispose();
-					createImage(width, height);
-				}
-			});
-			dispose.addActionListener(new ActionListener()
-			{
-				@Override
-				public void actionPerformed(ActionEvent e)
-				{
-					newImage.dispose();
-					createImage(width, height);
-				}
-			});
-			cancel.addActionListener(new ActionListener()
-			{
-				@Override
-				public void actionPerformed(ActionEvent e)
-				{
-					newImage.dispose();
-				}
-			});
-		}
-		else
-		{
-			createImage(width, height);
-		}
-	}
-	
-	private void createImage(int width, int height)
-	{
-		this.document = new Document(width, height);
-		gui.setDocument(document);
+		Document doc = new Document(width, height);
+		Paint.addDocument(doc);
+		Paint.setDocument(doc);
 	}
 	
 	public static void addTool(Character key, Tool tool)
@@ -230,37 +171,29 @@ public class Paint
 		return effectMap.get(Character.toLowerCase(key));
 	}
 	
-	public static Document getDocument()
-	{
-		return main.document;
-	}
-	
 	public static void setTool(Tool tool)
 	{
 		Input.CTRL = false;
 		Input.ALT = false;
 		Input.SHIFT = false;
-		main.currentTool.onDeselect();
 		main.currentTool = tool;
-		main.currentTool.onSelect();
-		main.gui.setToolOption(tool.getOptions());
 		main.tools.toolbox.setSelected(tool);
 	}
 	
-	public static boolean save()
+	public static boolean save(Document doc)
 	{
-		if(getDocument().getFile() != null)
+		if(doc.getFile() != null)
 		{
-			getDocument().save();
+			doc.save();
 			return true;
 		}
 		else
-			return main.saveAs();
+			return saveAs(doc);
 	}
 	
-	public boolean saveAs()
+	public static boolean saveAs(Document doc)
 	{
-		WebFileChooser chooser = new WebFileChooser(document.getDir());
+		WebFileChooser chooser = new WebFileChooser(doc.getDir());
 		chooser.setFileSelectionMode(WebFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
 		
@@ -307,13 +240,13 @@ public class Paint
 				if(fileName.endsWith("." + format.getFileExtension()))
 				{
 					// Do nothing.
-					document.setFile(file);
+					doc.setFile(file);
 				}
 				else
 				{
 					// Put the format at the end of the File-Name!
 					fileName += "." + format.getFileExtension();
-					document.setFile(new File(fileName));
+					doc.setFile(new File(fileName));
 				}
 			}
 			else
@@ -323,11 +256,12 @@ public class Paint
 				{
 					file = new File(file.getAbsolutePath() + ".png");
 				}
-				document.setFile(file);
+				doc.setFile(file);
 			}
 			
-			gui.setTitle(document.getFile().getName());
-			document.save();
+			if(doc == main.document)
+				main.gui.setTitle(doc.getFile().getName());
+			doc.save();
 			return true;
 		}
 		return false;
@@ -399,6 +333,8 @@ public class Paint
 	{
 		IOUtils.setMainClass(Paint.class);
 		
+		File open = null;
+		
 		// Check for a file argument
 		if(args.length >= 1)
 		{
@@ -406,7 +342,7 @@ public class Paint
 			
 			if(f.exists() && f.isFile() && !f.isHidden())
 			{
-				main.toOpen = f;
+				open = f;
 			}
 		}
 		
@@ -468,7 +404,7 @@ public class Paint
 		}
 		
 		// Finally Launch Paint.JAVA!
-		main.launch();
+		main.launch(open);
 	}
 	
 	public static Version getVersion()
@@ -476,11 +412,65 @@ public class Paint
 		return VERSION;
 	}
 	
-	public static void setDocument(File file)
+	public static void addDocument(Document doc)
 	{
-		main.document = new Document(file);
-		main.gui.layers.setDocument(main.document);
+		main.gui.addDocument(doc);
+	}
+	
+	public static void setDocument(Document doc)
+	{
+		main.document = doc;
 		main.gui.setDocument(main.document);
+	}
+	
+	public static Document getDocument()
+	{
+		return main.document;
+	}
+	
+	public static void closeAllDocuments()
+	{
+		Paint.closeDocument(Paint.getDocument(), new Callback()
+		{
+			public void callback()
+			{
+				Paint.closeAllDocuments();
+			}
+		});
+	}
+	
+	public static void closeDocument(Document doc)
+	{
+		closeDocument(doc, new Callback()
+		{
+			public void callback()
+			{
+			}
+		});
+	}
+	
+	public static void closeDocument(final Document doc, final Callback callback)
+	{
+		final int index = main.gui.getDocuments().indexOf(doc);
+		main.gui.tryRemove(doc, new Callback()
+		{
+			public void callback()
+			{
+				ArrayList<Document> documents = main.gui.getDocuments();
+				if(documents.isEmpty())
+				{
+					Paint.close();
+				}
+				if(doc == main.document)
+				{
+					if(index == 0)
+						setDocument(documents.get(0));
+					else
+						setDocument(documents.get(index - 1));
+				}
+				callback.callback();
+			}
+		});
 	}
 	
 	public static void close()

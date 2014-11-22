@@ -139,6 +139,10 @@ public class Input implements KeyListener
 				{
 					Paint.main.gui.canvasPanel.setScale(1f);
 				}
+				else if(e.getKeyCode() == KeyEvent.VK_Q)
+				{
+					Paint.closeDocument(Paint.getDocument());
+				}
 				else if(e.getKeyCode() == KeyEvent.VK_S)
 				{
 					final boolean as = e.isAltDown();
@@ -147,9 +151,9 @@ public class Input implements KeyListener
 						public void run()
 						{
 							if(as)
-								Paint.main.saveAs();
+								Paint.saveAs(Paint.getDocument());
 							else
-								Paint.save();
+								Paint.save(Paint.getDocument());
 						}
 					}).start();
 				}

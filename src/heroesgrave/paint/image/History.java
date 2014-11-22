@@ -28,6 +28,7 @@ public class History
 	
 	private LinkedList<Integer> changes = new LinkedList<Integer>();
 	private LinkedList<Integer> reverted = new LinkedList<Integer>();
+	private int savedAt;
 	
 	private Document doc;
 	
@@ -86,5 +87,15 @@ public class History
 			doc.setCurrent(l);
 			l.repeatChange();
 		}
+	}
+	
+	public boolean isSaved()
+	{
+		return changes.size() == savedAt;
+	}
+	
+	public void save()
+	{
+		savedAt = changes.size();
 	}
 }

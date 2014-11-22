@@ -69,24 +69,6 @@ public abstract class Tool
 		
 	}
 	
-	/**
-	 * Called when tool is selected for use
-	 */
-	public void onSelect()
-	{
-		//default impl
-		//Paint.main.gui.canvas.getPanel().setCursorPreview(null, null);
-	}
-	
-	/**
-	 * Called when tool is un-selected
-	 */
-	public void onDeselect()
-	{
-		//default impl
-		//Paint.main.gui.canvas.getPanel().setCursorPreview(null, null);
-	}
-	
 	public static void preview(IChange change)
 	{
 		Paint.getDocument().preview(change);

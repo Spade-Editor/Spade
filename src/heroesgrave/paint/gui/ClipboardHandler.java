@@ -61,6 +61,7 @@ public class ClipboardHandler
 			
 			int width = right - left + 1;
 			int height = bottom - top + 1;
+			
 			bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 			RawImage buffer = RawImage.unwrapBufferedImage(bufferedImage);
 			image = RawImage.copyOf(image);

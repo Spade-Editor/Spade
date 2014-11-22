@@ -68,10 +68,10 @@ public class LayerSettings
 			public void actionPerformed(ActionEvent arg0)
 			{
 				if(!layer.getMetadata().get("name").equals(label.getText()))
-					Paint.main.document.addChange(new MetadataChange(layer, "name", label.getText()));
+					Paint.getDocument().addChange(new MetadataChange(layer, "name", label.getText()));
 				if(blendMode.getSelectedItem() != null)
 					if(!layer.getMetadata().get("blend").equals(blendMode.getSelectedItem()))
-						Paint.main.document.addChange(new MetadataChange(layer, "blend", (String) blendMode.getSelectedItem()));
+						Paint.getDocument().addChange(new MetadataChange(layer, "blend", (String) blendMode.getSelectedItem()));
 				dialog.setVisible(false);
 			}
 		});

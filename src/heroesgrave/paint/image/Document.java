@@ -50,7 +50,7 @@ public class Document
 	private IChange previewChange;
 	public int lowestChange;
 	
-	public boolean saved, repaint;
+	public boolean repaint;
 	
 	private ArrayList<Layer> flatmap = new ArrayList<Layer>();
 	
@@ -148,6 +148,8 @@ public class Document
 		try
 		{
 			exporter.export(doc, new File(fileName));
+			history.save();
+			Paint.main.gui.checkButtonNames();
 		}
 		catch(IOException e)
 		{
@@ -218,6 +220,7 @@ public class Document
 	
 	public void changed(Layer layer)
 	{
+		Paint.main.gui.checkButtonNames();
 		lowestChange = Math.min(lowestChange, flatmap.indexOf(layer));
 		this.repaint();
 	}
@@ -280,6 +283,11 @@ public class Document
 		changes.push(change);
 		change.repeat(this);
 		this.allChanged();
+	}
+	
+	public boolean saved()
+	{
+		return this.history.isSaved();
 	}
 	
 	public void repaint()
