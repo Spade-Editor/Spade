@@ -181,6 +181,8 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
+		if(document == null)
+			return;
 		if((e.getClickCount() == 2) && (e.getButton() == MouseEvent.BUTTON2))
 		{
 			this.cam_zoom = 1;
@@ -194,6 +196,8 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	@Override
 	public void mouseDragged(MouseEvent e)
 	{
+		if(document == null)
+			return;
 		// Don't use BUTTON2_MASK because it will trigger when ALT is pressed. Sometimes Java is stupid.
 		int middleMouseMod = MouseEvent.BUTTON2_DOWN_MASK;
 		int modifier = e.getModifiersEx();
@@ -258,6 +262,8 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	@Override
 	public void mouseMoved(MouseEvent e)
 	{
+		if(document == null)
+			return;
 		if(lastButton == MouseEvent.BUTTON1 || lastButton == MouseEvent.BUTTON3)
 		{
 			Point _p = e.getPoint();
@@ -275,6 +281,8 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		this.mouseLastDragPosY = e.getY();
 		lastButton = e.getButton();
 		
+		if(document == null)
+			return;
 		if(e.getButton() == MouseEvent.BUTTON1 || e.getButton() == MouseEvent.BUTTON3)
 		{
 			Point _p = e.getPoint();
@@ -288,6 +296,8 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	@Override
 	public void mouseReleased(MouseEvent e)
 	{
+		if(document == null)
+			return;
 		if(e.getButton() == MouseEvent.BUTTON1 || e.getButton() == MouseEvent.BUTTON3)
 		{
 			Point _p = e.getPoint();
@@ -334,6 +344,9 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			g.setColor(new Color(0x1f1f1f));
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());
 		}
+		
+		if(image == null)
+			return;
 		
 		AffineTransform Tx = new AffineTransform();
 		Tx.translate(this.getWidth() / 2, this.getHeight() / 2);
@@ -520,14 +533,24 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	public void setDocument(Document document)
 	{
 		this.document = document;
-		this.image = document.getRenderedImage();
-		this.frozen = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		this.unselected = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		this.unselectedRaw = RawImage.unwrapBufferedImage(unselected);
-		this.preview = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		this.previewRaw = RawImage.unwrapBufferedImage(preview);
-		this.cam_positionX = image.getWidth() / 2;
-		this.cam_positionY = image.getHeight() / 2;
+		if(document == null)
+		{
+			unselectedRaw = previewRaw = null;
+			unselected = preview = frozen = image = null;
+			this.cam_positionX = 0;
+			this.cam_positionY = 0;
+		}
+		else
+		{
+			this.image = document.getRenderedImage();
+			this.frozen = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			this.unselected = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			this.unselectedRaw = RawImage.unwrapBufferedImage(unselected);
+			this.preview = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			this.previewRaw = RawImage.unwrapBufferedImage(preview);
+			this.cam_positionX = image.getWidth() / 2;
+			this.cam_positionY = image.getHeight() / 2;
+		}
 		this.repaint();
 	}
 	

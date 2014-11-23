@@ -230,7 +230,7 @@ public class Menu
 	
 	public static void showOpenMenu()
 	{
-		final WebFileChooser chooser = new WebFileChooser(Paint.getDocument().getDir());
+		final WebFileChooser chooser = new WebFileChooser(Paint.getDir());
 		chooser.setFileSelectionMode(WebFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.addChoosableFileFilter(new FileFilter()
@@ -390,7 +390,8 @@ public class Menu
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Paint.getDocument().getHistory().revertChange();
+				if(Paint.getDocument() != null)
+					Paint.getDocument().getHistory().revertChange();
 			}
 		});
 		
@@ -399,7 +400,8 @@ public class Menu
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Paint.getDocument().getHistory().repeatChange();
+				if(Paint.getDocument() != null)
+					Paint.getDocument().getHistory().repeatChange();
 			}
 		});
 		
@@ -452,8 +454,8 @@ public class Menu
 			public void actionPerformed(ActionEvent e)
 			{
 				DARK_BACKGROUND = !DARK_BACKGROUND;
-				Paint.getDocument().repaint();
-				Paint.main.gui.canvasPanel.maskChanged();
+				if(Paint.getDocument() != null)
+					Paint.main.gui.repaint();
 			}
 		});
 		

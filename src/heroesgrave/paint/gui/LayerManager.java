@@ -281,7 +281,17 @@ public class LayerManager
 	
 	public void setDocument(Document doc)
 	{
-		setRoot(doc.getRoot());
+		if(doc == null)
+		{
+			rootNode = null;
+			model = null;
+			tree.setModel(null);
+			tree.revalidate();
+		}
+		else
+		{
+			setRoot(doc.getRoot());
+		}
 	}
 	
 	public void setRoot(Layer root)
@@ -350,7 +360,8 @@ public class LayerManager
 		else
 		{
 			DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-			model.reload();
+			if(model != null)
+				model.reload();
 		}
 		tree.revalidate();
 		tree.repaint();

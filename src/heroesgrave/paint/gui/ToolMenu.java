@@ -135,8 +135,11 @@ public class ToolMenu
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					effect.perform(Paint.getDocument().getCurrent());
-					Paint.main.gui.repaint();
+					if(Paint.getDocument() != null)
+					{
+						effect.perform(Paint.getDocument().getCurrent());
+						Paint.main.gui.repaint();
+					}
 				}
 			});
 		}

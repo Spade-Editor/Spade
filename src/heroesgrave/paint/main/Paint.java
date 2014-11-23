@@ -117,7 +117,7 @@ public class Paint
 		}
 		else
 		{
-			document = new Document(512, 512);
+			document = null;
 		}
 		
 		SwingUtilities.invokeLater(new Runnable()
@@ -134,8 +134,11 @@ public class Paint
 				effects.init(); // Doesn't actually do anything
 				pluginManager.loadPlugins();
 				setTool(currentTool);
-				Paint.addDocument(document);
-				Paint.setDocument(document);
+				if(document != null)
+				{
+					Paint.addDocument(document);
+					Paint.setDocument(document);
+				}
 				
 				Paint.main.gui.frame.requestFocus();
 			}
@@ -180,6 +183,10 @@ public class Paint
 	
 	public static boolean save(Document doc)
 	{
+		if(doc == null)
+		{
+			return false;
+		}
 		if(doc.getFile() != null)
 		{
 			doc.save();
@@ -191,6 +198,10 @@ public class Paint
 	
 	public static boolean saveAs(Document doc)
 	{
+		if(doc == null)
+		{
+			return false;
+		}
 		WebFileChooser chooser = new WebFileChooser(doc.getDir());
 		chooser.setFileSelectionMode(WebFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
@@ -447,15 +458,19 @@ public class Paint
 	
 	public static void closeDocument(final Document doc, final Callback callback)
 	{
+		if(main.gui.getDocuments().isEmpty())
+		{
+			Paint.close();
+		}
 		final int index = main.gui.getDocuments().indexOf(doc);
 		main.gui.tryRemove(doc, new Callback()
 		{
 			public void callback()
 			{
 				ArrayList<Document> documents = main.gui.getDocuments();
-				if(documents.isEmpty())
+				if(main.gui.getDocuments().isEmpty())
 				{
-					Paint.close();
+					setDocument(null);
 				}
 				if(doc == main.document)
 				{
@@ -475,5 +490,12 @@ public class Paint
 		main.pluginManager.dispose();
 		main.gui.frame.dispose();
 		System.exit(0);
+	}
+	
+	public static String getDir()
+	{
+		if(main.document != null)
+			return main.document.getDir();
+		return System.getProperty("user.dir");
 	}
 }

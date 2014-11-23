@@ -333,16 +333,22 @@ public class GUIManager
 	{
 		canvasPanel.setDocument(document);
 		layers.setDocument(document);
-		document.reconstructFlatmap();
-		if(document.getFile() != null)
+		if(document != null)
 		{
-			setTitle(IOUtils.relativeFrom(System.getProperty("user.dir"), document.getFile().getAbsolutePath()));
+			document.reconstructFlatmap();
+			if(document.getFile() != null)
+			{
+				setTitle(IOUtils.relativeFrom(System.getProperty("user.dir"), document.getFile().getAbsolutePath()));
+			}
+			else
+			{
+				setTitle("Untitled - Paint.JAVA");
+			}
 		}
 		else
 		{
-			setTitle("Untitled - Paint.JAVA");
+			setTitle("Paint.JAVA");
 		}
-		
 		// Set selected button.
 		for(Component c : documents.getComponents())
 		{
