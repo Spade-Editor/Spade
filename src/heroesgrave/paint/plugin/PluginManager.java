@@ -55,6 +55,7 @@ public class PluginManager
 		{
 			plugin.load();
 		}
+		// FIXME: Recover if possible from plugin error and warn user. 
 		Registrar registrar = new Registrar();
 		for(Plugin plugin : validPlugins)
 		{

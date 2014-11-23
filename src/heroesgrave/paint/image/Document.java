@@ -147,7 +147,7 @@ public class Document
 		
 		try
 		{
-			exporter.export(doc, new File(fileName));
+			exporter.save(doc, new File(fileName));
 			history.save();
 			Paint.main.gui.checkButtonNames();
 		}

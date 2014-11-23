@@ -51,13 +51,13 @@ public class ExporterGenericImageIO extends ImageExporter
 	}
 	
 	@Override
-	public String getFileExtensionDescription()
+	public String getDescription()
 	{
 		return description;
 	}
 	
 	@Override
-	public void export(Document doc, File destination) throws IOException
+	public void save(Document doc, File destination) throws IOException
 	{
 		writeImage(doc.getRenderedImage(), getFileExtension().toUpperCase(), destination.getAbsolutePath());
 	}

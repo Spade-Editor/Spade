@@ -22,7 +22,6 @@ package heroesgrave.paint.main;
 
 import heroesgrave.paint.gui.LayerManager;
 import heroesgrave.paint.gui.Menu;
-import heroesgrave.paint.gui.ToolBox;
 import heroesgrave.paint.gui.colorchooser.ColourChooser;
 
 import java.awt.Frame;
@@ -81,7 +80,7 @@ public class UserPreferences
 		Menu.DARK_BACKGROUND = prefs.getBoolean(BACKGROUND_DARK, false);
 	}
 	
-	public static void savePrefs(JFrame frame, ColourChooser chooser, LayerManager layers, ToolBox toolBox)
+	public static void savePrefs(JFrame frame, ColourChooser chooser, LayerManager layers)
 	{
 		Preferences prefs = Preferences.userNodeForPackage(UserPreferences.class);
 		

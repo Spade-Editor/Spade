@@ -96,8 +96,6 @@ public class Paint
 	
 	public void launch(File toOpen)
 	{
-		ImageExporter.registerExporters();
-		
 		pluginManager = PluginManager.instance;
 		
 		HistoryIO.init();
@@ -197,10 +195,8 @@ public class Paint
 		chooser.setFileSelectionMode(WebFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
 		
-		for(ImageExporter exporter : ImageExporter.exporters)
-		{
-			chooser.addChoosableFileFilter(exporter);
-		}
+		ImageExporter.addAllExporters(chooser);
+		
 		FileFilter allFilter = new FileFilter()
 		{
 			@Override
@@ -475,6 +471,7 @@ public class Paint
 	
 	public static void close()
 	{
+		UserPreferences.savePrefs(main.gui.frame, main.gui.chooser, main.gui.layers);
 		main.pluginManager.dispose();
 		main.gui.frame.dispose();
 		System.exit(0);

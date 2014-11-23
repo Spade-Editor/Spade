@@ -28,7 +28,6 @@ import heroesgrave.utils.misc.Metadata;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 import javax.swing.filechooser.FileFilter;
@@ -43,13 +42,36 @@ public abstract class ImageImporter extends FileFilter
 	{
 		// Set this to FALSE, because it is NOT faster to use this!
 		ImageIO.setUseCache(false);
-		
-		/// initialize importers?
 	}
 	
-	public static void add(ImageImporter exporter)
+	/**
+	 * Reads an Image.
+	 * @throws IOException 
+	 **/
+	public abstract void load(File file, Document doc) throws IOException;
+	
+	public abstract String getFileExtension();
+	
+	@Override
+	public boolean accept(File f)
 	{
-		importers.put(exporter.getFormat(), exporter);
+		if(f.isDirectory())
+			return true;
+		
+		if(f.getAbsolutePath().endsWith("." + getFileExtension()))
+			return true;
+		
+		return false;
+	}
+	
+	public static void add(ImageImporter importer)
+	{
+		importers.put(importer.getFileExtension(), importer);
+	}
+	
+	public static ImageImporter get(String extension)
+	{
+		return importers.get(extension);
 	}
 	
 	public static void loadImage(String path, Document doc)
@@ -76,7 +98,7 @@ public abstract class ImageImporter extends FileFilter
 				// If there is a custom importer for the given format, use the custom importer...
 				if(importer != null)
 				{
-					importer.read(file, doc);
+					importer.load(file, doc);
 				}
 				else
 				{
@@ -94,40 +116,11 @@ public abstract class ImageImporter extends FileFilter
 			throw new RuntimeException("The resource \"" + path + "\" was missing!");
 	}
 	
-	public static ImageImporter get(String extension)
-	{
-		return importers.get(extension);
-	}
-	
 	public static void addAllImporters(WebFileChooser chooser)
 	{
-		for(Entry<String, ImageImporter> importer : importers.entrySet())
+		for(ImageImporter importer : importers.values())
 		{
-			chooser.addChoosableFileFilter(importer.getValue());
+			chooser.addChoosableFileFilter(importer);
 		}
 	}
-	
-	/**
-	 * Reads an Image.
-	 * @throws IOException 
-	 **/
-	public abstract void read(File file, Document doc) throws IOException;
-	
-	public abstract String getFormat();
-	
-	@Override
-	public boolean accept(File f)
-	{
-		if(f.isDirectory())
-			return true;
-		
-		if(f.getAbsolutePath().endsWith("." + getFormat()))
-			return true;
-		
-		return false;
-	}
-	
-	@Override
-	public abstract String getDescription();
-	
 }

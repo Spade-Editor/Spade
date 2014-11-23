@@ -27,18 +27,20 @@ import heroesgrave.paint.main.Popup;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.filechooser.FileFilter;
 
+import com.alee.laf.filechooser.WebFileChooser;
+
 public abstract class ImageExporter extends FileFilter
 {
-	public static ArrayList<ImageExporter> exporters = new ArrayList<ImageExporter>();
+	private static final HashMap<String, ImageExporter> exporters = new HashMap<String, ImageExporter>();
 	
-	public static void registerExporters()
+	static
 	{
-		exporters.add(new ExporterGenericImageIO("png", "PNG - Portable Network Graphics Image"));
+		add(new ExporterGenericImageIO("png", "PNG - Portable Network Graphics Image"));
 	}
 	
 	/**
@@ -47,9 +49,7 @@ public abstract class ImageExporter extends FileFilter
 	 **/
 	public abstract String getFileExtension();
 	
-	public abstract String getFileExtensionDescription();
-	
-	public abstract void export(Document document, File destination) throws IOException;
+	public abstract void save(Document document, File destination) throws IOException;
 	
 	@Override
 	public boolean accept(File f)
@@ -60,32 +60,17 @@ public abstract class ImageExporter extends FileFilter
 		return false;
 	}
 	
-	@Override
-	public String getDescription()
+	public static void add(ImageExporter exporter)
 	{
-		return getFileExtensionDescription();
+		exporters.put(exporter.getFileExtension(), exporter);
 	}
 	
 	public static ImageExporter get(String extension)
 	{
-		for(ImageExporter exporter : exporters)
-		{
-			if(exporter.getFileExtension().equalsIgnoreCase(extension))
-				return exporter;
-		}
-		
-		return null;
+		return exporters.get(extension.toLowerCase());
 	}
 	
-	public static void add(ImageExporter exporter)
-	{
-		if(exporter == null)
-			throw new IllegalArgumentException("Tried to add null exporter");
-		
-		exporters.add(exporter);
-	}
-	
-	public static void writeImage(BufferedImage image, String format, String path)
+	protected static void writeImage(BufferedImage image, String format, String path)
 	{
 		File file = new File(path);
 		
@@ -101,6 +86,14 @@ public abstract class ImageExporter extends FileFilter
 		{
 			e.printStackTrace();
 			Popup.show("Save Image", "An error occured while trying to save the image in " + format + " format to " + path + ".");
+		}
+	}
+	
+	public static void addAllExporters(WebFileChooser chooser)
+	{
+		for(ImageExporter exporter : exporters.values())
+		{
+			chooser.addChoosableFileFilter(exporter);
 		}
 	}
 }
