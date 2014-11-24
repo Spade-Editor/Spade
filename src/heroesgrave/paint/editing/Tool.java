@@ -26,6 +26,7 @@ import heroesgrave.paint.main.Input;
 import heroesgrave.paint.main.Paint;
 
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 
 import com.alee.laf.menu.WebMenuItem;
 import com.alee.laf.separator.WebSeparator;
@@ -35,22 +36,25 @@ import com.alee.managers.popup.WebPopup;
 public abstract class Tool
 {
 	public final String name;
-	protected final WebPopup menu;
+	protected final JComponent menu;
 	
 	public Tool(String name)
 	{
 		this.name = name;
 		
-		menu = new WebPopup();
+		WebPopup menu = new WebPopup();
+		
 		menu.add(new WebMenuItem(name + " Settings"));
 		menu.add(new WebSeparator());
 		menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
-		menu.setPopupStyle(PopupStyle.light);
+		menu.setPopupStyle(PopupStyle.bordered);
+		menu.setFocusable(false);
+		this.menu = menu;
 	}
 	
 	public WebPopup createOptions()
 	{
-		return menu;
+		return (WebPopup) menu;
 	}
 	
 	public abstract void onPressed(Layer layer, short x, short y, int button);

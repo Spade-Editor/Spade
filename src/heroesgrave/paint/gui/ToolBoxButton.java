@@ -94,6 +94,7 @@ public class ToolBoxButton extends WebToggleButton
 					else
 					{
 						menu.hidePopup();
+						Paint.main.gui.frame.requestFocus();
 					}
 				}
 			}

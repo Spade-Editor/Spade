@@ -23,15 +23,15 @@ package heroesgrave.paint.editing;
 import heroesgrave.paint.gui.Tools;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.main.Paint;
+import heroesgrave.utils.misc.WeblafWrapper;
 
 import java.awt.event.MouseEvent;
 
-import com.alee.laf.checkbox.WebCheckBox;
-import com.alee.laf.menu.WebMenuItem;
+import javax.swing.JCheckBox;
 
 public class Picker extends Tool
 {
-	private WebCheckBox switchPencil;
+	private JCheckBox switchPencil;
 	
 	public Picker(String name)
 	{
@@ -39,13 +39,11 @@ public class Picker extends Tool
 		
 		// XXX: WebCheckBoxMenuItem is broken.
 		
-		this.switchPencil = new WebCheckBox(" Switch to Pencil", true);
-		switchPencil.setFocusable(false);
+		this.switchPencil = WeblafWrapper.createCheckBox();
+		switchPencil.setText(" Switch to Pencil");
+		switchPencil.setSelected(true);
 		
-		WebMenuItem item = new WebMenuItem();
-		item.add(switchPencil);
-		
-		super.menu.add(item);
+		menu.add(WeblafWrapper.asMenuItem(switchPencil));
 	}
 	
 	public void onPressed(Layer layer, short x, short y, int button)

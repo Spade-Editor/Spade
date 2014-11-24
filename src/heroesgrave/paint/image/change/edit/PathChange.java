@@ -39,6 +39,32 @@ public class PathChange implements IEditChange
 		public abstract void point(RawImage image, int x, int y, int colour);
 		
 		public abstract void line(RawImage image, int x1, int y1, int x2, int y2, int colour);
+		
+		public static void lineToPoints(IPathChange path, RawImage image, int x1, int y1, int x2, int y2, int colour)
+		{
+			final int dx = Math.abs(x2 - x1);
+			final int dy = Math.abs(y2 - y1);
+			final int sx = (x1 < x2) ? 1 : -1;
+			final int sy = (y1 < y2) ? 1 : -1;
+			int err = dx - dy;
+			do
+			{
+				path.point(image, x1, y1, colour);
+				final int e2 = 2 * err;
+				if(e2 > -dy)
+				{
+					err = err - dy;
+					x1 = x1 + sx;
+				}
+				if(e2 < dx)
+				{
+					err = err + dx;
+					y1 = y1 + sy;
+				}
+			}
+			while(!(x1 == x2 && y1 == y2));
+			path.point(image, x2, y2, colour);
+		}
 	}
 	
 	protected IPathChange change;
