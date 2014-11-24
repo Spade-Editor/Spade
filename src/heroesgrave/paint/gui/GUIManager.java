@@ -53,7 +53,6 @@ import javax.swing.WindowConstants;
 
 import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.button.WebButton;
-import com.alee.laf.menu.MenuBarStyle;
 import com.alee.laf.menu.WebMenu;
 import com.alee.laf.menu.WebMenuBar;
 import com.alee.laf.menu.WebMenuItem;
@@ -73,7 +72,7 @@ public class GUIManager
 	
 	public InfoMenuBar info;
 	
-	private WebMenuBar menuBar;
+	private WebMenuBar menuBar, documentBar, infoBar;
 	
 	private WebPanel documents;
 	private WebMenu documentsDrop;
@@ -110,6 +109,10 @@ public class GUIManager
 		documents.add(new DocumentButton(doc));
 		documents.revalidate();
 		documentsDrop.add(new DocumentMenuItem(doc));
+		if(documents.getComponentCount() > 0)
+		{
+			infoBar.setVisible(true);
+		}
 	}
 	
 	public void tryRemove(final Document doc, final Callback callback)
@@ -202,15 +205,21 @@ public class GUIManager
 	{
 		initFrame();
 		initMenu();
+		
+		WebPanel centre = new WebPanel();
+		centre.setLayout(new BorderLayout());
+		
 		this.canvasPanel = new PaintCanvas(frame);
-		panel.add(canvasPanel, BorderLayout.CENTER);
+		centre.add(canvasPanel, BorderLayout.CENTER);
+		
+		Paint.main.tools.toolbox = toolBox = new ToolBox();
+		centre.add(toolBox.getToolbar(), BorderLayout.WEST);
+		
+		panel.add(centre, BorderLayout.CENTER);
+		
 		chooser = new ColourChooser();
 		layers = new LayerManager(frame);
 		about = new AboutDialog(frame);
-		
-		Paint.main.tools.toolbox = toolBox = new ToolBox();
-		panel.add(toolBox.getToolbar(), BorderLayout.WEST);
-		finish();
 		
 		chooser.addColorListener(new ColourListener()
 		{
@@ -223,6 +232,7 @@ public class GUIManager
 			}
 		});
 		
+		finish();
 		initInputs();
 	}
 	
@@ -275,8 +285,8 @@ public class GUIManager
 		
 		menuBar = Menu.createMenuBar();
 		
-		WebMenuBar documentBar = new WebMenuBar();
-		documentBar.setMenuBarStyle(MenuBarStyle.standalone);
+		documentBar = new WebMenuBar();
+		//documentBar.setMenuBarStyle(MenuBarStyle.standalone);
 		documentBar.setLayout(new BorderLayout());
 		
 		documents = new WebPanel();
@@ -313,6 +323,7 @@ public class GUIManager
 				Menu.showNewDialog();
 			}
 		});
+		
 		documentsDrop.add(new_);
 		documentsDrop.add(load);
 		documentsDrop.add(new WebSeparator());
@@ -328,7 +339,10 @@ public class GUIManager
 		
 		info = new InfoMenuBar();
 		
-		panel.add(info.createInfoMenuBar(), BorderLayout.SOUTH);
+		infoBar = info.createInfoMenuBar();
+		infoBar.setVisible(false);
+		
+		panel.add(infoBar, BorderLayout.SOUTH);
 	}
 	
 	public void removeDocument(Document doc)
@@ -366,6 +380,11 @@ public class GUIManager
 			documentsDrop.remove(toRemove);
 			documentsDrop.revalidate();
 			toRemove = null;
+		}
+		
+		if(documents.getComponentCount() == 0)
+		{
+			infoBar.setVisible(false);
 		}
 	}
 	

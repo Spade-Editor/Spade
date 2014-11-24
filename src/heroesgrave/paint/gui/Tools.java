@@ -23,8 +23,6 @@ package heroesgrave.paint.gui;
 import heroesgrave.paint.editing.Pencil;
 import heroesgrave.paint.editing.Picker;
 import heroesgrave.paint.editing.Tool;
-import heroesgrave.paint.gui.ToolBox.ToolBoxButton;
-import heroesgrave.paint.gui.ToolMenu.ToolMenuItem;
 import heroesgrave.paint.main.Paint;
 
 import javax.swing.JMenu;

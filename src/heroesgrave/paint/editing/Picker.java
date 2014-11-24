@@ -26,35 +26,26 @@ import heroesgrave.paint.main.Paint;
 
 import java.awt.event.MouseEvent;
 
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.SpringLayout;
+import com.alee.laf.checkbox.WebCheckBox;
+import com.alee.laf.menu.WebMenuItem;
 
 public class Picker extends Tool
 {
-	private JCheckBox switchPencil;
+	private WebCheckBox switchPencil;
 	
 	public Picker(String name)
 	{
 		super(name);
 		
-		JLabel label = (JLabel) menu.getComponent(0);
+		// XXX: WebCheckBoxMenuItem is broken.
 		
-		SpringLayout layout = new SpringLayout();
-		menu.setLayout(layout);
-		
-		this.switchPencil = new JCheckBox("Switch to Pencil", true);
+		this.switchPencil = new WebCheckBox(" Switch to Pencil", true);
 		switchPencil.setFocusable(false);
 		
-		menu.add(switchPencil);
+		WebMenuItem item = new WebMenuItem();
+		item.add(switchPencil);
 		
-		layout.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, menu);
-		layout.putConstraint(SpringLayout.WEST, switchPencil, 20, SpringLayout.EAST, label);
-		layout.putConstraint(SpringLayout.EAST, menu, 0, SpringLayout.EAST, switchPencil);
-		
-		layout.putConstraint(SpringLayout.NORTH, switchPencil, -2, SpringLayout.NORTH, menu);
-		
-		layout.putConstraint(SpringLayout.SOUTH, menu, 0, SpringLayout.SOUTH, label);
+		super.menu.add(item);
 	}
 	
 	public void onPressed(Layer layer, short x, short y, int button)

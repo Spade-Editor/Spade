@@ -21,7 +21,6 @@
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.editing.Effect;
-import heroesgrave.paint.gui.ToolMenu.EffectMenuItem;
 
 import com.alee.laf.menu.WebMenu;
 

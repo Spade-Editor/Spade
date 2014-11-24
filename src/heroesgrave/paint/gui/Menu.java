@@ -43,7 +43,6 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.text.AbstractDocument;
 
 import com.alee.laf.filechooser.WebFileChooser;
-import com.alee.laf.menu.MenuBarStyle;
 import com.alee.laf.menu.WebMenu;
 import com.alee.laf.menu.WebMenuBar;
 import com.alee.laf.menu.WebMenuItem;
@@ -61,7 +60,7 @@ public class Menu
 	{
 		// M.E.I. MenuBar
 		WebMenuBar menuBar = new WebMenuBar();
-		menuBar.setMenuBarStyle(MenuBarStyle.standalone);
+		//menuBar.setMenuBarStyle(MenuBarStyle.standalone);
 		
 		// Main Menus
 		menuBar.add(createFileMenu());

@@ -165,13 +165,16 @@ public class Paint
 		return effectMap.get(Character.toLowerCase(key));
 	}
 	
-	public static void setTool(Tool tool)
+	public static boolean setTool(Tool tool)
 	{
+		if(main.currentTool == tool)
+			return false;
 		Input.CTRL = false;
 		Input.ALT = false;
 		Input.SHIFT = false;
 		main.currentTool = tool;
 		main.tools.toolbox.setSelected(tool);
+		return true;
 	}
 	
 	public static boolean save(Document doc)
@@ -342,9 +345,9 @@ public class Paint
 		{
 			System.out.println("Picked up argument: " + arg);
 			
-			// Print version string and exit.
 			if(arg.equalsIgnoreCase("-v"))
 			{
+				// Print version string and exit.
 				System.out.println(VERSION);
 				System.exit(0);
 			}

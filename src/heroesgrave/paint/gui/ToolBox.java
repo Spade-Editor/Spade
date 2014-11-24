@@ -21,28 +21,18 @@
 package heroesgrave.paint.gui;
 
 import heroesgrave.paint.editing.Tool;
-import heroesgrave.paint.main.Paint;
 
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.URL;
 import java.util.Enumeration;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 
-import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.toolbar.ToolbarStyle;
 import com.alee.laf.toolbar.WebToolBar;
 
 public class ToolBox
 {
-	private final static int BUTTON_SIZE = 32;
+	final static int BUTTON_SIZE = 32;
 	
 	//private JDialog dialog;
 	private WebToolBar toolbar;
@@ -74,55 +64,6 @@ public class ToolBox
 		return toolbar;
 	}
 	
-	@SuppressWarnings("serial")
-	public static class ToolBoxButton extends WebToggleButton
-	{
-		private Tool tool;
-		
-		public ToolBoxButton(String name, Tool tool)
-		{
-			super();
-			setPreferredSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
-			setMargin(new Insets(0, 0, 0, 0));
-			setToolTipText(name);
-			setFocusable(false);
-			
-			this.tool = tool;
-			// TRY to load the icon!
-			try
-			{
-				URL url = tool.getClass().getResource("/res/icons/tools/" + name + ".png");
-				
-				if(url != null)
-				{
-					this.setIcon(new ImageIcon(ImageIO.read(url)));
-				}
-				else
-				{
-					this.setIcon(new ImageIcon(ImageIO.read(Paint.questionMarkURL)));
-				}
-				
-			}
-			catch(IOException e1)
-			{
-				System.err.println("Error: Tool '" + name + "' is missing an icon!");
-			}
-			
-			this.addActionListener(new ActionListener()
-			{
-				public void actionPerformed(ActionEvent e)
-				{
-					Paint.setTool(((ToolBoxButton) e.getSource()).getTool());
-				}
-			});
-		}
-		
-		public Tool getTool()
-		{
-			return tool;
-		}
-	}
-	
 	public void setSelected(Tool tool)
 	{
 		Enumeration<AbstractButton> e = buttonGroup.getElements();
@@ -130,7 +71,7 @@ public class ToolBox
 		while(e.hasMoreElements())
 		{
 			ToolBoxButton b = (ToolBoxButton) e.nextElement();
-			if(b.tool == tool)
+			if(b.getTool() == tool)
 			{
 				b.setSelected(true);
 				return;
