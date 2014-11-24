@@ -22,85 +22,60 @@ package heroesgrave.paint.gui;
 
 import heroesgrave.utils.math.MathUtils;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+
+import com.alee.laf.menu.MenuBarStyle;
+import com.alee.laf.menu.WebMenu;
+import com.alee.laf.menu.WebMenuBar;
 
 public class InfoMenuBar
 {
-	private JPanel tool;
-	private JLabel scale, saved, size, coords;
+	private WebMenu scale, saved, size, coords;
 	private MemoryWatcher memoryWatcher;
 	
-	public JComponent createInfoMenuBar()
+	public WebMenuBar createInfoMenuBar()
 	{
-		JComponent menuBar = new JMenuBar();
+		WebMenuBar menuBar = new WebMenuBar();
+		menuBar.setMenuBarStyle(MenuBarStyle.standalone);
 		
-		SpringLayout layout = new SpringLayout();
-		menuBar.setLayout(layout);
+		WebMenuBar left = new WebMenuBar();
+		left.setUndecorated(true);
+		left.setLayout(new GridLayout(1, 0));
 		
-		scale = new JLabel("Scale: 100%");
-		saved = new JLabel("Saved: Yes");
-		size = new JLabel();
-		coords = new JLabel();
+		left.setBackground(PaintCanvas.TRANSPARENT);
+		
+		scale = new WebMenu("");
+		saved = new WebMenu("");
+		size = new WebMenu("");
+		coords = new WebMenu("");
+		
+		left.add(new WebMenu());
+		left.add(coords);
+		left.add(size);
+		left.add(scale);
+		
+		left.add(saved);
+		
+		menuBar.setLayout(new BorderLayout());
+		menuBar.add(left, BorderLayout.CENTER);
 		
 		// Check if the MemoryWatcher should be activated.
 		if(System.getProperty("DmemoryWatcherFlag") != null)
 		{
 			memoryWatcher = new MemoryWatcher();
-		}
-		
-		scale.setHorizontalAlignment(SwingConstants.CENTER);
-		saved.setHorizontalAlignment(SwingConstants.CENTER);
-		size.setHorizontalAlignment(SwingConstants.RIGHT);
-		coords.setHorizontalAlignment(SwingConstants.RIGHT);
-		
-		tool = new JPanel();
-		tool.setOpaque(false);
-		
-		JPanel spacer = new JPanel();
-		spacer.setOpaque(false);
-		
-		menuBar.add(scale);
-		menuBar.add(saved);
-		menuBar.add(size);
-		menuBar.add(coords);
-		menuBar.add(tool);
-		menuBar.add(spacer);
-		
-		layout.putConstraint(SpringLayout.WEST, scale, 20, SpringLayout.WEST, menuBar);
-		layout.putConstraint(SpringLayout.WEST, saved, 40, SpringLayout.EAST, scale);
-		layout.putConstraint(SpringLayout.WEST, tool, 40, SpringLayout.EAST, saved);
-		layout.putConstraint(SpringLayout.WEST, coords, 40, SpringLayout.EAST, spacer);
-		layout.putConstraint(SpringLayout.WEST, size, 40, SpringLayout.EAST, coords);
-		//layout.putConstraint(SpringLayout.WEST, spacer, 0, SpringLayout.EAST, coords);
-		layout.putConstraint(SpringLayout.EAST, menuBar, 20, SpringLayout.EAST, size);
-		
-		// Check if the memory-watcher is not null (eg: Activated or not), then add constraints.
-		if(memoryWatcher != null)
-			layout.putConstraint(SpringLayout.EAST, memoryWatcher, 0, SpringLayout.EAST, menuBar);
-		
-		layout.putConstraint(SpringLayout.NORTH, scale, 5, SpringLayout.NORTH, menuBar);
-		layout.putConstraint(SpringLayout.NORTH, saved, 5, SpringLayout.NORTH, menuBar);
-		layout.putConstraint(SpringLayout.NORTH, size, 5, SpringLayout.NORTH, menuBar);
-		layout.putConstraint(SpringLayout.NORTH, coords, 5, SpringLayout.NORTH, menuBar);
-		
-		layout.putConstraint(SpringLayout.SOUTH, menuBar, 7, SpringLayout.SOUTH, scale);
-		
-		if(memoryWatcher != null)
-		{
-			menuBar.add(memoryWatcher);
+			menuBar.add(memoryWatcher, BorderLayout.EAST);
 		}
 		
 		return menuBar;
 	}
 	
-	public JPanel getSpace()
+	public void clear()
 	{
-		return tool;
+		scale.setText("");
+		saved.setText("");
+		size.setText("");
+		coords.setText("");
 	}
 	
 	public void setScale(float scale)
@@ -120,12 +95,6 @@ public class InfoMenuBar
 	
 	public void setMouseCoords(int x, int y)
 	{
-		coords.setText("[" + x + ", " + y + "]");
-	}
-	
-	public void setMouseCoords(int x, int y, int newX, int newY, boolean selecting)
-	{
-		coords.setText("[" + x + ", " + y + "]" + " --> " + "[" + newX + ", " + newY + "]"
-				+ (selecting ? " (" + Math.abs(newX - x) + " x " + Math.abs(newY - y) + ")" : ""));
+		coords.setText("(" + x + ", " + y + ")");
 	}
 }

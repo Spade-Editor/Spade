@@ -22,6 +22,8 @@ package heroesgrave.paint.editing;
 
 import heroesgrave.paint.image.Layer;
 
+import java.net.URL;
+
 public abstract class Effect
 {
 	public final String name;
@@ -32,4 +34,9 @@ public abstract class Effect
 	}
 	
 	public abstract void perform(Layer layer);
+	
+	public URL getResource()
+	{
+		return this.getClass().getResource("/res/icons/effects/" + name + ".png");
+	}
 }

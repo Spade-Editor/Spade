@@ -94,7 +94,7 @@ public class Paint
 	
 	private static HashMap<Character, Effect> effectMap = new HashMap<Character, Effect>();
 	
-	public void launch(File toOpen)
+	public void launch(final ArrayList<File> toOpen)
 	{
 		pluginManager = PluginManager.instance;
 		
@@ -110,16 +110,6 @@ public class Paint
 		tools = new Tools();
 		effects = new Effects();
 		
-		final Document document;
-		if(toOpen != null)
-		{
-			document = new Document(toOpen);
-		}
-		else
-		{
-			document = null;
-		}
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
@@ -134,13 +124,16 @@ public class Paint
 				effects.init(); // Doesn't actually do anything
 				pluginManager.loadPlugins();
 				setTool(currentTool);
-				if(document != null)
+				for(File f : toOpen)
 				{
-					Paint.addDocument(document);
-					Paint.setDocument(document);
+					System.out.println("Opening File " + f.getPath());
+					Paint.addDocument(new Document(f));
 				}
+				ArrayList<Document> documents = gui.getDocuments();
+				if(!documents.isEmpty())
+					Paint.setDocument(documents.get(0));
 				
-				Paint.main.gui.frame.requestFocus();
+				gui.frame.requestFocus();
 			}
 		});
 	}
@@ -340,71 +333,64 @@ public class Paint
 	{
 		IOUtils.setMainClass(Paint.class);
 		
-		File open = null;
-		
-		// Check for a file argument
-		if(args.length >= 1)
-		{
-			File f = new File(args[0]);
-			
-			if(f.exists() && f.isFile() && !f.isHidden())
-			{
-				open = f;
-			}
-		}
+		ArrayList<File> open = new ArrayList<File>();
 		
 		System.setProperty("DlafClassName", "");
 		
 		// Go through ALL the arguments and...
-		for(String STR : args)
+		for(String arg : args)
 		{
+			System.out.println("Picked up argument: " + arg);
+			
 			// Print version string and exit.
-			if(STR.equalsIgnoreCase("-v"))
+			if(arg.equalsIgnoreCase("-v"))
 			{
 				System.out.println(VERSION);
 				System.exit(0);
 			}
-			
-			// Print detailed version info and exit.
-			if(STR.equalsIgnoreCase("--version"))
+			else if(arg.equalsIgnoreCase("--version"))
 			{
+				// Print detailed version info and exit.
 				System.out.println("Paint.JAVA v" + VERSION);
 				System.out.println("Version Released: " + RELEASED);
 				System.out.println("Built Type: " + BUILD_TYPE);
 				System.exit(0);
 			}
-			
-			// Print the absolute path of the jar and exit.
-			if(STR.equalsIgnoreCase("--print-jar-path"))
+			else if(arg.equalsIgnoreCase("--print-jar-path"))
 			{
+				// Print the absolute path of the jar and exit.
 				System.out.println(IOUtils.jarPath());
 				System.exit(0);
 			}
-			
-			// ...If the arguments contain the DmemoryWatcherFlag flag, set the property to true to enable the MemoryWatcher.
-			if(STR.equalsIgnoreCase("--show-memory-watcher"))
+			else if(arg.equalsIgnoreCase("--show-memory-watcher"))
 			{
+				// ...If the arguments contain the DmemoryWatcherFlag flag, set the property to true to enable the MemoryWatcher.
 				System.setProperty("DmemoryWatcherFlag", "true");
 			}
-			
-			if(STR.startsWith("--look-and-feel="))
+			else if(arg.startsWith("--look-and-feel="))
 			{
-				System.setProperty("DlafClassName", STR.substring(16));
+				System.setProperty("DlafClassName", arg.substring(16));
 			}
-			
-			if(STR.equals("--debug"))
+			else if(arg.equals("--debug"))
 			{
 				debug = true;
 			}
-			
-			if(STR.equals("--no-global-plugins"))
+			else if(arg.equals("--no-global-plugins"))
 			{
 				globalPlugins = false;
 			}
-			
-			if(STR.equals("--no-local-plugins"))
+			else if(arg.equals("--no-local-plugins"))
 			{
 				localPlugins = false;
+			}
+			else
+			{
+				File f = new File(arg);
+				
+				if(f.exists() && f.isFile() && !f.isHidden())
+				{
+					open.add(f);
+				}
 			}
 			
 			/// XXX: Expand here by adding more debugging options and system flags!

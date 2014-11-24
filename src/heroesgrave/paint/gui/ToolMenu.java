@@ -115,7 +115,7 @@ public class ToolMenu
 			// TRY to load the icon!
 			try
 			{
-				URL url = effect.getClass().getResource("/res/icons/effects/" + name + ".png");
+				URL url = effect.getResource();
 				
 				if(url != null)
 				{

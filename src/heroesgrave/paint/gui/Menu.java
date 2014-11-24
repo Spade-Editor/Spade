@@ -48,6 +48,7 @@ import com.alee.laf.menu.WebMenu;
 import com.alee.laf.menu.WebMenuBar;
 import com.alee.laf.menu.WebMenuItem;
 import com.alee.laf.rootpane.WebDialog;
+import com.alee.laf.separator.WebSeparator;
 
 public class Menu
 {
@@ -164,8 +165,10 @@ public class Menu
 		
 		file.add(newFile);
 		file.add(load);
+		file.add(new WebSeparator());
 		file.add(save);
 		file.add(saveAs);
+		file.add(new WebSeparator());
 		file.add(exit);
 		
 		newFile.addActionListener(new ActionListener()
@@ -461,6 +464,7 @@ public class Menu
 		
 		view.add(zoomIn);
 		view.add(zoomOut);
+		view.add(new WebSeparator());
 		view.add(grid);
 		view.add(darkDraw);
 		

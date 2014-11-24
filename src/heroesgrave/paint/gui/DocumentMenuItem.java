@@ -18,35 +18,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.paint.editing;
+package heroesgrave.paint.gui;
 
-import heroesgrave.paint.image.Layer;
-import heroesgrave.paint.image.change.SingleChange;
-import heroesgrave.paint.plugin.Plugin;
+import heroesgrave.paint.image.Document;
+import heroesgrave.paint.main.Paint;
+import heroesgrave.utils.io.IOUtils;
 
-import java.net.URL;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
-public class SimpleEffect extends Effect
+import com.alee.laf.menu.WebMenuItem;
+
+@SuppressWarnings("serial")
+public class DocumentMenuItem extends WebMenuItem implements ActionListener
 {
-	private SingleChange change;
-	private Class<? extends Plugin> class_;
+	protected Document doc;
 	
-	public SimpleEffect(Class<? extends Plugin> class_, String name, SingleChange change)
+	public DocumentMenuItem(Document doc)
 	{
-		super(name);
-		this.class_ = class_;
-		this.change = change;
+		super("Untitled");
+		this.doc = doc;
+		this.addActionListener(this);
+		checkName();
 	}
 	
 	@Override
-	public void perform(Layer layer)
+	public void actionPerformed(ActionEvent e)
 	{
-		layer.addChange(change);
+		Paint.setDocument(doc);
 	}
 	
-	@Override
-	public URL getResource()
+	public void checkName()
 	{
-		return this.class_.getResource("/res/icons/effects/" + name + ".png");
+		File f = doc.getFile();
+		String s;
+		if(f != null)
+		{
+			s = IOUtils.relativeFrom(System.getProperty("user.dir"), f.getPath());
+		}
+		else
+		{
+			s = "Untitled";
+		}
+		this.setText(s);
 	}
 }

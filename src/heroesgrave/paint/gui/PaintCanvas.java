@@ -76,8 +76,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	float cam_positionY;
 	
 	// Controls
-	int mouseLastDragPosX;
-	int mouseLastDragPosY;
+	int mouseX, mouseY, mouseLastDragPosX, mouseLastDragPosY;
 	int lastButton;
 	
 	// Paint
@@ -240,6 +239,9 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			Point2D p = this.transformCanvasPointToImagePoint(e.getPoint());
 			short x = (short) p.getX();
 			short y = (short) p.getY();
+			mouseX = x;
+			mouseY = y;
+			Paint.main.gui.checkDynamicInfo();
 			Paint.main.currentTool.whilePressed(document.getCurrent(), x, y, lastButton);
 		}
 		
@@ -264,14 +266,14 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	{
 		if(document == null)
 			return;
-		if(lastButton == MouseEvent.BUTTON1 || lastButton == MouseEvent.BUTTON3)
-		{
-			Point _p = e.getPoint();
-			Point2D p = this.transformCanvasPointToImagePoint(new Point2D.Float(_p.x, _p.y));
-			short x = (short) p.getX();
-			short y = (short) p.getY();
-			Paint.main.currentTool.whileReleased(document.getCurrent(), x, y, lastButton);
-		}
+		Point _p = e.getPoint();
+		Point2D p = this.transformCanvasPointToImagePoint(new Point2D.Float(_p.x, _p.y));
+		short x = (short) p.getX();
+		short y = (short) p.getY();
+		mouseX = x;
+		mouseY = y;
+		Paint.main.gui.checkDynamicInfo();
+		Paint.main.currentTool.whileReleased(document.getCurrent(), x, y, lastButton);
 	}
 	
 	@Override
@@ -289,6 +291,9 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			Point2D p = this.transformCanvasPointToImagePoint(new Point2D.Float(_p.x, _p.y));
 			short x = (short) p.getX();
 			short y = (short) p.getY();
+			mouseX = x;
+			mouseY = y;
+			Paint.main.gui.checkDynamicInfo();
 			Paint.main.currentTool.onPressed(document.getCurrent(), x, y, e.getButton());
 		}
 	}
@@ -304,6 +309,9 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			Point2D p = this.transformCanvasPointToImagePoint(new Point2D.Float(_p.x, _p.y));
 			short x = (short) p.getX();
 			short y = (short) p.getY();
+			mouseX = x;
+			mouseY = y;
+			Paint.main.gui.checkDynamicInfo();
 			Paint.main.currentTool.onReleased(document.getCurrent(), x, y, e.getButton());
 		}
 		lastButton = 0;
@@ -345,7 +353,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());
 		}
 		
-		if(image == null)
+		if(document == null)
 			return;
 		
 		AffineTransform Tx = new AffineTransform();
@@ -528,6 +536,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		this.cam_positionX = image.getWidth() / 2;
 		this.cam_positionY = image.getHeight() / 2;
 		this.repaint();
+		Paint.main.gui.info.setSize(width, height);
 	}
 	
 	public void setDocument(Document document)
@@ -550,6 +559,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			this.previewRaw = RawImage.unwrapBufferedImage(preview);
 			this.cam_positionX = image.getWidth() / 2;
 			this.cam_positionY = image.getHeight() / 2;
+			Paint.main.gui.checkDynamicInfo();
 		}
 		this.repaint();
 	}
@@ -559,6 +569,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		this.cam_zoom = scale;
 		this.updateBG();
 		this.repaint();
+		Paint.main.gui.checkDynamicInfo();
 	}
 	
 	public final Point2D.Float transformCanvasPointToImagePoint(Point2D in)

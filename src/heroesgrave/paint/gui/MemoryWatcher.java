@@ -34,13 +34,9 @@ import javax.swing.JProgressBar;
  * This class is a simple MemoryWatcher.<br>
  * It consists solely of a ProgressBar that displays how much memory is used by the Application.
  **/
+@SuppressWarnings("serial")
 public class MemoryWatcher extends JPanel implements Runnable
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8135215618742759998L;
-	
 	/**
 	 * The Memory-Watcher Thread Instance
 	 **/
@@ -68,10 +64,11 @@ public class MemoryWatcher extends JPanel implements Runnable
 				System.gc();
 			}
 		});
-		PB.setToolTipText("<html><body><b>Memory Display</b><br>Display's the state of the memory in the Application.<br>Click to run the garbage-Collector!</body></html>");
+		PB.setToolTipText("<html><body><b>Memory Display</b><br>Display's the state of the memory in the Application.<br>Click to run the Garbage-Collector</body></html>");
 		
 		// Add Progressbar to this JPanel
 		this.add(PB, BorderLayout.CENTER);
+		this.setBackground(PaintCanvas.TRANSPARENT);
 		
 		// Create the Memory-Watcher Thread
 		THIS = new Thread(this);
@@ -88,7 +85,6 @@ public class MemoryWatcher extends JPanel implements Runnable
 	@Override
 	public void run()
 	{
-		
 		while(!Thread.interrupted())
 		{
 			// get info

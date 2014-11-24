@@ -22,7 +22,6 @@ package heroesgrave.paint.gui;
 
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.main.Paint;
-import heroesgrave.utils.io.IOUtils;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,7 +55,7 @@ public class DocumentButton extends WebButton implements ActionListener
 		String s;
 		if(f != null)
 		{
-			s = IOUtils.relativeFrom(System.getProperty("user.dir"), f.getPath());
+			s = f.getName();
 		}
 		else
 		{

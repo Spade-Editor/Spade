@@ -113,7 +113,7 @@ public abstract class ImageImporter extends FileFilter
 			}
 		}
 		else
-			throw new RuntimeException("The resource \"" + path + "\" was missing!");
+			throw new RuntimeException("The image \"" + path + "\" was missing!");
 	}
 	
 	public static void addAllImporters(WebFileChooser chooser)

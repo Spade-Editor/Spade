@@ -54,11 +54,14 @@ import javax.swing.WindowConstants;
 import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.button.WebButton;
 import com.alee.laf.menu.MenuBarStyle;
+import com.alee.laf.menu.WebMenu;
 import com.alee.laf.menu.WebMenuBar;
+import com.alee.laf.menu.WebMenuItem;
 import com.alee.laf.panel.WebPanel;
 import com.alee.laf.rootpane.WebDialog;
 import com.alee.laf.rootpane.WebFrame;
 import com.alee.laf.scroll.WebScrollPane;
+import com.alee.laf.separator.WebSeparator;
 
 public class GUIManager
 {
@@ -68,14 +71,16 @@ public class GUIManager
 	private WebPanel menus;
 	public PaintCanvas canvasPanel;
 	
+	public InfoMenuBar info;
+	
 	private WebMenuBar menuBar;
 	
 	private WebPanel documents;
+	private WebMenu documentsDrop;
+	
 	public WebScrollPane scroll;
 	public ColourChooser chooser;
 	public LayerManager layers;
-	
-	public InfoMenuBar info;
 	
 	public ToolBox toolBox;
 	
@@ -102,9 +107,9 @@ public class GUIManager
 	
 	public void addDocument(Document doc)
 	{
-		DocumentButton b = new DocumentButton(doc);
-		documents.add(b);
+		documents.add(new DocumentButton(doc));
 		documents.revalidate();
+		documentsDrop.add(new DocumentMenuItem(doc));
 	}
 	
 	public void tryRemove(final Document doc, final Callback callback)
@@ -278,6 +283,8 @@ public class GUIManager
 		documents.setBackground(PaintCanvas.TRANSPARENT);
 		documents.setLayout(new BoxLayout(documents, BoxLayout.X_AXIS));
 		
+		documentsDrop = new WebMenu(GUIManager.getIcon("save"));
+		
 		WebButton button = new WebButton(GUIManager.getIcon("exit"));
 		button.addActionListener(new ActionListener()
 		{
@@ -288,18 +295,45 @@ public class GUIManager
 		});
 		button.setFocusable(false);
 		
-		documentBar.add(documents, BorderLayout.WEST);
+		WebMenuItem load = new WebMenuItem("Open", GUIManager.getIcon("open"));
+		load.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				Menu.showOpenMenu();
+			}
+		});
+		WebMenuItem new_ = new WebMenuItem("New", GUIManager.getIcon("new"));
+		new_.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				Menu.showNewDialog();
+			}
+		});
+		documentsDrop.add(new_);
+		documentsDrop.add(load);
+		documentsDrop.add(new WebSeparator());
+		
+		documentBar.add(documentsDrop, BorderLayout.WEST);
+		documentBar.add(documents, BorderLayout.CENTER);
 		documentBar.add(button, BorderLayout.EAST);
 		
 		menus.add(menuBar, BorderLayout.NORTH);
 		menus.add(documentBar, BorderLayout.CENTER);
 		
 		panel.add(menus, BorderLayout.NORTH);
+		
+		info = new InfoMenuBar();
+		
+		panel.add(info.createInfoMenuBar(), BorderLayout.SOUTH);
 	}
 	
 	public void removeDocument(Document doc)
 	{
-		DocumentButton toRemove = null;
+		Component toRemove = null;
 		for(Component c : documents.getComponents())
 		{
 			DocumentButton b = (DocumentButton) c;
@@ -309,19 +343,46 @@ public class GUIManager
 				break;
 			}
 		}
-		if(toRemove == null)
-			return;
-		documents.remove(toRemove);
-		documents.revalidate();
+		if(toRemove != null)
+		{
+			documents.remove(toRemove);
+			documents.revalidate();
+			toRemove = null;
+		}
+		
+		for(Component c : documentsDrop.getMenuComponents())
+		{
+			if(c.getClass() == DocumentMenuItem.class)
+			{
+				if(((DocumentMenuItem) c).doc == doc)
+				{
+					toRemove = c;
+					break;
+				}
+			}
+		}
+		if(toRemove != null)
+		{
+			documentsDrop.remove(toRemove);
+			documentsDrop.revalidate();
+			toRemove = null;
+		}
 	}
 	
 	public void checkButtonNames()
 	{
+		info.setSaved(Paint.getDocument().saved());
 		for(Component c : documents.getComponents())
 		{
 			DocumentButton b = (DocumentButton) c;
 			b.checkName();
 		}
+	}
+	
+	public void checkDynamicInfo()
+	{
+		info.setScale(canvasPanel.getScale());
+		info.setMouseCoords(canvasPanel.mouseX, canvasPanel.mouseY);
 	}
 	
 	public void repaint()
@@ -335,6 +396,8 @@ public class GUIManager
 		layers.setDocument(document);
 		if(document != null)
 		{
+			info.setSize(document.getWidth(), document.getHeight());
+			info.setSaved(document.saved());
 			document.reconstructFlatmap();
 			if(document.getFile() != null)
 			{
@@ -348,7 +411,9 @@ public class GUIManager
 		else
 		{
 			setTitle("Paint.JAVA");
+			info.clear();
 		}
+		DocumentButton select = null;
 		// Set selected button.
 		for(Component c : documents.getComponents())
 		{
@@ -357,6 +422,7 @@ public class GUIManager
 			{
 				b.setSelected(true);
 				b.checkName();
+				select = b;
 			}
 			else
 			{
@@ -364,6 +430,8 @@ public class GUIManager
 				b.checkName();
 			}
 		}
+		if(select != null)
+			documents.add(select, 0);
 		
 		frame.repaint();
 	}
