@@ -98,7 +98,6 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		try
 		{
 			backgroundLight = ImageIO.read(PaintCanvas.class.getResource("/res/tbg.png"));
-			
 			backgroundDark = ImageIO.read(PaintCanvas.class.getResource("/res/tbgd.png"));
 		}
 		catch(IOException e)
@@ -514,7 +513,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			int right = Math.min(tx + this.getWidth() / 2, image.getWidth() * step);
 			
 			g.setColor(Color.gray);
-			if(cam_zoom > 16)
+			if(cam_zoom >= 16)
 				g.setStroke(new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, 1.0f, new float[]{cam_zoom * 0.25f, cam_zoom * 0.25f},
 						cam_zoom * 0.125f));
 			// Vertical

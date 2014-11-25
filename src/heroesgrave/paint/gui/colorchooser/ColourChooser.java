@@ -26,6 +26,7 @@ import heroesgrave.paint.gui.GUIManager;
 import heroesgrave.paint.gui.colorchooser.PalettePanel.PaletteMode;
 import heroesgrave.paint.gui.colorchooser.event.ColourEventBroadcaster;
 import heroesgrave.paint.gui.colorchooser.event.ColourListener;
+import heroesgrave.utils.math.MathUtils;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
@@ -257,6 +258,17 @@ public class ColourChooser extends WebDialog implements ColourEventBroadcaster
 			switchVisible();
 		}
 		return mode != 0;
+	}
+	
+	public void setMode(int mode)
+	{
+		this.mode = MathUtils.clamp(mode, 0, MODE_COUNT);
+		switchVisible();
+	}
+	
+	public int getMode()
+	{
+		return this.mode;
 	}
 	
 	public void switchVisible()

@@ -36,6 +36,7 @@ public class UserPreferences
 	private static final String WINDOW_MAXIMIZED = "window.maximized";
 	private static final String COLOUR_PICKER_X = "colour.x";
 	private static final String COLOUR_PICKER_Y = "colour.y";
+	private static final String COLOUR_PICKER_MODE = "colour.mode";
 	private static final String COLOUR_PICKER_VISIBLE = "colour.visible";
 	private static final String LAYERS_X = "layers.x";
 	private static final String LAYERS_Y = "layers.y";
@@ -46,7 +47,7 @@ public class UserPreferences
 	
 	private static int windowWidth, windowHeight;
 	private static int layersX, layersY, layersWidth, layersHeight;
-	private static int colourPickerX, colourPickerY;
+	private static int colourPickerX, colourPickerY, colourPickerMode;
 	
 	public static void loadPrefs(JFrame frame, ColourChooser chooser, LayerManager layers)
 	{
@@ -60,6 +61,7 @@ public class UserPreferences
 		windowHeight = prefs.getInt(WINDOW_HEIGHT, 600);
 		colourPickerX = prefs.getInt(COLOUR_PICKER_X, 0);
 		colourPickerY = prefs.getInt(COLOUR_PICKER_Y, 0);
+		colourPickerMode = prefs.getInt(COLOUR_PICKER_MODE, 2);
 		layersX = prefs.getInt(LAYERS_X, 0);
 		layersY = prefs.getInt(LAYERS_Y, 0);
 		layersWidth = prefs.getInt(LAYERS_WIDTH, 200);
@@ -69,6 +71,7 @@ public class UserPreferences
 		frame.setLocationRelativeTo(null);
 		
 		chooser.setLocation(colourPickerX, colourPickerY);
+		chooser.setMode(colourPickerMode);
 		if(prefs.getBoolean(COLOUR_PICKER_VISIBLE, false))
 		{
 			chooser.setVisible(true);
@@ -98,8 +101,10 @@ public class UserPreferences
 		}
 		colourPickerX = chooser.getX();
 		colourPickerY = chooser.getY();
+		colourPickerMode = chooser.getMode();
 		prefs.putInt(COLOUR_PICKER_X, colourPickerX);
 		prefs.putInt(COLOUR_PICKER_Y, colourPickerY);
+		prefs.putInt(COLOUR_PICKER_MODE, colourPickerMode);
 		prefs.putBoolean(COLOUR_PICKER_VISIBLE, chooser.isVisible());
 		
 		layersX = layers.dialog.getX();

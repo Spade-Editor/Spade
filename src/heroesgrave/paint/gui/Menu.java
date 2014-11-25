@@ -420,14 +420,22 @@ public class Menu
 		WebMenuItem zoomIn = new WebMenuItem("Zoom In (Ctrl++)", GUIManager.getIcon("zoom_inc"));
 		WebMenuItem zoomOut = new WebMenuItem("Zoom Out (Ctrl+-)", GUIManager.getIcon("zoom_dec"));
 		WebMenuItem grid = new WebMenuItem("Toggle Grid (Ctrl+G)", GUIManager.getIcon("toggle_grid"));
-		WebMenuItem darkDraw = new WebMenuItem("Toggle Dark Background", GUIManager.getIcon("toggle_dark_bg"));
+		WebMenuItem darkDraw = new WebMenuItem("Toggle Dark Background (Ctrl+B)", GUIManager.getIcon("toggle_dark_bg"));
 		
 		zoomIn.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				//Paint.main.gui.canvas.incZoom();
+				float zoom = Paint.main.gui.canvasPanel.getScale();
+				if(zoom < 1f)
+				{
+					Paint.main.gui.canvasPanel.setScale(Math.min(zoom * 2f, 1f));
+				}
+				else
+				{
+					Paint.main.gui.canvasPanel.setScale(Math.min(zoom + 2f, 64f));
+				}
 			}
 		});
 		
@@ -436,7 +444,15 @@ public class Menu
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				//Paint.main.gui.canvas.decZoom();
+				float zoom = Paint.main.gui.canvasPanel.getScale();
+				if(zoom <= 1f)
+				{
+					Paint.main.gui.canvasPanel.setScale(Math.max(zoom / 2f, 1 / 32f));
+				}
+				else
+				{
+					Paint.main.gui.canvasPanel.setScale(Math.max(zoom - 2f, 1f));
+				}
 			}
 		});
 		
