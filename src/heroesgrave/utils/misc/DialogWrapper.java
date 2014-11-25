@@ -1,10 +1,10 @@
 // {LICENSE}
 /*
- * Copyright 2013-2014 HeroesGrave and other Paint.JAVA developers.
+ * Copyright 2013-2014 HeroesGrave and other Spade developers.
  * 
- * This file is part of Paint.JAVA
+ * This file is part of Spade
  * 
- * Paint.JAVA is free software: you can redistribute it and/or modify
+ * Spade is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -20,7 +20,7 @@
 
 package heroesgrave.utils.misc;
 
-import heroesgrave.paint.main.Paint;
+import heroesgrave.spade.main.Spade;
 
 import javax.swing.JDialog;
 
@@ -32,11 +32,11 @@ public class DialogWrapper
 	
 	public DialogWrapper(String title)
 	{
-		this.dialog = new WebDialog(Paint.main.gui.frame, title);
+		this.dialog = new WebDialog(Spade.main.gui.frame, title);
 	}
 	
 	public void centre()
 	{
-		((WebDialog) dialog).center(Paint.main.gui.frame);
+		((WebDialog) dialog).center(Spade.main.gui.frame);
 	}
 }
