@@ -64,7 +64,7 @@ public class Paint
 	
 	public static final String VERSION_STRING = "0.15-Dev";
 	public static final Version VERSION = Version.parse(VERSION_STRING);
-	public static final String RELEASED = "23-11-2014";
+	public static final String RELEASED = "25-11-2014";
 	
 	/* Add/Remove the stars on the following lines to change the build type string.
 	//*/public static final String BUILD_TYPE = "Development";
@@ -73,7 +73,7 @@ public class Paint
 	//*/public static final String BUILD_TYPE = "Release Candidate";
 	//*/public static final String BUILD_TYPE = "Stable";
 	
-	public static boolean debug, localPlugins = true, globalPlugins = true;
+	public static boolean debug, debug_timing, localPlugins = true, globalPlugins = true;
 	public static Paint main = new Paint();
 	public static URL questionMarkURL = Paint.class.getResource("/res/icons/questionmark.png");
 	
@@ -377,6 +377,10 @@ public class Paint
 			else if(arg.equals("--debug"))
 			{
 				debug = true;
+			}
+			else if(arg.equals("--debug-timing"))
+			{
+				debug_timing = true;
 			}
 			else if(arg.equals("--no-global-plugins"))
 			{

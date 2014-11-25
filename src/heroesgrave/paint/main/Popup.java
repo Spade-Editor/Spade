@@ -23,7 +23,8 @@ package heroesgrave.paint.main;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import com.alee.laf.panel.WebPanel;
+import javax.swing.JPanel;
+
 import com.alee.laf.rootpane.WebDialog;
 import com.alee.laf.text.WebTextArea;
 
@@ -40,7 +41,7 @@ public class Popup
 		
 		text.append(msg);
 		
-		WebPanel panel = (WebPanel) dialog.getContentPane();
+		JPanel panel = (JPanel) dialog.getContentPane();
 		panel.setLayout(new BorderLayout());
 		
 		panel.setPreferredSize(new Dimension(400, 200));

@@ -376,6 +376,8 @@ public class LayerManager
 	{
 		public void valueChanged(TreeSelectionEvent e)
 		{
+			if(Paint.getDocument() == null)
+				return;
 			if(e.getNewLeadSelectionPath() == null)
 			{
 				Paint.getDocument().setCurrent(Paint.getDocument().getRoot());

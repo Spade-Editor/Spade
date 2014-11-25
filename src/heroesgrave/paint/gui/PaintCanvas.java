@@ -31,6 +31,7 @@ import heroesgrave.paint.image.change.IMaskChange;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.math.MathUtils;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -372,12 +373,12 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		}
 		g.fillRect(0, 0, image.getWidth(), image.getHeight());
 		
+		long start, end;
 		if(document != null && document.repaint)
 		{
 			ArrayList<Layer> flatmap = document.getFlatMap();
 			IChange previewChange = document.getPreview();
 			
-			long start, end;
 			start = System.nanoTime();
 			
 			// Create graphics and clear image.
@@ -488,35 +489,48 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			}
 			
 			end = System.nanoTime();
-			if(Paint.debug)
-				System.out.printf("Render Time: %dms\n", (end - start) / 1000000);
+			if(Paint.debug_timing)
+				System.out.printf("Image Render Time: %dms\n", (end - start) / 1000000);
 			document.repaint = false;
 		}
 		
 		g.drawImage(image, 0, 0, null);
-		/*
-		if(Menu.GRID_ENABLED && cam_zoom >= 4)
+		
+		if(Menu.GRID_ENABLED && cam_zoom >= 8)
 		{
+			start = System.nanoTime();
 			Tx = new AffineTransform();
 			Tx.scale(1f / this.cam_zoom, 1f / this.cam_zoom);
 			g.transform(Tx);
+			
+			int step = MathUtils.floor(this.cam_zoom);
+			int tx = MathUtils.floor(this.cam_positionX * this.cam_zoom);
+			int ty = MathUtils.floor(this.cam_positionY * this.cam_zoom);
+			
+			int top = Math.max(ty - this.getHeight() / 2, 0) / step * step;
+			int bottom = Math.min(ty + this.getHeight() / 2, image.getHeight() * step);
+			
+			int left = Math.max(tx - this.getWidth() / 2, 0) / step * step;
+			int right = Math.min(tx + this.getWidth() / 2, image.getWidth() * step);
+			
 			g.setColor(Color.gray);
-			final int top = MathUtils.floor(ty * cam_zoom);
-			final int bottom = MathUtils.floor((ty + image.getHeight()) * cam_zoom);
-			final int left = MathUtils.floor(tx * cam_zoom);
-			final int right = MathUtils.floor((tx + image.getWidth()) * cam_zoom);
-			for(int i = 0; i < image.getWidth(); i++)
+			if(cam_zoom > 16)
+				g.setStroke(new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, 1.0f, new float[]{cam_zoom * 0.25f, cam_zoom * 0.25f},
+						cam_zoom * 0.125f));
+			// Vertical
+			for(int i = left; i < right; i += step)
 			{
-				int ix = MathUtils.floor((tx + i) * cam_zoom);
-				g.drawLine(ix, top, ix, bottom);
+				g.drawLine(i, top, i, bottom);
 			}
-			for(int j = 0; j < image.getHeight(); j++)
+			// Horizontal
+			for(int i = top; i < bottom; i += step)
 			{
-				int iy = MathUtils.floor((ty + j) * cam_zoom);
-				g.drawLine(left, iy, right, iy);
+				g.drawLine(left, i, right, i);
 			}
+			end = System.nanoTime();
+			if(Paint.debug_timing)
+				System.out.printf("Grid Render Time: %dms\n", (end - start) / 1000000);
 		}
-		*/
 	}
 	
 	public void maskChanged()
