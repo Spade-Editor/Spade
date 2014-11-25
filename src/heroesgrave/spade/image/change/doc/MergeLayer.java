@@ -76,7 +76,7 @@ public class MergeLayer implements IDocChange
 	{
 		parent.removeLayer(layer);
 		doc.reconstructFlatmap();
-		doc.setCurrent(layer);
+		doc.setCurrent(parent);
 		
 		parent.repeatChange();
 	}

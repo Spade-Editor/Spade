@@ -126,7 +126,8 @@ public class Spade
 				setTool(currentTool);
 				for(File f : toOpen)
 				{
-					System.out.println("Opening File " + f.getPath());
+					if(debug)
+						System.out.println("Opening File " + f.getPath());
 					Spade.addDocument(new Document(f));
 				}
 				ArrayList<Document> documents = gui.getDocuments();
@@ -340,18 +341,20 @@ public class Spade
 		
 		System.setProperty("DlafClassName", "");
 		
+		StringBuilder argsDebug = new StringBuilder();
+		
 		// Go through ALL the arguments and...
 		for(String arg : args)
 		{
-			System.out.println("Picked up argument: " + arg);
+			argsDebug.append("Picked up argument: " + arg + "\n");
 			
-			if(arg.equalsIgnoreCase("-v"))
+			if(arg.equals("-v"))
 			{
 				// Print version string and exit.
 				System.out.println(VERSION);
 				System.exit(0);
 			}
-			else if(arg.equalsIgnoreCase("--version"))
+			else if(arg.equals("--version"))
 			{
 				// Print detailed version info and exit.
 				System.out.println("Spade v" + VERSION);
@@ -359,13 +362,13 @@ public class Spade
 				System.out.println("Built Type: " + BUILD_TYPE);
 				System.exit(0);
 			}
-			else if(arg.equalsIgnoreCase("--print-jar-path"))
+			else if(arg.equals("--print-jar-path"))
 			{
 				// Print the absolute path of the jar and exit.
 				System.out.println(IOUtils.jarPath());
 				System.exit(0);
 			}
-			else if(arg.equalsIgnoreCase("--show-memory-watcher"))
+			else if(arg.equals("--show-memory-watcher"))
 			{
 				// ...If the arguments contain the DmemoryWatcherFlag flag, set the property to true to enable the MemoryWatcher.
 				System.setProperty("DmemoryWatcherFlag", "true");
@@ -390,6 +393,39 @@ public class Spade
 			{
 				localPlugins = false;
 			}
+			else if(arg.equals("--help"))
+			{
+				System.out.println("Spade v" + VERSION);
+				System.out.println("Version Released: " + RELEASED);
+				System.out.println("Built Type: " + BUILD_TYPE);
+				System.out.println();
+				System.out.println("Copyright 2013-2014 HeroesGrave and Other Spade Developers");
+				System.out.println();
+				System.out.println("For more info, to report issues, make suggestions, or contribute");
+				System.out.println("please visit https://github.com/PaintDotJava/Paint.JAVA");
+				System.out.println();
+				System.out.println("Command-Line Options:");
+				System.out.println();
+				System.out.println("    Information:");
+				System.out.println("    --help:                  Print this text and exit");
+				System.out.println("    -v                       Print the raw version id and exit");
+				System.out.println("    --version                Print more detailed version info and exit");
+				System.out.println();
+				System.out.println("    Plugin Settings:");
+				System.out.println("    --no-local-plugins       Disable Local Plugins (./plugins/)");
+				System.out.println("    --no-global-plugins      Disable Global Plugins (~/.spade/.plugins/)");
+				System.out.println();
+				System.out.println("    UI Settings:");
+				System.out.println("    --look-and-feel=[LAF]    Specify the 'Look And Feel' to use");
+				System.out.println("    --show-memory-watcher    Enable the memory usage watcher");
+				System.out.println();
+				System.out.println("    Debug Switches:");
+				System.out.println("    --debug                  Enable debugging messages");
+				System.out.println("    --debug-timings          Print rendering times");
+				System.out.println();
+				System.out.println("Any other arguments will be read as files to open on startup.");
+				System.exit(0);
+			}
 			else
 			{
 				File f = new File(arg);
@@ -402,6 +438,9 @@ public class Spade
 			
 			/// XXX: Expand here by adding more debugging options and system flags!
 		}
+		
+		if(debug)
+			System.out.println(argsDebug);
 		
 		// Finally Launch Spade!
 		main.launch(open);

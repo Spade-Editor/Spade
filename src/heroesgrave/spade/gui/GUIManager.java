@@ -90,7 +90,7 @@ public class GUIManager
 		BufferedImage image = null;
 		try
 		{
-			image = ImageIO.read(GUIManager.class.getResource("/res/favicon.png"));
+			image = ImageIO.read(GUIManager.class.getResource("/res/icon.png"));
 		}
 		catch(IOException e)
 		{
