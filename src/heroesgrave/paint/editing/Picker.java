@@ -73,7 +73,7 @@ public class Picker extends Tool
 			Paint.main.setRightColour(layer.getImage().getPixel(x, y), false);
 		}
 		
-		if(switchPencil.isSelected())
+		if(switchPencil.isSelected() ^ isCtrlDown())
 		{
 			Paint.setTool(Tools.DEF);
 		}
