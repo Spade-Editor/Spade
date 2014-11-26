@@ -18,9 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.spade.gui;
+package heroesgrave.spade.gui.dialogs;
 
 import heroesgrave.spade.editing.Tool;
+import heroesgrave.spade.gui.menus.ToolBoxButton;
 
 import java.util.Enumeration;
 
@@ -32,7 +33,7 @@ import com.alee.laf.toolbar.WebToolBar;
 
 public class ToolBox
 {
-	final static int BUTTON_SIZE = 32;
+	public final static int BUTTON_SIZE = 32;
 	
 	//private JDialog dialog;
 	private WebToolBar toolbar;

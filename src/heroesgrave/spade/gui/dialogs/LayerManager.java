@@ -18,9 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.spade.gui;
+package heroesgrave.spade.gui.dialogs;
 
 import heroesgrave.spade.editing.SelectionTool;
+import heroesgrave.spade.gui.GUIManager;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.image.change.doc.AnchorLayer;

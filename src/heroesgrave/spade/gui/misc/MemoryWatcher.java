@@ -18,8 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.spade.gui;
+package heroesgrave.spade.gui.misc;
 
+import heroesgrave.spade.gui.PaintCanvas;
 import heroesgrave.utils.math.MathUtils;
 import heroesgrave.utils.misc.StringUtil;
 

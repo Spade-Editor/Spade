@@ -22,8 +22,8 @@ package heroesgrave.spade.main;
 
 import heroesgrave.spade.editing.Effect;
 import heroesgrave.spade.editing.Tool;
-import heroesgrave.spade.gui.ClipboardHandler;
-import heroesgrave.spade.gui.Menu;
+import heroesgrave.spade.gui.menus.Menu;
+import heroesgrave.spade.gui.misc.ClipboardHandler;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.image.RawImage;

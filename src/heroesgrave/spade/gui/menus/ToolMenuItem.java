@@ -18,13 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.spade.gui;
+package heroesgrave.spade.gui.menus;
 
 import heroesgrave.spade.editing.Tool;
 import heroesgrave.spade.main.Spade;
 
-import java.awt.Dimension;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -33,28 +31,25 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.menu.WebMenuItem;
-import com.alee.managers.popup.WebPopup;
 
 @SuppressWarnings("serial")
-public class ToolBoxButton extends WebToggleButton
+public class ToolMenuItem extends WebMenuItem
 {
 	private Tool tool;
 	
-	private WebPopup menu;
-	
-	public ToolBoxButton(String name, Tool tool)
+	public ToolMenuItem(String name, Tool t, Character key)
 	{
-		super();
-		setPreferredSize(new Dimension(ToolBox.BUTTON_SIZE, ToolBox.BUTTON_SIZE));
-		setMargin(new Insets(0, 0, 0, 0));
-		setToolTipText(name);
-		setFocusable(false);
+		super(key == null ? (name) : (name + " (" + key + ")"));
 		
-		menu = tool.createOptions();
+		// This is here, so some Tools don't have to have a key assigned. We can't have key-code's for ALL the Tools! It's impossible!
+		if(key != null)
+		{
+			Spade.addTool(key, t);
+		}
 		
-		this.tool = tool;
+		this.tool = t;
+		
 		// TRY to load the icon!
 		try
 		{
@@ -62,15 +57,11 @@ public class ToolBoxButton extends WebToggleButton
 			
 			if(url != null)
 			{
-				ImageIcon icon = new ImageIcon(ImageIO.read(url));
-				this.setIcon(icon);
-				((WebMenuItem) menu.getComponent(0)).setIcon(icon);
+				this.setIcon(new ImageIcon(ImageIO.read(url)));
 			}
 			else
 			{
-				ImageIcon icon = new ImageIcon(ImageIO.read(Spade.questionMarkURL));
-				this.setIcon(icon);
-				((WebMenuItem) menu.getComponent(0)).setIcon(icon);
+				this.setIcon(new ImageIcon(ImageIO.read(Spade.questionMarkURL)));
 			}
 			
 		}
@@ -79,31 +70,12 @@ public class ToolBoxButton extends WebToggleButton
 			System.err.println("Error: Tool '" + name + "' is missing an icon!");
 		}
 		
-		final ToolBoxButton self = this;
 		this.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				if(!Spade.setTool(self.getTool()))
-				{
-					if(!menu.isShowing())
-					{
-						menu.packPopup();
-						menu.showAsPopupMenu(self);
-					}
-					else
-					{
-						menu.hidePopup();
-						Spade.main.gui.frame.requestFocus();
-					}
-				}
+				Spade.setTool(tool);
 			}
 		});
-		
-	}
-	
-	public Tool getTool()
-	{
-		return tool;
 	}
 }

@@ -18,8 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.spade.gui;
+package heroesgrave.spade.gui.menus;
 
+import heroesgrave.spade.gui.PaintCanvas;
+import heroesgrave.spade.gui.misc.MemoryWatcher;
 import heroesgrave.utils.math.MathUtils;
 
 import java.awt.BorderLayout;

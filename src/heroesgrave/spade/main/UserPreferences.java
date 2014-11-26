@@ -20,9 +20,9 @@
 
 package heroesgrave.spade.main;
 
-import heroesgrave.spade.gui.LayerManager;
-import heroesgrave.spade.gui.Menu;
 import heroesgrave.spade.gui.colorchooser.ColourChooser;
+import heroesgrave.spade.gui.dialogs.LayerManager;
+import heroesgrave.spade.gui.menus.Menu;
 
 import java.awt.Frame;
 import java.util.prefs.Preferences;

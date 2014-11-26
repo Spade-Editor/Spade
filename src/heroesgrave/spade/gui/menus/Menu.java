@@ -18,8 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.spade.gui;
+package heroesgrave.spade.gui.menus;
 
+import heroesgrave.spade.gui.GUIManager;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.io.ImageImporter;
 import heroesgrave.spade.main.Popup;

@@ -20,6 +20,7 @@
 
 package heroesgrave.spade.gui;
 
+import heroesgrave.spade.gui.menus.Menu;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.image.RawImage;

@@ -22,6 +22,13 @@ package heroesgrave.spade.gui;
 
 import heroesgrave.spade.gui.colorchooser.ColourChooser;
 import heroesgrave.spade.gui.colorchooser.event.ColourListener;
+import heroesgrave.spade.gui.dialogs.AboutDialog;
+import heroesgrave.spade.gui.dialogs.LayerManager;
+import heroesgrave.spade.gui.dialogs.ToolBox;
+import heroesgrave.spade.gui.menus.DocumentButton;
+import heroesgrave.spade.gui.menus.DocumentMenuItem;
+import heroesgrave.spade.gui.menus.InfoMenuBar;
+import heroesgrave.spade.gui.menus.Menu;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.main.Input;
 import heroesgrave.spade.main.Spade;
@@ -83,7 +90,7 @@ public class GUIManager
 	
 	public ToolBox toolBox;
 	
-	AboutDialog about;
+	public AboutDialog about;
 	
 	static
 	{

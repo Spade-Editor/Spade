@@ -20,8 +20,8 @@
 
 package heroesgrave.spade.plugin;
 
-import heroesgrave.spade.gui.AboutDialog;
 import heroesgrave.spade.gui.GUIManager;
+import heroesgrave.spade.gui.dialogs.AboutDialog;
 import heroesgrave.spade.main.Spade;
 import heroesgrave.utils.misc.Metadata;
 

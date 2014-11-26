@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.spade.gui;
+package heroesgrave.spade.gui.dialogs;
 
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.image.blend.BlendMode;

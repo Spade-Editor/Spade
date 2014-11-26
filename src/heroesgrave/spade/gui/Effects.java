@@ -21,6 +21,7 @@
 package heroesgrave.spade.gui;
 
 import heroesgrave.spade.editing.Effect;
+import heroesgrave.spade.gui.menus.EffectMenuItem;
 
 import com.alee.laf.menu.WebMenu;
 

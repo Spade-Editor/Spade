@@ -18,28 +18,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.spade.gui;
+package heroesgrave.spade.gui.menus;
 
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.main.Spade;
-import heroesgrave.utils.io.IOUtils;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import com.alee.laf.menu.WebMenuItem;
+import com.alee.laf.button.WebButton;
 
 @SuppressWarnings("serial")
-public class DocumentMenuItem extends WebMenuItem implements ActionListener
+public class DocumentButton extends WebButton implements ActionListener
 {
-	protected Document doc;
+	public Document doc;
 	
-	public DocumentMenuItem(Document doc)
+	public DocumentButton(Document doc)
 	{
 		super("Untitled");
 		this.doc = doc;
 		this.addActionListener(this);
+		this.setFocusable(false);
 		checkName();
 	}
 	
@@ -55,11 +55,15 @@ public class DocumentMenuItem extends WebMenuItem implements ActionListener
 		String s;
 		if(f != null)
 		{
-			s = IOUtils.relativeFrom(System.getProperty("user.dir"), f.getPath());
+			s = f.getName();
 		}
 		else
 		{
 			s = "Untitled";
+		}
+		if(!doc.saved())
+		{
+			s += "*";
 		}
 		this.setText(s);
 	}

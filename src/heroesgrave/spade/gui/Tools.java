@@ -23,6 +23,9 @@ package heroesgrave.spade.gui;
 import heroesgrave.spade.editing.Pencil;
 import heroesgrave.spade.editing.Picker;
 import heroesgrave.spade.editing.Tool;
+import heroesgrave.spade.gui.dialogs.ToolBox;
+import heroesgrave.spade.gui.menus.ToolBoxButton;
+import heroesgrave.spade.gui.menus.ToolMenuItem;
 import heroesgrave.spade.main.Spade;
 
 import javax.swing.JMenu;
