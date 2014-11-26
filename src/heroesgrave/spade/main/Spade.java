@@ -442,8 +442,19 @@ public class Spade
 		if(debug)
 			System.out.println(argsDebug);
 		
-		// Finally Launch Spade!
-		main.launch(open);
+		// Try to catch all exceptions and recover enough to save
+		try
+		{
+			// Finally Launch Spade!
+			main.launch(open);
+		}
+		catch(Exception e)
+		{
+			ArrayList<Document> documents = main.gui.getDocuments();
+			main.pluginManager.dispose();
+			main.gui.frame.dispose();
+			Popup.show("Something bad happened", "An Exception Occured: " + e.getMessage());
+		}
 	}
 	
 	public static Version getVersion()

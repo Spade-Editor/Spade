@@ -26,6 +26,7 @@ import heroesgrave.spade.image.RawImage;
 import heroesgrave.spade.image.change.IDocChange;
 import heroesgrave.spade.image.change.edit.ClearMaskChange;
 import heroesgrave.spade.image.change.edit.FillImageChange;
+import heroesgrave.spade.main.Spade;
 import heroesgrave.utils.misc.Metadata;
 
 public class FloatLayer implements IDocChange
@@ -57,6 +58,7 @@ public class FloatLayer implements IDocChange
 		info.set("name", "Floating Layer");
 		
 		layer = new Layer(doc, image, info).floating();
+		Spade.main.gui.layers.setVisible(layer);
 		parent.addLayer(layer);
 		doc.setCurrent(layer);
 	}

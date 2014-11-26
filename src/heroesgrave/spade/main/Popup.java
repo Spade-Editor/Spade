@@ -22,6 +22,7 @@ package heroesgrave.spade.main;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 
 import javax.swing.JPanel;
 
@@ -38,6 +39,7 @@ public class Popup
 		text.setEditable(false);
 		text.setWrapStyleWord(true);
 		text.setLineWrap(true);
+		text.setFontName(Font.MONOSPACED);
 		
 		text.append(msg);
 		

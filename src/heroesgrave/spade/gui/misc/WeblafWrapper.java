@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.utils.misc;
+package heroesgrave.spade.gui.misc;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -31,6 +31,13 @@ import com.alee.laf.menu.WebMenuItem;
 import com.alee.laf.radiobutton.WebRadioButton;
 import com.alee.laf.separator.WebSeparator;
 
+/**
+ * Helper methods to allow plugins to create dialogs with weblaf components.
+ * Expand as neccessary.
+ * 
+ * @author HeroesGrave
+ *
+ */
 public class WeblafWrapper
 {
 	public static JMenuItem createMenuItem()

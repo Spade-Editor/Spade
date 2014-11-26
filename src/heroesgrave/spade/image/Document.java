@@ -38,6 +38,8 @@ import javax.swing.JOptionPane;
 
 public class Document
 {
+	public static int MAX_DIMENSION = 8192;
+	
 	private LinkedList<IDocChange> changes = new LinkedList<IDocChange>();
 	private LinkedList<IDocChange> reverted = new LinkedList<IDocChange>();
 	
@@ -50,6 +52,7 @@ public class Document
 	private IChange previewChange;
 	public int lowestChange;
 	
+	private boolean initialised;
 	public boolean repaint;
 	
 	private ArrayList<Layer> flatmap = new ArrayList<Layer>();
@@ -64,6 +67,7 @@ public class Document
 		this.current = this.root = new Layer(this, new RawImage(width, height), new Metadata());
 		this.flatmap.clear();
 		root.constructFlatMap(flatmap);
+		initialised = true;
 	}
 	
 	public Document(File f)
@@ -74,10 +78,13 @@ public class Document
 		ImageImporter.loadImage(file.getAbsolutePath(), this);
 		this.flatmap.clear();
 		root.constructFlatMap(flatmap);
+		initialised = true;
 	}
 	
 	public void reconstructFlatmap()
 	{
+		if(!initialised)
+			return;
 		Spade.main.gui.layers.redrawTree();
 		this.flatmap.clear();
 		root.constructFlatMap(flatmap);
@@ -220,6 +227,8 @@ public class Document
 	
 	public void changed(Layer layer)
 	{
+		if(!initialised)
+			return;
 		Spade.main.gui.checkButtonNames();
 		lowestChange = Math.min(lowestChange, flatmap.indexOf(layer));
 		this.repaint();
@@ -227,7 +236,7 @@ public class Document
 	
 	public void allChanged()
 	{
-		lowestChange = -1;
+		lowestChange = 0;
 		this.repaint();
 	}
 	

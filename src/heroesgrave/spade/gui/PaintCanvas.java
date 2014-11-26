@@ -389,16 +389,16 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 			int index = flatmap.indexOf(document.getCurrent()) - 1;
 			if(index >= 0)
 			{
-				if(Math.min(index, document.lowestChange) < frozenTo)
+				if(Math.min(index, document.lowestChange - 1) < frozenTo)
 				{
-					document.lowestChange = frozenTo = index;
 					Graphics2D fg = frozen.createGraphics();
 					fg.setBackground(PaintCanvas.TRANSPARENT);
 					fg.clearRect(0, 0, document.getWidth(), document.getHeight());
-					for(int i = 0; i <= frozenTo; i++)
+					for(int i = 0; i <= index; i++)
 					{
 						flatmap.get(i).render(fg);
 					}
+					document.lowestChange = frozenTo = index;
 				}
 				else if(index > frozenTo)
 				{

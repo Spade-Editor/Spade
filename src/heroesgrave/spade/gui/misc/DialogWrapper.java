@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package heroesgrave.utils.misc;
+package heroesgrave.spade.gui.misc;
 
 import heroesgrave.spade.main.Spade;
 

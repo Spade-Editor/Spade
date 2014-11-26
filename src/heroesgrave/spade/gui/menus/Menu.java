@@ -348,9 +348,9 @@ public class Menu
 				dialog.dispose();
 				int w = Integer.parseInt(width.getText());
 				int h = Integer.parseInt(height.getText());
-				if(w > 8192 || h > 8192 || w == 0 || h == 0)
+				if(w > Document.MAX_DIMENSION || h > Document.MAX_DIMENSION || w == 0 || h == 0)
 				{
-					Popup.show("Invalid Image Size", "The image dimensions must be more than 0 and less than 8192");
+					Popup.show("Invalid Image Dimensions", "Image must have dimensions higher than 0 and no more than " + Document.MAX_DIMENSION);
 				}
 				else
 				{

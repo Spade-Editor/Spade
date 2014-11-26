@@ -39,6 +39,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -52,11 +53,14 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import com.alee.extended.checkbox.CheckState;
+import com.alee.extended.tree.CheckStateChange;
+import com.alee.extended.tree.CheckStateChangeListener;
+import com.alee.extended.tree.WebCheckBoxTree;
 import com.alee.laf.panel.WebPanel;
 import com.alee.laf.rootpane.WebDialog;
-import com.alee.laf.tree.WebTree;
 
-public class LayerManager
+public class LayerManager implements CheckStateChangeListener<Layer>, TreeSelectionListener
 {
 	public WebDialog dialog;
 	
@@ -64,7 +68,7 @@ public class LayerManager
 	
 	protected Layer rootNode;
 	protected DefaultTreeModel model;
-	protected WebTree<Layer> tree;
+	protected WebCheckBoxTree<Layer> tree;
 	protected WebPanel controls;
 	
 	public LayerManager(JFrame frame)
@@ -75,11 +79,13 @@ public class LayerManager
 		dialog.setTitle("Layers");
 		dialog.getContentPane().setPreferredSize(new Dimension(200, 300));
 		
-		tree = new WebTree<Layer>((TreeModel) null);
+		tree = new WebCheckBoxTree<Layer>((TreeModel) null);
 		tree.setEditable(false);
+		tree.setRecursiveChecking(false);
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		tree.setShowsRootHandles(true);
-		tree.getSelectionModel().addTreeSelectionListener(new SelectionListener());
+		tree.addCheckStateChangeListener(this);
+		tree.getSelectionModel().addTreeSelectionListener(this);
 		tree.setExpandsSelectedPaths(true);
 		
 		JScrollPane scroll = new JScrollPane(tree);
@@ -275,6 +281,16 @@ public class LayerManager
 		lsettings = new LayerSettings(frame);
 	}
 	
+	public void setVisible(Layer layer)
+	{
+		tree.setChecked(layer, true);
+	}
+	
+	public boolean isVisible(Layer layer)
+	{
+		return tree.isChecked(layer);
+	}
+	
 	public void updateBlendModes()
 	{
 		lsettings.addAllBlendModes();
@@ -301,6 +317,7 @@ public class LayerManager
 		model = new DefaultTreeModel(rootNode);
 		tree.setModel(model);
 		tree.revalidate();
+		tree.checkAll();
 	}
 	
 	public void show()
@@ -373,42 +390,51 @@ public class LayerManager
 		return dialog.isVisible();
 	}
 	
-	private class SelectionListener implements TreeSelectionListener
+	@Override
+	public void valueChanged(TreeSelectionEvent e)
 	{
-		public void valueChanged(TreeSelectionEvent e)
+		if(Spade.getDocument() == null)
+			return;
+		if(e.getNewLeadSelectionPath() == null)
 		{
-			if(Spade.getDocument() == null)
-				return;
-			if(e.getNewLeadSelectionPath() == null)
+			Spade.getDocument().setCurrent(Spade.getDocument().getRoot());
+			controls.setVisible(false);
+			return;
+		}
+		Layer l = (Layer) e.getNewLeadSelectionPath().getLastPathComponent();
+		if(l == null)
+		{
+			Spade.getDocument().setCurrent(Spade.getDocument().getRoot());
+			controls.setVisible(false);
+		}
+		else
+		{
+			Layer current = Spade.getDocument().getCurrent();
+			if(Spade.getDocument().setCurrent(l) && current != null)
 			{
-				Spade.getDocument().setCurrent(Spade.getDocument().getRoot());
-				controls.setVisible(false);
-				return;
-			}
-			Layer l = (Layer) e.getNewLeadSelectionPath().getLastPathComponent();
-			if(l == null)
-			{
-				Spade.getDocument().setCurrent(Spade.getDocument().getRoot());
-				controls.setVisible(false);
-			}
-			else
-			{
-				Layer current = Spade.getDocument().getCurrent();
-				if(Spade.getDocument().setCurrent(l) && current != null)
+				if(current.getImage().isMaskEnabled())
 				{
-					if(current.getImage().isMaskEnabled())
+					boolean[] mask = current.getImage().copyMask();
+					current.addChange(new ClearMaskChange());
+					if(Spade.main.currentTool instanceof SelectionTool)
 					{
-						boolean[] mask = current.getImage().copyMask();
-						current.addChange(new ClearMaskChange());
-						if(Spade.main.currentTool instanceof SelectionTool)
-						{
-							l.addChange(new SetMaskChange(mask));
-						}
+						l.addChange(new SetMaskChange(mask));
 					}
 				}
-				controls.setVisible(true);
-				lsettings.updateIfVisible(l);
 			}
+			controls.setVisible(true);
+			lsettings.updateIfVisible(l);
+		}
+	}
+	
+	@Override
+	public void checkStateChanged(List<CheckStateChange<Layer>> changes)
+	{
+		for(CheckStateChange<Layer> c : changes)
+		{
+			Layer layer = c.getNode();
+			layer.setVisible(c.getNewState() == CheckState.checked);
+			layer.getDocument().changed(layer);
 		}
 	}
 	

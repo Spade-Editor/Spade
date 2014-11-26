@@ -21,9 +21,9 @@
 package heroesgrave.spade.editing;
 
 import heroesgrave.spade.gui.Tools;
+import heroesgrave.spade.gui.misc.WeblafWrapper;
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.main.Spade;
-import heroesgrave.utils.misc.WeblafWrapper;
 
 import java.awt.event.MouseEvent;
 

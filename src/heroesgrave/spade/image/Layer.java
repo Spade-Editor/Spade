@@ -40,7 +40,7 @@ public class Layer extends DefaultMutableTreeNode
 	private FreezeBuffer buffer;
 	private Metadata info;
 	private BlendMode blend;
-	private boolean floating;
+	private boolean floating, visible;
 	
 	public Layer(Document doc, Metadata info)
 	{
@@ -75,6 +75,11 @@ public class Layer extends DefaultMutableTreeNode
 	public Layer getParentLayer()
 	{
 		return (Layer) super.getParent();
+	}
+	
+	public void setVisible(boolean visible)
+	{
+		this.visible = visible;
 	}
 	
 	public void addLayer(Layer l)
@@ -117,6 +122,8 @@ public class Layer extends DefaultMutableTreeNode
 	
 	public void render(Graphics2D g)
 	{
+		if(!visible)
+			return;
 		g.setComposite(blend);
 		g.drawImage(this.buffer.getFront(), 0, 0, null);
 	}
