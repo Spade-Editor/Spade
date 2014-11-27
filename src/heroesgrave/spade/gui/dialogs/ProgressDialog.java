@@ -78,7 +78,7 @@ public class ProgressDialog implements AutoCloseable
 		// Create Dialog
 		dlg.add(BorderLayout.CENTER, dpb);
 		dlg.add(BorderLayout.NORTH, dpm);
-		dlg.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		dlg.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		dlg.setSize(400, 80);
 		dlg.setLocationRelativeTo(Spade.main.gui.frame);
 		

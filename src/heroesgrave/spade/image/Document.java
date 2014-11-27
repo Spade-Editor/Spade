@@ -31,7 +31,6 @@ import heroesgrave.utils.misc.Metadata;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -56,12 +55,17 @@ public class Document
 	
 	private ArrayList<Layer> flatmap = new ArrayList<Layer>();
 	
-	public Document(int width, int height)
+	private Document()
 	{
-		this.width = width;
-		this.height = height;
 		this.info = new Metadata();
 		this.history = new History(this);
+	}
+	
+	public Document(int width, int height)
+	{
+		this();
+		this.width = width;
+		this.height = height;
 		
 		this.current = this.root = new Layer(this, new RawImage(width, height), new Metadata());
 		this.flatmap.clear();
@@ -69,15 +73,16 @@ public class Document
 		initialised = true;
 	}
 	
-	public Document(File f)
+	public static Document loadFromFile(File f)
 	{
-		this.info = new Metadata();
-		this.history = new History(this);
-		this.file = f;
-		ImageImporter.loadImage(file.getAbsolutePath(), this);
-		this.flatmap.clear();
-		root.constructFlatMap(flatmap);
-		initialised = true;
+		Document doc = new Document();
+		doc.file = f;
+		if(!ImageImporter.loadImage(f.getAbsolutePath(), doc))
+			return null;
+		doc.flatmap.clear();
+		doc.root.constructFlatMap(doc.flatmap);
+		doc.initialised = true;
+		return doc;
 	}
 	
 	public void reconstructFlatmap()
@@ -162,14 +167,13 @@ public class Document
 			history.save();
 			Spade.main.gui.checkButtonNames();
 		}
-		catch(IOException e)
+		catch(Exception e)
 		{
-			e.printStackTrace();
 			if(!panic)
-				Popup.showException("Error Saving Document", e.getLocalizedMessage(), "This error occured while saving the file " + file
+				Popup.showException("Error Saving Document", e, "This error occured while saving the file " + file
 						+ ". It may work if you try again, but if not, we apologise. Report the bug to get it fixed as soon as possible");
 			else
-				Popup.showException("Error Saving Document", e.getLocalizedMessage(), "This error occured while saving the file " + file
+				Popup.showException("Error Saving Document", e, "This error occured while saving the file " + file
 						+ " after a crash. Sadly, we cannot recover from this.");
 			return;
 		}

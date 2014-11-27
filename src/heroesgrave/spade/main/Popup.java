@@ -23,6 +23,8 @@ package heroesgrave.spade.main;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.swing.JPanel;
 
@@ -58,9 +60,10 @@ public class Popup
 		dialog.setLocationRelativeTo(Spade.main.gui.frame);
 	}
 	
-	public static void showException(String title, String msg, String msg2)
+	public static void showException(String title, Exception e, String msg2)
 	{
 		WebDialog dialog = new WebDialog(Spade.main.gui.frame, title);
+		dialog.setModal(true);
 		
 		WebTextArea text = new WebTextArea();
 		text.setEditable(false);
@@ -68,7 +71,9 @@ public class Popup
 		text.setLineWrap(true);
 		text.setFontName(Font.MONOSPACED);
 		
-		text.append(msg);
+		StringWriter msg = new StringWriter();
+		e.printStackTrace(new PrintWriter(msg));
+		text.append(msg.toString());
 		
 		JPanel panel = (JPanel) dialog.getContentPane();
 		panel.setLayout(new BorderLayout());
@@ -77,7 +82,7 @@ public class Popup
 		
 		WebScrollPane scroll = new WebScrollPane(text);
 		
-		panel.add(new WebLabel("An Exception Occured: "), BorderLayout.NORTH);
+		panel.add(new WebLabel("An Exception Occured: ").setMargin(5), BorderLayout.NORTH);
 		panel.add(scroll, BorderLayout.CENTER);
 		
 		WebPanel bottom = new WebPanel();
@@ -88,9 +93,17 @@ public class Popup
 						+ " along with details of what you were doing when it happened.");
 		report.setLineWrap(true);
 		report.setWrapStyleWord(true);
+		report.setEditable(false);
+		report.setMargin(5);
+		
+		WebTextArea endMsg = new WebTextArea(msg2);
+		endMsg.setLineWrap(true);
+		endMsg.setWrapStyleWord(true);
+		endMsg.setEditable(false);
+		endMsg.setMargin(5);
 		
 		bottom.add(report, BorderLayout.NORTH);
-		bottom.add(new WebLabel(msg2), BorderLayout.CENTER);
+		bottom.add(endMsg, BorderLayout.CENTER);
 		
 		panel.add(bottom, BorderLayout.SOUTH);
 		

@@ -39,8 +39,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -136,7 +134,9 @@ public class Spade
 					{
 						if(debug)
 							System.out.println("Opening File " + f.getPath());
-						Spade.addDocument(new Document(f));
+						Document d = Document.loadFromFile(f);
+						if(d != null)
+							Spade.addDocument(d);
 					}
 					ArrayList<Document> documents = gui.getDocuments();
 					if(!documents.isEmpty())
@@ -571,8 +571,7 @@ public class Spade
 		}
 		main.pluginManager.dispose();
 		main.gui.frame.dispose();
-		StringWriter msg = new StringWriter();
-		e.printStackTrace(new PrintWriter(msg));
-		Popup.showException("Spade has crashed", msg.toString(), "");
+		Popup.showException("Spade has crashed", e, "");
+		System.exit(-1);
 	}
 }

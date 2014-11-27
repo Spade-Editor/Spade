@@ -311,9 +311,12 @@ public class Menu
 				@Override
 				public void run()
 				{
-					Document doc = new Document(chooser.getSelectedFile());
-					Spade.addDocument(doc);
-					Spade.setDocument(doc);
+					Document doc = Document.loadFromFile(chooser.getSelectedFile());
+					if(doc != null)
+					{
+						Spade.addDocument(doc);
+						Spade.setDocument(doc);
+					}
 				}
 			}).start();
 		}

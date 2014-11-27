@@ -23,9 +23,11 @@ package heroesgrave.spade.io;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.image.RawImage;
+import heroesgrave.spade.main.Popup;
 import heroesgrave.utils.misc.Metadata;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -48,7 +50,7 @@ public abstract class ImageImporter extends FileFilter
 	 * Reads an Image.
 	 * @throws IOException 
 	 **/
-	public abstract void load(File file, Document doc) throws IOException;
+	public abstract boolean load(File file, Document doc) throws IOException;
 	
 	public abstract String getFileExtension();
 	
@@ -74,7 +76,7 @@ public abstract class ImageImporter extends FileFilter
 		return importers.get(extension);
 	}
 	
-	public static void loadImage(String path, Document doc)
+	public static boolean loadImage(String path, Document doc)
 	{
 		File file = new File(path);
 		
@@ -98,7 +100,7 @@ public abstract class ImageImporter extends FileFilter
 				// If there is a custom importer for the given format, use the custom importer...
 				if(importer != null)
 				{
-					importer.load(file, doc);
+					return importer.load(file, doc);
 				}
 				else
 				{
@@ -107,13 +109,19 @@ public abstract class ImageImporter extends FileFilter
 					doc.setRoot(new Layer(doc, image, new Metadata()));
 				}
 			}
-			catch(IOException e)
+			catch(Exception e)
 			{
-				e.printStackTrace();
+				Popup.showException("Error Loading Document", e, "This error occured while loading the file " + file
+						+ ". It may work if you try again, but if not, we apologise. Report the bug to get it fixed as soon as possible");
+				return false;
 			}
 		}
 		else
-			throw new RuntimeException("The image \"" + path + "\" was missing!");
+		{
+			Popup.showException("Error Loading Document", new FileNotFoundException(file.getAbsolutePath()), "The file " + file + " could not be found");
+			return false;
+		}
+		return true;
 	}
 	
 	public static void addAllImporters(WebFileChooser chooser)
