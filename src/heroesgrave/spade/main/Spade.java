@@ -52,7 +52,7 @@ import com.alee.laf.rootpane.WebDialog;
 
 public class Spade
 {
-	public static final String REPO_URL = "https://github.com/PaintDotJava/Paint.JAVA";
+	public static final String REPO_URL = "https://github.com/Spade-Editor/Spade";
 	
 	// Major.Minor + optional letter for releases. The letter is for tiny revisions, such as fixing bugs that slipped through.
 	// Major.Minor-RC.# for Release Candidates (builds that may be promoted to releases).
@@ -415,7 +415,7 @@ public class Spade
 				System.out.println("Copyright 2013-2014 HeroesGrave and Other Spade Developers");
 				System.out.println();
 				System.out.println("For more info, to report issues, make suggestions, or contribute");
-				System.out.println("please visit https://github.com/PaintDotJava/Paint.JAVA");
+				System.out.println("please visit " + REPO_URL);
 				System.out.println();
 				System.out.println("Command-Line Options:");
 				System.out.println();

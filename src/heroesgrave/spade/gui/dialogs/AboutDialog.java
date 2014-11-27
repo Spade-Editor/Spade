@@ -65,7 +65,7 @@ public class AboutDialog extends WebDialog
 		append(doc, "\n", "regular");
 		append(doc, "Links:\n", "large");
 		append(doc, "    Github Repo:\n", "bold");
-		append(doc, "        https://github.com/PaintDotJava/Paint.JAVA/\n", "italic");
+		append(doc, "        " + Spade.REPO_URL + "\n", "italic");
 		append(doc, "    HeroesGrave Development:\n", "bold");
 		append(doc, "        http://heroesgrave.github.io/\n", "italic");
 		append(doc, "\n", "regular");
