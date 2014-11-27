@@ -22,6 +22,7 @@ package heroesgrave.spade.gui.misc;
 
 import heroesgrave.spade.image.RawImage;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -83,6 +84,25 @@ public class ClipboardHandler
 		TransferableImage transfer = new TransferableImage(bufferedImage);
 		Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clip.setContents(transfer, null);
+	}
+	
+	public static Dimension getImageSize()
+	{
+		Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+		Transferable transfer = clip.getContents(null);
+		if(transfer != null && transfer.isDataFlavorSupported(DataFlavor.imageFlavor))
+		{
+			try
+			{
+				Image image = (Image) transfer.getTransferData(DataFlavor.imageFlavor);
+				return new Dimension(image.getWidth(null), image.getHeight(null));
+			}
+			catch(UnsupportedFlavorException | IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 	
 	public static RawImage getImage()

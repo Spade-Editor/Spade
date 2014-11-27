@@ -73,7 +73,6 @@ public class ToolBoxButton extends WebToggleButton
 				this.setIcon(icon);
 				((WebMenuItem) menu.getComponent(0)).setIcon(icon);
 			}
-			
 		}
 		catch(IOException e1)
 		{

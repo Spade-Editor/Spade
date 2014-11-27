@@ -36,7 +36,7 @@ import java.util.LinkedList;
 
 public class Document
 {
-	public static int MAX_DIMENSION = 8192;
+	public static int MAX_DIMENSION = 4096;
 	
 	private LinkedList<IDocChange> changes = new LinkedList<IDocChange>();
 	private LinkedList<IDocChange> reverted = new LinkedList<IDocChange>();
@@ -309,7 +309,7 @@ public class Document
 	
 	public boolean saved()
 	{
-		return this.history.isSaved();
+		return this.file != null && this.history.isSaved();
 	}
 	
 	public void repaint()

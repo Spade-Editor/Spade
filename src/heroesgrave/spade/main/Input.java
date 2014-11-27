@@ -20,8 +20,6 @@
 
 package heroesgrave.spade.main;
 
-import heroesgrave.spade.editing.Effect;
-import heroesgrave.spade.editing.Tool;
 import heroesgrave.spade.gui.misc.ClipboardHandler;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.image.Layer;
@@ -76,19 +74,7 @@ public class Input implements KeyListener
 		if(e.isControlDown())
 		{
 			MOVE = 8;
-			if(e.isShiftDown())
-			{
-				if(keyCodeToChar.containsKey(e.getKeyCode()))
-				{
-					Effect effect = Spade.getEffect(keyCodeToChar.get(e.getKeyCode()));
-					if(effect != null)
-					{
-						effect.perform(Spade.getDocument().getCurrent());
-						Spade.main.gui.repaint();
-					}
-				}
-			}
-			else
+			if(!e.isShiftDown())
 			{
 				if(e.getKeyCode() == KeyEvent.VK_Q)
 				{
@@ -156,17 +142,6 @@ public class Input implements KeyListener
 							doc.addChange(new NewLayer(doc.getCurrent(), image, "Floating Layer").floating());
 						}
 					}
-				}
-			}
-		}
-		else
-		{
-			if(keyCodeToChar.containsKey(e.getKeyCode()))
-			{
-				Tool tool = Spade.getTool(keyCodeToChar.get(e.getKeyCode()));
-				if(tool != null)
-				{
-					Spade.setTool(tool);
 				}
 			}
 		}

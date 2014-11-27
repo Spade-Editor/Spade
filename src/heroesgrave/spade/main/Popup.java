@@ -26,6 +26,7 @@ import java.awt.Font;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.alee.laf.label.WebLabel;
@@ -38,26 +39,7 @@ public class Popup
 {
 	public static void show(String title, String msg)
 	{
-		WebDialog dialog = new WebDialog(Spade.main.gui.frame, title);
-		
-		WebTextArea text = new WebTextArea();
-		text.setEditable(false);
-		text.setWrapStyleWord(true);
-		text.setLineWrap(true);
-		
-		text.append(msg);
-		
-		JPanel panel = (JPanel) dialog.getContentPane();
-		panel.setLayout(new BorderLayout());
-		
-		panel.setPreferredSize(new Dimension(400, 200));
-		
-		panel.add(text, BorderLayout.CENTER);
-		
-		dialog.pack();
-		dialog.setResizable(true);
-		dialog.setVisible(true);
-		dialog.setLocationRelativeTo(Spade.main.gui.frame);
+		JOptionPane.showMessageDialog(Spade.main.gui.frame, msg, title, JOptionPane.ERROR_MESSAGE);
 	}
 	
 	public static void showException(String title, Exception e, String msg2)

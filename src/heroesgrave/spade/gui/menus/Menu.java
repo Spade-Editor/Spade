@@ -21,6 +21,9 @@
 package heroesgrave.spade.gui.menus;
 
 import heroesgrave.spade.gui.GUIManager;
+import heroesgrave.spade.gui.dialogs.GridEffectDialog;
+import heroesgrave.spade.gui.misc.ClipboardHandler;
+import heroesgrave.spade.gui.misc.WeblafWrapper;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.io.ImageImporter;
 import heroesgrave.spade.main.Popup;
@@ -28,6 +31,7 @@ import heroesgrave.spade.main.Spade;
 import heroesgrave.spade.plugin.PluginManager;
 import heroesgrave.utils.misc.NumberFilter;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,12 +39,10 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.AbstractDocument;
 
@@ -324,40 +326,64 @@ public class Menu
 	
 	public static void showNewDialog()
 	{
-		final JDialog dialog = new WebDialog(Spade.main.gui.frame, "New Image");
-		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		final GridEffectDialog dialog = new GridEffectDialog(1, 1, "Create Image", null);
 		
-		JPanel panel = new JPanel();
+		Dimension dim = ClipboardHandler.getImageSize();
+		if(dim == null)
+		{
+			Document current = Spade.getDocument();
+			if(current != null)
+			{
+				dim = new Dimension(current.getWidth(), current.getHeight());
+			}
+			else
+			{
+				dim = new Dimension(512, 512);
+			}
+		}
+		
+		final JTextField width = new JTextField("" + dim.width);
+		final JTextField height = new JTextField("" + dim.height);
+		
+		{
+			JPanel panel = dialog.getPanel(0);
+			panel.setLayout(new GridLayout(0, 2));
+			
+			((AbstractDocument) width.getDocument()).setDocumentFilter(new NumberFilter());
+			((AbstractDocument) height.getDocument()).setDocumentFilter(new NumberFilter());
+			
+			width.setColumns(4);
+			height.setColumns(4);
+			
+			JLabel wl = WeblafWrapper.createLabel("Width: ");
+			wl.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			JLabel hl = WeblafWrapper.createLabel("Height: ");
+			hl.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			panel.add(wl);
+			panel.add(width);
+			
+			panel.add(hl);
+			panel.add(height);
+		}
+		
+		JPanel panel = dialog.getBottomPanel();
 		panel.setLayout(new GridLayout(0, 2));
+		JButton create = WeblafWrapper.createButton("Create");
+		JButton cancel = WeblafWrapper.createButton("Cancel");
 		
-		dialog.getContentPane().add(panel);
-		
-		dialog.setAlwaysOnTop(true);
-		dialog.setAutoRequestFocus(true);
-		
-		dialog.setTitle("New Image");
-		
-		final JTextField width = new JTextField("800");
-		final JTextField height = new JTextField("600");
-		((AbstractDocument) width.getDocument()).setDocumentFilter(new NumberFilter());
-		((AbstractDocument) height.getDocument()).setDocumentFilter(new NumberFilter());
-		width.setColumns(8);
-		height.setColumns(8);
-		
-		JLabel wl = new JLabel("Width: ");
-		wl.setHorizontalAlignment(SwingConstants.CENTER);
-		JLabel hl = new JLabel("Height: ");
-		hl.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		JButton create = new JButton("Create");
-		JButton cancel = new JButton("Cancel");
+		panel.add(create);
+		panel.add(cancel);
 		
 		create.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				dialog.dispose();
+				dialog.close();
+				if(width.getText().equals("") || height.getText().equals(""))
+					return;
 				int w = Integer.parseInt(width.getText());
 				int h = Integer.parseInt(height.getText());
 				if(w > Document.MAX_DIMENSION || h > Document.MAX_DIMENSION || w == 0 || h == 0)
@@ -376,21 +402,11 @@ public class Menu
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				dialog.dispose();
+				dialog.close();
 			}
 		});
 		
-		panel.add(wl);
-		panel.add(width);
-		panel.add(hl);
-		panel.add(height);
-		panel.add(create);
-		panel.add(cancel);
-		
-		dialog.pack();
-		dialog.setResizable(false);
-		dialog.setVisible(true);
-		dialog.setLocationRelativeTo(Spade.main.gui.frame);
+		dialog.display();
 	}
 	
 	private static WebMenu createEditMenu()

@@ -20,13 +20,17 @@
 
 package heroesgrave.spade.gui.misc;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 
+import com.alee.laf.button.WebButton;
 import com.alee.laf.checkbox.WebCheckBox;
+import com.alee.laf.label.WebLabel;
 import com.alee.laf.menu.WebMenuItem;
 import com.alee.laf.radiobutton.WebRadioButton;
 import com.alee.laf.separator.WebSeparator;
@@ -40,9 +44,9 @@ import com.alee.laf.separator.WebSeparator;
  */
 public class WeblafWrapper
 {
-	public static JMenuItem createMenuItem()
+	public static JMenuItem createMenuItem(String text)
 	{
-		WebMenuItem c = new WebMenuItem();
+		WebMenuItem c = new WebMenuItem(text);
 		return c;
 	}
 	
@@ -68,6 +72,18 @@ public class WeblafWrapper
 	public static JRadioButton createRadioButton()
 	{
 		WebRadioButton c = new WebRadioButton();
+		return c;
+	}
+	
+	public static JLabel createLabel(String text)
+	{
+		WebLabel c = new WebLabel(text);
+		return c;
+	}
+	
+	public static JButton createButton(String text)
+	{
+		WebButton c = new WebButton(text);
 		return c;
 	}
 }

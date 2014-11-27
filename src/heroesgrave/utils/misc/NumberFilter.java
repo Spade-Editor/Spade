@@ -43,10 +43,22 @@ public class NumberFilter extends DocumentFilter
 			fb.insertString(off, str.replaceAll("[\\D++&&[^-]]", ""), att);
 		}
 		
-		public void replace(FilterBypass fb, int off, int len, String str, AttributeSet att)
-				throws BadLocationException
+		public void replace(FilterBypass fb, int off, int len, String str, AttributeSet att) throws BadLocationException
 		{
 			fb.replace(off, len, str.replaceAll("[\\D++&&[^-]]", ""), att);
+		}
+	}
+	
+	public static class PercentNumberFilter extends DocumentFilter
+	{
+		public void insertString(FilterBypass fb, int off, String str, AttributeSet att) throws BadLocationException
+		{
+			fb.insertString(off, str.replaceAll("[\\D++&&[^%]]", ""), att);
+		}
+		
+		public void replace(FilterBypass fb, int off, int len, String str, AttributeSet att) throws BadLocationException
+		{
+			fb.replace(off, len, str.replaceAll("[\\D++&&[^%]]", ""), att);
 		}
 	}
 }
