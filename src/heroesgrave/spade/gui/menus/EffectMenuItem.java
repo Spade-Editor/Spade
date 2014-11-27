@@ -25,13 +25,10 @@ import heroesgrave.spade.main.Spade;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
+import java.awt.event.KeyEvent;
 
 import com.alee.laf.menu.WebMenuItem;
+import com.alee.managers.hotkey.HotkeyData;
 
 @SuppressWarnings("serial")
 public class EffectMenuItem extends WebMenuItem
@@ -45,11 +42,13 @@ public class EffectMenuItem extends WebMenuItem
 	
 	public EffectMenuItem(String name, Effect e, Character key, String toolTip)
 	{
-		super(key == null ? (name) : (name + " (Ctrl+Shift+" + key + ")"));
+		super(name);
 		
 		// This is here, so some ImageOps don't have to have a key assigned. We can't have key-code's for ALL the ImageOp's! It's impossible!
 		if(key != null)
 		{
+			HotkeyData shortcut = new HotkeyData(true, false, true, KeyEvent.getExtendedKeyCodeForChar(Character.toLowerCase(key)));
+			super.setAccelerator(shortcut);
 			Spade.addEffect(key, e);
 		}
 		
@@ -59,27 +58,9 @@ public class EffectMenuItem extends WebMenuItem
 			this.setToolTipText(toolTip);
 		}
 		
-		// 
 		this.effect = e;
 		
-		// TRY to load the icon!
-		try
-		{
-			URL url = effect.getResource();
-			
-			if(url != null)
-			{
-				this.setIcon(new ImageIcon(ImageIO.read(url)));
-			}
-			else
-			{
-				this.setIcon(new ImageIcon(ImageIO.read(Spade.questionMarkURL)));
-			}
-		}
-		catch(IOException e1)
-		{
-			System.err.println("Error: Effect '" + name + "' is missing an icon!");
-		}
+		this.setIcon(effect.getIcon());
 		
 		this.addActionListener(new ActionListener()
 		{

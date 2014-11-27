@@ -22,9 +22,14 @@ package heroesgrave.spade.editing;
 
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.image.change.SingleChange;
+import heroesgrave.spade.main.Spade;
 import heroesgrave.spade.plugin.Plugin;
 
+import java.io.IOException;
 import java.net.URL;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 public class SimpleEffect extends Effect
 {
@@ -33,9 +38,10 @@ public class SimpleEffect extends Effect
 	
 	public SimpleEffect(Class<? extends Plugin> class_, String name, SingleChange change)
 	{
-		super(name);
+		super(name, false);
 		this.class_ = class_;
 		this.change = change;
+		this.loadIcon();
 	}
 	
 	@Override
@@ -45,8 +51,26 @@ public class SimpleEffect extends Effect
 	}
 	
 	@Override
-	public URL getResource()
+	protected void loadIcon()
 	{
-		return this.class_.getResource("/res/icons/effects/" + name + ".png");
+		try
+		{
+			URL url = this.class_.getResource("/res/icons/effects/" + name + ".png");
+			if(super.image == null)
+			{
+				if(url != null)
+				{
+					super.image = new ImageIcon(ImageIO.read(url));
+				}
+				else
+				{
+					super.image = new ImageIcon(ImageIO.read(Spade.questionMarkURL));
+				}
+			}
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

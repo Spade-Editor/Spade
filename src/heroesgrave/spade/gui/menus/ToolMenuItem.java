@@ -25,6 +25,7 @@ import heroesgrave.spade.main.Spade;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URL;
 
@@ -32,6 +33,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import com.alee.laf.menu.WebMenuItem;
+import com.alee.managers.hotkey.HotkeyData;
 
 @SuppressWarnings("serial")
 public class ToolMenuItem extends WebMenuItem
@@ -40,11 +42,13 @@ public class ToolMenuItem extends WebMenuItem
 	
 	public ToolMenuItem(String name, Tool t, Character key)
 	{
-		super(key == null ? (name) : (name + " (" + key + ")"));
+		super(name);
 		
 		// This is here, so some Tools don't have to have a key assigned. We can't have key-code's for ALL the Tools! It's impossible!
 		if(key != null)
 		{
+			HotkeyData shortcut = new HotkeyData(KeyEvent.getExtendedKeyCodeForChar(Character.toLowerCase(key)));
+			super.setAccelerator(shortcut);
 			Spade.addTool(key, t);
 		}
 		

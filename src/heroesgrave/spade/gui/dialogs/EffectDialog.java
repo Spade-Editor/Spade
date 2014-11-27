@@ -20,7 +20,18 @@
 
 package heroesgrave.spade.gui.dialogs;
 
-public class EffectDialog
+import heroesgrave.spade.main.Spade;
+
+import java.awt.Image;
+
+import com.alee.laf.rootpane.WebDialog;
+
+@SuppressWarnings("serial")
+public class EffectDialog extends WebDialog
 {
-	
+	public EffectDialog(int cols, int rows, String title, Image icon)
+	{
+		super(Spade.main.gui.frame, title);
+		setIconImage(icon);
+	}
 }

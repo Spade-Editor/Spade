@@ -39,6 +39,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +54,8 @@ import com.alee.laf.rootpane.WebDialog;
 
 public class Spade
 {
+	public static final String REPO_URL = "https://github.com/PaintDotJava/Paint.JAVA";
+	
 	// Major.Minor + optional letter for releases. The letter is for tiny revisions, such as fixing bugs that slipped through.
 	// Major.Minor-RC.# for Release Candidates (builds that may be promoted to releases).
 	// Major.Minor-Beta for beta builds.
@@ -94,7 +99,7 @@ public class Spade
 	
 	private static HashMap<Character, Effect> effectMap = new HashMap<Character, Effect>();
 	
-	public void launch(final ArrayList<File> toOpen)
+	public void launch(final ArrayList<File> toOpen) throws InvocationTargetException, InterruptedException
 	{
 		pluginManager = PluginManager.instance;
 		
@@ -110,31 +115,39 @@ public class Spade
 		tools = new Tools();
 		effects = new Effects();
 		
-		SwingUtilities.invokeLater(new Runnable()
+		SwingUtilities.invokeAndWait(new Runnable()
 		{
 			public void run()
 			{
-				gui = new GUIManager();
-				gui.init();
-				
-				setLeftColour(0xff000000, false);
-				setRightColour(0xffffffff, false);
-				
-				tools.init();
-				effects.init(); // Doesn't actually do anything
-				pluginManager.loadPlugins();
-				setTool(currentTool);
-				for(File f : toOpen)
+				// Try to catch everything and recover enough to save.
+				try
 				{
-					if(debug)
-						System.out.println("Opening File " + f.getPath());
-					Spade.addDocument(new Document(f));
+					gui = new GUIManager();
+					gui.init();
+					
+					setLeftColour(0xff000000, false);
+					setRightColour(0xffffffff, false);
+					
+					tools.init();
+					effects.init(); // Doesn't actually do anything
+					pluginManager.loadPlugins();
+					setTool(currentTool);
+					for(File f : toOpen)
+					{
+						if(debug)
+							System.out.println("Opening File " + f.getPath());
+						Spade.addDocument(new Document(f));
+					}
+					ArrayList<Document> documents = gui.getDocuments();
+					if(!documents.isEmpty())
+						Spade.setDocument(documents.get(0));
+					
+					gui.frame.requestFocus();
 				}
-				ArrayList<Document> documents = gui.getDocuments();
-				if(!documents.isEmpty())
-					Spade.setDocument(documents.get(0));
-				
-				gui.frame.requestFocus();
+				catch(Exception e)
+				{
+					panic(e);
+				}
 			}
 		});
 	}
@@ -450,10 +463,7 @@ public class Spade
 		}
 		catch(Exception e)
 		{
-			ArrayList<Document> documents = main.gui.getDocuments();
-			main.pluginManager.dispose();
-			main.gui.frame.dispose();
-			Popup.show("Something bad happened", "An Exception Occured: " + e.getMessage());
+			panic(e);
 		}
 	}
 	
@@ -540,5 +550,29 @@ public class Spade
 		if(main.document != null)
 			return main.document.getDir();
 		return System.getProperty("user.dir");
+	}
+	
+	public static void panic(Exception e)
+	{
+		ArrayList<Document> documents = main.gui.getDocuments();
+		for(Document doc : documents)
+		{
+			File f = doc.getFile();
+			if(f == null)
+				continue;
+			String name = "~" + f.getName() + ".bck";
+			int i = 0;
+			while(f.exists())
+			{
+				f = new File(f.getParentFile(), name + "." + i++);
+			}
+			doc.setFile(f);
+			doc.save(true);
+		}
+		main.pluginManager.dispose();
+		main.gui.frame.dispose();
+		StringWriter msg = new StringWriter();
+		e.printStackTrace(new PrintWriter(msg));
+		Popup.showException("Spade has crashed", msg.toString(), "");
 	}
 }

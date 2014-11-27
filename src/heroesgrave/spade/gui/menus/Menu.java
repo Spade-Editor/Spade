@@ -31,6 +31,7 @@ import heroesgrave.utils.misc.NumberFilter;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -49,6 +50,8 @@ import com.alee.laf.menu.WebMenuBar;
 import com.alee.laf.menu.WebMenuItem;
 import com.alee.laf.rootpane.WebDialog;
 import com.alee.laf.separator.WebSeparator;
+import com.alee.managers.hotkey.Hotkey;
+import com.alee.managers.hotkey.HotkeyData;
 
 public class Menu
 {
@@ -116,7 +119,8 @@ public class Menu
 	{
 		WebMenu dialogs = new WebMenu("Manage Dialogs");
 		
-		WebMenuItem colourChooser = new WebMenuItem("Colour Chooser (F5)", GUIManager.getIcon("colour_chooser"));
+		WebMenuItem colourChooser = new WebMenuItem("Colour Chooser", GUIManager.getIcon("colour_chooser"));
+		colourChooser.setAccelerator(Hotkey.F5);
 		
 		colourChooser.addActionListener(new ActionListener()
 		{
@@ -127,7 +131,8 @@ public class Menu
 			}
 		});
 		
-		WebMenuItem layerManager = new WebMenuItem("Layer Manager (F6)", GUIManager.getIcon("layer_manager"));
+		WebMenuItem layerManager = new WebMenuItem("Layer Manager", GUIManager.getIcon("layer_manager"));
+		layerManager.setAccelerator(Hotkey.F6);
 		
 		layerManager.addActionListener(new ActionListener()
 		{
@@ -157,10 +162,14 @@ public class Menu
 	{
 		WebMenu file = new WebMenu("File");
 		
-		WebMenuItem newFile = new WebMenuItem("New (Ctrl+N)", GUIManager.getIcon("new"));
-		WebMenuItem load = new WebMenuItem("Open (Ctrl+O)", GUIManager.getIcon("open"));
-		WebMenuItem save = new WebMenuItem("Save (Ctrl+S)", GUIManager.getIcon("save"));
+		WebMenuItem newFile = new WebMenuItem("New", GUIManager.getIcon("new"));
+		newFile.setAccelerator(Hotkey.CTRL_N);
+		WebMenuItem load = new WebMenuItem("Open", GUIManager.getIcon("open"));
+		load.setAccelerator(Hotkey.CTRL_O);
+		WebMenuItem save = new WebMenuItem("Save", GUIManager.getIcon("save"));
+		save.setAccelerator(Hotkey.CTRL_S);
 		final WebMenuItem saveAs = new WebMenuItem("Save As", GUIManager.getIcon("save_as"));
+		saveAs.setAccelerator(new HotkeyData(true, true, false, KeyEvent.VK_S));
 		WebMenuItem exit = new WebMenuItem("Exit", GUIManager.getIcon("exit"));
 		
 		file.add(newFile);
@@ -385,8 +394,10 @@ public class Menu
 	{
 		WebMenu edit = new WebMenu("Edit");
 		
-		WebMenuItem undo = new WebMenuItem("Undo (Ctrl+Z)", GUIManager.getIcon("undo"));
-		WebMenuItem redo = new WebMenuItem("Redo (Ctrl+Y)", GUIManager.getIcon("redo"));
+		WebMenuItem undo = new WebMenuItem("Undo", GUIManager.getIcon("undo"));
+		undo.setAccelerator(Hotkey.CTRL_Z);
+		WebMenuItem redo = new WebMenuItem("Redo", GUIManager.getIcon("redo"));
+		redo.setAccelerator(Hotkey.CTRL_Y);
 		
 		undo.addActionListener(new ActionListener()
 		{
@@ -418,10 +429,17 @@ public class Menu
 	{
 		WebMenu view = new WebMenu("View");
 		
-		WebMenuItem zoomIn = new WebMenuItem("Zoom In (Ctrl++)", GUIManager.getIcon("zoom_inc"));
-		WebMenuItem zoomOut = new WebMenuItem("Zoom Out (Ctrl+-)", GUIManager.getIcon("zoom_dec"));
-		WebMenuItem grid = new WebMenuItem("Toggle Grid (Ctrl+G)", GUIManager.getIcon("toggle_grid"));
-		WebMenuItem darkDraw = new WebMenuItem("Toggle Dark Background (Ctrl+B)", GUIManager.getIcon("toggle_dark_bg"));
+		WebMenuItem zoomIn = new WebMenuItem("Zoom In", GUIManager.getIcon("zoom_inc"));
+		zoomIn.setAccelerator(new HotkeyData(true, false, false, KeyEvent.VK_EQUALS));
+		WebMenuItem zoomOut = new WebMenuItem("Zoom Out", GUIManager.getIcon("zoom_dec"));
+		zoomOut.setAccelerator(new HotkeyData(true, false, false, KeyEvent.VK_MINUS));
+		WebMenuItem zoomReset = new WebMenuItem("Reset Zoom", GUIManager.getIcon("zoom_reset"));
+		zoomReset.setAccelerator(new HotkeyData(true, false, false, KeyEvent.VK_0));
+		
+		WebMenuItem grid = new WebMenuItem("Toggle Grid", GUIManager.getIcon("toggle_grid"));
+		grid.setAccelerator(Hotkey.CTRL_G);
+		WebMenuItem darkDraw = new WebMenuItem("Toggle Dark Background", GUIManager.getIcon("toggle_dark_bg"));
+		darkDraw.setAccelerator(Hotkey.CTRL_B);
 		
 		zoomIn.addActionListener(new ActionListener()
 		{
@@ -457,12 +475,22 @@ public class Menu
 			}
 		});
 		
+		zoomReset.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				Spade.main.gui.canvas.setScale(1f);
+			}
+		});
+		
 		grid.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				GRID_ENABLED = !GRID_ENABLED;
+				Spade.main.gui.repaint();
 			}
 		});
 		
@@ -472,13 +500,13 @@ public class Menu
 			public void actionPerformed(ActionEvent e)
 			{
 				DARK_BACKGROUND = !DARK_BACKGROUND;
-				if(Spade.getDocument() != null)
-					Spade.main.gui.repaint();
+				Spade.main.gui.repaint();
 			}
 		});
 		
 		view.add(zoomIn);
 		view.add(zoomOut);
+		view.add(zoomReset);
 		view.add(new WebSeparator());
 		view.add(grid);
 		view.add(darkDraw);

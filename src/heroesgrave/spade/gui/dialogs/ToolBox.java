@@ -35,7 +35,6 @@ public class ToolBox
 {
 	public final static int BUTTON_SIZE = 32;
 	
-	//private JDialog dialog;
 	private WebToolBar toolbar;
 	private ButtonGroup buttonGroup;
 	

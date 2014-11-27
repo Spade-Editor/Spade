@@ -22,7 +22,6 @@ package heroesgrave.spade.main;
 
 import heroesgrave.spade.editing.Effect;
 import heroesgrave.spade.editing.Tool;
-import heroesgrave.spade.gui.menus.Menu;
 import heroesgrave.spade.gui.misc.ClipboardHandler;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.image.Layer;
@@ -67,16 +66,6 @@ public class Input implements KeyListener
 			ALT = true;
 		}
 		
-		if(e.getKeyCode() == KeyEvent.VK_F5)
-		{
-			Spade.main.gui.chooser.toggle();
-		}
-		
-		if(e.getKeyCode() == KeyEvent.VK_F6)
-		{
-			Spade.main.gui.layers.toggle();
-		}
-		
 		if(e.getKeyCode() == KeyEvent.VK_DELETE)
 		{
 			Spade.getDocument().getCurrent().addChange(new FillImageChange(0x00000000));
@@ -101,48 +90,7 @@ public class Input implements KeyListener
 			}
 			else
 			{
-				if(e.getKeyCode() == KeyEvent.VK_EQUALS)
-				{
-					float zoom = Spade.main.gui.canvas.getScale();
-					if(zoom < 1f)
-					{
-						Spade.main.gui.canvas.setScale(Math.min(zoom * 2f, 1f));
-					}
-					else
-					{
-						Spade.main.gui.canvas.setScale(Math.min(zoom + 2f, 64f));
-					}
-				}
-				else if(e.getKeyCode() == KeyEvent.VK_MINUS)
-				{
-					float zoom = Spade.main.gui.canvas.getScale();
-					if(zoom <= 1f)
-					{
-						Spade.main.gui.canvas.setScale(Math.max(zoom / 2f, 1 / 32f));
-					}
-					else
-					{
-						Spade.main.gui.canvas.setScale(Math.max(zoom - 2f, 1f));
-					}
-				}
-				else if(e.getKeyCode() == KeyEvent.VK_0)
-				{
-					Spade.main.gui.canvas.setScale(1f);
-				}
-				else if(e.getKeyCode() == KeyEvent.VK_N)
-				{
-					Menu.showNewDialog();
-				}
-				else if(e.getKeyCode() == KeyEvent.VK_O)
-				{
-					Menu.showOpenMenu();
-				}
-				else if(e.getKeyCode() == KeyEvent.VK_B)
-				{
-					Menu.DARK_BACKGROUND = !Menu.DARK_BACKGROUND;
-					Spade.main.gui.canvas.repaint();
-				}
-				else if(e.getKeyCode() == KeyEvent.VK_Q)
+				if(e.getKeyCode() == KeyEvent.VK_Q)
 				{
 					if(Spade.getDocument() != null)
 					{
@@ -155,37 +103,7 @@ public class Input implements KeyListener
 				}
 				else if(Spade.getDocument() != null)
 				{
-					if(e.getKeyCode() == KeyEvent.VK_Z)
-					{
-						Spade.getDocument().getHistory().revertChange();
-						Spade.main.gui.repaint();
-					}
-					else if(e.getKeyCode() == KeyEvent.VK_Y)
-					{
-						Spade.getDocument().getHistory().repeatChange();
-						Spade.main.gui.repaint();
-					}
-					else if(e.getKeyCode() == KeyEvent.VK_S)
-					{
-						final boolean as = e.isAltDown();
-						new Thread(new Runnable()
-						{
-							public void run()
-							{
-								if(as)
-									Spade.saveAs(Spade.getDocument());
-								else
-									Spade.save(Spade.getDocument());
-							}
-						}).start();
-					}
-					else if(e.getKeyCode() == KeyEvent.VK_G)
-					{
-						// FIXME Grid isn't actually working.
-						Menu.GRID_ENABLED = !Menu.GRID_ENABLED;
-						Spade.main.gui.repaint();
-					}
-					else if(e.getKeyCode() == KeyEvent.VK_D)
+					if(e.getKeyCode() == KeyEvent.VK_D)
 					{
 						Spade.getDocument().getCurrent().addChange(new ClearMaskChange());
 					}

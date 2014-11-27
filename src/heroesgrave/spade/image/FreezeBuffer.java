@@ -24,8 +24,8 @@ import heroesgrave.spade.image.change.IChange;
 import heroesgrave.spade.image.change.IEditChange;
 import heroesgrave.spade.image.change.IImageChange;
 import heroesgrave.spade.image.change.IMarker;
-import heroesgrave.spade.image.change.IRevEditChange;
 import heroesgrave.spade.image.change.IMarker.Marker;
+import heroesgrave.spade.image.change.IRevEditChange;
 import heroesgrave.spade.io.HistoryIO;
 import heroesgrave.spade.io.Serialised;
 

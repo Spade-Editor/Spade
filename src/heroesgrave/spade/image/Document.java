@@ -24,6 +24,7 @@ import heroesgrave.spade.image.change.IChange;
 import heroesgrave.spade.image.change.IDocChange;
 import heroesgrave.spade.io.ImageExporter;
 import heroesgrave.spade.io.ImageImporter;
+import heroesgrave.spade.main.Popup;
 import heroesgrave.spade.main.Spade;
 import heroesgrave.utils.misc.Metadata;
 
@@ -33,8 +34,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
-
-import javax.swing.JOptionPane;
 
 public class Document
 {
@@ -137,6 +136,11 @@ public class Document
 	
 	public void save()
 	{
+		save(false);
+	}
+	
+	public void save(boolean panic)
+	{
 		final String fileName = this.file.getAbsolutePath();
 		
 		String extension = "";
@@ -161,7 +165,12 @@ public class Document
 		catch(IOException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "An error occurred while saving the Image:\n" + e.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			if(!panic)
+				Popup.showException("Error Saving Document", e.getLocalizedMessage(), "This error occured while saving the file " + file
+						+ ". It may work if you try again, but if not, we apologise. Report the bug to get it fixed as soon as possible");
+			else
+				Popup.showException("Error Saving Document", e.getLocalizedMessage(), "This error occured while saving the file " + file
+						+ " after a crash. Sadly, we cannot recover from this.");
 			return;
 		}
 	}
