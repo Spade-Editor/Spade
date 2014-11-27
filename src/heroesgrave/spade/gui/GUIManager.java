@@ -45,6 +45,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -403,6 +404,7 @@ public class GUIManager
 			DocumentButton b = (DocumentButton) c;
 			b.checkName();
 		}
+		documentBar.repaint();
 	}
 	
 	public void checkDynamicInfo()
@@ -427,7 +429,7 @@ public class GUIManager
 			document.reconstructFlatmap();
 			if(document.getFile() != null)
 			{
-				setTitle(IOUtils.relativeFrom(System.getProperty("user.dir"), document.getFile().getAbsolutePath()));
+				setTitle(IOUtils.relativeFrom(new File(System.getProperty("user.dir")), document.getFile()));
 			}
 			else
 			{
@@ -459,7 +461,7 @@ public class GUIManager
 		if(select != null)
 			documents.add(select, 0);
 		
-		frame.repaint();
+		documentBar.repaint();
 	}
 	
 	public void setTitle(String title)

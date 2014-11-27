@@ -55,7 +55,7 @@ public class DocumentMenuItem extends WebMenuItem implements ActionListener
 		String s;
 		if(f != null)
 		{
-			s = IOUtils.relativeFrom(System.getProperty("user.dir"), f.getPath());
+			s = IOUtils.relativeFrom(new File(System.getProperty("user.dir")), f);
 		}
 		else
 		{

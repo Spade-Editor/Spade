@@ -265,7 +265,7 @@ public class PluginManager
 				Metadata info = loadPluginInfo(file);
 				if(info != null)
 				{
-					info.set("location", "File: " + IOUtils.relativeFrom(IOUtils.jarDir(), file.getAbsolutePath()));
+					info.set("location", "File: " + IOUtils.relativeFrom(new File(IOUtils.jarDir()), file));
 					pluginFileInfo.add(info);
 					pluginFiles.add(file);
 				}

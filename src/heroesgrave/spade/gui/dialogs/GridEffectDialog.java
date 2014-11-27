@@ -47,6 +47,7 @@ public class GridEffectDialog
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		dialog.setAlwaysOnTop(true);
 		dialog.setAutoRequestFocus(true);
+		dialog.setShowResizeCorner(false);
 		
 		panels = new JPanel[rows * cols];
 		
