@@ -65,13 +65,13 @@ public class Spade
 	// Beta for new completed features.
 	// Development for under-development new features.
 	
-	public static final String VERSION_STRING = "0.15-Dev";
+	public static final String VERSION_STRING = "0.15-Beta";
 	public static final Version VERSION = Version.parse(VERSION_STRING);
-	public static final String RELEASED = "25-11-2014";
+	public static final String RELEASED = "28-11-2014";
 	
 	/* Add/Remove the stars on the following lines to change the build type string.
-	//*/public static final String BUILD_TYPE = "Development";
-	//*/public static final String BUILD_TYPE = "Alpha"; // I don't know if we'll ever use alphas.
+	///public static final String BUILD_TYPE = "Development";
+	///public static final String BUILD_TYPE = "Alpha"; // I don't know if we'll ever use alphas.
 	//*/public static final String BUILD_TYPE = "Beta";
 	//*/public static final String BUILD_TYPE = "Release Candidate";
 	//*/public static final String BUILD_TYPE = "Stable";
