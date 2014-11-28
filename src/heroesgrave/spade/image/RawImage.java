@@ -30,9 +30,26 @@ public final class RawImage
 {
 	private static int[] TMP;
 	
-	public enum MaskMode
+	public static enum MaskMode
 	{
-		REP, ADD, SUB, XOR, AND
+		REP, ADD, SUB, XOR, AND;
+		
+		public boolean transform(boolean bool)
+		{
+			switch(this)
+			{
+				case REP:
+				case ADD:
+					return true;
+				case SUB:
+					return false;
+				case XOR:
+					return !bool;
+				case AND:
+					return bool;
+			}
+			throw new IllegalStateException("Unreachable");
+		}
 	}
 	
 	private int[] buffer;
