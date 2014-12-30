@@ -20,63 +20,28 @@
 
 package heroesgrave.spade.image.blend;
 
-import java.awt.Composite;
+import java.awt.AlphaComposite;
 import java.awt.CompositeContext;
 import java.awt.RenderingHints;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
-import java.util.HashMap;
-import java.util.Set;
 
-public abstract class BlendMode implements Composite, CompositeContext
+public class Xor extends BlendMode
 {
-	private static HashMap<String, BlendMode> modes = new HashMap<String, BlendMode>();
-	public static final BlendMode NORMAL = new Normal();
-	public static final BlendMode XOR = new Xor();
-	
-	static
+	public Xor()
 	{
-		addBlendMode(NORMAL);
-		addBlendMode(XOR);
-	}
-	
-	public final String name;
-	
-	public BlendMode(String name)
-	{
-		this.name = name;
-	}
-	
-	public abstract void compose(Raster src, Raster dst, WritableRaster out);
-	
-	public void dispose()
-	{
-		
+		super("Xor");
 	}
 	
 	public CompositeContext createContext(ColorModel arg0, ColorModel arg1, RenderingHints arg2)
 	{
-		return this;
+		return AlphaComposite.Xor.createContext(arg0, arg1, arg2);
 	}
 	
-	public String toString()
+	@Override
+	public void compose(Raster src, Raster dst, WritableRaster out)
 	{
-		return name;
-	}
-	
-	public static void addBlendMode(BlendMode mode)
-	{
-		modes.put(mode.name, mode);
-	}
-	
-	public static BlendMode getBlendMode(String s)
-	{
-		return modes.get(s);
-	}
-	
-	public static Set<String> getBlendModeNames()
-	{
-		return modes.keySet();
+		
 	}
 }
