@@ -23,6 +23,8 @@ package heroesgrave.spade.io;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.image.RawImage;
+import heroesgrave.spade.io.exporters.ExporterGenericImageIO;
+import heroesgrave.spade.io.exporters.ImporterGenericImageIO;
 import heroesgrave.spade.main.Popup;
 import heroesgrave.utils.misc.Metadata;
 
@@ -44,6 +46,9 @@ public abstract class ImageImporter extends FileFilter
 	{
 		// Set this to FALSE, because it is NOT faster to use this!
 		ImageIO.setUseCache(false);
+		
+		add(new ImporterGenericImageIO("png", "PNG - Portable Network Graphics Image"));
+		add(new ImporterGenericImageIO("jpg", "JPG - Joint Photographic Experts Group Image"));
 	}
 	
 	/**

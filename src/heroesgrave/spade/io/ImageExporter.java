@@ -41,6 +41,7 @@ public abstract class ImageExporter extends FileFilter
 	static
 	{
 		add(new ExporterGenericImageIO("png", "PNG - Portable Network Graphics Image"));
+		add(new ExporterGenericImageIO("jpg", "JPG - Joint Photographic Experts Group Image"));
 	}
 	
 	/**
