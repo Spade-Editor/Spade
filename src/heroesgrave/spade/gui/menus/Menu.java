@@ -314,10 +314,17 @@ public class Menu
 				public void run()
 				{
 					Document doc = Document.loadFromFile(chooser.getSelectedFile());
+					
 					if(doc != null)
 					{
 						Spade.addDocument(doc);
 						Spade.setDocument(doc);
+					}
+					else
+					{
+						// This should do for now!
+						// TODO: Make it possible to get the exceptions thrown by the exporters, so they can be shown here.
+						Popup.show("Error", "Failed to load Image.");
 					}
 				}
 			}).start();
