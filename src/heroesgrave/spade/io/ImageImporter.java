@@ -28,6 +28,7 @@ import heroesgrave.spade.io.exporters.ImporterGenericImageIO;
 import heroesgrave.spade.main.Popup;
 import heroesgrave.utils.misc.Metadata;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -103,6 +104,29 @@ public abstract class ImageImporter extends FileFilter
 					extension = fileName.substring(i + 1);
 				}
 				
+				// Attempt loading the Image trough ImageIO...
+				{
+					BufferedImage img = null;
+					try
+					{
+						img = ImageIO.read(file);
+					}
+					catch(IOException e)
+					{
+						e.printStackTrace();
+					}
+					
+					if(img != null)
+					{
+						RawImage image = RawImage.fromBufferedImage(img);
+						doc.setDimensions(image.width, image.height);
+						doc.setRoot(new Layer(doc, image, new Metadata()));
+						return true;
+					}
+				}
+				
+				// We failed to load the image trough ImageIO, so now attempt to use a custom Importer...
+				
 				// Get the ImageImporter
 				ImageImporter importer = importers.get(extension);
 				
@@ -113,9 +137,8 @@ public abstract class ImageImporter extends FileFilter
 				}
 				else
 				{
-					RawImage image = RawImage.fromBufferedImage(ImageIO.read(file));
-					doc.setDimensions(image.width, image.height);
-					doc.setRoot(new Layer(doc, image, new Metadata()));
+					// We are unable to load the image.
+					throw new IOException("Unable to load Image: There are no default/custom importers for the given format '"+extension+"'.");
 				}
 			}
 			catch(Exception e)
@@ -130,7 +153,6 @@ public abstract class ImageImporter extends FileFilter
 			Popup.showException("Error Loading Document", new FileNotFoundException(file.getAbsolutePath()), "The file " + file + " could not be found");
 			return false;
 		}
-		return true;
 	}
 	
 	public static void addAllImporters(WebFileChooser chooser)

@@ -247,7 +247,8 @@ public class Menu
 		final WebFileChooser chooser = new WebFileChooser(Spade.getDir());
 		chooser.setFileSelectionMode(WebFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
-		chooser.addChoosableFileFilter(new FileFilter()
+		
+		FileFilter DEFAULT_FILTER = new FileFilter()
 		{
 			@Override
 			public boolean accept(File f)
@@ -259,7 +260,11 @@ public class Menu
 					return true;
 				if(name.endsWith(".jpg"))
 					return true;
+				if(name.endsWith(".jpeg"))
+					return true;
 				if(name.endsWith(".bmp"))
+					return true;
+				if(name.endsWith(".gif"))
 					return true;
 				return false;
 			}
@@ -269,35 +274,10 @@ public class Menu
 			{
 				return "ImageIO supported import formats (.png, .jpg, .bmp)";
 			}
-		});
-		chooser.setFileFilter(new FileFilter()
-		{
-			@Override
-			public boolean accept(File f)
-			{
-				if(f.isDirectory())
-					return true;
-				String name = f.getAbsolutePath();
-				if(name.endsWith(".png"))
-					return true;
-				if(name.endsWith(".jpg"))
-					return true;
-				if(name.endsWith(".bmp"))
-					return true;
-				
-				int i = name.lastIndexOf('.');
-				if(i < 0)
-					return false;
-				
-				return ImageImporter.get(name.substring(i + 1)) != null;
-			}
-			
-			@Override
-			public String getDescription()
-			{
-				return "All supported import formats";
-			}
-		});
+		};
+		
+		chooser.addChoosableFileFilter(DEFAULT_FILTER);
+		chooser.setFileFilter(DEFAULT_FILTER);
 		
 		// Add ALL the custom image-importers!
 		ImageImporter.addAllImporters(chooser);
@@ -319,12 +299,6 @@ public class Menu
 					{
 						Spade.addDocument(doc);
 						Spade.setDocument(doc);
-					}
-					else
-					{
-						// This should do for now!
-						// TODO: Make it possible to get the exceptions thrown by the exporters, so they can be shown here.
-						Popup.show("Error", "Failed to load Image.");
 					}
 				}
 			}).start();
