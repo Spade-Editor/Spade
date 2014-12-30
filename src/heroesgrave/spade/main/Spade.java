@@ -1,19 +1,19 @@
 // {LICENSE}
 /*
  * Copyright 2013-2014 HeroesGrave and other Spade developers.
- * 
+ *
  * This file is part of Spade
- * 
+ *
  * Spade is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
@@ -32,12 +32,15 @@ import heroesgrave.spade.plugin.Plugin;
 import heroesgrave.spade.plugin.PluginManager;
 import heroesgrave.utils.io.IOUtils;
 import heroesgrave.utils.misc.Callback;
+import heroesgrave.utils.misc.Metadata;
 import heroesgrave.utils.misc.Version;
 
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
@@ -332,12 +335,21 @@ public class Spade
 			{
 				try
 				{
-					BufferedReader in = new BufferedReader(new InputStreamReader(p.getClass().getResourceAsStream("/plugin.info")));
+					// fetch InputStream
+					InputStream inStream = p.getClass().getResourceAsStream("/plugin.info");
+					
+					// If we can't find the plugin.info, throw a FileNotFoundException!
+					if(inStream == null)
+						throw new FileNotFoundException("Could not find file: /plugin.info @ " + p.getClass().getName());
+					
+					// Read the plugins info-file
+					BufferedReader in = new BufferedReader(new InputStreamReader(inStream));
 					p.setInfo(PluginManager.loadPluginInfo(in));
 				}
 				catch(IOException e)
 				{
 					e.printStackTrace();
+					p.setInfo(new Metadata()); // prevent NullPointerException!
 				}
 			}
 			p.getInfo().set("location", "Class: " + p.getClass().getCanonicalName());
