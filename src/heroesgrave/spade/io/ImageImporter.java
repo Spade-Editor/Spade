@@ -47,8 +47,12 @@ public abstract class ImageImporter extends FileFilter
 		// Set this to FALSE, because it is NOT faster to use this!
 		ImageIO.setUseCache(false);
 		
+		// Default formats supported by the JRE: jpg, bmp, jpeg, png, gif
+		add(new ImporterGenericImageIO("bmp", "BMP - Bitmap Image"));
+		add(new ImporterGenericImageIO("gif", "GIF - Graphics Interchange Format"));
 		add(new ImporterGenericImageIO("png", "PNG - Portable Network Graphics Image"));
 		add(new ImporterGenericImageIO("jpg", "JPG - Joint Photographic Experts Group Image"));
+		add(new ImporterGenericImageIO("jpeg", "JPEG - Joint Photographic Experts Group Image"));
 	}
 	
 	/**
