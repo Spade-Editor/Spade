@@ -460,6 +460,17 @@ public final class RawImage
 		return y * width + x;
 	}
 	
+	/**
+	 * Get the index in the underlying array of pixel position x, y.
+	 * @param x Pixel X position
+	 * @param y Pixel Y position
+	 * @return The position in the underlying int array.
+	 */
+	public int getIndex(int x, int y)
+	{
+		return index(x, y);
+	}
+	
 	public int[] copyBuffer()
 	{
 		return Arrays.copyOf(buffer, buffer.length);
