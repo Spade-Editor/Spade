@@ -455,6 +455,11 @@ public final class RawImage
 		return buffer[index(x, y)];
 	}
 	
+	public int getIndex(int x, int y)
+	{
+		return index(x, y);
+	}
+	
 	private int index(int x, int y)
 	{
 		return y * width + x;
