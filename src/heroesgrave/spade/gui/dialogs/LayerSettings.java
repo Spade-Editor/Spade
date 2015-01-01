@@ -49,7 +49,7 @@ public class LayerSettings
 	public LayerSettings(JFrame frame)
 	{
 		this.dialog = new WebDialog(frame, "Layer Settings");
-		dialog.setSize(200, 120);
+		dialog.setSize(240, 140);
 		dialog.setVisible(false);
 		dialog.setResizable(false);
 		dialog.setLayout(new GridLayout(0, 2));
