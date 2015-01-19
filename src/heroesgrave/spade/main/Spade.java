@@ -59,7 +59,7 @@ public class Spade
 	// Major.Minor-Beta for beta builds.
 	// Major.Minor-Alpha for alpha builds.
 	// Major.Minor-Dev for development builds.
-	// Eg: 1.3b is the 2nd revision of verion 1.3
+	// Eg: 1.3b is the 2nd revision of version 1.3
 	
 	// Stable for stable post-1.0 versions
 	// Beta for new completed features.

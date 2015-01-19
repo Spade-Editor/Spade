@@ -49,7 +49,6 @@ public class LayerSettings
 	public LayerSettings(JFrame frame)
 	{
 		this.dialog = new WebDialog(frame, "Layer Settings");
-		dialog.setSize(200, 120);
 		dialog.setVisible(false);
 		dialog.setResizable(false);
 		dialog.setLayout(new GridLayout(0, 2));
@@ -58,7 +57,7 @@ public class LayerSettings
 		
 		addAllBlendModes();
 		
-		label = new WebTextField("");
+		label = new WebTextField();
 		
 		WebButton done = new WebButton("Done");
 		
@@ -105,6 +104,7 @@ public class LayerSettings
 		blendMode.removeAllItems();
 		for(String mode : BlendMode.getBlendModeNames())
 			blendMode.addItem(mode);
+		dialog.pack();
 	}
 	
 	public void updateIfVisible(Layer layer)

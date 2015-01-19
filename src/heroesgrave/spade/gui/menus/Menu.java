@@ -344,6 +344,8 @@ public class Menu
 		
 		final JTextField width = new JTextField("" + dim.width);
 		final JTextField height = new JTextField("" + dim.height);
+		//width.setHorizontalAlignment(JTextField.RIGHT);
+		//height.setHorizontalAlignment(JTextField.RIGHT);
 		
 		{
 			JPanel panel = dialog.getPanel(0);
