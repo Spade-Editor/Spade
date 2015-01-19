@@ -253,7 +253,7 @@ public class Menu
 			public boolean accept(File f)
 			{
 				if(f.isDirectory())
-					return true;
+					return false;
 				String name = f.getAbsolutePath();
 				if(name.endsWith(".png"))
 					return true;
@@ -276,7 +276,7 @@ public class Menu
 			public boolean accept(File f)
 			{
 				if(f.isDirectory())
-					return true;
+					return false;
 				String name = f.getAbsolutePath();
 				if(name.endsWith(".png"))
 					return true;

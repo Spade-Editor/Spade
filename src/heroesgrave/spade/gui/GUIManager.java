@@ -30,6 +30,7 @@ import heroesgrave.spade.gui.menus.DocumentMenuItem;
 import heroesgrave.spade.gui.menus.InfoMenuBar;
 import heroesgrave.spade.gui.menus.Menu;
 import heroesgrave.spade.image.Document;
+import heroesgrave.spade.io.ImageImporter;
 import heroesgrave.spade.main.Input;
 import heroesgrave.spade.main.Spade;
 import heroesgrave.spade.main.UserPreferences;
@@ -38,6 +39,9 @@ import heroesgrave.utils.misc.Callback;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -49,12 +53,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.WindowConstants;
@@ -239,6 +245,66 @@ public class GUIManager
 					Spade.main.setRightColour(a << 24 | r << 16 | g << 8 | b, true);
 			}
 		});
+		
+		//Add dragdrop handler
+		@SuppressWarnings("serial")
+		TransferHandler handler = new TransferHandler() {
+            @Override
+            public boolean canImport(final TransferHandler.TransferSupport support) {
+                if (!support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                    return false;
+                }
+
+                return true;
+            }
+
+            @Override
+            public boolean importData(final TransferHandler.TransferSupport support) {
+                if (!canImport(support)) {
+                    return false;
+                }
+                Transferable t = support.getTransferable();
+                try {
+                    @SuppressWarnings("unchecked")
+					final File toload = (File) ((List<File>) t.getTransferData(DataFlavor.javaFileListFlavor)).get(0);
+                    String filename = toload.getName();
+                    int i = filename.indexOf(".");
+                    String extension = filename.substring(i+1);
+
+                    boolean supported = 
+                    		filename.endsWith(".png") ||
+                    		filename.endsWith(".jpg") ||
+                    		filename.endsWith(".bmp") ||
+                    		ImageImporter.get(extension) != null;
+
+                    if (i > 0 && !extension.equals("") && supported)
+                    {
+                        new Thread(new Runnable()
+            			{
+            				@Override
+            				public void run()
+            				{
+            					Document doc = Document.loadFromFile(toload);
+            					if(doc != null)
+            					{
+            						Spade.addDocument(doc);
+            						Spade.setDocument(doc);
+            					}
+            				}
+            			}).start();
+                    }
+                    
+                    else return false;
+                    
+                } catch (UnsupportedFlavorException e) {
+                    return false;
+                } catch (IOException e) {
+                    return false;
+                }
+                return true;
+            }
+        };
+        centre.setTransferHandler(handler);
 		
 		finish();
 		initInputs();
