@@ -73,6 +73,7 @@ public class AboutDialog extends WebDialog
 		append(doc, "    HeroesGrave\n", "regular");
 		append(doc, "    Longor1996\n", "regular");
 		append(doc, "    BurntPizza\n", "regular");
+		append(doc, "    SuperDisk\n", "regular");
 		append(doc, "    Gef4k\n", "regular");
 		append(doc, "    MarkBernard\n", "regular");
 		append(doc, "    pwnedary\n", "regular");

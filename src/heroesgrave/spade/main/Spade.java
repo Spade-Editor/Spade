@@ -67,7 +67,7 @@ public class Spade
 	
 	public static final String VERSION_STRING = "0.16-Dev";
 	public static final Version VERSION = Version.parse(VERSION_STRING);
-	public static final String RELEASED = "19-01-2015";
+	public static final String RELEASED = "20-01-2015";
 	
 	/* Add/Remove the stars on the following lines to change the build type string.
 	//*/public static final String BUILD_TYPE = "Development";

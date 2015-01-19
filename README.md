@@ -32,6 +32,7 @@ These people have done significant amounts of work towards Spade out of their ow
 
 Other Contributors
 ==================
+- [SuperDisk](https://github.com/SuperDisk)
 - [Gef4K](https://github.com/Gef4K)
 - [markbernard](https://github.com/markbernard)
 - [pwnedary](https://github.com/pwnedary)
