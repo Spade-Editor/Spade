@@ -185,7 +185,7 @@ public class FreezeBuffer
 				toReturn.push(s);
 			}
 			LinkedList<IChange> toApply = new LinkedList<IChange>();
-			while(i >= 0)
+			while(i > 0)
 			{
 				if((s = oldChanges.poll()) == null)
 				{
@@ -194,7 +194,7 @@ public class FreezeBuffer
 				else if(s instanceof IMarker)
 				{
 					i--;
-					if(i == -1 && !(s instanceof Marker))
+					if(i == 0 && !(s instanceof Marker))
 					{
 						oldChanges.push(s);
 						break;

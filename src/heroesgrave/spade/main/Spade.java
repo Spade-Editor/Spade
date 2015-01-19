@@ -65,9 +65,9 @@ public class Spade
 	// Beta for new completed features.
 	// Development for under-development new features.
 	
-	public static final String VERSION_STRING = "0.15-Dev";
+	public static final String VERSION_STRING = "0.16-Dev";
 	public static final Version VERSION = Version.parse(VERSION_STRING);
-	public static final String RELEASED = "25-11-2014";
+	public static final String RELEASED = "19-01-2015";
 	
 	/* Add/Remove the stars on the following lines to change the build type string.
 	//*/public static final String BUILD_TYPE = "Development";
@@ -115,6 +115,7 @@ public class Spade
 		
 		SwingUtilities.invokeAndWait(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				// Try to catch everything and recover enough to save.
@@ -492,6 +493,7 @@ public class Spade
 	{
 		Spade.closeDocument(Spade.getDocument(), new Callback()
 		{
+			@Override
 			public void callback()
 			{
 				Spade.closeAllDocuments();
@@ -503,6 +505,7 @@ public class Spade
 	{
 		closeDocument(doc, new Callback()
 		{
+			@Override
 			public void callback()
 			{
 			}
@@ -518,6 +521,7 @@ public class Spade
 		final int index = main.gui.getDocuments().indexOf(doc);
 		main.gui.tryRemove(doc, new Callback()
 		{
+			@Override
 			public void callback()
 			{
 				ArrayList<Document> documents = main.gui.getDocuments();

@@ -321,25 +321,18 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
-		int ctrlMod = MouseWheelEvent.CTRL_MASK | MouseWheelEvent.CTRL_DOWN_MASK;
-		int modifier = e.getModifiers();
-		boolean ctrlDown = (modifier & ctrlMod) != 0;
+		int sign = e.getWheelRotation();
 		
-		if(ctrlDown)
+		if(sign < 0)
 		{
-			int sign = e.getWheelRotation();
-			
-			if(sign < 0)
-			{
-				this.cam_zoom_increase();
-				return;
-			}
-			
-			if(sign > 0)
-			{
-				this.cam_zoom_decrease();
-				return;
-			}
+			this.cam_zoom_increase();
+			return;
+		}
+		
+		if(sign > 0)
+		{
+			this.cam_zoom_decrease();
+			return;
 		}
 	}
 	
