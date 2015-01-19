@@ -1,6 +1,6 @@
 // {LICENSE}
 /*
- * Copyright 2013-2014 HeroesGrave and other Spade developers.
+ * Copyright 2013-2015 HeroesGrave and other Spade developers.
  * 
  * This file is part of Spade
  * 
