@@ -65,9 +65,9 @@ public class Spade
 	// Beta for new completed features.
 	// Development for under-development new features.
 	
-	public static final String VERSION_STRING = "0.16-Dev";
+	public static final String VERSION_STRING = "0.16.0-dev";
 	public static final Version VERSION = Version.parse(VERSION_STRING);
-	public static final String RELEASED = "20-01-2015";
+	public static final String RELEASED = "23-02-2015";
 	
 	/* Add/Remove the stars on the following lines to change the build type string.
 	//*/public static final String BUILD_TYPE = "Development";
@@ -76,7 +76,7 @@ public class Spade
 	//*/public static final String BUILD_TYPE = "Release Candidate";
 	//*/public static final String BUILD_TYPE = "Stable";
 	
-	public static boolean debug, debug_timing, localPlugins = true, globalPlugins = true;
+	public static boolean debug, localPlugins = true, globalPlugins = true;
 	public static Spade main = new Spade();
 	public static URL questionMarkURL = Spade.class.getResource("/res/icons/questionmark.png");
 	
@@ -395,10 +395,6 @@ public class Spade
 			{
 				debug = true;
 			}
-			else if(arg.equals("--debug-timing"))
-			{
-				debug_timing = true;
-			}
 			else if(arg.equals("--no-global-plugins"))
 			{
 				globalPlugins = false;
@@ -558,23 +554,32 @@ public class Spade
 	
 	public static void panic(Exception e)
 	{
-		ArrayList<Document> documents = main.gui.getDocuments();
-		for(Document doc : documents)
-		{
-			File f = doc.getFile();
-			if(f == null)
-				continue;
-			String name = "~" + f.getName() + ".bck";
-			int i = 0;
-			while(f.exists())
+		try {
+			ArrayList<Document> documents = main.gui.getDocuments();
+			for(Document doc : documents)
 			{
-				f = new File(f.getParentFile(), name + "." + i++);
+				File f = doc.getFile();
+				if(f == null)
+					continue;
+				String name = "~" + f.getName() + ".bck";
+				int i = 0;
+				while(f.exists())
+				{
+					f = new File(f.getParentFile(), name + "." + i++);
+				}
+				doc.setFile(f);
+				doc.save(true);
 			}
-			doc.setFile(f);
-			doc.save(true);
+			main.pluginManager.dispose();
+			main.gui.frame.dispose();
 		}
-		main.pluginManager.dispose();
-		main.gui.frame.dispose();
+		catch(Exception e2)
+		{
+			e2.printStackTrace();
+			System.err.println("Exception encountered while handling an exception!\nYou will not go to space today.\nOriginal Error:");
+			e.printStackTrace();
+			System.exit(-1);
+		}
 		Popup.showException("Spade has crashed", e, "");
 		System.exit(-1);
 	}

@@ -20,32 +20,23 @@
 
 package heroesgrave.utils.misc;
 
+import heroesgrave.utils.io.IOUtils;
+
 public class Version
 {
-	private int major, minor;
-	private char revision;
+	private int major, minor, patch;
 	private String type;
 	
-	public Version(int major, int minor)
+	public Version(int major, int minor, int patch)
 	{
-		this(major, minor, null);
+		this(major, minor, patch, null);
 	}
 	
-	public Version(int major, int minor, String type)
-	{
-		this(major, minor, (char) 0, type);
-	}
-	
-	public Version(int major, int minor, char revision)
-	{
-		this(major, minor, revision, null);
-	}
-	
-	public Version(int major, int minor, char revision, String type)
+	public Version(int major, int minor, int patch, String type)
 	{
 		this.major = major;
 		this.minor = minor;
-		this.revision = revision;
+		this.patch = patch;
 		this.type = type;
 	}
 	
@@ -53,7 +44,7 @@ public class Version
 	{
 		this.major = -1;
 		this.minor = -1;
-		this.revision = 0;
+		this.patch = 0;
 		this.type = string;
 	}
 	
@@ -71,9 +62,9 @@ public class Version
 				return true;
 			else
 			{
-				if(this.revision < other.revision)
+				if(this.patch < other.patch)
 					return false;
-				else if(this.revision > other.revision)
+				else if(this.patch > other.patch)
 					return true;
 				else
 				{
@@ -116,45 +107,35 @@ public class Version
 		try
 		{
 			String[] dot = version.split("\\.");
-			String[] dash = dot[1].split("-");
+			String[] dash = dot[2].split("-");
 			
 			String major = dot[0];
-			String minor = dash[0];
+			String minor = dot[1];
+			String patch = dash[0];
 			String type = null;
 			
 			if(dash.length == 2)
 			{
 				type = dash[1];
 			}
-			
-			char maybeRevision = minor.toLowerCase().charAt(minor.length() - 1);
-			if(maybeRevision >= 'a' && maybeRevision <= 'z')
-			{
-				return new Version(Integer.parseInt(major), Integer.parseInt(minor.substring(0, minor.length() - 1)), maybeRevision, type);
-			}
-			else
-			{
-				return new Version(Integer.parseInt(major), Integer.parseInt(minor), type);
-			}
+			return new Version(Integer.parseInt(major), Integer.parseInt(minor), Integer.parseInt(patch), type);
 		}
 		catch(Exception e)
 		{
 			System.err.println("Badly formatted version: " + version);
-			return null;
+			System.err.println("Due to the recent switch to semantic versioning, outdated plugins using the wrong versioning scheme will eventually cause a crash here.\n" +
+					"Please clear out all plugin directories (\n\t" +
+					IOUtils.assemblePath(IOUtils.jarDir(), "plugins") +
+					"\n\t" +
+					IOUtils.assemblePath(System.getProperty("user.home"), ".spade", "plugins") +
+					"\n) and update all your plugins.");
+			return new Version(0, 0, 0, "INVALID_VERSION_FORMAT");
 		}
 	}
 	
 	public String toString()
 	{
-		if(major < 0 || minor < 0)
-		{
-			return type;
-		}
-		String v = major + "." + minor;
-		if(revision != 0)
-		{
-			v += revision;
-		}
+		String v = major + "." + minor + "." + patch;
 		if(type != null)
 		{
 			v += "-" + type;

@@ -52,20 +52,11 @@ public abstract class Plugin
 		return loaded;
 	}
 	
-	protected static void launchSpadeWithPlugins(String[] args, boolean dev, Plugin... plugins)
+	protected static void launchSpadeWithPlugins(String[] args, Plugin... plugins)
 	{
-		if(dev)
+		if(Spade.BUILD_TYPE == "Development")
 		{
-			try
-			{
-				System.out.println("Launching Spade v" + Spade.getVersion() + " in plugin development mode");
-			}
-			catch(NoClassDefFoundError e)
-			{
-				System.err.println("Attempted to launch Spade in plugin development mode but Spade could not be found.");
-				System.err.println("Ensure your dev environment is set up properly.");
-				System.exit(-1);
-			}
+			System.out.println("Launching Spade v" + Spade.getVersion() + " in plugin development mode");
 		}
 		Spade.launchWithPlugins(args, plugins);
 	}

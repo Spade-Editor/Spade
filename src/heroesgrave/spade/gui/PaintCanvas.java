@@ -44,8 +44,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -86,7 +84,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	TexturePaint paintLight, paintDark;
 	
 	// Document rendering stuff 
-	private BufferedImage frozen, unselected, preview;
+	private BufferedImage frozen, unselected, preview, cachedTBG;
 	private RawImage unselectedRaw, previewRaw;
 	private boolean maskChanged;
 	private int frozenTo;
@@ -350,12 +348,199 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		if(document == null)
 			return;
 		
-		AffineTransform Tx = new AffineTransform();
-		Tx.translate(this.getWidth() / 2, this.getHeight() / 2);
-		Tx.scale(this.cam_zoom, this.cam_zoom);
-		Tx.translate(-this.cam_positionX, -this.cam_positionY);
+		if(document.repaint)
+			composeImage();
 		
-		g.transform(Tx);
+		renderImage(g);
+
+		// Optionally draw the grid
+		if(Menu.GRID_ENABLED && cam_zoom >= 8)
+		{
+			drawGrid(g);
+		}
+	}
+	
+	// Could probably be split up further, but I'll leave as-is for now.
+	private void composeImage()
+	{
+		ArrayList<Layer> flatmap = document.getFlatMap();
+		IChange previewChange = document.getPreview();
+		
+		// Create graphics and clear image.
+		Graphics2D cg = image.createGraphics();
+		cg.setBackground(PaintCanvas.TRANSPARENT);
+		cg.clearRect(0, 0, image.getWidth(), image.getHeight());
+		
+		int index = flatmap.indexOf(document.getCurrent()) - 1;
+		if(index >= 0)
+		{
+			if(Math.min(index, document.lowestChange - 1) < frozenTo)
+			{
+				Graphics2D fg = frozen.createGraphics();
+				fg.setBackground(PaintCanvas.TRANSPARENT);
+				fg.clearRect(0, 0, document.getWidth(), document.getHeight());
+				for(int i = 0; i <= index; i++)
+				{
+					flatmap.get(i).render(fg);
+				}
+				document.lowestChange = frozenTo = index;
+			}
+			else if(index > frozenTo)
+			{
+				Graphics2D fg = frozen.createGraphics();
+				for(int i = frozenTo + 1; i <= index; i++)
+				{
+					flatmap.get(i).render(fg);
+				}
+				document.lowestChange = frozenTo = index;
+			}
+			cg.drawImage(frozen, 0, 0, null);
+		}
+		else
+		{
+			frozenTo = -1;
+			Graphics2D fg = frozen.createGraphics();
+			fg.setBackground(PaintCanvas.TRANSPARENT);
+			fg.clearRect(0, 0, document.getWidth(), document.getHeight());
+		}
+		
+		boolean masked = true;
+		
+		if(previewChange != null)
+		{
+			previewRaw.copyFrom(document.getCurrent().getImage(), true);
+			
+			if(previewChange instanceof IEditChange)
+			{
+				((IEditChange) previewChange).apply(previewRaw);
+				maskChanged = maskChanged || (previewChange instanceof IMaskChange);
+			}
+			else if(previewChange instanceof IImageChange)
+			{
+				previewRaw.copyFrom(((IImageChange) previewChange).apply(previewRaw), true);
+			}
+			
+			if(previewRaw.isMaskEnabled())
+			{
+				if(maskChanged)
+				{
+					unselectedRaw.setMask(previewRaw.borrowMask());
+					unselectedRaw.clear(SELECTION_OVERLAY);
+					unselectedRaw.fill(0);
+					maskChanged = false;
+				}
+			}
+			else
+			{
+				masked = false;
+			}
+			
+			// Draw Preview
+			cg.setComposite(document.getCurrent().getBlendMode());
+			cg.drawImage(preview, 0, 0, null);
+		}
+		else
+		{
+			// Render Current Layer
+			flatmap.get(index + 1).render(cg);
+			
+			RawImage current = document.getCurrent().getImage();
+			
+			if(current.isMaskEnabled())
+			{
+				if(maskChanged)
+				{
+					unselectedRaw.setMask(current.borrowMask());
+					unselectedRaw.clear(SELECTION_OVERLAY);
+					unselectedRaw.fill(0);
+					maskChanged = false;
+				}
+			}
+			else
+			{
+				masked = false;
+			}
+		}
+		
+		if(masked) // Draw the selection overlay.
+		{
+			cg.setComposite(BlendMode.NORMAL);
+			cg.drawImage(unselected, 0, 0, null);
+		}
+		
+		for(int i = index + 2; i < flatmap.size(); i++)
+		{
+			flatmap.get(i).render(cg);
+		}
+		
+		cg.dispose();
+		document.repaint = false;
+	}
+	
+	private void renderImage(Graphics2D g)
+	{
+		int translate_x = MathUtils.floor((-this.cam_positionX * this.cam_zoom) + this.getWidth()/2);
+		int translate_y = MathUtils.floor((-this.cam_positionY * this.cam_zoom) + this.getHeight()/2);
+		int width = MathUtils.floor(image.getWidth()*this.cam_zoom);
+		int height = MathUtils.floor(image.getHeight()*this.cam_zoom);
+		
+		validateTBG();
+		
+		int left = Math.max(translate_x, 0);
+		int top = Math.max(translate_y, 0);
+		
+		g.drawImage(cachedTBG, left, top, cachedTBG.getWidth(), cachedTBG.getHeight(), null);
+		g.drawImage(image, translate_x, translate_y, width, height, null);
+	}
+	
+	public void drawGrid(Graphics2D g)
+	{
+		int translate_x = MathUtils.floor((-this.cam_positionX * this.cam_zoom) + this.getWidth()/2);
+		int translate_y = MathUtils.floor((-this.cam_positionY * this.cam_zoom) + this.getHeight()/2);
+		
+		int step = MathUtils.floor(this.cam_zoom);
+		int tx = MathUtils.floor(this.cam_positionX * this.cam_zoom);
+		int ty = MathUtils.floor(this.cam_positionY * this.cam_zoom);
+		
+		int top = Math.max(ty - this.getHeight() / 2, 0) / step * step;
+		int bottom = Math.min(ty + this.getHeight() / 2, image.getHeight() * step);
+		
+		int left = Math.max(tx - this.getWidth() / 2, 0) / step * step;
+		int right = Math.min(tx + this.getWidth() / 2, image.getWidth() * step);
+		
+		g.setColor(Color.gray);
+		if(cam_zoom > 32)
+			g.setStroke(new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, 1.0f, new float[]{cam_zoom * 0.25f, cam_zoom * 0.25f},
+					cam_zoom * 0.125f));
+		// Vertical
+		for(int i = left; i < right; i += step)
+		{
+			g.drawLine(translate_x+i, translate_y+top, translate_x+i, translate_y+bottom);
+		}
+		// Horizontal
+		for(int i = top; i < bottom; i += step)
+		{
+			g.drawLine(translate_x+left, translate_y+i, translate_x+right, translate_y+i);
+		}
+	}
+	
+	public void maskChanged()
+	{
+		this.maskChanged = true;
+	}
+	
+	public void validateTBG()
+	{
+		int targetWidth = Math.min(MathUtils.floor(image.getWidth()*cam_zoom), this.getWidth());
+		int targetHeight = Math.min(MathUtils.floor(image.getHeight()*cam_zoom), this.getHeight());
+		
+		if(cachedTBG != null && cachedTBG.getWidth() == targetWidth && cachedTBG.getHeight() == targetHeight)
+			return;
+		
+		this.cachedTBG = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
+		
+		Graphics2D g = cachedTBG.createGraphics();
+		g.scale(cam_zoom, cam_zoom);
 		if(Menu.DARK_BACKGROUND)
 		{
 			g.setPaint(paintDark);
@@ -364,171 +549,7 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		{
 			g.setPaint(paintLight);
 		}
-		g.fillRect(0, 0, image.getWidth(), image.getHeight());
-		
-		long start, end;
-		if(document != null && document.repaint)
-		{
-			ArrayList<Layer> flatmap = document.getFlatMap();
-			IChange previewChange = document.getPreview();
-			
-			start = System.nanoTime();
-			
-			// Create graphics and clear image.
-			Graphics2D cg = image.createGraphics();
-			cg.setBackground(PaintCanvas.TRANSPARENT);
-			cg.clearRect(0, 0, image.getWidth(), image.getHeight());
-			
-			int index = flatmap.indexOf(document.getCurrent()) - 1;
-			if(index >= 0)
-			{
-				if(Math.min(index, document.lowestChange - 1) < frozenTo)
-				{
-					Graphics2D fg = frozen.createGraphics();
-					fg.setBackground(PaintCanvas.TRANSPARENT);
-					fg.clearRect(0, 0, document.getWidth(), document.getHeight());
-					for(int i = 0; i <= index; i++)
-					{
-						flatmap.get(i).render(fg);
-					}
-					document.lowestChange = frozenTo = index;
-				}
-				else if(index > frozenTo)
-				{
-					Graphics2D fg = frozen.createGraphics();
-					for(int i = frozenTo + 1; i <= index; i++)
-					{
-						flatmap.get(i).render(fg);
-					}
-					document.lowestChange = frozenTo = index;
-				}
-				cg.drawImage(frozen, 0, 0, null);
-			}
-			else
-			{
-				frozenTo = -1;
-				Graphics2D fg = frozen.createGraphics();
-				fg.setBackground(PaintCanvas.TRANSPARENT);
-				fg.clearRect(0, 0, document.getWidth(), document.getHeight());
-			}
-			
-			boolean masked = true;
-			
-			if(previewChange != null)
-			{
-				previewRaw.copyFrom(document.getCurrent().getImage(), true);
-				
-				if(previewChange instanceof IEditChange)
-				{
-					((IEditChange) previewChange).apply(previewRaw);
-					maskChanged = maskChanged || (previewChange instanceof IMaskChange);
-				}
-				else if(previewChange instanceof IImageChange)
-				{
-					previewRaw.copyFrom(((IImageChange) previewChange).apply(previewRaw), true);
-				}
-				
-				if(previewRaw.isMaskEnabled())
-				{
-					if(maskChanged)
-					{
-						unselectedRaw.setMask(previewRaw.borrowMask());
-						unselectedRaw.clear(SELECTION_OVERLAY);
-						unselectedRaw.fill(0);
-						maskChanged = false;
-					}
-				}
-				else
-				{
-					masked = false;
-				}
-				
-				// Draw Preview
-				cg.setComposite(document.getCurrent().getBlendMode());
-				cg.drawImage(preview, 0, 0, null);
-			}
-			else
-			{
-				// Render Current Layer
-				flatmap.get(index + 1).render(cg);
-				
-				RawImage current = document.getCurrent().getImage();
-				
-				if(current.isMaskEnabled())
-				{
-					if(maskChanged)
-					{
-						unselectedRaw.setMask(current.borrowMask());
-						unselectedRaw.clear(SELECTION_OVERLAY);
-						unselectedRaw.fill(0);
-						maskChanged = false;
-					}
-				}
-				else
-				{
-					masked = false;
-				}
-			}
-			
-			if(masked) // Draw the selection overlay.
-			{
-				cg.setComposite(BlendMode.NORMAL);
-				cg.drawImage(unselected, 0, 0, null);
-			}
-			
-			for(int i = index + 2; i < flatmap.size(); i++)
-			{
-				flatmap.get(i).render(cg);
-			}
-			
-			end = System.nanoTime();
-			if(Spade.debug_timing)
-				System.out.printf("Image Render Time: %dms\n", (end - start) / 1000000);
-			document.repaint = false;
-		}
-		
-		g.drawImage(image, 0, 0, null);
-		
-		if(Menu.GRID_ENABLED && cam_zoom >= 8)
-		{
-			start = System.nanoTime();
-			Tx = new AffineTransform();
-			Tx.scale(1f / this.cam_zoom, 1f / this.cam_zoom);
-			g.transform(Tx);
-			
-			int step = MathUtils.floor(this.cam_zoom);
-			int tx = MathUtils.floor(this.cam_positionX * this.cam_zoom);
-			int ty = MathUtils.floor(this.cam_positionY * this.cam_zoom);
-			
-			int top = Math.max(ty - this.getHeight() / 2, 0) / step * step;
-			int bottom = Math.min(ty + this.getHeight() / 2, image.getHeight() * step);
-			
-			int left = Math.max(tx - this.getWidth() / 2, 0) / step * step;
-			int right = Math.min(tx + this.getWidth() / 2, image.getWidth() * step);
-			
-			g.setColor(Color.gray);
-			if(cam_zoom >= 16)
-				g.setStroke(new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, 1.0f, new float[]{cam_zoom * 0.25f, cam_zoom * 0.25f},
-						cam_zoom * 0.125f));
-			// Vertical
-			for(int i = left; i < right; i += step)
-			{
-				g.drawLine(i, top, i, bottom);
-			}
-			// Horizontal
-			for(int i = top; i < bottom; i += step)
-			{
-				g.drawLine(left, i, right, i);
-			}
-			end = System.nanoTime();
-			if(Spade.debug_timing)
-				System.out.printf("Grid Render Time: %dms\n", (end - start) / 1000000);
-		}
-	}
-	
-	public void maskChanged()
-	{
-		this.maskChanged = true;
+		g.fillRect(0, 0, cachedTBG.getWidth(), cachedTBG.getHeight());
 	}
 	
 	public void resized(int width, int height)
@@ -581,21 +602,30 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	
 	public final Point2D.Float transformCanvasPointToImagePoint(Point2D in)
 	{
-		AffineTransform Tx = new AffineTransform();
-		Tx.translate(this.getWidth() / 2, this.getHeight() / 2);
-		Tx.scale(this.cam_zoom, this.cam_zoom);
-		Tx.translate(-this.cam_positionX, -this.cam_positionY);
+		float x = (float) in.getX();
+		float y = (float) in.getY();
+		x -= this.getWidth()/2;
+		y -= this.getHeight()/2;
+		x /= this.cam_zoom;
+		y /= this.cam_zoom;
+		x += this.cam_positionX;
+		y += this.cam_positionY;
 		
-		try
-		{
-			Tx.invert();
-		}
-		catch(NoninvertibleTransformException e1)
-		{
-			e1.printStackTrace();
-		}
+		return new Point2D.Float(x, y);
+	}
+
+	public final Point2D.Float transformImagePointToCanvasPoint(Point2D in)
+	{
+		float x = (float) in.getX();
+		float y = (float) in.getY();
+		x -= this.cam_positionX;
+		y -= this.cam_positionY;
+		x *= this.cam_zoom;
+		y *= this.cam_zoom;
+		x += this.getWidth()/2;
+		y += this.getHeight()/2;
 		
-		return (Point2D.Float) Tx.transform(in, null);
+		return new Point2D.Float(x, y);
 	}
 	
 	private void updateBG()
