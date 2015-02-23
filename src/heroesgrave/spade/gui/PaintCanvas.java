@@ -486,8 +486,12 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 		
 		validateTBG();
 		
-		int left = Math.max(translate_x, 0);
-		int top = Math.max(translate_y, 0);
+		int left = translate_x;
+		int top = translate_y;
+		if(left < 0)
+			left = ((left%32)-32)%32;
+		if(top < 0)
+			top = ((top%32)-32)%32;
 		
 		g.drawImage(cachedTBG, left, top, cachedTBG.getWidth(), cachedTBG.getHeight(), null);
 		g.drawImage(image, translate_x, translate_y, width, height, null);
@@ -531,8 +535,8 @@ public class PaintCanvas extends JComponent implements MouseListener, MouseMotio
 	
 	public void validateTBG()
 	{
-		int targetWidth = Math.min(MathUtils.floor(image.getWidth()*cam_zoom), this.getWidth());
-		int targetHeight = Math.min(MathUtils.floor(image.getHeight()*cam_zoom), this.getHeight());
+		int targetWidth = Math.min(MathUtils.floor(image.getWidth()*cam_zoom), this.getWidth()+32);
+		int targetHeight = Math.min(MathUtils.floor(image.getHeight()*cam_zoom), this.getHeight()+32);
 		
 		if(cachedTBG != null && cachedTBG.getWidth() == targetWidth && cachedTBG.getHeight() == targetHeight)
 			return;
