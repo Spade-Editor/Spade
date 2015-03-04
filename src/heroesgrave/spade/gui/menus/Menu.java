@@ -26,6 +26,7 @@ import heroesgrave.spade.gui.misc.ClipboardHandler;
 import heroesgrave.spade.gui.misc.WeblafWrapper;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.io.ImageImporter;
+import heroesgrave.spade.io.ReadableFileFilter;
 import heroesgrave.spade.main.Popup;
 import heroesgrave.spade.main.Spade;
 import heroesgrave.spade.plugin.PluginManager;
@@ -247,57 +248,7 @@ public class Menu
 		final WebFileChooser chooser = new WebFileChooser(Spade.getDir());
 		chooser.setFileSelectionMode(WebFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
-		chooser.addChoosableFileFilter(new FileFilter()
-		{
-			@Override
-			public boolean accept(File f)
-			{
-				if(f.isDirectory())
-					return false;
-				String name = f.getAbsolutePath();
-				if(name.endsWith(".png"))
-					return true;
-				if(name.endsWith(".jpg"))
-					return true;
-				if(name.endsWith(".bmp"))
-					return true;
-				return false;
-			}
-			
-			@Override
-			public String getDescription()
-			{
-				return "ImageIO supported import formats (.png, .jpg, .bmp)";
-			}
-		});
-		chooser.setFileFilter(new FileFilter()
-		{
-			@Override
-			public boolean accept(File f)
-			{
-				if(f.isDirectory())
-					return false;
-				String name = f.getAbsolutePath();
-				if(name.endsWith(".png"))
-					return true;
-				if(name.endsWith(".jpg"))
-					return true;
-				if(name.endsWith(".bmp"))
-					return true;
-				
-				int i = name.lastIndexOf('.');
-				if(i < 0)
-					return false;
-				
-				return ImageImporter.get(name.substring(i + 1)) != null;
-			}
-			
-			@Override
-			public String getDescription()
-			{
-				return "All supported import formats";
-			}
-		});
+		chooser.setFileFilter(new ReadableFileFilter());
 		
 		// Add ALL the custom image-importers!
 		ImageImporter.addAllImporters(chooser);
