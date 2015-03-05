@@ -31,6 +31,7 @@ import heroesgrave.spade.gui.menus.InfoMenuBar;
 import heroesgrave.spade.gui.menus.Menu;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.io.ImageImporter;
+import heroesgrave.spade.io.ReadableFileFilter;
 import heroesgrave.spade.main.Input;
 import heroesgrave.spade.main.Spade;
 import heroesgrave.spade.main.UserPreferences;
@@ -267,17 +268,9 @@ public class GUIManager
                 try {
                     @SuppressWarnings("unchecked")
 					final File toload = (File) ((List<File>) t.getTransferData(DataFlavor.javaFileListFlavor)).get(0);
-                    String filename = toload.getName();
-                    int i = filename.indexOf(".");
-                    String extension = filename.substring(i+1);
+                    boolean supported = new ReadableFileFilter().accept(toload);
 
-                    boolean supported = 
-                    		filename.endsWith(".png") ||
-                    		filename.endsWith(".jpg") ||
-                    		filename.endsWith(".bmp") ||
-                    		ImageImporter.get(extension) != null;
-
-                    if (i > 0 && !extension.equals("") && supported)
+                    if (supported)
                     {
                         new Thread(new Runnable()
             			{
